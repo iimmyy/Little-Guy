@@ -20,6 +20,22 @@ class DevelopmentBrain : BrainBackend {
                 action = RobotAction.Gesture("dance")
             )
 
+            normalized.contains("turn around") -> BrainOutput(
+                speech = "Requesting a full turn.",
+                action = RobotAction.TurnToward(180)
+            )
+
+            normalized.contains("what did i say") -> {
+                val previousHumanTurn = input.recentTurns
+                    .lastOrNull { it.startsWith(HUMAN_PREFIX) }
+                    ?.removePrefix(HUMAN_PREFIX)
+
+                BrainOutput(
+                    speech = previousHumanTurn?.let { "You previously said: $it" }
+                        ?: "I don't have an earlier message from you."
+                )
+            }
+
             normalized.contains("see") -> BrainOutput(
                 speech = if (input.observation.faceDetected) {
                     "I can see somebody in front of me. Simulated somebody, for now."
@@ -38,5 +54,9 @@ class DevelopmentBrain : BrainBackend {
                 speech = "I heard: ${input.text.trim()}. My real brain isn't plugged in yet."
             )
         }
+    }
+
+    private companion object {
+        const val HUMAN_PREFIX = "Human: "
     }
 }

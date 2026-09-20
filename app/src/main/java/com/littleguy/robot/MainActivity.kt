@@ -12,9 +12,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.littleguy.robot.core.ActionDecision
 import com.littleguy.robot.core.DevelopmentBrain
 import com.littleguy.robot.core.RobotCoordinator
 import com.littleguy.robot.core.SimulatedHardware
+import com.littleguy.robot.platform.SharedPreferencesConversationMemory
+import java.util.Locale
 
 class MainActivity : Activity() {
     private lateinit var transcript: TextView
@@ -33,7 +36,10 @@ class MainActivity : Activity() {
 
         coordinator = RobotCoordinator(
             brain = DevelopmentBrain(),
-            hardware = SimulatedHardware(::appendLine)
+            hardware = SimulatedHardware(::appendLine),
+            memory = SharedPreferencesConversationMemory(
+                getSharedPreferences("little_guy_memory", MODE_PRIVATE)
+            )
         )
 
         val input = EditText(this).apply {
@@ -52,8 +58,19 @@ class MainActivity : Activity() {
                 val message = input.text.toString().trim()
                 if (message.isNotEmpty()) {
                     appendLine("YOU     $message")
-                    val output = coordinator.receive(message)
-                    appendLine("LITTLE  ${output.speech}")
+                    val result = coordinator.receive(message)
+                    if (result.actionDecision is ActionDecision.Blocked) {
+                        appendLine("SAFETY  ${result.actionDecision.reason}")
+                    }
+                    appendLine("LITTLE  ${result.output.speech}")
+                    appendLine(
+                        String.format(
+                            Locale.US,
+                            "PERF    brain %.2f ms | total %.2f ms",
+                            result.timing.brainMs,
+                            result.timing.totalMs
+                        )
+                    )
                     input.text.clear()
                 }
             }

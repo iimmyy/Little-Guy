@@ -2,24 +2,58 @@ package com.littleguy.robot.core
 
 class RobotCoordinator(
     private val brain: BrainBackend,
-    private val hardware: RobotHardware
+    private val hardware: RobotHardware,
+    private val memory: ConversationMemory = InMemoryConversationMemory(),
+    private val safetyGate: ActionSafetyGate = ActionSafetyGate(),
+    private val nanoTime: () -> Long = System::nanoTime
 ) {
-    private val turns = ArrayDeque<String>()
-
-    fun receive(text: String): BrainOutput {
+    fun receive(text: String): InteractionResult {
+        val started = nanoTime()
+        val brainStarted = nanoTime()
         val output = brain.respond(
             BrainInput(
                 text = text,
-                recentTurns = turns.toList(),
+                recentTurns = memory.recentTurns(12),
                 observation = hardware.observe()
             )
         )
+        val brainFinished = nanoTime()
 
-        turns.addLast("Human: $text")
-        turns.addLast("Little Guy: ${output.speech}")
-        while (turns.size > 12) turns.removeFirst()
+        memory.append(
+            listOf(
+                "Human: $text",
+                "Little Guy: ${output.speech}"
+            )
+        )
 
-        hardware.perform(output.action)
-        return output
+        val decision = safetyGate.evaluate(output.action)
+        if (decision is ActionDecision.Allowed) {
+            hardware.perform(decision.action)
+        }
+
+        val finished = nanoTime()
+        return InteractionResult(
+            output = output,
+            actionDecision = decision,
+            timing = InteractionTiming(
+                brainMs = (brainFinished - brainStarted) / NANOS_PER_MILLISECOND,
+                totalMs = (finished - started) / NANOS_PER_MILLISECOND
+            )
+        )
+    }
+
+    private companion object {
+        const val NANOS_PER_MILLISECOND = 1_000_000.0
     }
 }
+
+data class InteractionResult(
+    val output: BrainOutput,
+    val actionDecision: ActionDecision,
+    val timing: InteractionTiming
+)
+
+data class InteractionTiming(
+    val brainMs: Double,
+    val totalMs: Double
+)
