@@ -1,0 +1,25 @@
+.gradle/
+.idea/
+build/
+app/build/
+local.properties
+*.iml
+.DS_Store
+
+# Local runs and user-authored private drafts
+.run/
+docs/drafts/
+*.private.md
+
+# Device credentials and signing material
+.env
+.env.*
+keystore.properties
+*.jks
+*.keystore
+
+# Model weights and proprietary runtime payloads
+models/
+app/src/main/assets/models/
+vendor/qualcomm/
+*.litertlm
