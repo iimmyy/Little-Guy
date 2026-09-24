@@ -6,6 +6,8 @@ app/build/
 local.properties
 *.iml
 .DS_Store
+__pycache__/
+*.pyc
 
 # Local runs and user-authored private drafts
 .run/

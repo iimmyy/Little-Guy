@@ -48,6 +48,10 @@ I have not exposed single-servo or multi-servo movement commands. I have also no
 
 I have not decoded multibyte response fields such as battery voltage yet. The published table gives their size but not enough byte-order detail for me to treat a community convention as verified hardware truth. I will capture and preserve the raw response first, compare it with the factory-reported value, and then add a tested parser.
 
+## Donor observations (WIP)
+
+My used Alpha 1S arrived physically intact and runs factory actions from the phone app. It has a built-in speaker and extensive LEDs. I hear a faint, very high-pitched tone whose source is not identified yet; I will compare idle, motion, and charging before calling it a fault or a harmless regulator sound. In one recorded Gangnam Style run it pitched forward and fell while continuing to talk. It may have started from a tilted held pose, so that clip is not evidence of a failed servo or bad balance calibration. I will repeat the stock action from a level, unsupported stance before interpreting it.
+
 ## Sources
 
 - [UBTECH Alpha1 Series Bluetooth Communication Protocol V20151215](https://assets-new.ubtrobot.com/Alpha%201%20%E7%B3%BB%E5%88%97%E8%93%9D%E7%89%99%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE.pdf)

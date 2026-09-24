@@ -27,15 +27,12 @@ The emulator does not have a real Adreno GPU. LiteRT fell back to WebGPU on Mesa
 
 I also tried the LiteRT CPU backend only to isolate the emulator. Its native library exited with `SIGILL` during `nativeCreateEngine`, so I did not keep that fallback in the app. The deployable path remains GPU, as intended for the Q6A.
 
-## Next physical-board gate
+## First physical Q6A run
 
-On the Q6A I will record:
+I copied the exact model to the Q6A, verified its SHA-256 there, and sent two short prompts through the Android app while monitoring thermal zones from the Mac. The first `Hi` produced `Hello. I see you.` in 50.696 seconds end-to-end, including cold engine initialization. A second `Hi again` produced the same short answer in 1.787 seconds end-to-end with the engine warm. These are full-response times, **not** time-to-first-token measurements.
 
-- cold and warm initialization time;
-- time to first token and time to first complete response;
-- prefill and decode speed;
-- peak memory use;
-- sustained thermals and throttling;
-- whether GPU is sufficient or a QNN/NPU-specific export is worth pursuing.
+The Q6A log reports full LiteRT OpenCL delegation for the prefill and verify subgraphs. The generic LiteRT NPU accelerator did not register, and the optional OpenCL top-k sampler library was absent, so it fell back to its statically linked sampler. Those warnings did not prevent the two responses. The process stayed alive as a foreground service after I returned to Home.
 
-Until that run succeeds, I am treating Gemma inference on the Q6A as unverified.
+With a small external fan blowing on the open board, the logged maxima during this first run were 34.9 C across CPU thermal zones, 37.2 C across GPU zones, and 29.9 C at the named skin zone; Android thermal status was 0. The app's reported total PSS after loading was about 1.90 GB. This short two-prompt test is not a sustained-load or enclosed-robot thermal result, and I still lack a direct UFS temperature reading.
+
+I still need token-stream timestamps, prefill/decode throughput, repeated warm trials, screen-off behavior, and sustained thermal testing before choosing a final model or cooling design.

@@ -12,7 +12,7 @@ I moved runtime ownership into `LittleGuyService`, a started and bound foregroun
 
 ## What I verified
 
-I built the app with Homebrew OpenJDK 17, ran all five unit tests, and installed the debug APK on the Android 15 ARM64 emulator.
+I built the app with Homebrew OpenJDK 17, ran the unit tests, and installed the debug APK on the Android 15 ARM64 emulator.
 
 The first launch exposed a real Android 15 failure: the service crashed because it had no declared foreground-service type. I added the `specialUse` type, its permission, and its required subtype description, then repeated the test.
 
@@ -25,11 +25,13 @@ After the correction:
 - The service found the existing private Gemma model without initializing a second engine.
 - Android lint completed with no errors. Two pre-existing packaging warnings remain for backup rules and the temporary launcher icon.
 
-## Exact boundary
+## Physical Q6A bring-up
 
-This proves that the runtime survives normal dashboard closure and task removal. It does not yet prove automatic startup after a cold device boot or recovery after Android kills the process under memory pressure.
+I installed the app on the Q6A and added a `BOOT_COMPLETED` receiver for the current lightweight `specialUse` service. After a real reboot, the Mac reconnected over persistent TCP ADB and Android reported `LittleGuyService` running in the foreground with `BOOT_COMPLETED` as its start reason. The dashboard was not opened. I subsequently copied the model and verified two responses in the running service. This proves boot startup and initial inference, not recovery after Android kills the process.
 
-I am intentionally not adding a normal `BOOT_COMPLETED` receiver and pretending that solves the robot lifecycle. Camera and microphone foreground services have extra background-start restrictions. The physical Q6A will use dedicated-device/device-owner provisioning with a custom home role, followed by explicit cold-boot, screen-off, crash-restart, and recovery tests.
+The board uses non-root ADB on LAN port 5555 because paired Wireless debugging did not stay enabled across reboot on this image. That port is reachable by other devices on the LAN; it is a bring-up convenience, not a finished security configuration. The Mac connection helper caches the current address only in Git-ignored `.run/q6a-host`.
+
+This boot receiver is not permission to add always-on camera or microphone capture. Android 15 restricts those foreground-service types at boot. Before the robot gains those sensors, I still need dedicated-device provisioning, explicit sensor lifecycle, screen-off and crash-restart tests, and a recovery path. The factory Qualcomm test apps will stay installed until model, USB, camera, audio, and thermal baselines pass; any later debloat must be reversible.
 
 ## Local build command
 
