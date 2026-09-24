@@ -63,6 +63,10 @@ The Q6A now reconnects after a power-off without HDMI: non-root ADB listens on L
 
 My 256 GB UFS module has not disappeared. The UFS user LUN reports 240,794,992,640 bytes and the `userdata` block device reports 221,205,311,488 bytes, but the mounted F2FS filesystem currently exposes only about 45 GiB. I have not resized or reformatted it. That operation needs a backup and a separate validation gate; the current space is enough to stage the 2.6 GB Gemma file.
 
+The likely mismatch is filesystem size, not an absent UFS module: `userdata` reaches most of the UFS while `/data` remains image-sized. Android mounts `/data` through device mapper (`dm-47` in this boot), so I must not blindly run an F2FS resize command against the raw `sda11` partition. I need a restorable backup, a verified mapping, and a tested recovery route before changing it.
+
+I do not need to carve Linux space out of UFS just to compare boot times. Radxa documents booting the Q6A from microSD and lists microSD ahead of UFS in boot priority. I can put a Q6A Radxa OS image on a separate microSD card, boot it, measure startup, then remove it to return to Android. This is a proposed comparison, not yet tested on my board; Linux model acceleration would need its own separate validation. I will leave the UFS layout alone until that comparison and the backup plan are settled.
+
 ### Keep live thermals visible
 
 EDL mode does not run Android, so it does not expose Android thermal telemetry. I will keep the bare board open with its heatsinks installed while flashing. Before any sustained model inference, I will run the host-side terminal monitor:
@@ -96,3 +100,4 @@ Only after that baseline will I disable consumer packages in reversible batches 
 - [Radxa: Dragon Q6A EDL button](https://docs.radxa.com/en/dragon/q6a/hardware-use/edl)
 - [Radxa: Dragon Q6A resource downloads](https://docs.radxa.com/en/dragon/q6a/download)
 - [Radxa: install a Q6A system through USB](https://docs.radxa.com/en/dragon/q6a/getting-started/install-system/usb-system)
+- [Radxa: Q6A microSD boot and boot priority](https://docs.radxa.com/en/dragon/q6a/getting-started/quickly-start)

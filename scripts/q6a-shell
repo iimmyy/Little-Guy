@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+script_dir="$(cd "$(dirname "$0")" && pwd)"
+device_serial="$(python3 "$script_dir/q6a-connect.py")"
+adb_bin="${ADB_BIN:-$(command -v adb || true)}"
+if [[ -z "$adb_bin" ]]; then
+    adb_bin="$HOME/Library/Android/sdk/platform-tools/adb"
+fi
+exec "$adb_bin" -s "$device_serial" shell "$@"

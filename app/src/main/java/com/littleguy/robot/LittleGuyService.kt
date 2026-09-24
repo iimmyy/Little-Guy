@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.content.pm.ServiceInfo
 import android.os.Binder
 import android.os.Build
@@ -78,7 +79,8 @@ class LittleGuyService : Service() {
             val gemmaBrain = LiteRtLmBrain(
                 modelPath = modelFile.absolutePath,
                 cacheDir = cacheDir.absolutePath,
-                backend = Backend.GPU()
+                backend = Backend.GPU(),
+                streamForMeasurement = applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
             )
             brain = gemmaBrain
             brainResource = gemmaBrain
@@ -138,6 +140,24 @@ class LittleGuyService : Service() {
                             result.timing.totalMs
                         )
                     )
+                    result.output.inference?.let { metrics ->
+                        metrics.measuredFirstTextMs?.let { firstTextMs ->
+                            appendLine(
+                                String.format(Locale.US, "MODEL   first streamed text %.0f ms", firstTextMs)
+                            )
+                        }
+                        appendLine(
+                            String.format(
+                                Locale.US,
+                                "MODEL   SDK TTFT %.0f ms (unverified) | prefill %d @ %.1f tok/s | decode %d @ %.1f tok/s",
+                                metrics.sdkReportedTtftMs,
+                                metrics.prefillTokens,
+                                metrics.prefillTokensPerSecond,
+                                metrics.decodeTokens,
+                                metrics.decodeTokensPerSecond
+                            )
+                        )
+                    }
                 }.onFailure { failure ->
                     appendLine("ERROR   ${failure.message ?: failure.javaClass.simpleName}")
                 }

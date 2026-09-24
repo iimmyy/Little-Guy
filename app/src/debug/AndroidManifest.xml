@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <application>
+        <service
+            android:name=".LittleGuyService"
+            android:exported="true"
+            android:foregroundServiceType="specialUse"
+            android:permission="android.permission.DUMP"
+            tools:replace="android:exported" />
+        <receiver
+            android:name=".DebugPromptReceiver"
+            android:exported="true"
+            android:permission="android.permission.DUMP" />
+    </application>
+</manifest>

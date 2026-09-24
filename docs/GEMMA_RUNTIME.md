@@ -35,4 +35,12 @@ The Q6A log reports full LiteRT OpenCL delegation for the prefill and verify sub
 
 With a small external fan blowing on the open board, the logged maxima during this first run were 34.9 C across CPU thermal zones, 37.2 C across GPU zones, and 29.9 C at the named skin zone; Android thermal status was 0. The app's reported total PSS after loading was about 1.90 GB. This short two-prompt test is not a sustained-load or enclosed-robot thermal result, and I still lack a direct UFS temperature reading.
 
-I still need token-stream timestamps, prefill/decode throughput, repeated warm trials, screen-off behavior, and sustained thermal testing before choosing a final model or cooling design.
+I still need varied prompt lengths, screen-off behavior, and sustained thermal testing before choosing a final model or cooling design.
+
+## Instrumentation follow-up (WIP)
+
+I enabled LiteRT-LM's experimental benchmark counters in the debug build. A warm `Hi again` completed in 1.997 seconds; LiteRT reported 31 prefill tokens at 41.1 tokens/s and 8 decode tokens at 6.7 tokens/s. Its reported TTFT stayed exactly 1,917 ms across both the preceding cold run and that warm run, so I am not accepting it as a per-turn warm TTFT measurement.
+
+I then timestamped the first nonempty text callback from `sendMessageAsync` on the device clock. The cold run produced its first text 4.352 seconds after generation began and finished in 49.103 seconds including engine initialization. Three subsequent short warm prompts produced first text in 1.121, 1.109, and 1.128 seconds; their complete responses took 1.873, 1.952, and 1.896 seconds. These are first-*text* timings, not verified token timestamps or time to first spoken audio. LiteRT's own TTFT counter remained near 1.91 seconds and is still labelled unverified. The debug-only stream path has a 60-second completion ceiling so a stalled callback cannot hang this experiment indefinitely.
+
+The short warm prompts used roughly 30 prefill tokens at 44 tokens/s and seven decode tokens at 5.6–6.0 tokens/s. That makes the initial text delay the first latency target. KV-cache policy and conversation compression may matter as history grows, but these tiny prompts do not establish a KV-memory bottleneck. I will benchmark longer conversations before changing cache size or quantization.

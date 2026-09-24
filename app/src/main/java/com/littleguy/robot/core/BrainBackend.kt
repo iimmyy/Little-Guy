@@ -8,7 +8,17 @@ data class BrainInput(
 
 data class BrainOutput(
     val speech: String,
-    val action: RobotAction = RobotAction.None
+    val action: RobotAction = RobotAction.None,
+    val inference: InferenceMetrics? = null
+)
+
+data class InferenceMetrics(
+    val sdkReportedTtftMs: Double,
+    val measuredFirstTextMs: Double? = null,
+    val prefillTokens: Int,
+    val prefillTokensPerSecond: Double,
+    val decodeTokens: Int,
+    val decodeTokensPerSecond: Double
 )
 
 sealed interface RobotAction {
