@@ -103,4 +103,29 @@ class RobotCoordinatorTest {
             observedHistory.last()
         )
     }
+
+    @Test
+    fun forwardsTextChunksWithoutTreatingThemAsActions() {
+        val received = mutableListOf<String>()
+        val performed = mutableListOf<RobotAction>()
+        val brain = BrainBackend { input ->
+            input.onTextChunk?.invoke("Hello")
+            input.onTextChunk?.invoke(" there")
+            BrainOutput("Hello there")
+        }
+        val hardware = object : RobotHardware {
+            override fun observe() = RobotObservation()
+            override fun perform(action: RobotAction) {
+                performed += action
+            }
+        }
+
+        val result = RobotCoordinator(brain, hardware).receive("hi") { chunk ->
+            received += chunk
+        }
+
+        assertEquals(listOf("Hello", " there"), received)
+        assertEquals("Hello there", result.output.speech)
+        assertEquals(listOf(RobotAction.None), performed)
+    }
 }

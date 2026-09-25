@@ -32,7 +32,7 @@ class LiteRtLmBrain(
         val activeConversation = conversation ?: initialize(input.recentTurns)
         val prompt = renderInput(input)
         val (speech, firstTextMs) = if (streamForMeasurement) {
-            streamResponse(activeConversation, prompt)
+            streamResponse(activeConversation, prompt, input.onTextChunk)
         } else {
             val response = activeConversation.sendMessage(prompt)
             response.contents.contents
@@ -60,7 +60,11 @@ class LiteRtLmBrain(
         return BrainOutput(speech = speech, inference = inference)
     }
 
-    private fun streamResponse(activeConversation: Conversation, prompt: String): Pair<String, Double?> {
+    private fun streamResponse(
+        activeConversation: Conversation,
+        prompt: String,
+        onTextChunk: ((String) -> Unit)?
+    ): Pair<String, Double?> {
         val started = System.nanoTime()
         val firstText = AtomicLong(0)
         val error = AtomicReference<Throwable?>()
@@ -75,6 +79,7 @@ class LiteRtLmBrain(
                 if (text.isNotEmpty()) {
                     firstText.compareAndSet(0, System.nanoTime())
                     synchronized(chunks) { chunks.append(text) }
+                    onTextChunk?.invoke(text)
                 }
             }
 

@@ -46,7 +46,8 @@ class LittleGuyService : Service() {
             observers -= observer
         }
 
-        fun submit(text: String): Boolean = submitMessage(text)
+        fun submit(text: String, onTextChunk: ((String) -> Unit)? = null): Boolean =
+            submitMessage(text, onTextChunk)
     }
 
     private val binder = LocalBinder()
@@ -112,7 +113,7 @@ class LittleGuyService : Service() {
         super.onDestroy()
     }
 
-    private fun submitMessage(rawText: String): Boolean {
+    private fun submitMessage(rawText: String, onTextChunk: ((String) -> Unit)?): Boolean {
         check(Looper.myLooper() == Looper.getMainLooper()) {
             "Runtime commands must be submitted from the main thread."
         }
@@ -124,7 +125,7 @@ class LittleGuyService : Service() {
         publish()
 
         brainExecutor.execute {
-            val interaction = runCatching { coordinator.receive(text) }
+            val interaction = runCatching { coordinator.receive(text, onTextChunk) }
             mainHandler.post {
                 if (shuttingDown) return@post
                 interaction.onSuccess { result ->

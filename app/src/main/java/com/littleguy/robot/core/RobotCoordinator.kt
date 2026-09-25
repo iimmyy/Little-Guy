@@ -7,14 +7,15 @@ class RobotCoordinator(
     private val safetyGate: ActionSafetyGate = ActionSafetyGate(),
     private val nanoTime: () -> Long = System::nanoTime
 ) {
-    fun receive(text: String): InteractionResult {
+    fun receive(text: String, onTextChunk: ((String) -> Unit)? = null): InteractionResult {
         val started = nanoTime()
         val brainStarted = nanoTime()
         val output = brain.respond(
             BrainInput(
                 text = text,
                 recentTurns = memory.recentTurns(12),
-                observation = hardware.observe()
+                observation = hardware.observe(),
+                onTextChunk = onTextChunk
             )
         )
         val brainFinished = nanoTime()

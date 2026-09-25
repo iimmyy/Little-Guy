@@ -3,7 +3,8 @@ package com.littleguy.robot.core
 data class BrainInput(
     val text: String,
     val recentTurns: List<String>,
-    val observation: RobotObservation
+    val observation: RobotObservation,
+    val onTextChunk: ((String) -> Unit)? = null
 )
 
 data class BrainOutput(

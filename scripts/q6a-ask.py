@@ -4,15 +4,27 @@
 from __future__ import annotations
 
 import argparse
+import base64
+import binascii
 import os
 from pathlib import Path
 import queue
+import shlex
 import shutil
 import subprocess
 import sys
 import threading
 import time
 import uuid
+
+
+def broadcast_shell_command(request_id: str, prompt: str) -> str:
+    return shlex.join([
+        "am", "broadcast", "--receiver-foreground",
+        "-n", "com.littleguy.robot/.DebugPromptReceiver",
+        "--es", "request_id", request_id,
+        "--es", "prompt", prompt,
+    ])
 
 
 def main() -> int:
@@ -31,6 +43,8 @@ def main() -> int:
         Path.home() / "Library/Android/sdk/platform-tools/adb"
     )
     request_id = uuid.uuid4().hex[:12]
+    streamed_text = ""
+    stream_line_open = False
     lines: queue.Queue[str] = queue.Queue()
     logs = subprocess.Popen(
         [adb, "-s", serial, "logcat", "-v", "raw", "LittleGuyDebug:I", "*:S"],
@@ -59,12 +73,7 @@ def main() -> int:
             print(service.stderr.strip() or service.stdout.strip(), file=sys.stderr)
             return 2
         broadcast = subprocess.run(
-            [
-                adb, "-s", serial, "shell", "am", "broadcast", "--receiver-foreground",
-                "-n", "com.littleguy.robot/.DebugPromptReceiver",
-                "--es", "request_id", request_id,
-                "--es", "prompt", args.prompt,
-            ],
+            [adb, "-s", serial, "shell", broadcast_shell_command(request_id, args.prompt)],
             capture_output=True,
             text=True,
             timeout=15,
@@ -87,8 +96,31 @@ def main() -> int:
             message = line.split(f"{request_id} ", 1)[1].strip()
             if message == "START":
                 continue
+            if message.startswith("CHUNK64 "):
+                try:
+                    chunk = base64.b64decode(message.removeprefix("CHUNK64 "), validate=True).decode("utf-8")
+                except (binascii.Error, UnicodeDecodeError):
+                    print("Invalid streamed text from Q6A.", file=sys.stderr)
+                    return 2
+                if not stream_line_open:
+                    print("LITTLE  ", end="", flush=True)
+                    stream_line_open = True
+                print(chunk, end="", flush=True)
+                streamed_text += chunk
+                continue
+            if message.startswith("LITTLE  ") and stream_line_open:
+                print(flush=True)
+                stream_line_open = False
+                if message.removeprefix("LITTLE  ").strip() != streamed_text.strip():
+                    print(f"FINAL   {message.removeprefix('LITTLE  ')}", flush=True)
+                continue
             if message == "DONE":
+                if stream_line_open:
+                    print(flush=True)
                 return 0
+            if stream_line_open:
+                print(flush=True)
+                stream_line_open = False
             print(message, flush=True)
             if message.startswith("ERROR"):
                 return 2

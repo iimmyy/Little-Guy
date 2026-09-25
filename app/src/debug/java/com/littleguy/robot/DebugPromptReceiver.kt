@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
+import android.util.Base64
 import android.util.Log
 
 /** ADB-shell prompt entry point for debug builds only. */
@@ -42,7 +43,13 @@ class DebugPromptReceiver : BroadcastReceiver() {
                 }
                 observer = listener
                 runtime.observe(listener)
-                submitted = runtime.submit(prompt)
+                submitted = runtime.submit(prompt) { chunk ->
+                    val encoded = Base64.encodeToString(
+                        chunk.toByteArray(Charsets.UTF_8),
+                        Base64.NO_WRAP
+                    )
+                    Log.i(TAG, "$requestId CHUNK64 $encoded")
+                }
                 if (!submitted) {
                     Log.w(TAG, "$requestId ERROR runtime busy or unavailable")
                     disconnect()
