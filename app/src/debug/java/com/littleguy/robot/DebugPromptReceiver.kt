@@ -30,6 +30,13 @@ class DebugPromptReceiver : BroadcastReceiver() {
             override fun onServiceConnected(name: ComponentName, service: IBinder) {
                 val runtime = service as LittleGuyService.LocalBinder
                 binder = runtime
+                val modelId = runtime.currentModelId()
+                if (modelId == null) {
+                    Log.w(TAG, "$requestId ERROR ${runtime.currentModelStatus().replace('\n', ' ')}")
+                    disconnect()
+                    return
+                }
+                Log.i(TAG, "$requestId MODEL $modelId")
                 val listener = LittleGuyService.Observer { snapshot ->
                     if (!submitted) {
                         initialLines = snapshot.lines.size

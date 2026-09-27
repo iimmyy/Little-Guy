@@ -17,11 +17,11 @@ import com.google.ai.edge.litertlm.Backend
 import com.littleguy.robot.core.ActionDecision
 import com.littleguy.robot.core.BrainBackend
 import com.littleguy.robot.core.DevelopmentBrain
+import com.littleguy.robot.core.GemmaModels
 import com.littleguy.robot.core.LiteRtLmBrain
 import com.littleguy.robot.core.RobotCoordinator
 import com.littleguy.robot.core.SimulatedHardware
 import com.littleguy.robot.platform.SharedPreferencesConversationMemory
-import java.io.File
 import java.util.Locale
 import java.util.concurrent.CopyOnWriteArraySet
 import java.util.concurrent.Executors
@@ -37,6 +37,9 @@ class LittleGuyService : Service() {
     }
 
     inner class LocalBinder : Binder() {
+        fun currentModelId(): String? = activeModelId
+        fun currentModelStatus(): String = modelStatus
+
         fun observe(observer: Observer) {
             observers += observer
             observer.onSnapshot(snapshot())
@@ -59,6 +62,8 @@ class LittleGuyService : Service() {
     private var brainResource: AutoCloseable? = null
     private var busy = false
     private var shuttingDown = false
+    private var activeModelId: String? = null
+    private var modelStatus = "Runtime starting."
 
     override fun onCreate() {
         super.onCreate()
@@ -73,22 +78,35 @@ class LittleGuyService : Service() {
             startForeground(NOTIFICATION_ID, notification)
         }
 
-        val modelFile = File(getExternalFilesDir(null) ?: filesDir, MODEL_RELATIVE_PATH)
+        val appFilesDir = getExternalFilesDir(null) ?: filesDir
+        val selection = runCatching { GemmaModels.select(appFilesDir) }
         val brain: BrainBackend
-        val brainStatus: String
-        if (modelFile.isFile) {
+        if (selection.isFailure) {
+            val reason = selection.exceptionOrNull()?.message ?: "Could not read model selection."
+            brain = BrainBackend { throw IllegalStateException(reason) }
+            modelStatus = "Model selection error: $reason"
+        } else if (selection.getOrThrow().file.isFile) {
+            val chosen = selection.getOrThrow()
             val gemmaBrain = LiteRtLmBrain(
-                modelPath = modelFile.absolutePath,
+                modelPath = chosen.file.absolutePath,
                 cacheDir = cacheDir.absolutePath,
                 backend = Backend.GPU(),
                 streamForMeasurement = applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
             )
             brain = gemmaBrain
             brainResource = gemmaBrain
-            brainStatus = "Gemma model found; it will load on the first message using the device GPU."
-        } else {
+            activeModelId = chosen.id
+            modelStatus = "Gemma ${chosen.id.uppercase(Locale.US)} selected (${chosen.file.length()} bytes); " +
+                "it will load on the first message using the device GPU."
+        } else if (!selection.getOrThrow().explicit) {
+            val chosen = selection.getOrThrow()
             brain = DevelopmentBrain()
-            brainStatus = "Development brain online. Gemma model not found at:\n${modelFile.absolutePath}"
+            modelStatus = "Development brain online. Default Gemma model not found at:\n${chosen.file.absolutePath}"
+        } else {
+            val chosen = selection.getOrThrow()
+            val reason = "Selected Gemma ${chosen.id.uppercase(Locale.US)} model is missing at ${chosen.file.absolutePath}"
+            brain = BrainBackend { throw IllegalStateException(reason) }
+            modelStatus = reason
         }
 
         coordinator = RobotCoordinator(
@@ -98,7 +116,7 @@ class LittleGuyService : Service() {
                 getSharedPreferences("little_guy_memory", MODE_PRIVATE)
             )
         )
-        appendLine("SYSTEM  $brainStatus")
+        appendLine("SYSTEM  $modelStatus")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = START_STICKY
@@ -214,7 +232,6 @@ class LittleGuyService : Service() {
     }
 
     private companion object {
-        const val MODEL_RELATIVE_PATH = "models/gemma-4-E2B-it.litertlm"
         const val MAX_TRANSCRIPT_LINES = 250
         const val NOTIFICATION_ID = 1001
         const val NOTIFICATION_CHANNEL_ID = "little_guy_runtime"

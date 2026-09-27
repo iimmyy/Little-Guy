@@ -13,12 +13,12 @@ My reasoning for the q6a will be discussed in a different document, as my part l
 - Conversation memory survives a full app restart and stays outside the model.
 - Each interaction reports brain and total response time.
 - Camera, sound-direction, distance, and motion data are simulated for now.
-- I have connected the official Gemma 4 E2B LiteRT-LM model to the app's real brain interface.
+- I have connected the official Gemma 4 E2B LiteRT-LM model to the app's real brain interface and prepared an explicit E4B test selector.
 - I moved the robot runtime into a foreground Android service, leaving the activity as an optional dashboard.
 - I added a pure Alpha 1S frame codec, stream decoder, and fake byte transport without exposing motor commands.
 - I booted the physical Q6A without HDMI, verified that its foreground service starts on boot, and got the first two Gemma responses on its GPU.
 
-The app now uses Gemma when the model is present in its private Android storage and falls back to my deterministic development brain when it is absent. Model initialization and generation run away from the UI thread, and the deployable path uses the Android GPU backend. On the physical Q6A, the first complete response took 50.7 seconds including cold setup; the next short response took 1.8 seconds. I have not measured time to first token or sustained generation yet. I recorded the exact boundary in [my Gemma runtime notes](docs/GEMMA_RUNTIME.md).
+The app now defaults to Gemma E2B when the model is present in its private Android storage. Without a selection file or model it uses my deterministic development brain for emulator work; the debug terminal refuses to benchmark that mock brain. An explicit E4B selection must have the matching model file or the app reports an error. Model initialization and generation run away from the UI thread, and the deployable path uses the Android GPU backend. I have measured first streamed text on the Q6A, but I have not yet measured sustained generation or tested E4B on the board. I recorded the exact boundary in [my Gemma runtime notes](docs/GEMMA_RUNTIME.md) and the [model-selection notes](docs/MODEL_SELECTION.md).
 
 The dashboard no longer owns Gemma, memory, the coordinator, or the hardware backend. `LittleGuyService` owns them and publishes a bounded runtime transcript to any connected dashboard. On the physical Q6A, it now starts after boot without HDMI and stays alive when I return Home. I recorded the architecture and remaining hardware-lifecycle boundary in [my headless runtime notes](docs/HEADLESS_RUNTIME.md).
 
