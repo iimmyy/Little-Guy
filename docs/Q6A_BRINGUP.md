@@ -39,6 +39,8 @@ The native macOS ARM64 build of EDL-NG v1.6.0 is staged locally. Its SHA-256 mat
 
 I will record the download URL, filename, size, and SHA-256 before any write. I will inspect the extracted package and preserve the exact console log. I will not reflash the preinstalled BIOS unless the board actually fails the documented boot gate; Radxa says BIOS is already installed and ordinarily does not need reflashing.
 
+**Update (2026-09-28):** Welp… I did end up reflashing it, but for a real reason. The Android package had put Android's own boot firmware on the SPI chip, and that firmware only knows how to boot from the UFS module, so my Radxa OS USB stick gave me a completely black screen. I backed up the whole SPI chip first (obviously), then flashed Radxa's Linux BIOS. Full story's in [Q6A_LINUX_BOOT.md](Q6A_LINUX_BOOT.md).
+
 Flashing and UFS provisioning are destructive operations. They are deliberately absent from the repository scripts until the exact package and target are visible and confirmed.
 
 ## Gate 3: preserve the untouched Android baseline
@@ -66,6 +68,8 @@ My 256 GB UFS module has not disappeared. The UFS user LUN reports 240,794,992,6
 The likely mismatch is filesystem size, not an absent UFS module: `userdata` reaches most of the UFS while `/data` remains image-sized. Android mounts `/data` through device mapper (`dm-47` in this boot), so I must not blindly run an F2FS resize command against the raw `sda11` partition. I need a restorable backup, a verified mapping, and a tested recovery route before changing it.
 
 I do not need to carve Linux space out of UFS just to compare boot times. Radxa documents booting the Q6A from microSD and lists microSD ahead of UFS in boot priority. I can put a Q6A Radxa OS image on a separate microSD card, boot it, measure startup, then remove it to return to Android. This is a proposed comparison, not yet tested on my board; Linux model acceleration would need its own separate validation. I will leave the UFS layout alone until that comparison and the backup plan are settled.
+
+**Update (2026-09-28):** I went with a USB stick instead of a microSD card, and it worked once the Linux BIOS was on the SPI chip. Then I wiped the UFS, re-provisioned it with Armbian's single LUN layout, and wrote Radxa OS to it. It still won't boot off the UFS though… because a tiny resistor (R9, the UFS detect strap) got knocked clean off the module 😭. How I found that is in [Q6A_LINUX_BOOT.md](Q6A_LINUX_BOOT.md). The Android notes above are the board as it was before all that.
 
 ### Keep live thermals visible
 

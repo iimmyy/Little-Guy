@@ -53,6 +53,8 @@ I also briefly enabled Android's fixed-performance mode while the external fan a
 
 The Q6A's Gemma graph runs through Adreno/OpenCL, not Hexagon. Qualcomm identifies this board's QCS6490 NPU as a 12-TOPS component, and Radxa documents its Hexagon target as v68. The public LiteRT-LM Gemma 4 E2B package currently lists Qualcomm NPU files for QCS8275 and SM8750, not QCS6490. I cannot claim NPU acceleration or reuse those other-chip binaries. The next NPU gate is to validate the v68 runtime with a known-good QCS6490 model, then obtain or compile a compatible Gemma artifact and measure actual delegation, output quality, first-text latency, power, and heat. Radxa's published quick validation is on Ubuntu, so that exact procedure is not yet an Android test.
 
+**Update (2026-09-28):** Yeah so… I ended up just moving the board to Ubuntu instead of fighting Android for the NPU. The v68 check passed there with Radxa's Llama 3.2 1B bundle, it's all in [Q6A_LINUX_BOOT.md](Q6A_LINUX_BOOT.md). Everything above this is my Android GPU work, and it still stands as my GPU baseline.
+
 The present 30-token `Hi` benchmark is diagnostic, not a stand-in for Little Guy operating with cameras, microphones, place state, and conversation history. I need a fixed representative and a deliberately heavy sensor snapshot before accepting a speed optimization as useful for the robot.
 
 ## Longer conversational prompt (WIP)

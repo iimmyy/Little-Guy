@@ -1,5 +1,7 @@
 # Headless Android runtime (WIP)
 
+**Update (2026-09-28):** Heads up, this is all my Android setup. The Q6A runs Ubuntu now (the whole saga is in [Q6A_LINUX_BOOT.md](Q6A_LINUX_BOOT.md)), so the ADB on port 5555, `q6a-shell` and `q6a-ask.py` don't apply to the board right now. I just SSH in with a key these days. The Android app still builds and runs in the emulator… I haven't figured out yet how the robot runtime will run on the board under Linux. That's a future me problem.
+
 I want Little Guy's runtime to exist independently of a screen. Android calls the screen an `Activity`; it can be destroyed whenever I leave the app, rotate the device, or remove its task. That makes it the wrong owner for the robot's brain and hardware.
 
 I moved runtime ownership into `LittleGuyService`, a started and bound foreground service:
