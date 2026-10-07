@@ -1,0 +1,101 @@
+#!/usr/bin/env python3
+"""Keeps the fanless Q6A cool without powering it off.
+
+Every 2 s it reads the CPU, GPU, NPU and DDR sensors:
+  >= THROTTLE_C  lower the CPU and GPU max clocks one step
+  <= RESTORE_C   raise them back one step
+  >= SHUTDOWN_C  for 3 checks in a row: clean power-off (last resort)
+The gap between THROTTLE_C and RESTORE_C stops it flapping. Clocks are
+restored when the service stops.
+"""
+import glob, os, signal, subprocess, sys, syslog, time
+
+THROTTLE_C = int(os.environ.get("THROTTLE_C", 80))
+RESTORE_C = int(os.environ.get("RESTORE_C", 72))
+SHUTDOWN_C = int(os.environ.get("SHUTDOWN_C", 95))
+SENSORS = ("cpu", "gpuss", "nspss", "ddr")
+
+
+def read(path):
+    with open(path) as f:
+        return f.read().strip()
+
+
+def write(path, value):
+    with open(path, "w") as f:
+        f.write(str(value))
+
+
+def hottest():
+    temps = []
+    for zone in glob.glob("/sys/class/thermal/thermal_zone*"):
+        if read(f"{zone}/type").startswith(SENSORS):
+            try:
+                temps.append((int(read(f"{zone}/temp")) // 1000, read(f"{zone}/type")))
+            except OSError:
+                pass
+    return max(temps)
+
+
+class Knob:
+    """One clock domain (a CPU cluster or the GPU) with its allowed steps, fastest first."""
+
+    def __init__(self, name, steps, cap_file, original):
+        self.name, self.steps, self.cap_file, self.original = name, steps, cap_file, original
+        self.level = 0
+
+    def apply(self):
+        write(self.cap_file, self.steps[self.level])
+
+    def restore(self):
+        write(self.cap_file, self.original)
+
+
+def knobs():
+    found = []
+    for policy in sorted(glob.glob("/sys/devices/system/cpu/cpufreq/policy*")):
+        steps = sorted((int(f) for f in read(f"{policy}/scaling_available_frequencies").split()), reverse=True)
+        found.append(Knob(os.path.basename(policy), steps, f"{policy}/scaling_max_freq", read(f"{policy}/scaling_max_freq")))
+    for gpu in glob.glob("/sys/class/devfreq/*.gpu"):
+        steps = sorted((int(f) for f in read(f"{gpu}/available_frequencies").split()), reverse=True)
+        found.append(Knob("gpu", steps, f"{gpu}/max_freq", read(f"{gpu}/max_freq")))
+    return found
+
+
+def main():
+    domains = knobs()
+
+    def stop(*_):
+        for k in domains:
+            k.restore()
+        syslog.syslog("stopped, clocks restored")
+        sys.exit(0)
+
+    signal.signal(signal.SIGTERM, stop)
+    syslog.syslog(f"watching: throttle {THROTTLE_C}C, restore {RESTORE_C}C, shutdown {SHUTDOWN_C}C")
+    critical = 0
+    while True:
+        temp, sensor = hottest()
+        if temp >= THROTTLE_C:
+            stepped = [k for k in domains if k.level < len(k.steps) - 1]
+            for k in stepped:
+                k.level += 1
+                k.apply()
+            if stepped:
+                syslog.syslog(f"{sensor} {temp}C: slowing to " + ", ".join(f"{k.name} {k.steps[k.level] // 1000} MHz" for k in stepped))
+        elif temp <= RESTORE_C:
+            stepped = [k for k in domains if k.level > 0]
+            for k in stepped:
+                k.level -= 1
+                k.apply()
+            if stepped and all(k.level == 0 for k in domains):
+                syslog.syslog(f"{sensor} {temp}C: back to full speed")
+        critical = critical + 1 if temp >= SHUTDOWN_C else 0
+        if critical >= 3:
+            syslog.syslog(f"{sensor} {temp}C for 3 checks even when slowed: powering off")
+            subprocess.run(["systemctl", "poweroff"])
+            return
+        time.sleep(2)
+
+
+main()
