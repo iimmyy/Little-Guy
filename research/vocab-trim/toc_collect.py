@@ -1,0 +1,91 @@
+"""Collect for the table-of-contents tests (hidden states in 5 languages + dequantized dictionary).\nOriginal test: if he only opens the top-32 of 2,048 dictionary sections (borrowed from the
+guesser's clustering), how often is his true best word inside an opened section? Five languages.
+
+1. generate replies in EN/DE/RU/KO/JA with his persona
+2. re-read prompt+reply with --embeddings --pooling none to get the hidden state before every word
+3. full-dictionary best word = argmax(token_embd @ h); section headings = mean of each section's rows
+"""
+import json, subprocess, sys, time, urllib.request
+import numpy as np
+
+RUN = "/Users/immyyyyy/Documents/LittleGuy/.run"
+sys.path.insert(0, f"{RUN}/lcpp-src/gguf-py")
+from gguf import GGUFReader
+from gguf.quants import dequantize
+
+MAIN = f"{RUN}/models/gemma-4-E4B_q4_0-it.gguf"
+DRAFT = f"{RUN}/e4b-drafter/gemma-4-E4B-assistant-masked-q8_0.gguf"
+SERVER = f"{RUN}/lcpp-src/build-mac/bin/llama-server"
+TOPS = (8, 16, 32, 64)
+PROMPTS = {
+    "English": ["Hey Little Guy, how was your day?", "Why is the sky blue?", "Give me a quick pep talk.",
+                "What should I make for dinner with rice and broccoli?", "Hmm, I'm kinda bored, wanna chat?"],
+    "German": ["Hallo Little Guy, wie war dein Tag?", "Warum ist der Himmel blau?", "Erzähl mir einen kurzen Witz.",
+               "Was soll ich heute Abend kochen?", "Wie spät ist es in Berlin, wenn es hier 18 Uhr ist?"],
+    "Russian": ["Привет, Little Guy, как прошёл твой день?", "Почему небо голубое?", "Расскажи короткую шутку.",
+                "Что мне приготовить на ужин?", "Как сказать спасибо по-японски?"],
+    "Korean": ["안녕 Little Guy, 오늘 하루 어땠어?", "하늘은 왜 파란색이야?", "짧은 농담 하나 해줘.",
+               "저녁으로 뭘 만들까?", "피곤해. 힘이 나는 말 좀 해줘."],
+    "Japanese": ["こんにちは Little Guy、今日はどうだった?", "空はなぜ青いの?", "短いジョークを言って。",
+                 "夕食に何を作ればいい?", "ちょっと疲れた。励まして。"],
+}
+
+
+def start(args, port, log):
+    p = subprocess.Popen([SERVER, "-m", MAIN, "-ngl", "99", "-c", "4096", "--port", str(port), "--no-webui", *args],
+                         stdout=open(log, "w"), stderr=subprocess.STDOUT)
+    for _ in range(120):
+        try:
+            urllib.request.urlopen(f"http://127.0.0.1:{port}/health", timeout=2); return p
+        except Exception:
+            time.sleep(1)
+    raise SystemExit(f"server failed, see {log}")
+
+
+def post(port, path, body):
+    req = urllib.request.Request(f"http://127.0.0.1:{port}{path}", json.dumps(body).encode(), {"Content-Type": "application/json"})
+    return json.load(urllib.request.urlopen(req, timeout=600))
+
+
+persona = "Reply in the language you are spoken to.\n" + "\n".join(l for l in open(f"{RUN}/spec-test/little_guy_persona.txt").read().splitlines() if l.strip() and not l.startswith("#"))
+
+# 1. conversations
+gen = start(["--reasoning", "off"], 8088, f"{RUN}/trim/toc_gen.log")
+texts = {}
+try:
+    for lang, ps in PROMPTS.items():
+        texts[lang] = []
+        for q in ps:
+            prompt = post(8088, "/apply-template", {"messages": [{"role": "system", "content": persona}, {"role": "user", "content": q}],
+                                                    "add_generation_prompt": True, "chat_template_kwargs": {"enable_thinking": False}})["prompt"]
+            reply = post(8088, "/completion", {"prompt": prompt, "n_predict": 60, "temperature": 0.7, "seed": 1})["content"]
+            texts[lang].append((prompt, reply))
+        print(f"{lang}: e.g. {texts[lang][0][1][:70]!r}", flush=True)
+finally:
+    gen.terminate(); gen.wait()
+
+# 2. hidden states before every reply token
+emb = start(["--embeddings", "--pooling", "none", "-ub", "4096", "-b", "4096"], 8087, f"{RUN}/trim/toc_emb.log")
+H = {}
+said = {}
+try:
+    for lang, pairs in texts.items():
+        rows = []
+        for prompt, reply in pairs:
+            n_prompt = len(post(8087, "/tokenize", {"content": prompt, "add_special": True})["tokens"])
+            out = post(8087, "/embedding", {"content": prompt + reply})
+            e = np.array(out[0]["embedding"] if isinstance(out, list) else out["embedding"], dtype=np.float32)
+            rows.append(e[n_prompt - 1:-1])  # the state that chooses each reply token
+            toks = post(8087, "/tokenize", {"content": prompt + reply, "add_special": True})["tokens"]
+            said.setdefault(lang, []).extend(toks[n_prompt:])
+        H[lang] = np.concatenate(rows)
+finally:
+    emb.terminate(); emb.wait()
+
+# 3. save for analysis
+r = GGUFReader(MAIN)
+t = next(t for t in r.tensors if t.name == "token_embd.weight")
+np.save(f"{RUN}/trim/E.npy", dequantize(t.data, t.tensor_type).reshape(-1, 2560).astype(np.float32))
+np.savez(f"{RUN}/trim/H.npz", **H)
+np.savez(f"{RUN}/trim/said.npz", **{k: np.array(v) for k, v in said.items()})
+print({k: v.shape for k, v in H.items()})
