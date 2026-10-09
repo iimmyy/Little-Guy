@@ -1,0 +1,11 @@
+#!/bin/bash
+# Runs a command so Immy sees it live: prints the command, then streams its output
+# into live-runs.log (watched in the "what Claude sees" terminal tab) as well as here.
+LOG="$(dirname "$0")/live-runs.log"
+{ echo; echo "──────── $(date +%H:%M:%S) ────────"; echo "\$ $*"; } >> "$LOG"
+export PYTHONUNBUFFERED=1
+start=$(date +%s)
+"$@" 2>&1 | tee -a "$LOG"
+code=${PIPESTATUS[0]}
+echo "✓ done $(date +%H:%M:%S) in $(( $(date +%s) - start )) s (exit $code)" >> "$LOG"   # the menu bar app bubbles on this line
+exit "$code"
