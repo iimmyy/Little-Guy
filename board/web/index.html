@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Little Guy</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='4' fill='%23f6f3eb'/%3E%3Ctext x='9' y='30' font-family='Georgia' font-size='30' font-style='italic' fill='%23ad573b'%3Eg%3C/text%3E%3C/svg%3E">
+<style>
+  /* same tokens as bymartins.ca */
+  :root { --paper:#f6f3eb; --ink:#292723; --muted:#69665e; --line:#cfcabf; --clay:#ad573b; --sage:#5f7a52; --blue:#2f4a6b;
+          --serif:Editorial,Palatino,"Palatino Linotype",Georgia,serif; --sans:Plain,Arial,sans-serif; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.5 var(--sans); }
+  main { max-width:960px; margin:0 auto; padding:24px 16px 56px; }
+  header { display:flex; align-items:baseline; justify-content:space-between; padding-bottom:18px; border-bottom:1px solid var(--ink); }
+  .logo { font:400 28px var(--serif); letter-spacing:-.5px; }
+  .logo i { color:var(--clay); }
+  #state { font-size:14px; color:var(--muted); }
+  .dot { display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--line); margin-right:8px; vertical-align:middle; }
+  h1 { font:400 clamp(44px, 9vw, 72px)/1 var(--serif); letter-spacing:-2px; margin:44px 0 10px; }
+  h1 i, h2 i { color:var(--blue); }
+  .lede { color:var(--muted); margin:0 0 36px; max-width:34em; }
+  .stats { display:grid; grid-template-columns:repeat(4, 1fr); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .stat { padding:18px 16px 18px 0; }
+  .stat + .stat { border-left:1px solid var(--line); padding-left:16px; }
+  .label { font-size:13px; color:var(--muted); }
+  .value { font:400 34px/1.2 var(--serif); font-variant-numeric:tabular-nums; margin:4px 0 2px; }
+  .sub { font-size:13px; color:var(--muted); }
+  h2 { font:400 34px var(--serif); letter-spacing:-.5px; margin:44px 0 12px; }
+  #feed { font:14px/1.6 ui-monospace, Menlo, monospace; white-space:pre-wrap; word-break:break-word;
+          min-height:180px; max-height:55vh; overflow-y:auto; padding:16px 0; border-top:1px solid var(--ink); }
+  #feed:empty::before, #journal:empty::before { content:"Nothing yet."; color:var(--muted); }
+  #journal { font:12px/1.55 ui-monospace, Menlo, monospace; white-space:pre-wrap; word-break:break-word;
+             max-height:45vh; overflow-y:auto; padding:16px 0; border-top:1px solid var(--ink); color:var(--muted); }
+  .cores { display:grid; grid-template-columns:repeat(8, 1fr); gap:10px; align-items:end; padding:16px 0 4px; border-top:1px solid var(--ink); }
+  .core { text-align:center; font-size:12px; color:var(--muted); }
+  .bar { height:90px; background:var(--line); border-radius:3px; position:relative; overflow:hidden; margin-bottom:6px; }
+  .fill { position:absolute; left:0; right:0; bottom:0; background:var(--ink); transition:height .6s ease; }
+  .fill.hot { background:var(--clay); }
+  .corepct { font:400 18px var(--serif); color:var(--ink); }
+  .note { font-size:13px; color:var(--muted); margin:6px 0 0; }
+  table.procs { width:100%; border-collapse:collapse; border-top:1px solid var(--ink); font-size:14px; font-variant-numeric:tabular-nums; }
+  .procs td, .procs th { padding:7px 0; border-bottom:1px solid var(--line); text-align:left; }
+  .procs th { font-weight:400; font-size:12px; color:var(--muted); }
+  .procs td.n, .procs th.n { text-align:right; }
+  @media (max-width:640px) {
+    .stats { grid-template-columns:1fr 1fr; }
+    .stat:nth-child(3) { border-left:none; padding-left:0; }
+    .stat:nth-child(n+3) { border-top:1px solid var(--line); }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <span class="logo"><i>by</i> martins.</span>
+    <span id="state"><span class="dot" id="dot"></span><span id="clock">connecting…</span></span>
+  </header>
+  <h1>Little <i>Guy.</i></h1>
+  <p class="lede">What he's up to right now. Live from the board, updated every second.</p>
+  <div class="stats">
+    <div class="stat"><div class="label">Hottest CPU core</div><div class="value" id="temp">–</div><div class="sub" id="hottest">&nbsp;</div></div>
+    <div class="stat"><div class="label">CPU speed</div><div class="value" id="mhz">–</div><div class="sub" id="mhzsub">&nbsp;</div></div>
+    <div class="stat"><div class="label">Memory</div><div class="value" id="ram">–</div><div class="sub" id="ramsub">&nbsp;</div></div>
+    <div class="stat"><div class="label">Brain</div><div class="value" id="model">–</div><div class="sub" id="uptime">&nbsp;</div></div>
+  </div>
+  <h2>Right <i>now.</i></h2>
+  <div class="cores" id="cores"></div>
+  <p class="note" id="corenote">&nbsp;</p>
+  <h2>What's running.</h2>
+  <table class="procs"><thead><tr><th>program</th><th class="n">CPU</th><th class="n">memory</th></tr></thead><tbody id="procs"></tbody></table>
+  <h2>Board log.</h2>
+  <div id="journal"></div>
+  <h2>His feed.</h2>
+  <div id="feed"></div>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const feed = $("feed");
+
+const CORE_NAMES = ["small", "small", "small", "small", "mid", "mid", "mid", "big"];
+const lastText = new WeakMap();
+
+// Raw text from the board (logs, model output) only ever goes in through textContent, never innerHTML.
+function stream(el, lines) {
+  const text = lines.join("\n");
+  if (text === lastText.get(el)) return;
+  const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 20;
+  el.textContent = text;
+  if (atBottom) el.scrollTop = el.scrollHeight;
+  lastText.set(el, text);
+}
+
+function drawCores(cores, gpu) {
+  const box = $("cores");
+  if (box.children.length !== cores.length) {
+    box.replaceChildren(...cores.map((_, i) => {
+      const d = document.createElement("div"); d.className = "core";
+      d.innerHTML = `<div class="corepct">0%</div><div class="bar"><div class="fill"></div></div>${CORE_NAMES[i] || ""} ${i}`;
+      return d;
+    }));
+  }
+  cores.forEach((pct, i) => {
+    const c = box.children[i];
+    c.querySelector(".corepct").textContent = pct + "%";
+    const f = c.querySelector(".fill"); f.style.height = pct + "%"; f.classList.toggle("hot", pct >= 85);
+  });
+  const avg = cores.length ? Math.round(cores.reduce((a, b) => a + b, 0) / cores.length) : 0;
+  $("corenote").textContent = (avg < 5 ? "Idling." : avg < 40 ? "Doing a little." : "Working hard.") +
+    ` Average ${avg}% across all 8 cores · graphics chip at ${gpu} MHz`;
+}
+
+function tempColor(c) { return c >= 80 ? "var(--clay)" : "var(--ink)"; }
+
+async function tick() {
+  try {
+    const s = await (await fetch("/api/status", { cache: "no-store" })).json();
+    $("dot").style.background = "var(--sage)";
+    $("clock").textContent = "live · " + s.time;
+    $("temp").textContent = s.cpu_temp + "°C";
+    $("temp").style.color = tempColor(s.cpu_temp);
+    $("hottest").textContent = "hottest part " + s.hottest + "°C";
+    const ghz = s.cpu_mhz.map(m => (m / 1000).toFixed(1));
+    $("mhz").textContent = ghz[2] + " GHz";
+    $("mhzsub").textContent = "big core · small " + ghz[0] + " · mid " + ghz[1];
+    $("ram").textContent = (s.ram_used / 1024).toFixed(1) + " GB";
+    $("ramsub").textContent = "of " + (s.ram_total / 1024).toFixed(1) + " GB";
+    $("model").innerHTML = s.model ? "<i style='color:var(--clay)'>awake</i>" : "resting";
+    $("uptime").textContent = "board up " + Math.floor(s.uptime_min / 60) + " h " + (s.uptime_min % 60) + " min";
+    stream(feed, s.feed);
+    stream($("journal"), s.journal.map(l => l.replace(/^(\w+ \d+ )/, "").replace(/ radxa-dragon-q6a /, " ")));
+    drawCores(s.cores, s.gpu_mhz);
+    const tbody = $("procs");
+    tbody.replaceChildren(...s.procs.map(p => {
+      const tr = document.createElement("tr");
+      for (const [v, cls] of [[p.name, ""], [p.cpu + "%", "n"], [p.mb + " MB", "n"]]) {
+        const td = document.createElement("td"); td.textContent = v; if (cls) td.className = cls; tr.append(td);
+      }
+      return tr;
+    }));
+  } catch (e) {
+    $("dot").style.background = "var(--clay)";
+    $("clock").textContent = "board offline";
+  }
+}
+tick();
+setInterval(tick, 1000);
+</script>
+</body>
+</html>
