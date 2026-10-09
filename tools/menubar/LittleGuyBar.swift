@@ -79,7 +79,7 @@ struct BubbleView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(.custom("Palatino-Italic", size: 15)).foregroundColor(.inkBlue)
                 if !detail.isEmpty {
-                    Text(detail).font(.caption).foregroundColor(.muted).lineLimit(2)
+                    Text(detail).font(.serif(13)).foregroundColor(.muted).lineLimit(2)
                 }
             }
             .padding(.horizontal, 14).padding(.vertical, 9)
@@ -290,6 +290,11 @@ func dot(_ color: NSColor) -> NSImage {
 
 // MARK: - the panel
 
+extension Font {
+    /// The panel's one typeface, so data lines match the headings.
+    static func serif(_ size: CGFloat, italic: Bool = false) -> Font { .custom(italic ? "Palatino-Italic" : "Palatino", size: size) }
+}
+
 struct Console: View {
     @ObservedObject var board: Board
     let mono = Font.system(size: 10, design: .monospaced)
@@ -307,14 +312,14 @@ struct Console: View {
             }
             if let s = board.status, board.online {
                 Text("hottest core \(s.cpu_temp)°C  ·  memory \(String(format: "%.1f", Double(s.ram_used) / 1024)) GB  ·  brain \(s.model ? "awake" : "resting")")
-                    .font(.callout).foregroundColor(s.cpu_temp >= 80 ? .clay : .muted).padding(.top, -6)
+                    .font(.serif(15)).foregroundColor(s.cpu_temp >= 80 ? .clay : .muted).padding(.top, -6)
                 if let stats = board.lastStats {
                     Text("last reply: \(stats)").font(.custom("Palatino-Italic", size: 15)).foregroundColor(.inkBlue).padding(.top, -6)
                 }
                 LoadLine(history: board.history, temps: board.temps).padding(.top, 4)
                 busyRow
             } else {
-                Text("Can't reach the board. It only answers on home Wi-Fi for now.").font(.callout).foregroundColor(.muted)
+                Text("Can't reach the board. It only answers on home Wi-Fi for now.").font(.serif(15, italic: true)).foregroundColor(.muted)
             }
             rule
             tabs
@@ -354,7 +359,7 @@ struct Console: View {
                 Spacer()
             }
             if !board.actionNote.isEmpty {
-                Text(board.actionNote).font(.caption).foregroundColor(.muted).lineLimit(1)
+                Text(board.actionNote).font(.serif(13, italic: true)).foregroundColor(.muted).lineLimit(1)
             }
         }
     }
@@ -386,18 +391,22 @@ struct Console: View {
     var busyRow: some View {
         HStack(spacing: 0) {
             if board.busiest.isEmpty {
-                Text("nothing busy").foregroundColor(.muted)
+                Text("nothing busy").font(.serif(14, italic: true)).foregroundColor(.muted)
             }
             ForEach(board.busiest, id: \.name) { p in
                 HStack(spacing: 6) {
-                    Text(p.name).lineLimit(1).truncationMode(.tail)
+                    // the name gets first claim on the column; the spacer only takes what's left
+                    Text(p.name).font(.serif(14)).lineLimit(1).truncationMode(.tail).layoutPriority(1)
                     Spacer(minLength: 4)
-                    Text(String(format: p.pct < 10 ? "%.1f%%" : "%.0f%%", p.pct)).monospacedDigit()
+                    // Palatino's digits vary in width, so the number gets a fixed slot to keep it from jumping
+                    Text(String(format: p.pct < 10 ? "%.1f%%" : "%.0f%%", p.pct)).font(.serif(14, italic: true)).foregroundColor(.inkBlue)
+                        .frame(width: 42, alignment: .trailing)
                 }
-                .foregroundColor(.muted).frame(width: 140, alignment: .leading).padding(.trailing, 16)
+                // three columns across the panel's 568 pt, so Palatino names fit
+                .foregroundColor(.muted).frame(width: 178, alignment: .leading).padding(.trailing, 10)
             }
             Spacer(minLength: 0)
-        }.font(.caption)
+        }
     }
 
     /// The console: lines under a rule like EQ's sections. It follows new lines only while you're at the bottom;
@@ -482,14 +491,14 @@ struct LoadLine: View {
                 }
             }.frame(height: 90)
             HStack {
-                Text("90 s ago")
+                Text("90 s ago").font(.serif(13, italic: true))
                 Spacer()
-                Text("CPU load").foregroundColor(.inkBlue)
-                Text("·")
-                Text("temperature").foregroundColor(.clay)
+                Text("CPU load").font(.serif(14, italic: true)).foregroundColor(.inkBlue)
+                Text("·").font(.serif(14))
+                Text("temperature").font(.serif(14, italic: true)).foregroundColor(.clay)
                 Spacer()
-                Text("now \(history.last ?? 0)% · \(temps.last ?? 0)°C")
-            }.font(.caption).foregroundColor(.muted)
+                Text("now \(history.last ?? 0)% · \(temps.last ?? 0)°C").font(.serif(14))
+            }.foregroundColor(.muted)
         }
     }
 }
