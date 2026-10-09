@@ -7,7 +7,7 @@ so we can add text where his reply starts.
 """
 import json, re, subprocess, time, urllib.request
 
-RUN = "/Users/immyyyyy/Documents/LittleGuy/.run"
+from common import BRAINS, LOGS, SERVER
 PORT = 8094
 OPEN, CLOSE = "<|channel>thought\n", "<channel|>"
 SYSTEM = "You are Little Guy, a small friendly robot who lives with Immy. Keep replies short and warm."
@@ -26,9 +26,9 @@ SETUPS = {  # name: (top switch on?, text added where his reply starts)
     "4 trick B":  (True, OPEN + CLOSE),
 }
 
-server = subprocess.Popen([f"{RUN}/lcpp-src/build-mac/bin/llama-server", "-m", f"{RUN}/models/gemma-4-E4B_q4_0-it.gguf",
+server = subprocess.Popen([SERVER, "-m", BRAINS / "qat-Q4_0-f16proj.gguf",
                            "-ngl", "99", "-c", "8192", "-np", "1", "--special", "--port", str(PORT), "--no-webui"],
-                          stdout=open(f"{RUN}/spec-test/think_tricks_server.log", "w"), stderr=subprocess.STDOUT)
+                          stdout=open(LOGS / "think_tricks_server.log", "w"), stderr=subprocess.STDOUT)
 
 
 def post(path, body):

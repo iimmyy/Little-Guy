@@ -1,10 +1,13 @@
+from pathlib import Path
+RUN = str(Path(__file__).resolve().parents[2] / ".run")
+PERSONA_FILE = Path(__file__).resolve().parents[2] / "persona/little_guy.private.txt"
 """How big is the dictionary for English + German + Russian + Korean, cut by alphabet?"""
 import sys, unicodedata
 from collections import Counter
-sys.path.insert(0, "/Users/immyyyyy/Documents/LittleGuy/.run/lcpp-src/gguf-py")
+sys.path.insert(0, f"{RUN}/lcpp-src/gguf-py")
 from gguf import GGUFReader
 
-r = GGUFReader("/Users/immyyyyy/Documents/LittleGuy/.run/models/gemma-4-E4B_q4_0-it.gguf")
+r = GGUFReader(f"{RUN}/weights/brains/gemma-4-E4B_q4_0-it.gguf")
 f_tok, f_type = r.fields["tokenizer.ggml.tokens"], r.fields["tokenizer.ggml.token_type"]
 pieces = [bytes(f_tok.parts[i]).decode("utf-8", "replace") for i in f_tok.data]
 types = [int(f_type.parts[i][0]) for i in f_type.data]
@@ -32,4 +35,4 @@ for i, (p, t) in enumerate(zip(pieces, types)):
 for k, v in counts.most_common():
     print(f"  {k:14s} {v:7d}")
 print(f"keep (EN/DE/RU/KO + common + safety): {len(keep)} of {len(pieces)} = {len(keep) / len(pieces):.1%}")
-open("/Users/immyyyyy/Documents/LittleGuy/.run/trim/keep_scripts.txt", "w").write("\n".join(map(str, keep)))
+open(f"{RUN}/results/vocab-trim/keep_scripts.txt", "w").write("\n".join(map(str, keep)))

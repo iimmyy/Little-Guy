@@ -5,9 +5,12 @@ Question: how often is his true best word (and his top-5) inside the zoomed cand
 """
 import numpy as np
 
-RUN = "/Users/immyyyyy/Documents/LittleGuy/.run/trim"
-E = np.load(f"{RUN}/E.npy")                                   # 262144 x 2560
-H = dict(np.load(f"{RUN}/H.npz"))
+from pathlib import Path
+RUN = str(Path(__file__).resolve().parents[2] / ".run")
+PERSONA_FILE = Path(__file__).resolve().parents[2] / "persona/little_guy.private.txt"
+DATA = f"{RUN}/results/vocab-trim"
+E = np.load(f"{DATA}/E.npy")                                   # 262144 x 2560
+H = dict(np.load(f"{DATA}/H.npz"))
 
 # main "directions" of the dictionary: eigenvectors of E^T E (2560 x 2560)
 w, V = np.linalg.eigh((E.T @ E).astype(np.float64))

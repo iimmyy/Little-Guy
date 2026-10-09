@@ -8,13 +8,15 @@ guesser's clustering), how often is his true best word inside an opened section?
 import json, subprocess, sys, time, urllib.request
 import numpy as np
 
-RUN = "/Users/immyyyyy/Documents/LittleGuy/.run"
+from pathlib import Path
+RUN = str(Path(__file__).resolve().parents[2] / ".run")
+PERSONA_FILE = Path(__file__).resolve().parents[2] / "persona/little_guy.private.txt"
 sys.path.insert(0, f"{RUN}/lcpp-src/gguf-py")
 from gguf import GGUFReader
 from gguf.quants import dequantize
 
-MAIN = f"{RUN}/models/gemma-4-E4B_q4_0-it.gguf"
-DRAFT = f"{RUN}/e4b-drafter/gemma-4-E4B-assistant-masked-q8_0.gguf"
+MAIN = f"{RUN}/weights/brains/gemma-4-E4B_q4_0-it.gguf"
+DRAFT = f"{RUN}/weights/drafter/gemma-4-E4B-assistant-masked-q8_0.gguf"
 SERVER = f"{RUN}/lcpp-src/build-mac/bin/llama-server"
 TOPS = (8, 16, 32, 64)
 PROMPTS = {
@@ -47,10 +49,10 @@ def post(port, path, body):
     return json.load(urllib.request.urlopen(req, timeout=600))
 
 
-persona = "Reply in the language you are spoken to.\n" + "\n".join(l for l in open(f"{RUN}/spec-test/little_guy_persona.txt").read().splitlines() if l.strip() and not l.startswith("#"))
+persona = "Reply in the language you are spoken to.\n" + "\n".join(l for l in open(PERSONA_FILE).read().splitlines() if l.strip() and not l.startswith("#"))
 
 # 1. conversations
-gen = start(["--reasoning", "off"], 8088, f"{RUN}/trim/toc_gen.log")
+gen = start(["--reasoning", "off"], 8088, f"{RUN}/results/vocab-trim/toc_gen.log")
 texts = {}
 try:
     for lang, ps in PROMPTS.items():
@@ -65,7 +67,7 @@ finally:
     gen.terminate(); gen.wait()
 
 # 2. hidden states before every reply token
-emb = start(["--embeddings", "--pooling", "none", "-ub", "4096", "-b", "4096"], 8087, f"{RUN}/trim/toc_emb.log")
+emb = start(["--embeddings", "--pooling", "none", "-ub", "4096", "-b", "4096"], 8087, f"{RUN}/results/vocab-trim/toc_emb.log")
 H = {}
 said = {}
 try:
@@ -85,7 +87,7 @@ finally:
 # 3. save for analysis
 r = GGUFReader(MAIN)
 t = next(t for t in r.tensors if t.name == "token_embd.weight")
-np.save(f"{RUN}/trim/E.npy", dequantize(t.data, t.tensor_type).reshape(-1, 2560).astype(np.float32))
-np.savez(f"{RUN}/trim/H.npz", **H)
-np.savez(f"{RUN}/trim/said.npz", **{k: np.array(v) for k, v in said.items()})
+np.save(f"{RUN}/results/vocab-trim/E.npy", dequantize(t.data, t.tensor_type).reshape(-1, 2560).astype(np.float32))
+np.savez(f"{RUN}/results/vocab-trim/H.npz", **H)
+np.savez(f"{RUN}/results/vocab-trim/said.npz", **{k: np.array(v) for k, v in said.items()})
 print({k: v.shape for k, v in H.items()})

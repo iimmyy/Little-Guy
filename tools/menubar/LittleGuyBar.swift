@@ -4,8 +4,7 @@
 import ServiceManagement
 import SwiftUI
 
-let boardURL = URL(string: "http://192.168.0.198:8080/api/status")!
-let claudeLog = URL(fileURLWithPath: "/Users/immyyyyy/Documents/LittleGuy/.run/live-runs.log")  // what Claude runs, live
+// boardURL, boardSSH and claudeLog come from Settings.swift, which build.sh writes from littleguy.env.
 
 struct Proc: Decodable, Identifiable { let pid: Int; let name: String; let cpu: Int; let mb: Int; var id: Int { pid } }
 struct Status: Decodable {
@@ -264,7 +263,7 @@ struct Caret: Shape {
         Task.detached {
             let p = Process()
             p.executableURL = URL(fileURLWithPath: "/usr/bin/ssh")
-            p.arguments = ["-o", "BatchMode=yes", "-o", "ConnectTimeout=5", "q6a", command]
+            p.arguments = ["-o", "BatchMode=yes", "-o", "ConnectTimeout=5", boardSSH, command]
             let out = Pipe()
             p.standardOutput = out
             p.standardError = out

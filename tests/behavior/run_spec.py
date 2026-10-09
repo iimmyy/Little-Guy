@@ -8,14 +8,15 @@ import json, subprocess, sys, time, urllib.request
 from pathlib import Path
 
 import os
-RUN = Path(os.environ.get("RUN", "/Users/immyyyyy/Documents/LittleGuy/.run"))
-SERVER = Path(os.environ.get("SERVER", RUN / "lcpp-src/build-mac/bin/llama-server"))
-MAIN = Path(os.environ.get("MAIN", RUN / "models/gemma-4-E4B_q4_0-it.gguf"))
+from common import BRAINS, DRAFTER, LOGS, ROOT
+from common import SERVER as _SERVER
+SERVER = Path(os.environ.get("SERVER", _SERVER))
+MAIN = Path(os.environ.get("MAIN", BRAINS / "qat-Q4_0-f16proj.gguf"))
 NGL = os.environ.get("NGL", "99")
 EXTRA = os.environ.get("EXTRA", "").split()
 N_PROMPTS = int(os.environ.get("N_PROMPTS", "8"))
 MAX_TOKENS = int(os.environ.get("MAX_TOKENS", "160"))
-DRAFT = Path(os.environ.get("DRAFT", RUN / "e4b-drafter/gemma-4-E4B-assistant-q8_0.gguf"))
+DRAFT = Path(os.environ.get("DRAFT", DRAFTER / "gemma-4-E4B-assistant-q8_0.gguf"))
 n_max = int(sys.argv[1]) if len(sys.argv) > 1 else 3
 port = int(sys.argv[2]) if len(sys.argv) > 2 else 8090
 use_draft = n_max > 0
@@ -24,7 +25,7 @@ args = [str(SERVER), "-m", str(MAIN), "-ngl", NGL, "-c", "4096", "--port", str(p
 if use_draft:
     args += ["-md", str(DRAFT), "-ngld", NGL, "--spec-type", "draft-mtp", "--spec-draft-n-max", str(n_max)]
 args += EXTRA
-log = open(RUN / f"spec-test/server_n{n_max}.log", "w")
+log = open(LOGS / f"server_n{n_max}.log", "w")
 server = subprocess.Popen(args, stdout=log, stderr=subprocess.STDOUT)
 
 
@@ -44,7 +45,7 @@ try:
     else:
         sys.exit("server never became ready, see log")
 
-    prompts = json.load(open(RUN / "spec-test/prompts.json"))[:N_PROMPTS]
+    prompts = json.load(open(ROOT / "tests/prompts/speculation.json"))[:N_PROMPTS]
     for label, sampling in (("temp 0", {"temperature": 0}),
                             ("temp 1.0", {"temperature": 1.0, "top_k": 64, "top_p": 0.95})):
         drafted = accepted = generated = 0

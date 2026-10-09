@@ -7,13 +7,15 @@ to build the set.
 """
 import json, os, random, subprocess, sys, time, urllib.request
 
-RUN = "/Users/immyyyyy/Documents/LittleGuy/.run"
+from pathlib import Path
+RUN = str(Path(__file__).resolve().parents[2] / ".run")
+PERSONA_FILE = Path(__file__).resolve().parents[2] / "persona/little_guy.private.txt"
 sys.path.insert(0, f"{RUN}/lcpp-src/gguf-py")
 from gguf import GGUFReader
 
-MODEL = f"{RUN}/models/gemma-4-E4B_q4_0-it.gguf"
+MODEL = f"{RUN}/weights/brains/gemma-4-E4B_q4_0-it.gguf"
 PORT = 8089
-OUT = f"{RUN}/trim"
+OUT = f"{RUN}/results/vocab-trim"
 
 
 def post(path, body, timeout=300):
@@ -61,13 +63,13 @@ try:
     keep |= english
     # (c) local English text: punctuation, numbers, names, contractions
     text_toks = set()
-    for path in (f"{RUN}/twobit/practice.txt", f"{RUN}/twobit/test.txt"):
+    for path in (f"{RUN}/calib/practice.txt", f"{RUN}/calib/test.txt"):
         text_toks |= set(tokenize(open(path, errors="ignore").read()))
     keep |= text_toks
     print(f"safety net {len(safety)} | English words {len(english)} | local text {len(text_toks)} | union {len(keep)}")
 
     # --- held-out check: what does he actually say?
-    persona = "\n".join(l for l in open(f"{RUN}/spec-test/little_guy_persona.txt").read().splitlines()
+    persona = "\n".join(l for l in open(PERSONA_FILE).read().splitlines()
                         if l.strip() and not l.startswith("#"))
     prompts = [l.strip() for l in open(f"{OUT}/prompts.txt") if l.strip()]
     said = []

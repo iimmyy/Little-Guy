@@ -7,10 +7,13 @@ Bound for section c (centre m, width r = farthest entry from m):  h·e <= h·m +
 import sys, time
 import numpy as np
 
-RUN = "/Users/immyyyyy/Documents/LittleGuy/.run/trim"
+from pathlib import Path
+RUN = str(Path(__file__).resolve().parents[2] / ".run")
+PERSONA_FILE = Path(__file__).resolve().parents[2] / "persona/little_guy.private.txt"
+DATA = f"{RUN}/results/vocab-trim"
 K = int(sys.argv[1]) if len(sys.argv) > 1 else 2048
-E = np.load(f"{RUN}/E.npy")                                  # 262144 x 2560 dictionary
-H = dict(np.load(f"{RUN}/H.npz"))                            # hidden states per language
+E = np.load(f"{DATA}/E.npy")                                  # 262144 x 2560 dictionary
+H = dict(np.load(f"{DATA}/H.npz"))                            # hidden states per language
 rng = np.random.default_rng(0)
 e2 = (E * E).sum(1)
 
@@ -39,7 +42,7 @@ width = np.zeros(K, np.float32)
 dist = np.sqrt(np.maximum(e2 + (C * C).sum(1)[lab] - 2 * np.einsum("ij,ij->i", E, C[lab]), 0))
 np.maximum.at(width, lab, dist)
 print(f"k-means {K} sections in {time.time() - t0:.0f} s | section sizes min {cnt.min()} median {int(np.median(cnt))} max {cnt.max()}")
-np.savez(f"{RUN}/sections_{K}.npz", centres=C, labels=lab, width=width)
+np.savez(f"{DATA}/sections_{K}.npz", centres=C, labels=lab, width=width)
 
 # --- evaluate
 print(f"{'language':9s} {'words':>5s} | top-32 by middle | top-32 by best-possible | exact: avg sections / avg share of dictionary read / worst")

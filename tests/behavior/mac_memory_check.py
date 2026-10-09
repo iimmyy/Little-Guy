@@ -2,14 +2,14 @@
 and the answers must match a from-scratch read of the same chat (temperature 0)."""
 import json, subprocess, time, urllib.request
 
-RUN = "/Users/immyyyyy/Documents/LittleGuy/.run"
+from common import BRAINS, DRAFTER, LOGS, SERVER
 PORT = 8095
 TURNS = ["Hey Little Guy, I'm home.", "Work was long. The pharmacy was packed.", "I'm making pasta. Ideas?",
          "I have garlic and spinach.", "My dentist appointment is Thursday at 3.", "What day is my dentist appointment?"]
-server = subprocess.Popen([f"{RUN}/lcpp-src/build-mac/bin/llama-server", "-m", f"{RUN}/models/gemma-4-E4B_q4_0-it.gguf",
-                           "-md", f"{RUN}/e4b-drafter/gemma-4-E4B-assistant-masked-q8_0.gguf", "--spec-type", "draft-mtp",
+server = subprocess.Popen([SERVER, "-m", BRAINS / "qat-Q4_0-f16proj.gguf",
+                           "-md", DRAFTER / "gemma-4-E4B-assistant-masked-q8_0.gguf", "--spec-type", "draft-mtp",
                            "--spec-draft-n-max", "3", "-ngl", "99", "-ngld", "99", "-c", "4096", "--reasoning", "off",
-                           "--port", str(PORT), "--no-webui"], stdout=open(f"{RUN}/spec-test/mac_memory_server.log", "w"),
+                           "--port", str(PORT), "--no-webui"], stdout=open(LOGS / "mac_memory_server.log", "w"),
                           stderr=subprocess.STDOUT)
 
 

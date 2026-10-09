@@ -10,9 +10,8 @@ Usage: python3 ttft_test.py [port]
 import json, subprocess, sys, time, urllib.request
 from pathlib import Path
 
-RUN = Path("/Users/immyyyyy/Documents/LittleGuy/.run")
-SERVER = RUN / "lcpp-src/build-mac/bin/llama-server"
-MAIN = RUN / "models/gemma-4-E4B_q4_0-it.gguf"
+from common import BRAINS, LOGS, SERVER
+MAIN = BRAINS / "qat-Q4_0-f16proj.gguf"
 port = int(sys.argv[1]) if len(sys.argv) > 1 else 8091
 
 SYSTEM = ("You are Little Guy, a small companion robot who lives on Immanuel's desk. You can see through a camera, "
@@ -63,7 +62,7 @@ def render_partial(messages, partial):
 
 server = subprocess.Popen([str(SERVER), "-m", str(MAIN), "-ngl", "99", "-c", "8192", "--port", str(port),
                            "--no-webui", "-np", "1"],
-                          stdout=open(RUN / "spec-test/ttft_server.log", "w"), stderr=subprocess.STDOUT)
+                          stdout=open(LOGS / "ttft_server.log", "w"), stderr=subprocess.STDOUT)
 try:
     for _ in range(240):
         try:

@@ -12,7 +12,9 @@ __pycache__/
 # Local runs and user-authored private drafts
 .run/
 docs/drafts/
-*.private.md
+*.private.*
+!persona/little_guy.example.txt
+littleguy.env
 
 # Device credentials and signing material
 .env
@@ -26,3 +28,4 @@ models/
 app/src/main/assets/models/
 vendor/qualcomm/
 *.litertlm
+tools/menubar/Settings.swift

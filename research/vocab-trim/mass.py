@@ -2,12 +2,14 @@
 import sys
 import numpy as np
 
-RUN = "/Users/immyyyyy/Documents/LittleGuy/.run"
+from pathlib import Path
+RUN = str(Path(__file__).resolve().parents[2] / ".run")
+PERSONA_FILE = Path(__file__).resolve().parents[2] / "persona/little_guy.private.txt"
 sys.path.insert(0, f"{RUN}/lcpp-src/gguf-py")
 from gguf import GGUFReader
-E = np.load(f"{RUN}/trim/E.npy"); H = dict(np.load(f"{RUN}/trim/H.npz")); CAP = 30.0
+E = np.load(f"{RUN}/results/vocab-trim/E.npy"); H = dict(np.load(f"{RUN}/results/vocab-trim/H.npz")); CAP = 30.0
 
-order = next(x for x in GGUFReader(f"{RUN}/e4b-drafter/gemma-4-E4B-assistant-masked-q8_0.gguf").tensors if "ordering" in x.name).data.astype(np.int64)
+order = next(x for x in GGUFReader(f"{RUN}/weights/drafter/gemma-4-E4B-assistant-masked-q8_0.gguf").tensors if "ordering" in x.name).data.astype(np.int64)
 sections = order.reshape(2048, 128); heads = E[sections].mean(1)
 w, V = np.linalg.eigh((E.T @ E).astype(np.float64)); V = V[:, ::-1].astype(np.float32)
 low = E @ V[:, :256]

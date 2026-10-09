@@ -4,12 +4,14 @@ every reply scored with the same fixed checklist. Usage: python3 multi_sample.py
 import json, os, re, subprocess, sys, time, urllib.request
 from collections import Counter, defaultdict
 
-RUN = "/Users/immyyyyy/Documents/LittleGuy/.run"
+from common import BRAINS, EXPERIMENTS, LOGS, RESULTS, ROOT, SERVER, load_persona, persona_path
+
 N = int(sys.argv[1]) if len(sys.argv) > 1 else 20
 PORT = 8085
-MODELS = {"4-bit": f"{RUN}/twobit/qat-Q4_0-dict4.gguf", "2-bit VIP, docs map": f"{RUN}/twobit/qat-Q2_K-vip4.gguf", "2-bit VIP, chat map": f"{RUN}/twobit/qat-Q2_K-vip4-chat.gguf"}
-PERSONA_FILE = os.environ.get("PERSONA", "little_guy_persona.txt")
-PERSONA = "\n".join(l for l in open(f"{RUN}/spec-test/{PERSONA_FILE}").read().splitlines() if l.strip() and not l.startswith("#"))
+MODELS = {"4-bit": BRAINS / "qat-Q4_0-f16proj.gguf", "2-bit VIP, docs map": BRAINS / "qat-Q2_K-vip4-f16proj.gguf",
+          "2-bit VIP, chat map": EXPERIMENTS / "qat-Q2_K-vip4-chat.gguf"}
+PERSONA_FILE = persona_path()
+PERSONA = load_persona()
 Q = {"dayvigo": "Is it okay to have grapefruit with Dayvigo?",
      "day": "Hey Little Guy, I just got home from a long shift. How was your day?",
      "dog": "Can I leave my dog in the car for ten minutes? It's like 30 degrees out.",
@@ -58,8 +60,8 @@ def post(path, body):
 
 results = {}
 for name, path in MODELS.items():
-    srv = subprocess.Popen([f"{RUN}/lcpp-src/build-mac/bin/llama-server", "-m", path, "-ngl", "99", "-c", "4096", "--port", str(PORT),
-                            "--no-webui", "--reasoning", "off"], stdout=open(f"{RUN}/spec-test/multi_sample_server.log", "w"), stderr=subprocess.STDOUT)
+    srv = subprocess.Popen([SERVER, "-m", path, "-ngl", "99", "-c", "4096", "--port", str(PORT),
+                            "--no-webui", "--reasoning", "off"], stdout=open(LOGS / "multi_sample_server.log", "w"), stderr=subprocess.STDOUT)
     try:
         for _ in range(120):
             try:
@@ -80,9 +82,9 @@ for name, path in MODELS.items():
     finally:
         srv.terminate(); srv.wait()
 
-json.dump({n: s for n, (_, _, s) in results.items()}, open(f"{RUN}/spec-test/replies_{PERSONA_FILE.removesuffix('.txt')}.json", "w"), indent=1, ensure_ascii=False)
+json.dump({n: s for n, (_, _, s) in results.items()}, open(RESULTS / f"replies_{PERSONA_FILE.name.split('.')[0]}.json", "w"), indent=1, ensure_ascii=False)
 names = list(results)
-print(f"persona: {PERSONA_FILE}\n{N} replies per question per brain, temperature 0.8\n")
+print(f"persona: {PERSONA_FILE.relative_to(ROOT)}\n{N} replies per question per brain, temperature 0.8\n")
 print(f"{'check':34s} " + "  ".join(f"{n:>20s}" for n in names))
 for key in Q:
     for k in sorted({k for (q, k) in results[names[0]][0] if q == key}):
