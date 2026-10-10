@@ -49,6 +49,16 @@ static void power_up(void) {
     r.dcvs_v3.set_sleep_disable = 1;
     r.dcvs_v3.sleep_disable = 1;
     power_status[1] = HAP_power_set(&ctx, &r);
+#ifdef BW_VOTE
+    memset(&r, 0, sizeof r);             // ask the memory system for bandwidth, not just clock speed
+    r.type = HAP_power_set_mips_bw;
+    r.mips_bw.set_bus_bw = 1;
+    r.mips_bw.bwBytePerSec = (uint64) BW_VOTE * 1000000000ull;
+    r.mips_bw.busbwUsagePercentage = 100;
+    r.mips_bw.set_latency = 1;
+    r.mips_bw.latency = 1;
+    power_status[1] |= HAP_power_set(&ctx, &r) << 8;
+#endif
 }
 
 static inline void l2fetch(const void *p, uint32_t width, uint32_t stride, uint32_t height) {
