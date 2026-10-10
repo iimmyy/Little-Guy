@@ -149,6 +149,7 @@ def status():
         "feed": feed(),
         "throttled": throttled(),
         "brain_service": os.path.exists("/etc/systemd/system/littleguy-brain.service"),
+        "quiet": os.path.exists("/var/lib/littleguy/quiet"),  # thermal-guard's night mode: lights off, clocks capped
         "feed_age_s": int(time.time() - os.path.getmtime(FEED)) if os.path.exists(FEED) else None,
     }
 

@@ -10,7 +10,7 @@ struct Proc: Decodable, Identifiable { let pid: Int; let name: String; let cpu: 
 struct Status: Decodable {
     let time: String; let cpu_temp: Int; let cores: [Int]; let procs: [Proc]
     let journal: [String]; let feed: [String]; let feed_age_s: Int?; let model: Bool; let ram_used: Int; let ram_total: Int
-    let uptime_min: Int?; let throttled: Bool?; let brain_service: Bool?
+    let uptime_min: Int?; let throttled: Bool?; let brain_service: Bool?; let quiet: Bool?
 }
 
 // Palette from bymartins.ca
@@ -259,6 +259,11 @@ struct Caret: Shape {
         alert.addButton(withTitle: "Cancel")
         NSApp.activate(ignoringOtherApps: true)
         guard alert.runModal() == .alertFirstButtonReturn else { return }
+        run(title, command)
+    }
+
+    /// Runs one command on the board without asking first; for harmless, undoable switches.
+    func run(_ title: String, _ command: String) {
         actionNote = "\(title)…"
         Task.detached {
             let p = Process()
@@ -357,11 +362,32 @@ struct Console: View {
                 .disabled(!(board.status?.brain_service ?? false))
                 .help(board.status?.brain_service ?? false ? "Restart his brain" : "His brain doesn't run as a service yet")
                 Spacer()
+                // power mode: quiet = status lights off and clocks capped so he runs cool without a fan
+                if let quiet = board.status?.quiet, board.online {
+                    HStack(spacing: 14) {
+                        mode("Full power", on: !quiet) { board.run("Full power", "quiet-mode off") }
+                        mode("Quiet", on: quiet) { board.run("Quiet mode", "quiet-mode on") }
+                    }
+                    .help("Quiet: lights off and slower clocks, for nights without a fan. Full power: everything at full speed.")
+                }
             }
             if !board.actionNote.isEmpty {
                 Text(board.actionNote).font(.serif(13, italic: true)).foregroundColor(.muted).lineLimit(1)
             }
         }
+    }
+
+    /// One side of the power-mode switch, drawn like the tabs; tapping the side that's already on does nothing.
+    func mode(_ title: String, on: Bool, _ action: @escaping () -> Void) -> some View {
+        Button { if !on { action() } } label: {
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title).font(.serif(15, italic: on)).foregroundColor(on ? .inkBlue : .muted)
+                Rectangle().fill(on ? Color.inkBlue : Color.clear).frame(height: 1.5)
+            }
+            .fixedSize()
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 
     /// Serif text tabs like the rest of the panel: the selected one is italic ink blue with a thin underline.
