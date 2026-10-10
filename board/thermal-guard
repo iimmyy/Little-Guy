@@ -7,6 +7,11 @@ Every 2 s it reads the CPU, GPU, NPU and DDR sensors:
   >= SHUTDOWN_C  for 3 checks in a row: clean power-off (last resort)
 The gap between THROTTLE_C and RESTORE_C stops it flapping. Clocks are
 restored when the service stops.
+
+Quiet mode (for nights without a fan): while QUIET_FLAG exists, the status
+lights are off and every clock is held under a ceiling (QUIET_MHZ), on top of
+the heat steps above. `quiet-mode on|off|status` flips the flag; it survives
+reboots.
 """
 import glob, os, signal, subprocess, sys, syslog, time
 
@@ -14,6 +19,9 @@ THROTTLE_C = int(os.environ.get("THROTTLE_C", 80))
 RESTORE_C = int(os.environ.get("RESTORE_C", 72))
 SHUTDOWN_C = int(os.environ.get("SHUTDOWN_C", 95))
 SENSORS = ("cpu", "gpuss", "nspss", "ddr")
+QUIET_FLAG = "/var/lib/littleguy/quiet"
+QUIET_MHZ = {"policy0": 1200, "policy4": 1400, "policy7": 1400, "gpu": 300}  # roughly a third of full power
+LEDS = {"blue:status": "heartbeat", "mmc0::": "mmc0", "mmc1::": "mmc1"}  # light: its normal trigger
 
 
 def read(path):
@@ -40,12 +48,15 @@ def hottest():
 class Knob:
     """One clock domain (a CPU cluster or the GPU) with its allowed steps, fastest first."""
 
-    def __init__(self, name, steps, cap_file, original):
+    def __init__(self, name, steps, cap_file, original, unit):
         self.name, self.steps, self.cap_file, self.original = name, steps, cap_file, original
         self.level = 0
+        quiet = QUIET_MHZ.get(name, 0) * unit
+        self.quiet_cap = max([s for s in steps if s <= quiet] or [steps[-1]])  # nearest step at or under the ceiling
 
-    def apply(self):
-        write(self.cap_file, self.steps[self.level])
+    def apply(self, quiet=False):
+        cap = self.steps[self.level]
+        write(self.cap_file, min(cap, self.quiet_cap) if quiet else cap)
 
     def restore(self):
         write(self.cap_file, self.original)
@@ -55,11 +66,22 @@ def knobs():
     found = []
     for policy in sorted(glob.glob("/sys/devices/system/cpu/cpufreq/policy*")):
         steps = sorted((int(f) for f in read(f"{policy}/scaling_available_frequencies").split()), reverse=True)
-        found.append(Knob(os.path.basename(policy), steps, f"{policy}/scaling_max_freq", read(f"{policy}/scaling_max_freq")))
+        found.append(Knob(os.path.basename(policy), steps, f"{policy}/scaling_max_freq", read(f"{policy}/scaling_max_freq"), 1000))
     for gpu in glob.glob("/sys/class/devfreq/*.gpu"):
         steps = sorted((int(f) for f in read(f"{gpu}/available_frequencies").split()), reverse=True)
-        found.append(Knob("gpu", steps, f"{gpu}/max_freq", read(f"{gpu}/max_freq")))
+        found.append(Knob("gpu", steps, f"{gpu}/max_freq", read(f"{gpu}/max_freq"), 1000000))
     return found
+
+
+def set_lights(quiet):
+    for led, trigger in LEDS.items():
+        path = f"/sys/class/leds/{led}"
+        try:
+            write(f"{path}/trigger", "none" if quiet else trigger)
+            if quiet:
+                write(f"{path}/brightness", 0)
+        except OSError:
+            pass
 
 
 def main():
@@ -68,26 +90,36 @@ def main():
     def stop(*_):
         for k in domains:
             k.restore()
-        syslog.syslog("stopped, clocks restored")
+        set_lights(False)
+        syslog.syslog("stopped, clocks and lights restored")
         sys.exit(0)
 
     signal.signal(signal.SIGTERM, stop)
     syslog.syslog(f"watching: throttle {THROTTLE_C}C, restore {RESTORE_C}C, shutdown {SHUTDOWN_C}C")
     critical = 0
+    was_quiet = None
     while True:
+        quiet = os.path.exists(QUIET_FLAG)
+        if quiet != was_quiet:
+            for k in domains:
+                k.apply(quiet)
+            set_lights(quiet)
+            if was_quiet is not None:
+                syslog.syslog("quiet mode on: lights off, clocks capped" if quiet else "quiet mode off: lights and full clocks back")
+            was_quiet = quiet
         temp, sensor = hottest()
         if temp >= THROTTLE_C:
             stepped = [k for k in domains if k.level < len(k.steps) - 1]
             for k in stepped:
                 k.level += 1
-                k.apply()
+                k.apply(quiet)
             if stepped:
                 syslog.syslog(f"{sensor} {temp}C: slowing to " + ", ".join(f"{k.name} {k.steps[k.level] // 1000} MHz" for k in stepped))
         elif temp <= RESTORE_C:
             stepped = [k for k in domains if k.level > 0]
             for k in stepped:
                 k.level -= 1
-                k.apply()
+                k.apply(quiet)
             if stepped and all(k.level == 0 for k in domains):
                 syslog.syslog(f"{sensor} {temp}C: back to full speed")
         critical = critical + 1 if temp >= SHUTDOWN_C else 0

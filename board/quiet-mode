@@ -1,0 +1,16 @@
+#!/bin/bash
+# Night mode for the board: lights off and clocks capped so jobs run cool without a fan.
+# The thermal guard does the work; this only flips its flag (which survives reboots).
+# Usage: quiet-mode on | off | status
+FLAG=/var/lib/littleguy/quiet
+case "$1" in
+  on)  sudo mkdir -p "$(dirname $FLAG)" && sudo touch $FLAG && echo "quiet mode on (applies within 2 s)" ;;
+  off) sudo rm -f $FLAG && echo "quiet mode off (applies within 2 s)" ;;
+  status|"")
+    [ -e $FLAG ] && echo "quiet mode: ON" || echo "quiet mode: off"
+    for p in 0 4 7; do echo "  cluster $p: max $(( $(cat /sys/devices/system/cpu/cpufreq/policy$p/scaling_max_freq) / 1000 )) MHz"; done
+    echo "  heartbeat light: $(sed -E 's/.*\[([^]]*)\].*/\1/' /sys/class/leds/blue:status/trigger)"
+    m=0; for z in /sys/class/thermal/thermal_zone*/temp; do v=$(cat $z); [ $v -gt $m ] && [ $v -lt 150000 ] && m=$v; done
+    echo "  hottest sensor: $(( m / 1000 )) C" ;;
+  *) echo "usage: quiet-mode on|off|status"; exit 1 ;;
+esac
