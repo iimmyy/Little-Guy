@@ -28,9 +28,13 @@ COOLDOWN = FAN_LEAD = 0   # runs start once the CPU is back at COOL_TO, instead 
 PORT = 8096
 BRAINS = {"4-bit": "qat-Q4_0-f16proj", "2-bit": "qat-Q2_K-vip4-f16proj", "C": "clean-Q2_K-C", "C2": "clean-Q2_K-C2",
           "D": "clean-Q2_K-D"}
-# OVEN=new runs the upgraded oven staged in ~/oven-ultra (fused few-word 2-bit path, vector q8_K packing)
-OVEN_DIR = "~/oven-ultra" if os.environ.get("OVEN") == "new" else "~/llama"
-OVEN_LIB = "lib:$HOME/llama/lib" if os.environ.get("OVEN") == "new" else "lib"
+# OVEN=new runs the upgraded oven staged in ~/oven-ultra (fused few-word 2-bit path, vector q8_K packing);
+# OVEN=gpu runs the same server on the board-built libraries with the Vulkan engine, brain and drafter on the GPU
+OVEN = os.environ.get("OVEN", "old")
+OVEN_DIR = "~/oven-ultra" if OVEN in ("new", "gpu") else "~/llama"
+OVEN_LIB = {"new": "lib:$HOME/llama/lib", "gpu": "$HOME/llama-gpu/src/build/bin:lib"}.get(OVEN, "lib")
+DEVICE = "--device Vulkan0 -ngl 99" if OVEN == "gpu" else "--device none -ngl 0"
+DEVICE_DRAFT = "--device-draft Vulkan0 -ngld 99" if OVEN == "gpu" else "-ngld 0"
 DRAFT = "gemma-4-E4B-assistant-masked-q8_0"
 PERSONA = load_persona()
 SAMPLING = {"max_tokens": 90, "temperature": 0.8, "top_k": 64, "top_p": 0.95}
@@ -63,9 +67,9 @@ def post(body):
 
 def run_block(brain, assistant, n):
     flags = (f"-m ~/models/{BRAINS[brain]}.gguf -c 4096 --port {PORT} --host 127.0.0.1 --no-webui --reasoning off "
-             f"--device none -ngl 0 -t 4")
+             f"{DEVICE} -t 4")
     if assistant:
-        flags += f" -md ~/models/{DRAFT}.gguf -ngld 0 -td 4 --spec-type draft-mtp --spec-draft-n-max 3"
+        flags += f" -md ~/models/{DRAFT}.gguf {DEVICE_DRAFT} -td 4 --spec-type draft-mtp --spec-draft-n-max 3"
     board("pkill -x llama-server; sleep 1")
     server = subprocess.Popen(["ssh", BOARD_SSH, f"cd {OVEN_DIR} && LD_LIBRARY_PATH={OVEN_LIB} GGML_HEXAGON_NDEV=0 "
                                f"exec bin/llama-server {flags} > /tmp/head_to_head_server.log 2>&1"],
