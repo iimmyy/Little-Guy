@@ -8,6 +8,7 @@ every reply is scored with the shared checks plus two outro meters:
 Usage: python persona_ab.py <persona B> [N]      e.g. python persona_ab.py history/outro.private.txt 20
 (persona A is your current persona; give "-" as persona B to run only your current persona)
 Brains: AB_BRAINS="name=path,name=path" picks others (paths relative to .run/weights), default 4-bit and 2-bit.
+Seeds: AB_SEED0 (default 1000) sets the first seed, so a rerun with fresh dice can check whether a difference holds.
 """
 import json, os, re, statistics, subprocess, sys, time, urllib.request
 from collections import defaultdict
@@ -22,6 +23,7 @@ BRAIN_FILES = ({k: RUN / "weights" / v for k, v in (x.split("=") for x in os.env
                if os.environ.get("AB_BRAINS") else
                {"4-bit": BRAINS / "qat-Q4_0-f16proj.gguf", "2-bit": BRAINS / "qat-Q2_K-vip4-f16proj.gguf"})
 PERSONAS = {"current": load_persona()} | ({} if B_NAME == "-" else {"new": load_persona(B_NAME)})
+SEED0 = int(os.environ.get("AB_SEED0", "1000"))
 SAMPLING = {"max_tokens": 90, "temperature": 0.8, "top_k": 64, "top_p": 0.95}
 
 
@@ -52,7 +54,7 @@ for brain, path in BRAIN_FILES.items():
             for key, q in QUESTIONS.items():
                 for seed in range(N):
                     r = post({"messages": [{"role": "system", "content": persona}, {"role": "user", "content": q}],
-                              "seed": 1000 + seed, **SAMPLING})
+                              "seed": SEED0 + seed, **SAMPLING})
                     replies[key].append(r["choices"][0]["message"]["content"].strip())
                     tokens.append(r["usage"]["completion_tokens"])
             results[(brain, pname)] = (dict(replies), tokens)
