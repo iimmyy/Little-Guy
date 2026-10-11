@@ -3,7 +3,7 @@
 Compresses real tensors from his QAT master with llama.cpp's own quantize_q2_K, then expands them back and
 compares with the original. No text is involved; this measures only the weights.
   relative error = sum((compressed - original)^2) / sum(original^2), in dB (lower is closer)
-LG_Q2K_CAREFUL is read once per process, so each compressor runs in its own process.
+LG_Q2K_CAREFUL is read once per process, so each setting runs in its own process.
 
 Usage: python distortion.py            (prints the table; runs both compressors)
 """
@@ -54,18 +54,30 @@ def errors():
     return out
 
 
+CONFIGS = {  # label: environment for llama.cpp's quantize_q2_K
+    "default": {"LG_Q2K_CAREFUL": "0"},
+    "careful v1": {"LG_Q2K_CAREFUL": "1", "LG_Q2K_ITERS": "4"},
+    "v2, 3 starts": {"LG_Q2K_CAREFUL": "2", "LG_Q2K_STARTS": "3", "LG_Q2K_RADIUS": "2"},
+    "v2, 6 starts": {"LG_Q2K_CAREFUL": "2", "LG_Q2K_STARTS": "6", "LG_Q2K_RADIUS": "3"},
+    "v2, 6 starts, full": {"LG_Q2K_CAREFUL": "2", "LG_Q2K_STARTS": "6", "LG_Q2K_RADIUS": "-1"},
+}
+
 if __name__ == "__main__":
     if os.environ.get("DISTORTION_CHILD"):
         print(repr(errors()))
         sys.exit()
-    runs = {}
-    for label, careful in (("default", "0"), ("careful", "1")):
-        env = dict(os.environ, DISTORTION_CHILD="1", LG_Q2K_CAREFUL=careful)
+    import time
+    runs, secs = {}, {}
+    for label, cfg in CONFIGS.items():
+        t0 = time.time()
+        env = dict(os.environ, DISTORTION_CHILD="1", **cfg)
         runs[label] = eval(subprocess.run([sys.executable, __file__], env=env, capture_output=True, text=True, check=True).stdout)
-    print(f"{'tensor':28s} {'default':>9s} {'careful':>9s} {'closer by':>10s}")
+        secs[label] = time.time() - t0
+        print(f"{label}: {secs[label]:.0f} s", flush=True)
+    labels = list(CONFIGS)
+    print(f"\n{'tensor':28s} " + " ".join(f"{l:>19s}" for l in labels))
     for name in NAMES:
-        a, b = runs["default"][name], runs["careful"][name]
-        print(f"{name:28s} {10 * np.log10(a):7.1f}dB {10 * np.log10(b):7.1f}dB {10 * np.log10(a / b):8.1f}dB")
-    ga = np.mean([10 * np.log10(v) for v in runs["default"].values()])
-    gb = np.mean([10 * np.log10(v) for v in runs["careful"].values()])
-    print(f"{'average':28s} {ga:7.1f}dB {gb:7.1f}dB {ga - gb:8.1f}dB")
+        print(f"{name:28s} " + " ".join(f"{10 * np.log10(runs[l][name]):17.2f}dB" for l in labels))
+    avg = {l: np.mean([10 * np.log10(v) for v in runs[l].values()]) for l in labels}
+    print(f"{'average':28s} " + " ".join(f"{avg[l]:17.2f}dB" for l in labels))
+    print(f"{'closer than default':28s} " + " ".join(f"{avg['default'] - avg[l]:17.2f}dB" for l in labels))
