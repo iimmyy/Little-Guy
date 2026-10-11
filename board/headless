@@ -1,0 +1,60 @@
+#!/bin/bash
+# Headless mode for the board: no display, no desktop leftovers, no background chores. Nothing ever gets plugged into
+# the board, so anything that draws a screen, plays sound, talks Bluetooth or quietly updates itself only costs CPU
+# time, wake-ups and heat (and an update could swap the kernel or GPU driver out from under us).
+# Every change here is a file or a mask that `off` removes again. Takes effect fully after a reboot.
+# Usage (on the board): sudo headless on | off | status
+MODPROBE=/etc/modprobe.d/littleguy-headless.conf
+UDEV=/etc/udev/rules.d/60-littleguy-headless.rules
+# System services: Bluetooth, firmware updater, disk automounter, battery monitor, the screen login, a Samba domain
+# controller (installed and enabled but never set up), Ubuntu Pro and its reboot hook, the audio priority helper
+SERVICES="bluetooth.service fwupd.service udisks2.service upower.service getty@tty1.service samba-ad-dc.service
+          ubuntu-advantage.service ua-reboot-cmds.service rtkit-daemon.service"
+# Timers: automatic package updates and upgrades, automatic system updates and their reboot, firmware refresh,
+# login news, the manual-page index
+TIMERS="apt-daily.timer apt-daily-upgrade.timer systemd-sysupdate.timer systemd-sysupdate-reboot.timer
+        fwupd-refresh.timer motd-news.timer man-db.timer"
+# Per-user desktop pieces that start with any login: sound server, keyring, Bluetooth file transfer, file indexer
+USER_UNITS="pipewire.socket pipewire.service pipewire-pulse.socket pipewire-pulse.service wireplumber.service
+            filter-chain.service gnome-keyring-daemon.socket gnome-keyring-daemon.service gcr-ssh-agent.socket
+            gcr-ssh-agent.service obex.service tracker-miner-fs-3.service"
+
+[ "$(id -u)" = 0 ] || { echo "run with sudo"; exit 1; }
+case "$1" in
+  on)
+    cat > $MODPROBE <<'EOF'
+# Written by Little Guy's headless mode (board/headless); `sudo headless off` removes it.
+# The GPU gets a device of its own, so the display side can stay off without taking the GPU with it.
+options msm separate_gpu_kms=1
+# No sound card, video codec or Bluetooth radio on a headless board
+blacklist snd_soc_sc8280xp
+blacklist qcom_iris
+blacklist aic_btusb
+EOF
+    cat > $UDEV <<'EOF'
+# Written by Little Guy's headless mode (board/headless); `sudo headless off` removes it.
+# Keep the display subsystem from binding. With nothing plugged in, its DisplayPort hot-plug interrupt fired about
+# 50,000 times a second on core 0, around the clock (kernel 7.0); eight-thread runs stalled waiting on that core.
+ACTION=="add", SUBSYSTEM=="platform", KERNEL=="ae00000.display-subsystem", ATTR{driver_override}="none"
+EOF
+    for u in $SERVICES $TIMERS; do systemctl disable --now "$u" 2>/dev/null; done   # one at a time: a missing unit fails the batch
+    systemctl mask fwupd.service samba-ad-dc.service 2>/dev/null      # both get started on demand otherwise
+    systemctl --global mask $USER_UNITS 2>/dev/null
+    for u in $(loginctl list-users --no-legend | awk '{print $2}'); do
+        systemctl --user -M "$u@" stop $USER_UNITS 2>/dev/null
+    done
+    echo "headless on; reboot to switch the display off" ;;
+  off)
+    rm -f $MODPROBE $UDEV
+    systemctl unmask fwupd.service samba-ad-dc.service 2>/dev/null
+    for u in $SERVICES $TIMERS; do systemctl enable "$u" 2>/dev/null; done
+    systemctl --global unmask $USER_UNITS 2>/dev/null
+    echo "headless off; reboot to bring the display back" ;;
+  status|"")
+    [ -e $UDEV ] && echo "headless: ON" || echo "headless: off"
+    echo "  display interrupts registered: $(grep -c dp_display /proc/interrupts)"
+    echo "  GPU devices: $(ls /dev/dri 2>/dev/null | grep -c renderD)"
+    on=$(for s in $SERVICES $TIMERS; do systemctl is-enabled -q "$s" 2>/dev/null && echo "$s"; done)
+    echo "  still enabled: ${on:-none}" ;;
+  *) echo "usage: headless on|off|status"; exit 1 ;;
+esac

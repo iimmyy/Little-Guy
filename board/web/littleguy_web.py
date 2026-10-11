@@ -29,17 +29,6 @@ def hottest():
     return round(max(temps) / 1000) if temps else None
 
 
-def model_running():
-    for pid in os.listdir("/proc"):
-        if pid.isdigit():
-            try:
-                if open(f"/proc/{pid}/comm").read().strip().startswith("llama-"):
-                    return True
-            except OSError:
-                pass
-    return False
-
-
 def ram():
     info = {}
     for line in open("/proc/meminfo"):
@@ -58,7 +47,8 @@ def feed(lines=40):
 
 TICK = os.sysconf("SC_CLK_TCK")
 PAGE_KB = os.sysconf("SC_PAGE_SIZE") // 1024
-activity = {"cores": [], "procs": []}
+activity = {"cores": [], "procs": [], "model": False}
+last_viewed = 0.0  # when someone last asked for the status; the sampler rests when nobody is watching
 journal = collections.deque(maxlen=60)
 
 
@@ -95,10 +85,17 @@ def proc_ticks():
 
 
 def sample_activity():
-    """Once a second: how busy each core is and which programs are using the CPU."""
+    """Once a second while someone is watching: how busy each core is and which programs are using the CPU.
+    Walking every process costs real CPU time, so with nobody watching it rests and starts fresh when they return."""
     prev_cores, prev_procs, prev_t = cpu_times(), proc_ticks(), time.time()
     while True:
         time.sleep(1)
+        if time.time() - last_viewed > 5:
+            prev_procs = None
+            continue
+        if prev_procs is None:
+            prev_cores, prev_procs, prev_t = cpu_times(), proc_ticks(), time.time()
+            continue
         cores, procs, t = cpu_times(), proc_ticks(), time.time()
         activity["cores"] = [round(100 * (b - pb) / max(tt - pt, 1)) for (b, tt), (pb, pt) in zip(cores, prev_cores)]
         rows = []
@@ -108,6 +105,7 @@ def sample_activity():
                 rows.append({"pid": int(pid), "name": name, "cpu": round(pct), "mb": rss})
         rows.sort(key=lambda r: (-r["cpu"], -r["mb"]))
         activity["procs"] = rows[:8]
+        activity["model"] = any(name.startswith("llama-") for name, _, _ in procs.values())
         prev_cores, prev_procs, prev_t = cores, procs, t
 
 
@@ -145,7 +143,7 @@ def status():
         "cpu_mhz": [(read_int(f"/sys/devices/system/cpu/cpufreq/policy{p}/scaling_cur_freq") or 0) // 1000 for p in (0, 4, 7)],
         "ram_used": used, "ram_total": total,
         "uptime_min": int(float(open("/proc/uptime").read().split()[0]) // 60),
-        "model": model_running(),
+        "model": activity["model"],
         "feed": feed(),
         "throttled": throttled(),
         "brain_service": os.path.exists("/etc/systemd/system/littleguy-brain.service"),
@@ -157,6 +155,8 @@ def status():
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/api/status":
+            global last_viewed
+            last_viewed = time.time()
             body, kind = json.dumps(status()).encode(), "application/json"
         elif self.path in ("/", "/index.html"):
             body, kind = PAGE, "text/html; charset=utf-8"
