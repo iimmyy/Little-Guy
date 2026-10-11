@@ -6,19 +6,22 @@ every reply is scored with the shared checks plus two outro meters:
   asks back: the reply contains a question
 
 Usage: python persona_ab.py <persona B> [N]      e.g. python persona_ab.py history/outro.private.txt 20
-(persona A is your current persona)
+(persona A is your current persona; give "-" as persona B to run only your current persona)
+Brains: AB_BRAINS="name=path,name=path" picks others (paths relative to .run/weights), default 4-bit and 2-bit.
 """
-import json, re, statistics, subprocess, sys, time, urllib.request
+import json, os, re, statistics, subprocess, sys, time, urllib.request
 from collections import defaultdict
 
-from common import BRAINS, LOGS, RESULTS, SERVER, load_persona, persona_path
+from common import BRAINS, LOGS, RESULTS, RUN, SERVER, load_persona, persona_path
 from scoring import QUESTIONS, checks
 
 B_NAME = sys.argv[1]
 N = int(sys.argv[2]) if len(sys.argv) > 2 else 20
 PORT = 8086
-BRAIN_FILES = {"4-bit": BRAINS / "qat-Q4_0-f16proj.gguf", "2-bit": BRAINS / "qat-Q2_K-vip4-f16proj.gguf"}
-PERSONAS = {"current": load_persona(), "new": load_persona(B_NAME)}
+BRAIN_FILES = ({k: RUN / "weights" / v for k, v in (x.split("=") for x in os.environ["AB_BRAINS"].split(","))}
+               if os.environ.get("AB_BRAINS") else
+               {"4-bit": BRAINS / "qat-Q4_0-f16proj.gguf", "2-bit": BRAINS / "qat-Q2_K-vip4-f16proj.gguf"})
+PERSONAS = {"current": load_persona()} | ({} if B_NAME == "-" else {"new": load_persona(B_NAME)})
 SAMPLING = {"max_tokens": 90, "temperature": 0.8, "top_k": 64, "top_p": 0.95}
 
 
@@ -58,7 +61,7 @@ for brain, path in BRAIN_FILES.items():
         srv.terminate(); srv.wait()
 
 json.dump({f"{b}, {p}": r for (b, p), (r, _) in results.items()},
-          open(RESULTS / f"persona_ab_{persona_path(B_NAME).name.split('.')[0]}.json", "w"), indent=1, ensure_ascii=False)
+          open(RESULTS / f"persona_ab_{'brains' if B_NAME == '-' else persona_path(B_NAME).name.split('.')[0]}.json", "w"), indent=1, ensure_ascii=False)
 cols = list(results)
 print(f"\npersona B: {B_NAME} | {N} replies per question | Mac CPU, 4 threads, temperature 0.8\n")
 print(f"{'check':30s} " + "  ".join(f"{b + ' ' + p:>15s}" for b, p in cols))
