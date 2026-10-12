@@ -5,14 +5,16 @@
 # in storage under results/nightly/<date>/. The job signs in with its own managed identity.
 # Env: LITTLEGUY_STORAGE (account), LG_BRAINS ("C=clean-Q2_K-C ..." name=file stem), LG_N (replies per question)
 set -uo pipefail
+exec 1>&2   # one stream, so every line reaches the job's console log in order
 ST=$LITTLEGUY_STORAGE
 DAY=$(date -u +%F)
 W=/work
 az login --identity -o none
-blob() { az storage blob "$@" --account-name "$ST" --auth-mode login -o none; }
+blob() { az storage blob "$@" --account-name "$ST" --auth-mode login --no-progress -o none; }
 
 mkdir -p "$W/run/weights" "$W/run/logs" "$W/run/results/behavior" && cd "$W"
-blob download -c build -n tests.tar.gz -f tests.tar.gz && tar xzf tests.tar.gz          # tests/behavior and persona/
+blob download -c build -n tests.tar.gz -f tests.tar.gz \
+    && python3 -c "import tarfile; tarfile.open('tests.tar.gz').extractall()"   # tests/behavior and persona/ (the image has no tar)
 blob download -c build -n nightly/latest/llama-server-x86 -f llama-server && chmod +x llama-server
 export LITTLEGUY_RUN=$W/run LITTLEGUY_SERVER=$W/llama-server
 echo "== $(date -u) tests start on $(nproc) cores"
