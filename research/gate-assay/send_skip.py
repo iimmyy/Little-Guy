@@ -12,6 +12,12 @@ The two big lookup tables (embed_tokens, embed_tokens_per_layer) stay at master 
 Usage:
   python send_skip.py meter [N_CHATS] [DB ...]      perplexity and skipped share per setting (default: 4 chats; 30 40 50)
   python send_skip.py behavior DB [N]               20-sample behavior checks, full brain vs muting at -DB dB
+  python send_skip.py perlayer [N_CHATS] [BUDGET]   per-layer gate search aimed at board speed: each block of 6 layers
+                                                    at every gate level (or none), then the combination that saves
+                                                    the most board send time within BUDGET percent chat cost (default 3)
+  python send_skip.py greedy [N_CHATS] [BUDGET]     the same search, tuned step by step on the real combination
+                                                    (per-block costs don't add up), checked on 8 unseen chats
+DB can also be a per-layer list, "0,0,35,..." (42 values, 0 = no gate), for behavior.
 """
 import json, math, re, sys, time, types
 from collections import defaultdict
@@ -47,9 +53,10 @@ state = {"db": None, "muted": defaultdict(lambda: 0), "total": defaultdict(int)}
 def send_skip_forward(self, x):
     """Gemma4TextMLP.forward with the Smart Disable rule, counted per layer."""
     out = F.gelu(self.gate_proj(x), approximate="tanh") * self.up_proj(x)
-    if state["db"] is not None:
+    db = state["db"][self.layer] if isinstance(state["db"], list) else state["db"]
+    if db:   # None or 0: this layer is not gated
         level = out.abs()
-        keep = level >= level.amax(dim=-1, keepdim=True) * 10 ** (-state["db"] / 20)
+        keep = level >= level.amax(dim=-1, keepdim=True) * 10 ** (-db / 20)
         state["muted"][self.layer] = state["muted"][self.layer] + (~keep).sum()  # stays on the GPU until the end
         state["total"][self.layer] += keep.numel()
         out = out * keep
@@ -140,13 +147,140 @@ def meter(n_chats, settings):
     print(f"\ndone in {time.time() - t0:.0f} s")
 
 
+# Board measurement (tests/oven/send_skip_bench.c, bookmarks 2 rows ahead): share of the full send read's time when
+# a layer's silent rows are skipped, by how silent the layer is. Skipping only pays in quiet layers.
+BOARD_CURVE = [(0.0, 1.0), (0.3, 0.945), (0.5, 0.82), (0.7, 0.61), (0.85, 0.40), (0.95, 0.146), (1.0, 0.0)]
+LEVELS = (None, 50, 45, 40, 35, 30, 25)   # None: no gate in that block (read every row)
+
+
+def send_time(silent):
+    """Board time for one layer's send at this silent share, as a share of reading every row (never above 1)."""
+    for (s0, t0), (s1, t1) in zip(BOARD_CURVE, BOARD_CURVE[1:]):
+        if silent <= s1:
+            return min(1.0, t0 + (silent - s0) / (s1 - s0) * (t1 - t0))
+    return 0.0
+
+
+def perlayer(n_chats, budget):
+    """Measure every block of 6 layers at every gate level (the rest ungated), then pick per block the level that
+    saves the most board time while the summed chat cost stays within budget, and check that combination."""
+    t0 = time.time()
+    tok, model = load_brain_c()
+    chats = [p for p in re.split(r"(?=<\|turn>system)", CHATS.read_text()) if p.strip()][40:40 + n_chats]
+    texts = [tok(c, return_tensors="pt").input_ids[:, :1024].to(DEVICE) for c in chats]
+
+    def measure(setting):
+        state.update(db=setting, muted=defaultdict(lambda: 0), total=defaultdict(int))
+        with torch.no_grad():
+            ppl = perplexity(model, texts)
+        return ppl, {l: float(state["muted"][l]) / state["total"][l] for l in state["total"]}
+
+    full, _ = measure(None)
+    cost = lambda p: 100 * (p / full - 1)
+    blocks = [list(range(b, min(b + 6, 42))) for b in range(0, 42, 6)]
+    table = {}   # (block, level) -> (cost, {layer: silent share})
+    for bi, block in enumerate(blocks):
+        table[(bi, None)] = (0.0, {l: 0.0 for l in block})
+        for level in LEVELS[1:]:
+            p, silent = measure([level if l in block else None for l in range(42)])
+            table[(bi, level)] = (cost(p), {l: silent[l] for l in block})
+            saved = sum(1 - send_time(silent[l]) for l in block) / 42
+            print(f"  layers {block[0]:2d}-{block[-1]:2d} at -{level} dB: silent {100 * sum(silent[l] for l in block) / len(block):4.1f}%, "
+                  f"send time saved {100 * saved:4.1f} pts, chat cost {cost(p):+.2f}%  [{time.time() - t0:.0f} s]", flush=True)
+    json.dump({f"{b},{lv}": v for (b, lv), v in table.items()}, open(ROOT / ".run/results/send_skip_perlayer.json", "w"), indent=1)
+    plan(budget, tok, model)
+
+
+def plan(budget, tok=None, model=None):
+    """Pick per block the gate level that saves the most board send time within the chat-cost budget (from the saved
+    per-block measurements), then check the combination on the 4 tuning chats and 8 chats the search never saw."""
+    t0 = time.time()
+    raw = json.load(open(ROOT / ".run/results/send_skip_perlayer.json"))
+    table = {}
+    for key, (c, silent) in raw.items():
+        b, lv = key.split(",")
+        table[(int(b), None if lv == "None" else int(lv))] = (c, {int(l): s for l, s in silent.items()})
+    n_blocks = 1 + max(b for b, _ in table)
+    best = (-1.0, None)
+    for combo in __import__("itertools").product(LEVELS, repeat=n_blocks):
+        spent = sum(max(table[(b, lv)][0], 0.0) for b, lv in enumerate(combo))   # a block that "helps" counts as free
+        if spent <= budget:
+            saved = sum(1 - send_time(s) for b, lv in enumerate(combo) for s in table[(b, lv)][1].values()) / 42
+            if saved > best[0]:
+                best = (saved, combo)
+    saved, combo = best
+    setting = [combo[l // 6] for l in range(42)]
+    print("chosen: " + "  ".join(f"layers {6 * b}-{min(6 * b + 5, 41)}: {'off' if lv is None else f'-{lv} dB'}"
+                                 for b, lv in enumerate(combo)))
+    print(f"estimate: send time saved {100 * saved:.1f}%")
+    if model is None:
+        tok, model = load_brain_c()
+    all_chats = [p for p in re.split(r"(?=<\|turn>system)", CHATS.read_text()) if p.strip()]
+    for name, chats in (("tuning chats (40-43)", all_chats[40:44]), ("unseen chats (44-51)", all_chats[44:52])):
+        texts = [tok(c, return_tensors="pt").input_ids[:, :1024].to(DEVICE) for c in chats]
+        with torch.no_grad():
+            state.update(db=None)
+            full = perplexity(model, texts)
+            state.update(db=setting, muted=defaultdict(lambda: 0), total=defaultdict(int))
+            gated = perplexity(model, texts)
+        silent = {l: float(state["muted"][l]) / state["total"][l] for l in state["total"]}
+        real = sum(1 - send_time(silent.get(l, 0.0)) for l in range(42)) / 42
+        print(f"{name}: send time saved {100 * real:.1f}%, chat cost {100 * (gated / full - 1):+.2f}%  [{time.time() - t0:.0f} s]", flush=True)
+    print("setting for behavior: " + ",".join("0" if lv is None else str(lv) for lv in setting))
+
+
+def greedy(n_chats, budget):
+    """Tune on the real combination: from every block ungated, repeatedly try one notch tighter on each block on top of
+    what's already chosen, keep the move that saves the most board send time per point of chat cost, and stop when
+    every next move would cross the budget. Then check the result on 8 chats the tuning never saw."""
+    t0 = time.time()
+    tok, model = load_brain_c()
+    all_chats = [p for p in re.split(r"(?=<\|turn>system)", CHATS.read_text()) if p.strip()]
+    tune = [tok(c, return_tensors="pt").input_ids[:, :1024].to(DEVICE) for c in all_chats[40:40 + n_chats]]
+    unseen = [tok(c, return_tensors="pt").input_ids[:, :1024].to(DEVICE) for c in all_chats[44:52]]
+
+    def measure(setting, texts):
+        state.update(db=setting, muted=defaultdict(lambda: 0), total=defaultdict(int))
+        with torch.no_grad():
+            ppl = perplexity(model, texts)
+        silent = {l: float(state["muted"][l]) / state["total"][l] for l in state["total"]}
+        return ppl, sum(1 - send_time(silent.get(l, 0.0)) for l in range(42)) / 42
+
+    full, _ = measure(None, tune)
+    combo, cost_now, saved_now = [None] * 7, 0.0, 0.0
+    while True:
+        moves = []
+        for b in range(7):
+            i = LEVELS.index(combo[b])
+            if i + 1 == len(LEVELS):
+                continue
+            trial = combo[:b] + [LEVELS[i + 1]] + combo[b + 1:]
+            ppl, saved = measure([trial[l // 6] for l in range(42)], tune)
+            cost = 100 * (ppl / full - 1)
+            if cost <= budget and saved > saved_now:
+                moves.append(((saved - saved_now) / max(cost - cost_now, 0.25), trial, cost, saved))
+        if not moves:
+            break
+        _, combo, cost_now, saved_now = max(moves, key=lambda m: m[0])
+        print("  " + " ".join("--" if lv is None else str(lv) for lv in combo) +
+              f"   send time saved {100 * saved_now:4.1f}%, chat cost {cost_now:+.2f}%  [{time.time() - t0:.0f} s]", flush=True)
+    setting = [combo[l // 6] for l in range(42)]
+    print("\nchosen: " + "  ".join(f"layers {6 * b}-{min(6 * b + 5, 41)}: {'off' if lv is None else f'-{lv} dB'}" for b, lv in enumerate(combo)))
+    full_u, _ = measure(None, unseen)
+    ppl_u, saved_u = measure(setting, unseen)
+    print(f"unseen chats (44-51): send time saved {100 * saved_u:.1f}%, chat cost {100 * (ppl_u / full_u - 1):+.2f}%")
+    print("setting for behavior: " + ",".join("0" if lv is None else str(lv) for lv in setting))
+    print(f"\ndone in {time.time() - t0:.0f} s")
+
+
 def behavior(db, n):
     from common import load_persona
     from scoring import QUESTIONS, checks
     t0 = time.time()
     tok, model = load_brain_c()
     persona = load_persona()
-    setups = {"brain C": None, f"brain C, -{db} dB": db}
+    label = f"-{db} dB" if isinstance(db, int) else "per-layer gate"
+    setups = {"brain C": None, f"brain C, {label}": db}
     tally = {s: defaultdict(int) for s in setups}
     examples = {}
     with torch.no_grad():
@@ -186,6 +320,13 @@ if __name__ == "__main__":
     if mode == "meter":
         meter(int(sys.argv[2]) if len(sys.argv) > 2 else 4, [int(d) for d in sys.argv[3:]] or [30, 40, 50])
     elif mode == "behavior":
-        behavior(int(sys.argv[2]), int(sys.argv[3]) if len(sys.argv) > 3 else 20)
+        arg = sys.argv[2]
+        behavior([int(x) for x in arg.split(",")] if "," in arg else int(arg), int(sys.argv[3]) if len(sys.argv) > 3 else 20)
+    elif mode == "greedy":
+        greedy(int(sys.argv[2]) if len(sys.argv) > 2 else 4, float(sys.argv[3]) if len(sys.argv) > 3 else 3.0)
+    elif mode == "plan":
+        plan(float(sys.argv[2]) if len(sys.argv) > 2 else 3.0)
+    elif mode == "perlayer":
+        perlayer(int(sys.argv[2]) if len(sys.argv) > 2 else 4, float(sys.argv[3]) if len(sys.argv) > 3 else 3.0)
     else:
         raise SystemExit(__doc__)
