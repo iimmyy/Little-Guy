@@ -147,14 +147,17 @@ def meter(n_chats, settings):
     print(f"\ndone in {time.time() - t0:.0f} s")
 
 
-# Board measurement (tests/oven/send_skip_bench.c, bookmarks 2 rows ahead): share of the full send read's time when
-# a layer's silent rows are skipped, by how silent the layer is. Skipping only pays in quiet layers.
-BOARD_CURVE = [(0.0, 1.0), (0.3, 0.945), (0.5, 0.82), (0.7, 0.61), (0.85, 0.40), (0.95, 0.146), (1.0, 0.0)]
+# Board measurement (tests/oven/send_skip_kernel.c: the skip kernel with its real arithmetic against the oven's Q4_0
+# gemv, 4 fast cores): a layer's send time when only its open detectors are read, as a share of today's send, by how
+# silent the layer is. It breaks even near 53% silent; below that a layer keeps today's recipe (send_time caps at 1).
+BOARD_CURVE = [(0.0, 1.95), (0.5, 1.062), (0.6, 0.894), (0.7, 0.693), (0.8, 0.48), (0.85, 0.358), (0.9, 0.246),
+               (0.95, 0.129), (0.98, 0.06), (1.0, 0.0)]
 LEVELS = (None, 50, 45, 40, 35, 30, 25)   # None: no gate in that block (read every row)
 
 
 def send_time(silent):
-    """Board time for one layer's send at this silent share, as a share of reading every row (never above 1)."""
+    """Board time for one layer's send at this silent share, as a share of today's send (never above 1: a layer
+    where skipping would be slower keeps today's recipe)."""
     for (s0, t0), (s1, t1) in zip(BOARD_CURVE, BOARD_CURVE[1:]):
         if silent <= s1:
             return min(1.0, t0 + (silent - s0) / (s1 - s0) * (t1 - t0))
@@ -290,7 +293,7 @@ def behavior(db, n):
                                           enable_thinking=False)["input_ids"].to(DEVICE)
             for setup, setting in setups.items():
                 state["db"] = setting
-                torch.manual_seed(1000)
+                torch.manual_seed(int(__import__("os").environ.get("SEND_SKIP_SEED", "1000")))   # fresh dice: another seed
                 replies = []
                 for b in range(0, n, 5):  # small batches keep generation in real memory on a 24 GB Mac
                     out = model.generate(ids, max_new_tokens=30, do_sample=True, temperature=0.8, top_k=64, top_p=0.95,
