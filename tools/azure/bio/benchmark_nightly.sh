@@ -10,6 +10,7 @@
 # Env (set by the job schedule): BIO_STORAGE, BIO_IDENTITY_CLIENT_ID
 set -euo pipefail
 W=${AZ_BATCH_TASK_WORKING_DIR:-$PWD}
+trap 'rm -rf "$W/data" "$W/pipe" "$W/venv" "$W/deps" "$W/scratch"' EXIT   # also on failure
 DAY=$(date -u +%F)
 OUT=$W/out; mkdir -p "$OUT"
 exec > >(tee "$OUT/benchmark.log") 2>&1
@@ -26,10 +27,11 @@ CAMPAIGN=aeviant-public-full-genome-compound-het-v1
 
 # --- tools: azcopy, Java (Azul Zulu 21.0.10, the Mac's build), uv + CPython 3.13.12 (the Mac's version) ---
 cd "$W"
+export PIP_NO_CACHE_DIR=1 UV_CACHE_DIR=$W/.uv-cache UV_PYTHON_INSTALL_DIR=$W/.python   # keep everything on the task disk; 82 GB of data leaves ~10 GB
 curl -sL https://aka.ms/downloadazcopy-v10-linux | tar xz --strip-components=1 --wildcards '*/azcopy'
 curl -sL https://cdn.azul.com/zulu/bin/zulu21.48.17-ca-jre21.0.10-linux_x64.tar.gz -o jre.tar.gz
 mkdir -p jre && tar xzf jre.tar.gz -C jre --strip-components=1
-curl -sL https://github.com/astral-sh/uv/releases/download/0.9.7/uv-x86_64-unknown-linux-gnu.tar.gz | tar xz --strip-components=1
+curl -sL https://github.com/astral-sh/uv/releases/latest/download/uv-x86_64-unknown-linux-gnu.tar.gz | tar xz --strip-components=1
 ./uv python install 3.13.12 -q
 PY=$(./uv python find 3.13.12)
 export AZCOPY_AUTO_LOGIN_TYPE=MSI AZCOPY_MSI_CLIENT_ID=$BIO_IDENTITY_CLIENT_ID
@@ -52,10 +54,11 @@ venv/bin/pip install -q --no-deps --target deps casefy==1.1.0 jinja2==3.1.6 mark
     typing_inspect==0.9.0
 PYEXE=$(readlink -f venv/bin/python)
 sha() { sha256sum "$1" | cut -d' ' -f1; }
-venv/bin/aeviant rare-disease-materialize-pheval-exomiser-bridge wheels/pheval_exomiser-0.4.12-py3-none-any.whl \
-    wheels/pheval-0.7.14-py3-none-any.whl deps bridge --python-executable "$PYEXE" --python-sha256 "$(sha "$PYEXE")" \
-    > "$OUT/bridge-materialize.json"
-BRIDGE_RECEIPT=$(find bridge -maxdepth 1 -name '*receipt*.json' | head -1)
+# the pipeline requires absolute paths for every input
+venv/bin/aeviant rare-disease-materialize-pheval-exomiser-bridge "$W/wheels/pheval_exomiser-0.4.12-py3-none-any.whl" \
+    "$W/wheels/pheval-0.7.14-py3-none-any.whl" "$W/deps" "$W/bridge" --python-executable "$PYEXE" --python-sha256 "$(sha "$PYEXE")" \
+    > "$OUT/bridge-materialize.json" || { cat "$OUT/bridge-materialize.json"; exit 1; }
+BRIDGE_RECEIPT=$(readlink -f "$(find "$W/bridge" -maxdepth 1 -name '*receipt*.json' | head -1)")
 
 # --- the one Linux difference in the method: the data path in the benchmark's properties ---
 REL=pipe/release/rare-disease-benchmark-v0.1.0/exomiser-pheval-production-campaign-v1/application.properties
@@ -64,11 +67,11 @@ diff <(grep -v '^exomiser.data-directory=' "$REL") <(grep -v '^exomiser.data-dir
     && echo "properties: identical to the Mac's apart from the data path"
 
 # --- the run, through the pipeline's own run-and-freeze command ---
-RUNNER=pipe/work-cycles/public-full-genome-benchmark-v1/campaign/runner
+RUNNER=$W/pipe/work-cycles/public-full-genome-benchmark-v1/campaign/runner
 venv/bin/aeviant rare-disease-run-and-freeze-exomiser-benchmark "$RUNNER/runner-manifest.json" \
     "$OUT/raw-results.json" "$OUT/execution-receipt.json" "$OUT/frozen-results.json" "$W/scratch" \
     --bridge-receipt "$BRIDGE_RECEIPT" --bridge-receipt-sha256 "$(sha "$BRIDGE_RECEIPT")" \
-    --bridge-runtime-directory bridge --dependency-directory deps \
+    --bridge-runtime-directory "$W/bridge" --dependency-directory "$W/deps" \
     --python-executable "$PYEXE" --python-sha256 "$(sha "$PYEXE")" \
     --adapter-source-manifest-sha256 "$ADAPTER_SHA" --runner-manifest-sha256 "$RUNNER_SHA" \
     --expected-campaign-id "$CAMPAIGN" --expected-case-count 1 \
@@ -76,7 +79,7 @@ venv/bin/aeviant rare-disease-run-and-freeze-exomiser-benchmark "$RUNNER/runner-
     --application-properties "$W/application.properties" \
     --java-sha256 "$(sha jre/bin/java)" --jar-sha256 "$JAR_SHA" --library-manifest-sha256 "$LIB_SHA" \
     --properties-sha256 "$(sha application.properties)" --data-manifest-sha256 "$DATA_SHA" \
-    > "$OUT/run.json"
+    > "$OUT/run.json" || { cat "$OUT/run.json"; exit 1; }
 echo "== $(date -u) run finished"
 
 # --- did the cloud reproduce the Mac? compare the frozen rankings ---
@@ -101,4 +104,5 @@ print("REPRODUCED: frozen results match the Mac" if same else "DIFFERENT: frozen
 PY
 
 ./azcopy copy "$OUT/*" "$BLOB/receipts/benchmark/$DAY/" --log-level=WARNING --output-level=essential
+rm -rf "$W/data" "$W/pipe" "$W/venv" "$W/deps" "$W/scratch"   # the node's disk only holds one copy of the 82 GB
 echo "== $(date -u) done"
