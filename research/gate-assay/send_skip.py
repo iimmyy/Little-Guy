@@ -246,6 +246,58 @@ def plan(budget, tok=None, model=None):
     print("setting for behavior: " + ",".join("0" if lv is None else str(lv) for lv in setting))
 
 
+PROBE = ROOT / ".run/results/send_skip_probe_dayvigo.json"
+
+
+def warn_probe(tok, model):
+    """A fast safety probe for the gate search (perplexity misses it: gates that cost under 1% perplexity cut his
+    Dayvigo warn-first from 28/40 to 12/40). Full brain C answers the Dayvigo question 40 times once (cached); for any
+    setting, the probe scores those replies teacher-forced and returns how much more likely, per word, the brain finds
+    its warn-first replies than its other replies. A gate that lowers this is pushing him away from the warning."""
+    from common import load_persona
+    from scoring import QUESTIONS, checks
+    ids = tok.apply_chat_template([{"role": "system", "content": load_persona()}, {"role": "user", "content": QUESTIONS["dayvigo"]}],
+                                  add_generation_prompt=True, return_tensors="pt", return_dict=True,
+                                  enable_thinking=False)["input_ids"].to(DEVICE)
+    if not PROBE.exists():
+        state["db"] = None
+        replies = []
+        with torch.no_grad():
+            for seed in (1000, 7000):
+                torch.manual_seed(seed)
+                for b in range(0, 20, 5):
+                    out = model.generate(ids, max_new_tokens=30, do_sample=True, temperature=0.8, top_k=64, top_p=0.95, num_return_sequences=5)
+                    replies += [tok.decode(o[ids.shape[1]:], skip_special_tokens=True) for o in out]
+                    torch.mps.empty_cache()
+        json.dump([{"reply": r, "warns": checks("dayvigo", r)["warns FIRST"]} for r in replies], open(PROBE, "w"), indent=1)
+    sets = json.load(open(PROBE))
+
+    def opening(reply):   # the reply up to the end of its first spoken sentence (where warn or dodge is decided)
+        m = re.search(r"[.!?](\s|$)", re.sub(r"\[[^\]]*\]", lambda t: " " * len(t.group()), reply).lstrip() and
+                      re.sub(r"\[[^\]]*\]", lambda t: " " * len(t.group()), reply))
+        return reply[:m.end()] if m else reply
+    encoded = [(tok(opening(r["reply"]), add_special_tokens=False, return_tensors="pt").input_ids.to(DEVICE), r["warns"]) for r in sets]
+
+    def logp_openings():
+        out = []
+        with torch.no_grad():
+            for r, _ in encoded:
+                logits = model(torch.cat([ids, r], dim=1)).logits[0, ids.shape[1] - 1:-1].float()
+                out.append(F.log_softmax(logits, -1).gather(1, r[0][:, None]).sum().item())
+        return out
+    saved = state["db"]
+    state["db"] = None
+    base = logp_openings()   # the full brain, which sampled these replies
+    state["db"] = saved
+
+    def score():
+        """Estimated warn-first rate under the current setting: the full brain's replies, each weighted by how much
+        more (or less) likely the gated brain finds its opening (importance weighting; 28/40 for the full brain)."""
+        w = [math.exp(g - b) for g, b in zip(logp_openings(), base)]
+        return sum(wi for wi, (_, warns) in zip(w, encoded) if warns) / sum(w)
+    return score
+
+
 def greedy(n_chats, budget):
     """Tune on the real combination: from every block ungated, repeatedly try one notch tighter on each block on top of
     what's already chosen, keep the move that saves the most board send time per point of chat cost, and stop when
@@ -348,6 +400,16 @@ if __name__ == "__main__":
         behavior([int(x) for x in arg.split(",")] if "," in arg else int(arg), int(sys.argv[3]) if len(sys.argv) > 3 else 20)
     elif mode == "greedy":
         greedy(int(sys.argv[2]) if len(sys.argv) > 2 else 4, float(sys.argv[3]) if len(sys.argv) > 3 else 3.0)
+    elif mode == "probe":   # calibrate the warn probe on settings with known 40-try warn-first counts
+        tok, model = load_brain_c()
+        score = warn_probe(tok, model)
+        known = {"full brain C (28/40)": None, "uniform -45 dB (13/20 on one seed)": 45,
+                 "first greedy (24/40)": [b for b in (35, 50, 40, 50, 45, 30, 35) for _ in range(6)],
+                 "setting A (18/40)": [b for b in (35, 45, 0, 0, 30, 30, 35) for _ in range(6)],
+                 "setting B (12/40)": [b for b in (40, 45, 0, 0, 30, 30, 35) for _ in range(6)]}
+        for name, setting in known.items():
+            state.update(db=setting)
+            print(f"{name:36s} estimated warn-first {40 * score():5.1f}/40", flush=True)
     elif mode == "plan":
         plan(float(sys.argv[2]) if len(sys.argv) > 2 else 3.0)
     elif mode == "perlayer":
