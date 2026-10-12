@@ -8,6 +8,8 @@ settings:
 jobs:
   sweep:
     type: command
+    limits:
+      timeout: 21600
     code: __CODE__
     command: bash run_gate_sweep.sh ${{inputs.master}} ${{inputs.brain}} ${{outputs.results}}
     environment: azureml:lg-gate-sweep@latest

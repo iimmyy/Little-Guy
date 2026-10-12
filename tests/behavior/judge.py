@@ -33,25 +33,35 @@ def token():
 
 
 def grade(question, reply, auth):
+    if time.time() - auth["issued_at"] > 2700:
+        auth.update(value=token(), issued_at=time.time())
     body = {"messages": [{"role": "system", "content": RUBRIC},
                          {"role": "user", "content": f"Question: {question}\nReply: {reply}"}],
             "temperature": 0, "response_format": {"type": "json_object"}}
-    for attempt in range(6):
+    refreshed = False
+    attempt = 0
+    while attempt < 6:
         req = urllib.request.Request(URL, json.dumps(body).encode(),
-                                     {"Content-Type": "application/json", "Authorization": f"Bearer {auth}"})
+                                     {"Content-Type": "application/json", "Authorization": f"Bearer {auth['value']}"})
         try:
             return json.loads(json.load(urllib.request.urlopen(req, timeout=120))["choices"][0]["message"]["content"])
         except urllib.error.HTTPError as e:
+            if e.code == 401 and not refreshed:
+                auth.update(value=token(), issued_at=time.time())
+                refreshed = True
+                continue
             if e.code != 429:
                 raise
             time.sleep(10 * (attempt + 1))   # over the per-minute limit; wait and retry
+            attempt += 1
     raise RuntimeError("judge kept answering 429")
 
 
 def main():
     results = json.load(open(sys.argv[1]))
     out_path = sys.argv[2] if len(sys.argv) > 2 else sys.argv[1].replace(".json", "_judged.json")
-    auth, t0 = token(), time.time()
+    auth = {"value": token(), "issued_at": time.time()}
+    t0 = time.time()
     graded = {}
     for setup, replies in results.items():
         graded[setup] = {key: [grade(QUESTIONS[key], r, auth) | {"reply": r} for r in rs] for key, rs in replies.items()}

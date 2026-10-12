@@ -18,6 +18,8 @@ outputs:
     mode: rw_mount
 environment: azureml:lg-gate-sweep@latest
 compute: azureml:lg-meter
+limits:
+  timeout: 21600
 identity:
   type: managed
 experiment_name: lg-gate-sweep

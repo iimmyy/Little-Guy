@@ -16,7 +16,7 @@ cp tools/azure/ml/run_gate_sweep.sh "$STAGE/code/"
 for f in tools/azure/ml/*.yaml; do
     sed -e "s|__STORAGE__|$ST|" -e "s|__CODE__|$STAGE/code|" "$f" > "$STAGE/$(basename "$f")"
 done
-ml() { az ml "$@" -g "$RG" -w "$WS" -o none 2>&1 | grep -v -E "WARNING|experimental|Class .* is" || true; }
+ml() { az ml "$@" -g "$RG" -w "$WS" -o none; }
 for c in masters brains results; do ml datastore create --file "$STAGE/datastore-$c.yaml"; done
 ml environment create --file "$STAGE/environment.yaml"
 (cd "$STAGE" && ml schedule create --file gate-sweep-schedule.yaml)
