@@ -8,9 +8,11 @@ cd "$(dirname "$0")/../.."
 PIPE=${1:?path to the aeviant-pipeline checkout}
 ST=aevbio$(grep -E '^LITTLEGUY_AZ_SUFFIX=' littleguy.env | cut -d= -f2)
 TMP=$(mktemp -d)
-tar czf "$TMP/pipeline.tar.gz" -C "$(dirname "$PIPE")" --exclude="$(basename "$PIPE")/runtime-data" \
-    --exclude="*/__pycache__" --exclude="*/.git" "$(basename "$PIPE")"
-az storage blob upload --account-name "$ST" -c pipeline -n "pipeline-$(date -u +%F).tar.gz" -f "$TMP/pipeline.tar.gz" \
+python3 tools/azure/bio/public_snapshot.py "$PIPE" "$TMP/pipeline.tar.gz"
+NAME="pipeline-public-benchmark-$(date -u +%F).tar.gz"
+az storage blob upload --account-name "$ST" -c pipeline -n "$NAME" -f "$TMP/pipeline.tar.gz" \
+    --auth-mode login --overwrite --no-progress -o none
+az storage blob upload --account-name "$ST" -c pipeline -n "$NAME.json" -f "$TMP/pipeline.tar.gz.json" \
     --auth-mode login --overwrite --no-progress -o none
 echo "pipeline code sent ($(du -h "$TMP/pipeline.tar.gz" | cut -f1))"
 rm -rf "$TMP"
