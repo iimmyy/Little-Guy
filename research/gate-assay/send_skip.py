@@ -305,8 +305,9 @@ def greedy(n_chats, budget):
     t0 = time.time()
     tok, model = load_brain_c()
     all_chats = passages()
-    tune = [tok(c, return_tensors="pt").input_ids[:, :1024].to(DEVICE) for c in all_chats[40:40 + n_chats]]
-    unseen = [tok(c, return_tensors="pt").input_ids[:, :1024].to(DEVICE) for c in all_chats[44:52]]
+    n_tok = int(os.environ.get("SEND_SKIP_TOKENS", "1024"))   # shorter passages keep the CPU job to a few hours
+    tune = [tok(c, return_tensors="pt").input_ids[:, :n_tok].to(DEVICE) for c in all_chats[40:40 + n_chats]]
+    unseen = [tok(c, return_tensors="pt").input_ids[:, :n_tok].to(DEVICE) for c in all_chats[44:52]]
 
     def measure(setting, texts):
         state.update(db=setting, muted=defaultdict(lambda: 0), total=defaultdict(int))

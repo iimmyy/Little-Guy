@@ -10,5 +10,6 @@ open("wikitext.txt", "w").write("".join(pd.read_parquet(url)["text"]))
 PY
 DAY=$(date -u +%F)
 mkdir -p "$3/$DAY"
-SEND_SKIP_MASTER="$1" SEND_SKIP_BRAIN="$2" SEND_SKIP_TEXT=wikitext.txt SEND_SKIP_OUT="$3/$DAY/gate_sweep.json" \
-    python research/gate-assay/send_skip.py greedy 4 3 2>&1 | grep --line-buffered -v "Loading weights" | tee "$3/$DAY/gate_sweep.log"
+# CPU is far slower than the Mac's GPU: 2 tuning passages of 512 tokens keep a night to a few hours
+SEND_SKIP_MASTER="$1" SEND_SKIP_BRAIN="$2" SEND_SKIP_TEXT=wikitext.txt SEND_SKIP_OUT="$3/$DAY/gate_sweep.json" SEND_SKIP_TOKENS=512 \
+    python research/gate-assay/send_skip.py greedy 2 3 2>&1 | grep --line-buffered -v "Loading weights" | tee "$3/$DAY/gate_sweep.log"
