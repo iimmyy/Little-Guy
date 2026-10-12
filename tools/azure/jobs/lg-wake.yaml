@@ -1,0 +1,25 @@
+# Wakes the compile VM at 00:30 UTC; the VM's boot service runs the nightly check-up, and its auto-shutdown
+# puts it back to sleep at 07:00 UTC. Signs in with the job's own managed identity (Virtual Machine Contributor
+# on the VM only). Created by tools/azure/stage2.sh.
+location: eastus
+identity:
+  type: SystemAssigned
+properties:
+  environmentId: __ENV_ID__
+  configuration:
+    triggerType: Schedule
+    replicaTimeout: 900
+    replicaRetryLimit: 2
+    scheduleTriggerConfig:
+      cronExpression: "30 0 * * *"
+      parallelism: 1
+      replicaCompletionCount: 1
+  template:
+    containers:
+      - name: wake
+        image: mcr.microsoft.com/azure-cli:latest
+        command: ["/bin/sh", "-c"]
+        args: ["az login --identity -o none && az vm start -g littleguy -n lg-compile -o none && echo woke lg-compile"]
+        resources:
+          cpu: 0.25
+          memory: 0.5Gi

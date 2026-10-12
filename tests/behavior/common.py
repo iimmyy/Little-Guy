@@ -3,8 +3,8 @@ import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-RUN = ROOT / ".run"  # big local files (weights, logs, results), not in git
-SERVER = RUN / "lcpp-src/build-mac/bin/llama-server"
+RUN = Path(os.environ.get("LITTLEGUY_RUN", ROOT / ".run"))  # big local files (weights, logs, results), not in git
+SERVER = Path(os.environ.get("LITTLEGUY_SERVER", RUN / "lcpp-src/build-mac/bin/llama-server"))  # the cloud job uses its own build
 BRAINS = RUN / "weights/brains"
 EXPERIMENTS = RUN / "weights/experiments"
 DRAFTER = RUN / "weights/drafter"

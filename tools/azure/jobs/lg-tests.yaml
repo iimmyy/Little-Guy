@@ -1,0 +1,35 @@
+# The nightly brain tests: 02:00 UTC, after the compile VM's 00:30 build has refreshed the portable server.
+# The job fetches tools/azure/jobs/nightly_tests.sh from storage each night (tools/azure/push_source.sh sends it),
+# so changing the tests never needs a redeploy. Signs in with its own managed identity (blob read/write on the
+# workspace storage, and the judge). Created by tools/azure/stage2.sh.
+location: eastus
+identity:
+  type: SystemAssigned
+properties:
+  environmentId: __ENV_ID__
+  configuration:
+    triggerType: Schedule
+    replicaTimeout: 21600
+    replicaRetryLimit: 0
+    scheduleTriggerConfig:
+      cronExpression: "0 2 * * *"
+      parallelism: 1
+      replicaCompletionCount: 1
+  template:
+    containers:
+      - name: tests
+        image: mcr.microsoft.com/azure-cli:latest
+        command: ["/bin/bash", "-c"]
+        args: ["az login --identity -o none && az storage blob download --account-name $LITTLEGUY_STORAGE -c build -n nightly_tests.sh -f /tmp/nightly_tests.sh --auth-mode login -o none && bash /tmp/nightly_tests.sh"]
+        env:
+          - name: LITTLEGUY_STORAGE
+            value: __STORAGE__
+          - name: LITTLEGUY_AZ_SUFFIX
+            value: __SUFFIX__
+          - name: LG_BRAINS
+            value: "C=clean-Q2_K-C C2=clean-Q2_K-C2 D=clean-Q2_K-D 4bit=qat-Q4_0-f16proj"
+          - name: LG_N
+            value: "40"
+        resources:
+          cpu: 4
+          memory: 8Gi
