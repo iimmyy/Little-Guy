@@ -1,0 +1,29 @@
+# The same job as a one-step pipeline: Azure ML schedules accept pipeline jobs, not plain command jobs.
+$schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
+type: pipeline
+experiment_name: lg-gate-sweep
+display_name: per-layer gate search on public text
+settings:
+  default_compute: azureml:lg-meter
+jobs:
+  sweep:
+    type: command
+    code: __CODE__
+    command: bash run_gate_sweep.sh ${{inputs.master}} ${{inputs.brain}} ${{outputs.results}}
+    environment: azureml:lg-gate-sweep@latest
+    identity:
+      type: managed
+    inputs:
+      master:
+        type: uri_folder
+        path: azureml://datastores/lgmasters/paths/e4b-qat
+        mode: ro_mount
+      brain:
+        type: uri_file
+        path: azureml://datastores/lgbrains/paths/clean-Q2_K-C.gguf
+        mode: download
+    outputs:
+      results:
+        type: uri_folder
+        path: azureml://datastores/lgresults/paths/ml-gate-sweep/
+        mode: rw_mount

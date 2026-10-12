@@ -1,0 +1,6 @@
+# Identity-based (no keys): jobs read and write with the compute cluster's managed identity.
+$schema: https://azuremlschemas.azureedge.net/latest/azureBlob.schema.json
+name: lgbrains
+type: azure_blob
+account_name: __STORAGE__
+container_name: brains

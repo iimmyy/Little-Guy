@@ -1,0 +1,8 @@
+$schema: https://azuremlschemas.azureedge.net/latest/schedule.schema.json
+name: lg-gate-sweep-nightly
+display_name: nightly per-layer gate search (public text)
+trigger:
+  type: cron
+  expression: "0 3 * * *"
+  time_zone: UTC
+create_job: ./gate-sweep-pipeline.yaml

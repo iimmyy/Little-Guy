@@ -37,9 +37,23 @@ except ImportError:
 import gguf
 
 sys.path.insert(0, str(ROOT / "tests/behavior"))
+import os
 from mute_test import CHATS, DEVICE, GENERAL, MASTER, perplexity
 
-BRAIN_C = ROOT / ".run/weights/experiments/clean-Q2_K-C.gguf"
+# the cloud job (tools/azure/jobs/ml-gate-sweep.yaml) points these at its mounted copies and at public text;
+# his conversations never leave the Mac, so off the Mac the search tunes on SEND_SKIP_TEXT
+MASTER = Path(os.environ.get("SEND_SKIP_MASTER", MASTER))
+BRAIN_C = Path(os.environ.get("SEND_SKIP_BRAIN", ROOT / ".run/weights/experiments/clean-Q2_K-C.gguf"))
+if DEVICE != "mps":
+    torch.mps.empty_cache = lambda: None   # perplexity() frees Mac GPU memory between passages
+
+
+def passages():
+    """His chats on the Mac; with SEND_SKIP_TEXT set, 4,000-character passages of that text file instead."""
+    if os.environ.get("SEND_SKIP_TEXT"):
+        text = Path(os.environ["SEND_SKIP_TEXT"]).read_text()
+        return [text[i:i + 4000] for i in range(0, len(text) - 4000, 4000)]
+    return [p for p in re.split(r"(?=<\|turn>system)", CHATS.read_text()) if p.strip()]
 SWAPS = {  # master name inside each layer -> brain C name
     "mlp.gate_proj": "ffn_gate", "mlp.up_proj": "ffn_up", "mlp.down_proj": "ffn_down",
     "self_attn.q_proj": "attn_q", "self_attn.k_proj": "attn_k", "self_attn.v_proj": "attn_v",
@@ -238,7 +252,7 @@ def greedy(n_chats, budget):
     every next move would cross the budget. Then check the result on 8 chats the tuning never saw."""
     t0 = time.time()
     tok, model = load_brain_c()
-    all_chats = [p for p in re.split(r"(?=<\|turn>system)", CHATS.read_text()) if p.strip()]
+    all_chats = passages()
     tune = [tok(c, return_tensors="pt").input_ids[:, :1024].to(DEVICE) for c in all_chats[40:40 + n_chats]]
     unseen = [tok(c, return_tensors="pt").input_ids[:, :1024].to(DEVICE) for c in all_chats[44:52]]
 
@@ -250,14 +264,17 @@ def greedy(n_chats, budget):
         return ppl, sum(1 - send_time(silent.get(l, 0.0)) for l in range(42)) / 42
 
     full, _ = measure(None, tune)
+    table = json.load(open(ROOT / ".run/results/send_skip_perlayer.json")) if (ROOT / ".run/results/send_skip_perlayer.json").exists() else {}
+    worthless = lambda b, lv: f"{b},{lv}" in table and all(send_time(x) >= 1 for x in table[f"{b},{lv}"][1].values())
     combo, cost_now, saved_now = [None] * 7, 0.0, 0.0
     while True:
         moves = []
-        for b in range(7):
-            i = LEVELS.index(combo[b])
-            if i + 1 == len(LEVELS):
+        for b, lv in ((b, lv) for b in range(7) for lv in LEVELS[LEVELS.index(combo[b]) + 1:]):
+            # a block saves nothing until skipping beats today's recipe (about 53% silent on the board), so a move
+            # may jump several notches; levels the per-block table says stay below break-even are not tried
+            if worthless(b, lv):
                 continue
-            trial = combo[:b] + [LEVELS[i + 1]] + combo[b + 1:]
+            trial = combo[:b] + [lv] + combo[b + 1:]
             ppl, saved = measure([trial[l // 6] for l in range(42)], tune)
             cost = 100 * (ppl / full - 1)
             if cost <= budget and saved > saved_now:
@@ -273,6 +290,10 @@ def greedy(n_chats, budget):
     ppl_u, saved_u = measure(setting, unseen)
     print(f"unseen chats (44-51): send time saved {100 * saved_u:.1f}%, chat cost {100 * (ppl_u / full_u - 1):+.2f}%")
     print("setting for behavior: " + ",".join("0" if lv is None else str(lv) for lv in setting))
+    if os.environ.get("SEND_SKIP_OUT"):
+        json.dump({"chosen": [lv for lv in combo], "unseen_send_time_saved": saved_u,
+                   "unseen_cost_pct": 100 * (ppl_u / full_u - 1), "text": os.environ.get("SEND_SKIP_TEXT", "his chats")},
+                  open(os.environ["SEND_SKIP_OUT"], "w"), indent=1)
     print(f"\ndone in {time.time() - t0:.0f} s")
 
 

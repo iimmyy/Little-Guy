@@ -1,0 +1,14 @@
+# The gate search on CPU: PyTorch (CPU build) and the Transformers release that reads Gemma 4.
+name: lg-gate-sweep
+channels: [conda-forge]
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      - --extra-index-url https://download.pytorch.org/whl/cpu
+      - torch
+      - transformers==5.7.0
+      - safetensors
+      - numpy
+      - pandas
+      - pyarrow
