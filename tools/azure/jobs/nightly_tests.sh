@@ -57,5 +57,8 @@ python3 tests/behavior/validate_results.py "$W/run/results/behavior/all_brains.j
 (cd tests/behavior && python3 judge.py "$W/run/results/behavior/all_brains.json")
 python3 tests/behavior/validate_results.py "$W/run/results/behavior/all_brains.json" --brains "$LG_BRAINS" --samples "$LG_N" \
     --judged "$W/run/results/behavior/all_brains_judged.json"
+python3 tests/behavior/search_results.py upload \
+    "$W/run/results/behavior/all_brains_judged.json" "$RUN_ID" "$DAY" \
+    | tee "$W/run/results/behavior/search-receipt.json"
 for f in run/results/behavior/*.json; do blob upload -c results -n "nightly/$DAY/$(basename "$f")" -f "$f" --overwrite; done
 echo "== $(date -u) tests done"

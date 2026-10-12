@@ -9,7 +9,7 @@ properties:
   environmentId: __ENV_ID__
   configuration:
     triggerType: Schedule
-    replicaTimeout: 21600
+    replicaTimeout: 36000
     replicaRetryLimit: 0
     scheduleTriggerConfig:
       cronExpression: "0 2 * * *"
@@ -30,6 +30,8 @@ properties:
             value: "C=clean-Q2_K-C C2=clean-Q2_K-C2 D=clean-Q2_K-D 4bit=qat-Q4_0-f16proj"
           - name: LG_N
             value: "120"
+          - name: LG_SEARCH_ENDPOINT
+            value: "https://lg-review-__SUFFIX__.search.windows.net"
         resources:
           cpu: 4
           memory: 8Gi
