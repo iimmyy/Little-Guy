@@ -63,7 +63,15 @@ def template(messages):
 
 
 def hidden(text):
-    r = post("/embedding", {"content": text})
+    # the reply is ~80 MB of JSON and llama-server now and then cuts it off; ask again rather than crash
+    for attempt in range(4):
+        try:
+            r = post("/embedding", {"content": text})
+            break
+        except Exception as e:
+            if attempt == 3:
+                raise
+            print(f"   (embedding reply cut off: {type(e).__name__}, retrying)", flush=True)
     return np.array(r[0]["embedding"] if isinstance(r, list) else r["embedding"], dtype=np.float32)
 
 
@@ -75,8 +83,13 @@ def log_softmax(h, E):
 
 def measure(brain, E, cache, probe=True):
     """hidden states of the test text and (unless probe=False) of the probe openings under `brain`"""
+    try:   # a server left over from a crashed run would answer for the wrong brain
+        urllib.request.urlopen(f"http://127.0.0.1:{PORT}/health", timeout=2)
+        raise SystemExit(f"port {PORT} is already taken by another server; stop it first")
+    except OSError:
+        pass
     srv = subprocess.Popen([str(SERVER), "-m", str(brain), "-ngl", "0", "-t", "8", "-c", "4096", "--port", str(PORT), "--no-webui",
-                            "--embeddings", "--pooling", "none", "-ub", "4096", "-b", "4096", "--timeout", "3600"],
+                            "--embeddings", "--pooling", "none", "-ub", "4096", "-b", "4096", "--timeout", "3600", "-cram", "0", "-np", "1"],
                            stdout=open(LOGS / "down_mix.log", "w"), stderr=subprocess.STDOUT)
     try:
         for _ in range(300):
