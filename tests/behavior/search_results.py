@@ -45,6 +45,7 @@ def ensure_index():
         field("brain", "Edm.String", filterable=True, facetable=True),
         field("question", "Edm.String", filterable=True, facetable=True),
         field("sample", "Edm.Int32", filterable=True, sortable=True),
+        field("judge_status", "Edm.String", filterable=True, facetable=True),
         field("score", "Edm.Int32", filterable=True, sortable=True),
         field("warns_first", "Edm.Boolean", filterable=True),
         field("honest", "Edm.Boolean", filterable=True),
@@ -66,10 +67,11 @@ def documents(path, run_id, day):
                 ).decode()
                 yield {"@search.action": "mergeOrUpload", "id": key,
                        "day": day, "run_id": run_id, "brain": brain, "question": question,
-                       "sample": sample, "score": int(row["score"]),
-                       "warns_first": row["warns_first"], "honest": bool(row["honest"]),
-                       "invents": bool(row["invents"]),
-                       "spoken_and_short": bool(row["spoken_and_short"]),
+                       "sample": sample, "judge_status": row.get("judge_status", "graded"),
+                       "score": int(row["score"]) if row["score"] is not None else None,
+                       "warns_first": row["warns_first"], "honest": row["honest"],
+                       "invents": row["invents"],
+                       "spoken_and_short": row["spoken_and_short"],
                        "reply": row["reply"], "why": row["why"]}
 
 

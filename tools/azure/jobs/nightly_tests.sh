@@ -16,12 +16,21 @@ finish() {
     rc=$?
     trap - EXIT
     set +e
-    python3 - "$W/run/results/behavior/job-receipt.json" "$RUN_ID" "$rc" "$LG_BRAINS" "$LG_N" <<'PY'
-import datetime, json, sys
-path, run_id, code, brains, samples = sys.argv[1:]
-json.dump({"run_id": run_id, "finished_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+    python3 - "$W/run/results/behavior/job-receipt.json" "$RUN_ID" "$rc" "$LG_BRAINS" "$LG_N" \
+        "$W/run/results/behavior/all_brains_judged.json" <<'PY'
+import datetime, json, os, sys
+path, run_id, code, brains, samples, judged_path = sys.argv[1:]
+receipt = {"run_id": run_id, "finished_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
            "exit_code": int(code), "status": "completed" if code == "0" else "failed",
-           "brains": brains.split(), "samples_per_question": int(samples)}, open(path, "w"), indent=2)
+           "brains": brains.split(), "samples_per_question": int(samples)}
+if os.path.exists(judged_path):
+    judged = json.load(open(judged_path))
+    rows = [row for questions in judged.values() for entries in questions.values() for row in entries]
+    filtered = sum(row.get("judge_status") == "filtered" for row in rows)
+    receipt["judge_dispositions"] = {"graded": len(rows) - filtered, "filtered": filtered}
+    if code == "0" and filtered:
+        receipt["status"] = "completed_with_filtered"
+json.dump(receipt, open(path, "w"), indent=2)
 PY
     for f in "$W"/run/results/behavior/*; do
         blob upload -c results -n "nightly/$DAY/runs/$RUN_ID/$(basename "$f")" -f "$f" --overwrite || rc=1
@@ -56,7 +65,7 @@ EOF
 python3 tests/behavior/validate_results.py "$W/run/results/behavior/all_brains.json" --brains "$LG_BRAINS" --samples "$LG_N"
 (cd tests/behavior && python3 judge.py "$W/run/results/behavior/all_brains.json")
 python3 tests/behavior/validate_results.py "$W/run/results/behavior/all_brains.json" --brains "$LG_BRAINS" --samples "$LG_N" \
-    --judged "$W/run/results/behavior/all_brains_judged.json"
+    --judged "$W/run/results/behavior/all_brains_judged.json" --allow-filtered
 python3 tests/behavior/search_results.py upload \
     "$W/run/results/behavior/all_brains_judged.json" "$RUN_ID" "$DAY" \
     | tee "$W/run/results/behavior/search-receipt.json"

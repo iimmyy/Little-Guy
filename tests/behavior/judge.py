@@ -8,7 +8,7 @@ Signs in with the Azure CLI (on the Mac: your login; in the nightly job: the job
 Usage: python judge.py <results.json> [out.json]
 Env: LITTLEGUY_JUDGE_URL, or LITTLEGUY_AZ_SUFFIX to find the workspace's judge deployment
 """
-import json, subprocess, sys, time, urllib.error, urllib.request
+import argparse, json, os, subprocess, sys, time, urllib.error, urllib.request
 
 from common import _settings
 from scoring import QUESTIONS
@@ -50,6 +50,20 @@ def grade(question, reply, auth):
                 auth.update(value=token(), issued_at=time.time())
                 refreshed = True
                 continue
+            if e.code == 400:
+                try:
+                    error = json.loads(e.read()).get("error", {})
+                except (ValueError, UnicodeError):
+                    raise e
+                if error.get("code") == "content_filter":
+                    filters = error.get("innererror", {}).get("content_filter_result", {})
+                    categories = sorted(name for name, detail in filters.items()
+                                        if isinstance(detail, dict) and detail.get("filtered") is True)
+                    return {"judge_status": "filtered", "filter_categories": categories,
+                            "warns_first": None, "honest": None, "invents": None,
+                            "spoken_and_short": None, "score": None,
+                            "why": "Azure content filter blocked grading"}
+                raise e
             if e.code != 429:
                 raise
             time.sleep(10 * (attempt + 1))   # over the per-minute limit; wait and retry
@@ -58,15 +72,49 @@ def grade(question, reply, auth):
 
 
 def main():
-    results = json.load(open(sys.argv[1]))
-    out_path = sys.argv[2] if len(sys.argv) > 2 else sys.argv[1].replace(".json", "_judged.json")
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("results")
+    parser.add_argument("out", nargs="?")
+    parser.add_argument("--resume", action="store_true")
+    args = parser.parse_args()
+    results = json.load(open(args.results))
+    out_path = args.out or args.results.replace(".json", "_judged.json")
+    graded = json.load(open(out_path)) if args.resume and os.path.exists(out_path) else {}
+    if set(graded) - set(results):
+        raise ValueError("resume file has unexpected brains")
+
+    def save():
+        tmp = out_path + ".tmp"
+        with open(tmp, "w") as f:
+            json.dump(graded, f, indent=1, ensure_ascii=False)
+        os.replace(tmp, out_path)
+
     auth = {"value": token(), "issued_at": time.time()}
     t0 = time.time()
-    graded = {}
     for setup, replies in results.items():
-        graded[setup] = {key: [grade(QUESTIONS[key], r, auth) | {"reply": r} for r in rs] for key, rs in replies.items()}
+        rows = graded.setdefault(setup, {})
+        if set(rows) - set(replies):
+            raise ValueError(f"{setup}: resume file has unexpected questions")
+        for key, samples in replies.items():
+            existing = rows.setdefault(key, [])
+            if len(existing) > len(samples) or any(row.get("reply") != samples[i]
+                                                  for i, row in enumerate(existing)):
+                raise ValueError(f"{setup}/{key}: resume replies do not match")
+            for index in range(len(existing), len(samples)):
+                try:
+                    existing.append(grade(QUESTIONS[key], samples[index], auth) | {"reply": samples[index]})
+                except urllib.error.HTTPError as error:
+                    save()
+                    print(f"judge HTTP {error.code} at {setup}/{key}/{index}", file=sys.stderr, flush=True)
+                    raise
+                if len(existing) % 25 == 0:
+                    save()
+            save()
         print(f"judged {setup} [{time.time() - t0:.0f} s]", flush=True)
-    json.dump(graded, open(out_path, "w"), indent=1, ensure_ascii=False)
+    filtered = sum(row.get("judge_status") == "filtered" for questions in graded.values()
+                   for samples in questions.values() for row in samples)
+    total = sum(len(samples) for questions in graded.values() for samples in questions.values())
+    print(f"judge dispositions: {total - filtered} graded, {filtered} filtered", flush=True)
     print(f"\n{'judge':28s}" + "".join(f"{s:>22s}" for s in graded))
     for key in QUESTIONS:
         for g in GRADES + ("score",):
