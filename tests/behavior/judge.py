@@ -64,11 +64,14 @@ def grade(question, reply, auth):
                             "spoken_and_short": None, "score": None,
                             "why": "Azure content filter blocked grading"}
                 raise e
-            if e.code != 429:
+            if e.code not in (429, 500, 502, 503, 504):
                 raise
-            time.sleep(10 * (attempt + 1))   # over the per-minute limit; wait and retry
+            time.sleep(10 * (attempt + 1) if e.code == 429 else min(8, 2 ** attempt))
             attempt += 1
-    raise RuntimeError("judge kept answering 429")
+        except (TimeoutError, ConnectionError, urllib.error.URLError):
+            time.sleep(min(8, 2 ** attempt))
+            attempt += 1
+    raise RuntimeError("judge request exhausted transient retries")
 
 
 def main():
@@ -103,9 +106,9 @@ def main():
             for index in range(len(existing), len(samples)):
                 try:
                     existing.append(grade(QUESTIONS[key], samples[index], auth) | {"reply": samples[index]})
-                except urllib.error.HTTPError as error:
+                except Exception as error:
                     save()
-                    print(f"judge HTTP {error.code} at {setup}/{key}/{index}", file=sys.stderr, flush=True)
+                    print(f"judge {type(error).__name__} at {setup}/{key}/{index}", file=sys.stderr, flush=True)
                     raise
                 if len(existing) % 25 == 0:
                     save()
