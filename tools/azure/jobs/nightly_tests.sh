@@ -7,6 +7,13 @@
 set -euo pipefail
 ST=$LITTLEGUY_STORAGE
 DAY=$(date -u +%F)
+AB_SEED0=$(python3 - "$DAY" "$LG_N" <<'PY'
+import datetime, sys
+day = datetime.date.fromisoformat(sys.argv[1])
+print(1000 + int(sys.argv[2]) * (day - datetime.date(2026, 10, 14)).days)
+PY
+)
+export AB_SEED0
 W=/work
 RUN_ID=$(date -u +%Y%m%dT%H%M%SZ)-$(python3 -c 'import uuid; print(uuid.uuid4().hex[:8])')
 mkdir -p "$W/run/results/behavior"
@@ -16,13 +23,13 @@ finish() {
     rc=$?
     trap - EXIT
     set +e
-    python3 - "$W/run/results/behavior/job-receipt.json" "$RUN_ID" "$rc" "$LG_BRAINS" "$LG_N" \
+    python3 - "$W/run/results/behavior/job-receipt.json" "$RUN_ID" "$rc" "$LG_BRAINS" "$LG_N" "$AB_SEED0" \
         "$W/run/results/behavior/all_brains_judged.json" <<'PY'
 import datetime, json, os, sys
-path, run_id, code, brains, samples, judged_path = sys.argv[1:]
+path, run_id, code, brains, samples, seed0, judged_path = sys.argv[1:]
 receipt = {"run_id": run_id, "finished_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
            "exit_code": int(code), "status": "completed" if code == "0" else "failed",
-           "brains": brains.split(), "samples_per_question": int(samples)}
+           "brains": brains.split(), "samples_per_question": int(samples), "seed0": int(seed0)}
 if os.path.exists(judged_path):
     judged = json.load(open(judged_path))
     rows = [row for questions in judged.values() for entries in questions.values() for row in entries]
@@ -45,7 +52,7 @@ blob download -c build -n tests.tar.gz -f tests.tar.gz
 python3 -c "import tarfile; tarfile.open('tests.tar.gz').extractall(filter='data')"   # the image has no tar
 blob download -c build -n nightly/latest/llama-server-x86 -f llama-server && chmod +x llama-server
 export LITTLEGUY_RUN=$W/run LITTLEGUY_SERVER=$W/llama-server
-echo "== $(date -u) tests start on $(nproc) cores"
+echo "== $(date -u) tests start on $(nproc) cores, seeds $AB_SEED0-$((AB_SEED0 + LG_N - 1))"
 
 for pair in $LG_BRAINS; do
     name=${pair%%=*}; file=${pair#*=}.gguf
