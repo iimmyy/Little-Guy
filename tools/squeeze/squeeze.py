@@ -6,7 +6,9 @@ build the result from whole-model "donor" files, and measure it. Runs on a Linux
   squeeze.py <config> probe       one variant per (group, layer block, level) on the base recipe -> probes.json
   squeeze.py <config> allocate    greedy: best KL drop per extra byte until the budget -> recipe.json
   squeeze.py <config> refine      like allocate, but re-measures: each round probes the most promising upgrades on
-                                  top of the current mix and keeps the best few -> recipe.json (gains don't add up)
+                                  top of the current mix and keeps the best few -> recipe.json (gains don't add up).
+                                  With "target_kl" in the config it stops at the first mix at or below that KL
+                                  (quality-first: the smallest file as good as a reference, e.g. the official 4-bit)
   squeeze.py <config> build       assemble recipe.json from the donors -> <name>.gguf
   squeeze.py <config> score FILE  KL and same-top vs the reference on the eval text(s)
 
@@ -184,6 +186,7 @@ def refine():
     base_b = P["base"]["bytes"]
     budget = C["budget_gb"] * 1e9
     per_round, keep = C.get("refine_probe", 12), C.get("refine_keep", 3)
+    target = C.get("target_kl")   # quality-first: stop at the first mix whose measured KL is at or below this
     est = {}   # "group:block" -> {level: (extra bytes vs base, estimated KL drop)}
     for k, v in P.items():
         if k != "base":
@@ -195,6 +198,8 @@ def refine():
     rf = OUT / "refine.json"
     hist = []
     while True:
+        if target is not None and cur_k <= target:
+            log(f"target KL {target} reached"); break
         cands = []
         for gb, opts in est.items():
             have = cur["blocks"].get(gb)
