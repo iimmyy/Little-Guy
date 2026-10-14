@@ -1,7 +1,7 @@
 From d2fbdeb0984c6d506a8a8980aa82f6fca27868e4 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Tue, 13 Oct 2026 21:29:36 -0700
-Subject: [PATCH 15/30] ggml-hexagon on v68: whole-brain NPU runs; Q2_K and
+Subject: [PATCH 15/31] ggml-hexagon on v68: whole-brain NPU runs; Q2_K and
  Q4_0 in 32-row tiles
 
 - v68 DSP dies on DMA writes from VTCM to DDR and on DMA started from the

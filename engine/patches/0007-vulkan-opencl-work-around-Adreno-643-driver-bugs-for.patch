@@ -1,7 +1,7 @@
 From 092657e9f40993d018509a951f1af9204422f33d Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Sun, 11 Oct 2026 10:19:36 -0700
-Subject: [PATCH 07/30] vulkan/opencl: work around Adreno 643 driver bugs for
+Subject: [PATCH 07/31] vulkan/opencl: work around Adreno 643 driver bugs for
  q2_K
 
 Turnip (Mesa 25.2 and 26.2) returns wrong values for single-byte storage-buffer reads on Adreno 643: every mat-vec shader that reads block bytes (q2_K, q3_K, q6_K) fails test-backend-ops, while those reading 16/32-bit words (q4_K, q5_K) pass. The q2_K mat-vec and the q2_K mul_mm loader now read scales through their 32-bit words (and the mat-vec no longer stages them in a shared cache); q2_K MUL_MAT passes for 1-4 and 9 columns, and Gemma 4 E4B (clean q2_K brain, output on CPU) answers correctly on the GPU. 5-8 column mat-vec variants still hit hangcheck. Adds LG_VK_NO_SUBGROUPS / LG_VK_NO_FORCE_SG diagnostics. OpenCL cpy.cl: route ne00 through a volatile so the Adreno 1.855 compiler does not emit IMIN with two constant registers.

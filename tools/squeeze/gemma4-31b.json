@@ -1,0 +1,36 @@
+{
+ "name": "31b-squeezed",
+ "scratch": "/scratch",
+ "work": "/mnt/squeeze",
+ "engine_bin": "/scratch/src/build/bin",
+ "gguf_py": "/scratch/src/gguf-py",
+ "bf16": "/scratch/31b-bf16.gguf",
+ "frame": "/scratch/31b-C-preview.gguf",
+ "threads": 16,
+ "n_layer": 60,
+ "block": 15,
+ "groups": ["attn_q", "attn_k", "attn_v", "attn_output", "ffn_gate", "ffn_up", "ffn_down"],
+ "donors": [
+  {"file": "/scratch/31b-q2rest.gguf", "ftype": "Q4_0", "env": {"LG_Q2K_CAREFUL": "1"},
+   "args": ["--tensor-type", "ffn_down=q2_k", "--tensor-type", "attn_output=q2_k", "--tensor-type", "attn_v=q2_k",
+            "--tensor-type", "ffn_gate=q4_0", "--tensor-type", "ffn_up=q4_0", "--tensor-type", "attn_q=q4_0",
+            "--tensor-type", "attn_k=q4_0", "--token-embedding-type", "q4_0"]},
+  {"file": "/scratch/31b-q3k.gguf", "ftype": "Q4_0",
+   "args": ["--tensor-type", "ffn_down=q3_k", "--tensor-type", "attn_output=q3_k", "--tensor-type", "attn_v=q3_k",
+            "--tensor-type", "ffn_gate=q3_k", "--tensor-type", "ffn_up=q3_k", "--tensor-type", "attn_q=q3_k",
+            "--tensor-type", "attn_k=q3_k", "--token-embedding-type", "q4_0"]}
+ ],
+ "levels": {
+  "2": {"files": ["/scratch/31b-C-preview.gguf", "/scratch/31b-q2rest.gguf"], "type": "Q2_K"},
+  "3": {"files": ["/scratch/31b-q3k.gguf"], "type": "Q3_K"},
+  "4": {"files": ["/scratch/google/gemma-4-31B_q4_0-it.gguf"], "type": "Q4_0"}
+ },
+ "base": {"attn_q": "2", "attn_k": "2", "attn_v": "2", "attn_output": "2", "ffn_gate": "2", "ffn_up": "2", "ffn_down": "2"},
+ "probe_levels": ["3", "4"],
+ "probe_chunks": 2,
+ "budget_gb": 15.0,
+ "evals": [
+  {"name": "chat", "text": "/scratch/chat_eval.txt", "base": "/scratch/31b_kl_chat.bin", "chunks": 4, "env": {"LG_PPL_SPECIAL": "1"}},
+  {"name": "raw", "text": "/scratch/kl_text.txt", "base": "/scratch/31b_kl_base.bin", "chunks": 4}
+ ]
+}

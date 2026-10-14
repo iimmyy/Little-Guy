@@ -1,7 +1,7 @@
 From 01d31d0f1b513782c8c8d82a8948ccb389d0cf76 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Wed, 14 Oct 2026 07:03:41 -0700
-Subject: [PATCH 30/30] Memory: with the dictionary preview on, Gemma 4's tied
+Subject: [PATCH 30/31] Memory: with the dictionary preview on, Gemma 4's tied
  output matrix shares tok_embd's mapped copy instead of a second repacked one
  (-525 MiB pinned; LG_DICT_PREVIEW=0 keeps the repacked copy). The per-layer
  token table's pages are released after load (MADV_PAGEOUT) and come in per
