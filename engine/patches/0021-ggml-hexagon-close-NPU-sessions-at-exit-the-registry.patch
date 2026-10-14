@@ -1,0 +1,123 @@
+From 931c97ed1162e738f96c235dd7e26f06f58b5d3d Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Tue, 13 Oct 2026 23:08:31 -0700
+Subject: [PATCH 21/30] ggml-hexagon: close NPU sessions at exit (the registry
+ was never deleted; on kernel 7.0 fastrpc every process leaked ~32 MB of
+ mapped buffers until the NPU could not map a model)
+
+---
+ ggml/src/ggml-hexagon/ggml-hexagon.cpp |  7 +++
+ ggml/src/ggml-hexagon/htp/lg-q2k-ops.c | 75 ++++++++++++++++++++++++++
+ 2 files changed, 82 insertions(+)
+
+diff --git a/ggml/src/ggml-hexagon/ggml-hexagon.cpp b/ggml/src/ggml-hexagon/ggml-hexagon.cpp
+index d08caf4..604b9fc 100644
+--- a/ggml/src/ggml-hexagon/ggml-hexagon.cpp
++++ b/ggml/src/ggml-hexagon/ggml-hexagon.cpp
+@@ -4229,6 +4229,13 @@ static void ggml_hexagon_init(ggml_backend_reg * reg) {
+     }
+ 
+     reg->context = new ggml_hexagon_registry(reg);
++
++    // LG: the registry was never deleted, so the NPU sessions were never closed at exit. On this board's kernel
++    // (7.0 fastrpc) that leaves ~32 MB of mapped buffers behind per process, and after ~20 runs the NPU cannot
++    // map a model any more ("failed to map buffer"). Close the sessions when the process exits.
++    static ggml_hexagon_registry * lg_registry = nullptr;
++    lg_registry = (ggml_hexagon_registry *) reg->context;
++    atexit([] { delete lg_registry; lg_registry = nullptr; });
+ }
+ 
+ static const struct ggml_backend_reg_i ggml_backend_hexagon_reg_i = {
+diff --git a/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c b/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
+index 0a81be1..a8f9f05 100644
+--- a/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
++++ b/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
+@@ -186,6 +186,49 @@ static inline void lg_q2k_sb(const HVX_Vector * restrict wv, const HVX_Vector *
+     *M_out = Q6_Vw_vadd_VwVw(Q6_Vw_vasl_VwR(Mh, 8), Ml);
+ }
+ 
++// Several input columns (prompt reading): each weight vector is unpacked once and used for LG_MC columns; the
++// min correction runs as its own small pass so the S totals of all LG_MC columns stay in registers. Per column the
++// integer math is exactly lg_q2k_sb's.
++#define LG_MC 8
++static inline void lg_q2k_sb_mc(const HVX_Vector * restrict wv, const HVX_Vector * restrict sv,
++                                const int32_t * const * x4, const int32_t * const * xsb,
++                                HVX_Vector * S_out, HVX_Vector * M_out) {
++    const HVX_Vector three = Q6_Vb_vsplat_R(3), nib = Q6_V_vsplat_R(0x0f), nibb = Q6_Vb_vsplat_R(0x0f);
++    HVX_Vector S[LG_MC];
++    #pragma unroll
++    for (int c = 0; c < LG_MC; c++) S[c] = Q6_V_vzero();
++    for (int p = 0; p < 16; p++) {
++        const HVX_Vector pk = wv[p];
++        const HVX_Vector u0 = Q6_V_vand_VV(pk, three);
++        const HVX_Vector u1 = Q6_V_vand_VV(Q6_Vuh_vlsr_VuhR(pk, 2), three);
++        const HVX_Vector u2 = Q6_V_vand_VV(Q6_Vuh_vlsr_VuhR(pk, 4), three);
++        const HVX_Vector u3 = Q6_V_vand_VV(Q6_Vuh_vlsr_VuhR(pk, 6), three);
++        const HVX_Vector scale = Q6_V_vand_VV(Q6_Vuw_vlsr_VuwR(sv[p / 4], 8 * (p % 4)), nib);
++        #pragma unroll
++        for (int c = 0; c < LG_MC; c++) {
++            const int32_t * xb = x4[c] + 4 * p;
++            HVX_Vector a = Q6_Vw_vrmpy_VubRb(u0, xb[0]);
++            a = Q6_Vw_vrmpyacc_VwVubRb(a, u1, xb[1]);
++            a = Q6_Vw_vrmpyacc_VwVubRb(a, u2, xb[2]);
++            a = Q6_Vw_vrmpyacc_VwVubRb(a, u3, xb[3]);
++            S[c] = Q6_Vw_vadd_VwVw(S[c], Q6_Vw_vmpyie_VwVuh(a, scale));
++        }
++    }
++    #pragma unroll
++    for (int c = 0; c < LG_MC; c++) S_out[c] = S[c];
++    #pragma unroll
++    for (int c = 0; c < LG_MC; c++) {
++        HVX_Vector Ml = Q6_V_vzero(), Mh = Q6_V_vzero();
++        #pragma unroll
++        for (int q4 = 0; q4 < 4; q4++) {
++            const HVX_Vector mins = Q6_V_vand_VV(Q6_Vuh_vlsr_VuhR(sv[q4], 4), nibb);
++            Ml = Q6_Vuw_vrmpyacc_VuwVubRub(Ml, mins, xsb[c][q4]);
++            Mh = Q6_Vw_vrmpyacc_VwVubRb(Mh, mins, xsb[c][4 + q4]);
++        }
++        M_out[c] = Q6_Vw_vadd_VwVw(Q6_Vw_vasl_VwR(Mh, 8), Ml);
++    }
++}
++
+ static void lg_q2k_mv_job(unsigned int nth, unsigned int ith, void * data) {
+     struct lg_q2k * c = (struct lg_q2k *) data;
+     const uint32_t per = (c->ntiles + nth - 1) / nth;
+@@ -215,6 +258,38 @@ static void lg_q2k_mv_job(unsigned int nth, unsigned int ith, void * data) {
+             dma_queue_push_ddr_to_vtcm(q, dma_make_ptr(buf0 + ((tn - t0) % LG_NBUF) * c->tile_bytes, w + (size_t) tn * c->tile_bytes),
+                                        c->tile_bytes, c->tile_bytes, 1);
+         }
++        if (c->ncols > 1) {
++            for (uint32_t col0 = 0; col0 < c->ncols; col0 += LG_MC) {
++                const int nc = (int) MIN(LG_MC, c->ncols - col0);
++                const int32_t * x4[LG_MC], * xsb[LG_MC];
++                HVX_Vector acc[LG_MC];
++                for (int k = 0; k < nc; k++) acc[k] = Q6_V_vzero();
++                for (uint32_t s = 0; s < c->nsb; s++) {
++                    for (int k = 0; k < LG_MC; k++) {   // a short last group repeats its last column (not stored)
++                        const uint32_t ck = col0 + MIN(k, nc - 1);
++                        x4[k]  = (const int32_t *) (c->xq + (size_t) ck * c->K) + s * (LG_SB_INPUTS / 4);
++                        xsb[k] = c->xsum + (size_t) ck * (c->nsb * 8) + s * 8;
++                    }
++                    const HVX_Vector * sb = (const HVX_Vector *) (tile + (size_t) s * LG_SB_BYTES);
++                    HVX_Vector S[LG_MC], M[LG_MC];
++                    lg_q2k_sb_mc(sb, sb + 16, x4, xsb, S, M);
++                    const HVX_VectorPair dm = Q6_Wqf32_vmpy_VhfVhf(sb[20], one_hf);
++                    const HVX_Vector d  = Q6_Vsf_equals_Vqf32(Q6_V_lo_W(dm));
++                    const HVX_Vector mn = Q6_Vsf_equals_Vqf32(Q6_V_hi_W(dm));
++                    for (int k = 0; k < nc; k++) {
++                        const HVX_Vector a  = Q6_Vqf32_vmpy_VsfVsf(Q6_Vsf_equals_Vw(S[k]), d);
++                        const HVX_Vector b  = Q6_Vqf32_vmpy_VsfVsf(Q6_Vsf_equals_Vw(M[k]), mn);
++                        const HVX_Vector ab = Q6_Vsf_equals_Vqf32(Q6_Vqf32_vsub_Vqf32Vqf32(a, b));
++                        acc[k] = Q6_Vqf32_vadd_Vqf32Vqf32(acc[k], Q6_Vqf32_vmpy_VsfVsf(ab, hvx_vec_splat_f32(c->xd[(size_t) (col0 + k) * c->nsb + s])));
++                    }
++                }
++                for (int k = 0; k < nc; k++) {
++                    float * y = (float *) ((uint8_t *) c->dst->data + (size_t) (c->col0 + col0 + k) * c->dst->nb[1]) + (size_t) t * LG_TILE_ROWS;
++                    *(HVX_UVector *) y = Q6_Vsf_equals_Vqf32(acc[k]);
++                }
++            }
++            continue;
++        }
+         for (uint32_t col = 0; col < c->ncols; col++) {
+             const int32_t * x4 = (const int32_t *) (c->xq + (size_t) col * c->K);
+             const int32_t * xs = c->xsum + (size_t) col * (c->nsb * 8);

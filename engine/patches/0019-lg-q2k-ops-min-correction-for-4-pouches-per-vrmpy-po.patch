@@ -1,0 +1,159 @@
+From 8b0659f1244221daf79af517ed357fdd13941471 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Tue, 13 Oct 2026 22:44:35 -0700
+Subject: [PATCH 19/30] lg-q2k-ops: min correction for 4 pouches per vrmpy
+ (pouch sums split into bytes), one accumulator chain per pouch: 2-bit math
+ ~20% cheaper, NPU 9.73 vs CPU 9.62 words/s on mix-21
+
+---
+ ggml/src/ggml-hexagon/htp/lg-q2k-ops.c | 72 +++++++++++++++++---------
+ 1 file changed, 48 insertions(+), 24 deletions(-)
+
+diff --git a/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c b/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
+index 6acf925..0a81be1 100644
+--- a/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
++++ b/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
+@@ -51,7 +51,8 @@ struct lg_q2k {
+     uint32_t col0, ncols;            // the columns of src1 handled in this pass
+     size_t   tile_bytes;
+     int8_t  * xq;                    // [ncols][K]       quantized inputs, in cached heap memory: the kernel reads
+-    int32_t * xsum;                  // [ncols][K / 16]  them with scalar loads, which stall on VTCM
++    int32_t * xsum;                  // [ncols][nsb][8]  pouch sums as bytes (lg_q2k_sb); read with scalar loads,
++                                     //                  which stall on VTCM
+     float   * xd;                    // [ncols][nsb]
+     uint8_t * wbuf;                  // VTCM per thread: two tile buffers
+     float   * xtmp;                  // per thread: one super-block of raw inputs, copied in with HVX (cached heap)
+@@ -93,7 +94,7 @@ static void lg_q2k_quant_sb(const float * restrict x, int8_t * restrict q, int32
+     if (max == 0.0f) {
+         *d = 0.0f;
+         memset(q, 0, LG_SB_INPUTS);
+-        for (int g = 0; g < LG_SB_INPUTS / 16; g++) bsum[g] = 0;
++        for (int g = 0; g < 8; g++) bsum[g] = 0;
+         return;
+     }
+     const float iscale = -127.0f / max;
+@@ -102,10 +103,12 @@ static void lg_q2k_quant_sb(const float * restrict x, int8_t * restrict q, int32
+     for (int i = 0; i < 8; i++) {
+         vw[i] = Q6_Vw_vmin_VwVw(lg_round_sf_to_w(Q6_Vsf_equals_Vqf32(Q6_Vqf32_vmpy_VsfVsf(vx[i], vs))), lim);
+     }
++    uint8_t * lo = (uint8_t *) bsum, * hi = (uint8_t *) (bsum + 4);
+     for (int g = 0; g < LG_SB_INPUTS / 16; g++) {
+         int32_t sum = 0;
+         for (int t = 0; t < 16; t++) { const int32_t k = w[16 * g + t]; q[16 * g + t] = (int8_t) k; sum += k; }
+-        bsum[g] = sum;
++        lo[g] = (uint8_t) (sum & 0xff);           // sum = 256 * hi + lo, hi in [-8, 7]
++        hi[g] = (uint8_t) (int8_t) (sum >> 8);
+     }
+     *d = 1.0f / iscale;
+ }
+@@ -144,7 +147,7 @@ static void lg_q2k_quant_job(unsigned int nth, unsigned int ith, void * data) {
+         for (int v = 0; v < LG_SB_INPUTS * 4 / 128; v++) {
+             ((HVX_Vector *) tmp)[v] = ((const HVX_UVector *) xs)[v];
+         }
+-        lg_q2k_quant_sb(tmp, c->xq + (size_t) col * c->K + s * LG_SB_INPUTS, c->xsum + (size_t) col * (c->K / 16) + s * 16,
++        lg_q2k_quant_sb(tmp, c->xq + (size_t) col * c->K + s * LG_SB_INPUTS, c->xsum + (size_t) col * (c->nsb * 8) + s * 8,
+                         c->xd + (size_t) col * c->nsb + s, (int32_t *) (tmp + LG_SB_INPUTS));
+ #ifdef LG_TRACE
+         lg_q2k_quant_check(tmp, c->xq + (size_t) col * c->K + s * LG_SB_INPUTS, c->xd[(size_t) col * c->nsb + s]);
+@@ -152,28 +155,35 @@ static void lg_q2k_quant_job(unsigned int nth, unsigned int ith, void * data) {
+     }
+ }
+ 
+-// 32 rows x one super-block: integer totals S (scale * q . x) and M (min * sum x) per row
++// 32 rows x one super-block: integer totals S (scale * q . x) and M (min * sum x) per row.
++// xsb holds the super-block's 16 pouch sums split into bytes, 4 pouches per word: xsb[0..3] the low bytes
++// (unsigned), xsb[4..7] the high bytes (signed), so M = 256 * (mins . high) + (mins . low) with one vrmpy each
++// per 4 pouches instead of a multiply-add per pouch.
+ static inline void lg_q2k_sb(const HVX_Vector * restrict wv, const HVX_Vector * restrict sv, const int32_t * restrict x4,
+-                             const int32_t * restrict xs, HVX_Vector * S_out, HVX_Vector * M_out) {
+-    const HVX_Vector three = Q6_Vb_vsplat_R(3), nib = Q6_V_vsplat_R(0x0f);
+-    HVX_Vector S = Q6_V_vzero(), M = Q6_V_vzero();
++                             const int32_t * restrict xsb, HVX_Vector * S_out, HVX_Vector * M_out) {
++    const HVX_Vector three = Q6_Vb_vsplat_R(3), nib = Q6_V_vsplat_R(0x0f), nibb = Q6_Vb_vsplat_R(0x0f);
++    HVX_Vector S = Q6_V_vzero(), Ml = Q6_V_vzero(), Mh = Q6_V_vzero();
+     #pragma unroll(4)
+-    for (int p = 0; p < 16; p++) {
+-        const HVX_Vector pk = wv[p];
+-        const int32_t * xb = x4 + 4 * p;
+-        HVX_Vector a = Q6_Vw_vrmpy_VubRb(Q6_V_vand_VV(pk, three), xb[0]);
+-        HVX_Vector b = Q6_Vw_vrmpy_VubRb(Q6_V_vand_VV(Q6_Vuh_vlsr_VuhR(pk, 2), three), xb[1]);
+-        a = Q6_Vw_vrmpyacc_VwVubRb(a, Q6_V_vand_VV(Q6_Vuh_vlsr_VuhR(pk, 4), three), xb[2]);
+-        b = Q6_Vw_vrmpyacc_VwVubRb(b, Q6_V_vand_VV(Q6_Vuh_vlsr_VuhR(pk, 6), three), xb[3]);
+-        const HVX_Vector pouch = Q6_Vw_vadd_VwVw(a, b);
+-        const HVX_Vector byte  = Q6_Vuw_vlsr_VuwR(sv[p / 4], 8 * (p % 4));
+-        const HVX_Vector scale = Q6_V_vand_VV(byte, nib);
+-        const HVX_Vector mn    = Q6_V_vand_VV(Q6_Vuw_vlsr_VuwR(byte, 4), nib);
+-        S = Q6_Vw_vadd_VwVw(S, Q6_Vw_vmpyie_VwVuh(pouch, scale));
+-        M = Q6_Vw_vadd_VwVw(M, Q6_Vw_vmpyi_VwRh(mn, Q6_R_combine_RlRl(xs[p], xs[p])));
++    for (int q4 = 0; q4 < 4; q4++) {
++        const HVX_Vector svq  = sv[q4];
++        const HVX_Vector mins = Q6_V_vand_VV(Q6_Vuh_vlsr_VuhR(svq, 4), nibb);       // byte i: min of pouch 4*q4 + i
++        Ml = Q6_Vuw_vrmpyacc_VuwVubRub(Ml, mins, xsb[q4]);
++        Mh = Q6_Vw_vrmpyacc_VwVubRb(Mh, mins, xsb[4 + q4]);
++        #pragma unroll(4)
++        for (int i = 0; i < 4; i++) {
++            const int p = 4 * q4 + i;
++            const HVX_Vector pk = wv[p];
++            const int32_t * xb = x4 + 4 * p;
++            HVX_Vector a = Q6_Vw_vrmpy_VubRb(Q6_V_vand_VV(pk, three), xb[0]);
++            a = Q6_Vw_vrmpyacc_VwVubRb(a, Q6_V_vand_VV(Q6_Vuh_vlsr_VuhR(pk, 2), three), xb[1]);
++            a = Q6_Vw_vrmpyacc_VwVubRb(a, Q6_V_vand_VV(Q6_Vuh_vlsr_VuhR(pk, 4), three), xb[2]);
++            a = Q6_Vw_vrmpyacc_VwVubRb(a, Q6_V_vand_VV(Q6_Vuh_vlsr_VuhR(pk, 6), three), xb[3]);
++            const HVX_Vector scale = Q6_V_vand_VV(Q6_Vuw_vlsr_VuwR(svq, 8 * i), nib);
++            S = Q6_Vw_vadd_VwVw(S, Q6_Vw_vmpyie_VwVuh(a, scale));
++        }
+     }
+     *S_out = S;
+-    *M_out = M;
++    *M_out = Q6_Vw_vadd_VwVw(Q6_Vw_vasl_VwR(Mh, 8), Ml);
+ }
+ 
+ static void lg_q2k_mv_job(unsigned int nth, unsigned int ith, void * data) {
+@@ -192,21 +202,28 @@ static void lg_q2k_mv_job(unsigned int nth, unsigned int ith, void * data) {
+ 
+     const HVX_Vector one_hf = Q6_Vh_vsplat_R(0x3c00);   // 1.0 in fp16
+     for (uint32_t t = t0; t < t1; t++) {
++#ifdef LG_COMPUTE_ONLY
++        if (t == t0) { while (!dma_queue_empty(q)) dma_queue_pop(q); }
++        const uint8_t * tile = buf0;
++        const uint32_t tn = t1;
++        if (tn < t1) {
++#else
+         const uint8_t * tile = (const uint8_t *) dma_queue_pop(q).dst;
+         const uint32_t tn = t + LG_NBUF - 1;
+         if (tn < t1) {
++#endif
+             dma_queue_push_ddr_to_vtcm(q, dma_make_ptr(buf0 + ((tn - t0) % LG_NBUF) * c->tile_bytes, w + (size_t) tn * c->tile_bytes),
+                                        c->tile_bytes, c->tile_bytes, 1);
+         }
+         for (uint32_t col = 0; col < c->ncols; col++) {
+             const int32_t * x4 = (const int32_t *) (c->xq + (size_t) col * c->K);
+-            const int32_t * xs = c->xsum + (size_t) col * (c->K / 16);
++            const int32_t * xs = c->xsum + (size_t) col * (c->nsb * 8);
+             const float   * xd = c->xd + (size_t) col * c->nsb;
+             HVX_Vector acc = Q6_V_vzero();
+             for (uint32_t s = 0; s < c->nsb; s++) {
+                 const HVX_Vector * sb = (const HVX_Vector *) (tile + (size_t) s * LG_SB_BYTES);
+                 HVX_Vector S, M;
+-                lg_q2k_sb(sb, sb + 16, x4 + s * (LG_SB_INPUTS / 4), xs + s * 16, &S, &M);
++                lg_q2k_sb(sb, sb + 16, x4 + s * (LG_SB_INPUTS / 4), xs + s * 8, &S, &M);
+                 const HVX_VectorPair dm = Q6_Wqf32_vmpy_VhfVhf(sb[20], one_hf);       // lo: d, hi: dmin
+                 const HVX_Vector d  = Q6_Vsf_equals_Vqf32(Q6_V_lo_W(dm));
+                 const HVX_Vector mn = Q6_Vsf_equals_Vqf32(Q6_V_hi_W(dm));
+@@ -398,9 +415,16 @@ static void lg_q4_mv_job(unsigned int nth, unsigned int ith, void * data) {
+     const HVX_Vector one_hf = Q6_Vh_vsplat_R(0x3c00);
+     const HVX_Vector nib    = Q6_Vb_vsplat_R(0x0f);
+     for (uint32_t t = t0; t < t1; t++) {
++#ifdef LG_COMPUTE_ONLY
++        if (t == t0) { while (!dma_queue_empty(q)) dma_queue_pop(q); }
++        const uint8_t * tile = buf0;
++        const uint32_t tn = t1;
++        if (tn < t1) {
++#else
+         const uint8_t * tile = (const uint8_t *) dma_queue_pop(q).dst;
+         const uint32_t tn = t + LG_NBUF - 1;
+         if (tn < t1) {
++#endif
+             dma_queue_push_ddr_to_vtcm(q, dma_make_ptr(buf0 + ((tn - t0) % LG_NBUF) * c->tile_bytes, w + (size_t) tn * c->tile_bytes),
+                                        c->tile_bytes, c->tile_bytes, 1);
+         }

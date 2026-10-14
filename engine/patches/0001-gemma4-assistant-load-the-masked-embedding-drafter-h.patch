@@ -1,0 +1,157 @@
+From 6a74e02f306f1639706d95a82621ddd6928db108 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Fri, 9 Oct 2026 08:05:49 -0700
+Subject: [PATCH 01/30] gemma4-assistant: load the masked-embedding drafter
+ head
+
+Convert token_ordering as an I32 permutation of the vocab instead of
+skipping masked_embedding tensors, and give the centroids and ordering
+tensors output-layer placement (MUL_MAT / GET_ROWS) so the MTP drafter
+can use its masked output head.
+---
+ conversion/gemma.py             | 26 ++++++++++++++-----
+ src/llama-arch.cpp              |  4 +--
+ src/llama-model.h               |  4 +++
+ src/models/gemma4-assistant.cpp | 46 ++++++++++++++++++++++++++++++---
+ 4 files changed, 68 insertions(+), 12 deletions(-)
+
+diff --git a/conversion/gemma.py b/conversion/gemma.py
+index c552df7..c14aa97 100644
+--- a/conversion/gemma.py
++++ b/conversion/gemma.py
+@@ -5,6 +5,7 @@ import re
+ 
+ from typing import Callable, Iterable, TYPE_CHECKING, Sequence
+ 
++import numpy as np
+ import torch
+ 
+ if TYPE_CHECKING:
+@@ -789,15 +790,26 @@ class Gemma4UnifiedModel(Gemma4Model):
+ class Gemma4AssistantModel(Gemma4Model):
+     model_arch = gguf.MODEL_ARCH.GEMMA4_ASSISTANT
+ 
+-    @classmethod
+-    def filter_tensors(cls, item: tuple[str, Callable[[], Tensor]]) -> tuple[str, Callable[[], Tensor]] | None:
+-        name, gen = item
++    def modify_tensors(self, data_torch: Tensor, name: str, bid: int | None) -> Iterable[tuple[str, Tensor]]:
++        # token_ordering is an int64 index buffer: keep it out of the float path and write it as I32 in prepare_tensors
++        if name.endswith("masked_embedding.token_ordering"):
++            self._masked_ordering = data_torch
++            return
++        yield from super().modify_tensors(data_torch, name, bid)
+ 
+-        if "masked_embedding" in name:
+-            logger.debug(f"Skipping get tensor {name!r} in safetensors so that convert can end normally.")
+-            return None
++    def prepare_tensors(self):
++        super().prepare_tensors()
+ 
+-        return super().filter_tensors(item)
++        ordering = getattr(self, "_masked_ordering", None)
++        if ordering is None:
++            return
++        data = ordering.to(torch.int64).cpu().numpy().reshape(-1)
++        n_vocab = self.hparams["vocab_size"]
++        if data.size != n_vocab or np.any((data < 0) | (data >= n_vocab)) or np.unique(data).size != n_vocab:
++            raise ValueError("Gemma 4 assistant token_ordering must be a permutation of the vocab")
++        name = self.format_tensor_name(gguf.MODEL_TENSOR.MASKED_EMBD_ORDERING, suffix="")
++        logger.info(f"{name + ',':<30} int64 --> I32, shape = {{{data.size}}}")
++        self.gguf_writer.add_tensor(name, data.astype(np.int32), raw_dtype=gguf.GGMLQuantizationType.I32)
+ 
+     def set_gguf_parameters(self):
+         super().set_gguf_parameters()
+diff --git a/src/llama-arch.cpp b/src/llama-arch.cpp
+index 4a52d97..6f9003d 100644
+--- a/src/llama-arch.cpp
++++ b/src/llama-arch.cpp
+@@ -793,8 +793,8 @@ static const std::map<llm_tensor, llm_tensor_info> LLM_TENSOR_INFOS = {
+     // latent projections feed ggml_mul_mat, the buft probe must use MUL_MAT to keep them on GPU
+     {LLM_TENSOR_FFN_LATENT_DOWN,            {LLM_TENSOR_LAYER_REPEATING, GGML_OP_MUL_MAT}},
+     {LLM_TENSOR_FFN_LATENT_UP,              {LLM_TENSOR_LAYER_REPEATING, GGML_OP_MUL_MAT}},
+-    {LLM_TENSOR_MASKED_EMBD_CENTROIDS,      {LLM_TENSOR_LAYER_INPUT,     GGML_OP_NONE}},
+-    {LLM_TENSOR_MASKED_EMBD_ORDERING,       {LLM_TENSOR_LAYER_INPUT,     GGML_OP_NONE}},
++    {LLM_TENSOR_MASKED_EMBD_CENTROIDS,      {LLM_TENSOR_LAYER_OUTPUT,    GGML_OP_MUL_MAT}},
++    {LLM_TENSOR_MASKED_EMBD_ORDERING,       {LLM_TENSOR_LAYER_OUTPUT,    GGML_OP_GET_ROWS}},
+     // eagle3
+     {LLM_TENSOR_FC,                         {LLM_TENSOR_LAYER_OUTPUT,    GGML_OP_MUL_MAT}},
+     {LLM_TENSOR_D2T,                        {LLM_TENSOR_LAYER_OUTPUT,    GGML_OP_GET_ROWS}},
+diff --git a/src/llama-model.h b/src/llama-model.h
+index f4718f6..103e029 100644
+--- a/src/llama-model.h
++++ b/src/llama-model.h
+@@ -573,6 +573,10 @@ struct llama_model {
+     struct ggml_tensor * fc  = nullptr;  // feature fusion layer
+     struct ggml_tensor * d2t = nullptr;  // draft to target vocabulary mapping
+ 
++    // gemma4 assistant: clustered output head (score centroids, then only the tokens in the top clusters)
++    struct ggml_tensor * masked_embd_centroids = nullptr;  // [n_embd, n_centroids]
++    struct ggml_tensor * masked_embd_ordering  = nullptr;  // [n_vocab] I32, token ids grouped by cluster
++
+     // unified vector to store target-model extracted layer ids in eagle3, dflash, etc.
+     std::vector<int32_t> target_layer_ids;
+ 
+diff --git a/src/models/gemma4-assistant.cpp b/src/models/gemma4-assistant.cpp
+index 6378130..12835b5 100644
+--- a/src/models/gemma4-assistant.cpp
++++ b/src/models/gemma4-assistant.cpp
+@@ -39,8 +39,16 @@ void llama_model_gemma4_assistant::load_arch_tensors(llama_model_loader &) {
+ 
+     output_norm = create_tensor(tn(LLM_TENSOR_OUTPUT_NORM, "weight"), { n_embd }, 0);
+ 
+-    create_tensor(tn(LLM_TENSOR_MASKED_EMBD_CENTROIDS, "weight"), {}, TENSOR_NOT_REQUIRED);
+-    create_tensor(tn(LLM_TENSOR_MASKED_EMBD_ORDERING),  {}, TENSOR_NOT_REQUIRED);
++    // Optional clustered output head. When both tensors are present the graph scores the centroids,
++    // keeps the top clusters and only computes logits for their tokens; otherwise it scores all of n_vocab.
++    const ggml_tensor * centroids_meta = ml->get_tensor_meta(tn(LLM_TENSOR_MASKED_EMBD_CENTROIDS, "weight").str().c_str());
++    const ggml_tensor * ordering_meta  = ml->get_tensor_meta(tn(LLM_TENSOR_MASKED_EMBD_ORDERING).str().c_str());
++    if (centroids_meta && ordering_meta) {
++        const int64_t n_centroids = centroids_meta->ne[1];
++        masked_embd_centroids = create_tensor(tn(LLM_TENSOR_MASKED_EMBD_CENTROIDS, "weight"), { n_embd, n_centroids }, 0);
++        masked_embd_ordering  = create_tensor(tn(LLM_TENSOR_MASKED_EMBD_ORDERING),            { n_vocab },              0);
++        LLAMA_LOG_INFO("%s: using clustered output head (%lld centroids)\n", __func__, (long long) n_centroids);
++    }
+ 
+     const int64_t n_embd_backbone = hparams.n_embd_inp();
+     nextn_proj_post = create_tensor(tn(LLM_TENSOR_NEXTN_PROJ_POST, "weight"), { n_embd, n_embd_backbone }, 0);
+@@ -190,7 +198,39 @@ llama_model_gemma4_assistant::graph::graph(const llama_model & model, const llm_
+     cur = build_norm(cur, model.output_norm, nullptr, LLM_NORM_RMS, -1);
+     cb(cur, "result_norm", -1);
+ 
+-    ggml_tensor * logits = build_lora_mm(model.output, cur);
++    ggml_tensor * logits = nullptr;
++    if (model.masked_embd_centroids && model.masked_embd_ordering) {
++        // Same as the HF Gemma4AssistantMaskedEmbedder: pick the top clusters by centroid score, then score
++        // only their tokens. The rest of the vocab gets -INF, so samplers see a normal full-size logit row.
++        const int64_t n_vocab_out = model.output->ne[1];
++        const int64_t n_centroids = model.masked_embd_centroids->ne[1];
++        const int64_t per_cluster = n_vocab_out / n_centroids;
++        const int64_t n_top       = 32; // centroid_intermediate_top_k in the HF config of the E2B/E4B assistants
++        const int64_t n_sel       = n_top * per_cluster;
++        const int64_t n_outputs   = cur->ne[1];
++
++        ggml_tensor * centroid_logits = ggml_mul_mat(ctx0, model.masked_embd_centroids, cur); // [n_centroids, n_outputs]
++        ggml_tensor * top_clusters    = ggml_top_k(ctx0, centroid_logits, n_top);             // [n_top, n_outputs] I32
++        cb(top_clusters, "masked_top_clusters", -1);
++
++        // get_rows only takes 2D indices for 3D sources, so look up with flat index lists and reshape after
++        ggml_tensor * ordering  = ggml_reshape_2d(ctx0, model.masked_embd_ordering, per_cluster, n_centroids);
++        ggml_tensor * top_flat  = ggml_reshape_1d(ctx0, ggml_cont(ctx0, top_clusters), n_top * n_outputs);
++        ggml_tensor * token_ids = ggml_get_rows(ctx0, ordering, top_flat);                    // [per_cluster, n_top * n_outputs] I32
++        ggml_tensor * ids_flat  = ggml_reshape_1d(ctx0, token_ids, n_sel * n_outputs);
++        token_ids = ggml_reshape_2d(ctx0, token_ids, n_sel, n_outputs);
++
++        // tok_embd holds the same (tied) weights as output but stays in a get_rows friendly layout (output may be repacked)
++        ggml_tensor * rows = ggml_get_rows(ctx0, model.tok_embd, ids_flat);                   // [n_embd, n_sel * n_outputs]
++        rows = ggml_reshape_3d(ctx0, rows, rows->ne[0], n_sel, n_outputs);
++        ggml_tensor * sel  = ggml_mul_mat(ctx0, rows, ggml_reshape_3d(ctx0, cur, cur->ne[0], 1, n_outputs)); // [n_sel, 1, n_outputs]
++
++        logits = ggml_fill(ctx0, ggml_new_tensor_3d(ctx0, GGML_TYPE_F32, 1, n_vocab_out, n_outputs), -INFINITY);
++        logits = ggml_set_rows(ctx0, logits, ggml_reshape_3d(ctx0, sel, 1, n_sel, n_outputs), token_ids);
++        logits = ggml_reshape_2d(ctx0, logits, n_vocab_out, n_outputs);
++    } else {
++        logits = build_lora_mm(model.output, cur);
++    }
+     cb(logits, "result_output", -1);
+     res->t_logits = logits;
+ 

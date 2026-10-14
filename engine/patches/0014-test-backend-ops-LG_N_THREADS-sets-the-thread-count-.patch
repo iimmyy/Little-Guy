@@ -1,0 +1,23 @@
+From 565b6b3ccfbb94de698abff64c105279b7f66462 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Tue, 13 Oct 2026 16:42:44 -0700
+Subject: [PATCH 14/30] test-backend-ops: LG_N_THREADS sets the thread count
+ for perf runs
+
+---
+ tests/test-backend-ops.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tests/test-backend-ops.cpp b/tests/test-backend-ops.cpp
+index e1d3853..2e01ffc 100644
+--- a/tests/test-backend-ops.cpp
++++ b/tests/test-backend-ops.cpp
+@@ -48,7 +48,7 @@
+ #ifdef __EMSCRIPTEN__
+ #   define N_THREADS 1
+ #else
+-#   define N_THREADS std::thread::hardware_concurrency()
++#   define N_THREADS (getenv("LG_N_THREADS") ? (unsigned) atoi(getenv("LG_N_THREADS")) : std::thread::hardware_concurrency())  // LG_N_THREADS: pin perf runs to the board's 4 big cores
+ #endif
+ 
+ static void init_tensor_uniform(ggml_tensor * tensor, float min = -1.0f, float max = 1.0f) {

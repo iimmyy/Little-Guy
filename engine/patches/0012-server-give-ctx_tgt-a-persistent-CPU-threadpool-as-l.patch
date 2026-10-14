@@ -1,0 +1,78 @@
+From baab978224e3a4450a6272459d4c08f1530bafa9 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Mon, 12 Oct 2026 21:13:54 -0700
+Subject: [PATCH 12/30] server: give ctx_tgt a persistent CPU threadpool, as
+ llama-cli and llama-bench do
+
+llama-server never created or attached a threadpool, so the CPU backend made and joined a fresh set of threads for
+every graph, and those throwaway threads ignored --cpu-mask/--cpu-strict. On the Q6A (4 big + 4 little cores) the
+server ran ~15% below llama-bench with the same model and flags. load_model now builds the generation (and, when the
+batch settings differ, batch) pool from the cpu params and attaches it; destroy() frees them.
+
+Q6A, brain C + dictionary preview, -t 4 -C 0xf0 --cpu-strict 1, 64 greedy words, three rounds:
+  short prompt            7.76 -> 9.04 words/s (+16%)
+  after 1,433 tokens      6.99 -> 8.08 words/s (+16%)
+---
+ tools/server/server-context.cpp | 35 +++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+
+diff --git a/tools/server/server-context.cpp b/tools/server/server-context.cpp
+index dc388e9..af9fd06 100644
+--- a/tools/server/server-context.cpp
++++ b/tools/server/server-context.cpp
+@@ -891,6 +891,12 @@ private:
+     // note: keep these alive - they determine the lifetime of the model, context, etc.
+     common_init_result_ptr llama_init;
+ 
++    // persistent CPU thread teams for ctx_tgt (made in load_model, like llama-cli/llama-bench do). Without them the
++    // CPU backend makes and joins a fresh set of threads for every graph, and those threads ignore --cpu-mask and
++    // --cpu-strict, so pinned decoding paid thread start-up every token and could land on slow cores.
++    ggml_threadpool * threadpool       = nullptr;
++    ggml_threadpool * threadpool_batch = nullptr;
++
+     llama_context * ctx_tgt = nullptr;
+ 
+     server_batch batch;
+@@ -942,6 +948,17 @@ private:
+ 
+         llama_init.reset();
+ 
++        if (threadpool || threadpool_batch) {
++            auto * reg = ggml_backend_dev_backend_reg(ggml_backend_dev_by_type(GGML_BACKEND_DEVICE_TYPE_CPU));
++            auto * tp_free = (decltype(ggml_threadpool_free) *) ggml_backend_reg_get_proc_address(reg, "ggml_threadpool_free");
++            if (tp_free) {
++                if (threadpool)       { tp_free(threadpool); }
++                if (threadpool_batch) { tp_free(threadpool_batch); }
++            }
++            threadpool       = nullptr;
++            threadpool_batch = nullptr;
++        }
++
+         ctx_tgt = nullptr;
+         model_tgt = nullptr;
+ 
+@@ -1166,6 +1183,24 @@ private:
+             return false;
+         }
+ 
++        if (auto * cpu_dev = ggml_backend_dev_by_type(GGML_BACKEND_DEVICE_TYPE_CPU)) {
++            auto * reg    = ggml_backend_dev_backend_reg(cpu_dev);
++            auto * tp_new = (decltype(ggml_threadpool_new) *) ggml_backend_reg_get_proc_address(reg, "ggml_threadpool_new");
++            if (tp_new) {
++                ggml_threadpool_params tpp       = ggml_threadpool_params_from_cpu_params(params_base.cpuparams);
++                ggml_threadpool_params tpp_batch = ggml_threadpool_params_from_cpu_params(params_base.cpuparams_batch);
++                if (!ggml_threadpool_params_match(&tpp, &tpp_batch)) {
++                    threadpool_batch = tp_new(&tpp_batch);
++                    tpp.paused = true;   // start the generation team paused, as llama-cli does
++                }
++                threadpool = tp_new(&tpp);
++                if (threadpool) {
++                    llama_attach_threadpool(ctx_tgt, threadpool, threadpool_batch);
++                    SRV_INF("persistent CPU threadpool: %d threads%s\n", tpp.n_threads, threadpool_batch ? " (+ batch pool)" : "");
++                }
++            }
++        }
++
+         vocab = llama_model_get_vocab(model_tgt);
+ 
+         n_ctx = llama_n_ctx(ctx_tgt);

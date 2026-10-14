@@ -1,0 +1,713 @@
+From 578458538d59faf89143052cc5d1c1b2eec59fc6 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Wed, 14 Oct 2026 04:03:22 -0700
+Subject: [PATCH 28/30] ggml-hexagon decode overheads: FA grouped path with
+ fixed-size value sums (masked rows in partial blocks zeroed, no per-key
+ check) and a 32-key qf32 fold tree for q.k (local layer 190 -> 121 us, global
+ 388 -> 276); rope cos/sin tables cached per thread (scalar build below v79,
+ 2.0 -> 0.8 ms/token, bit-identical); one-row GEGLU in one pass split over
+ threads; Q2_K/Q4_0 one-column matmuls quantize their input inside the tile
+ job from a DMA'd copy (one dispatch, first tiles in flight). ggml-cpu:
+ two-pass radix top_k for one long row (1.41 -> 1.09 ms), contiguous FILL
+ split by elements (0.85 -> 0.04 ms). Talking d768 9.04 -> 9.5-9.9 tok/s (CPU
+ 8.9), server 10.07 vs 9.25; decode KL vs CPU 0.0125 (unchanged); behavior
+ 40x4 within noise
+
+---
+ ggml/src/ggml-cpu/ops.cpp                  | 126 ++++++++++++++++++++-
+ ggml/src/ggml-hexagon/htp/act-ops.c        |  57 ++++++++++
+ ggml/src/ggml-hexagon/htp/flash-attn-ops.c | 122 ++++++++++++++++----
+ ggml/src/ggml-hexagon/htp/lg-q2k-ops.c     |  98 +++++++++++++++-
+ ggml/src/ggml-hexagon/htp/rope-ops.c       |  49 +++++++-
+ tests/test-backend-ops.cpp                 |   5 +
+ 6 files changed, 426 insertions(+), 31 deletions(-)
+
+diff --git a/ggml/src/ggml-cpu/ops.cpp b/ggml/src/ggml-cpu/ops.cpp
+index ad5df8b..9d036c5 100644
+--- a/ggml/src/ggml-cpu/ops.cpp
++++ b/ggml/src/ggml-cpu/ops.cpp
+@@ -2219,6 +2219,14 @@ static void ggml_compute_forward_gelu(
+ static void ggml_compute_forward_fill_f32(const ggml_compute_params * params, ggml_tensor * dst) {
+     const float c = ggml_get_op_params_f32(dst, 0);
+ 
++    if (ggml_is_contiguous(dst)) {
++        // one block: split the elements, not the rows (a [1, n] tensor would be n one-element rows)
++        const int64_t n  = ggml_nelements(dst);
++        const int64_t i0 = n * params->ith / params->nth, i1 = n * (params->ith + 1) / params->nth;
++        ggml_vec_set_f32((int) (i1 - i0), (float *) dst->data + i0, c);
++        return;
++    }
++
+     GGML_TENSOR_LOCALS(int64_t, ne, dst, ne);
+     GGML_TENSOR_LOCALS(size_t,  nb, dst, nb);
+ 
+@@ -8367,6 +8375,113 @@ static void lg_top_k_row_team(const ggml_compute_params * params, const float *
+     ggml_barrier(params->threadpool);   // the shared scratch is reused by the next row
+ }
+ 
++// LG: the same selection in two passes over the row instead of six. Pass 1 copies the slice (once, from memory
++// that may be uncached for the CPU) and builds the top-11-bit histogram. Thread 0 finds the bin b holding the k-th
++// largest key. Pass 2 writes every element of a bin above b straight to dst (offsets come from the histograms) and
++// lists the indices in bin b. Thread 0 then finishes on that short list with the remaining 21 bits, writing those
++// above the k-th key and the ties at it in index order: the same set as lg_top_k_row_team. Falls back to it when a
++// thread's list would not fit its scratch.
++static bool lg_top_k_row_team2(const ggml_compute_params * params, const float * x_src, int64_t n, int k, int32_t * dst,
++                               uint32_t * shared, float * const * locals, int64_t cap) {
++    const int ith = params->ith, nth = params->nth;
++    const int64_t c0 = n * ith / nth, c1 = n * (ith + 1) / nth;
++    float * local = locals[ith];
++    uint32_t * hist  = shared;                    // [nth][2048]
++    uint32_t * state = shared + nth * 2048;       // b, n above b, ok
++    uint32_t * h = hist + ith * 2048;
++    memset(h, 0, 2048 * sizeof(uint32_t));
++    for (int64_t i = c0; i < c1; i++) {
++        const float f = x_src[i];
++        local[i - c0] = f;
++        h[lg_top_k_key(f) >> 21]++;
++    }
++    ggml_barrier(params->threadpool);
++    if (ith == 0) {
++        uint32_t cum = 0;
++        int64_t b = 2047;
++        for (; b > 0; b--) {
++            uint32_t tot = 0;
++            for (int t = 0; t < nth; t++) tot += hist[t * 2048 + b];
++            if (cum + tot >= (uint32_t) k) break;
++            cum += tot;
++        }
++        uint32_t ok = 1;
++        for (int t = 0; t < nth; t++) ok &= hist[t * 2048 + b] <= cap;
++        state[0] = (uint32_t) b; state[1] = cum; state[2] = ok;
++    }
++    ggml_barrier(params->threadpool);
++    const uint32_t b = state[0], n_above = state[1];
++    if (!state[2]) {
++        return false;   // (no thread has written dst yet)
++    }
++    uint32_t a_off = 0;
++    for (int t = 0; t < ith; t++) for (uint32_t j = b + 1; j < 2048; j++) a_off += hist[t * 2048 + j];
++    int32_t * cand = (int32_t *) (local + (c1 - c0));
++    uint32_t nc = 0;
++    for (int64_t i = c0; i < c1; i++) {
++        const uint32_t hb = lg_top_k_key(local[i - c0]) >> 21;
++        if (hb > b) {
++            dst[a_off++] = (int32_t) i;
++        } else if (hb == b) {
++            cand[nc++] = (int32_t) i;
++        }
++    }
++    ggml_barrier(params->threadpool);
++    if (ith == 0) {
++        // the k - n_above best of the bin-b lists (in index order: thread by thread), on the low 21 bits
++        uint32_t need = (uint32_t) k - n_above, prefix = b << 21, mask = 0xFFE00000u;
++        static const int shift[2] = { 10, 0 };
++        static const int width[2] = { 11, 10 };
++        uint32_t h2[2048];
++        for (int pass = 0; pass < 2; pass++) {
++            const uint32_t bins = 1u << width[pass];
++            memset(h2, 0, bins * sizeof(uint32_t));
++            for (int t = 0; t < nth; t++) {
++                const int64_t t0 = n * t / nth, t1 = n * (t + 1) / nth;
++                const int32_t * ct = (const int32_t *) (locals[t] + (t1 - t0));
++                const uint32_t m = hist[t * 2048 + b];
++                for (uint32_t j = 0; j < m; j++) {
++                    const uint32_t key = lg_top_k_key(locals[t][ct[j] - t0]);
++                    if ((key & mask) == prefix) h2[(key >> shift[pass]) & (bins - 1)]++;
++                }
++            }
++            uint32_t cum = 0;
++            for (int64_t bb = bins - 1; bb >= 0; bb--) {
++                if (cum + h2[bb] >= need) {
++                    prefix |= (uint32_t) bb << shift[pass];
++                    mask   |= (bins - 1) << shift[pass];
++                    need   -= cum;
++                    break;
++                }
++                cum += h2[bb];
++            }
++        }
++        uint32_t o = n_above, above = 0;
++        for (int t = 0; t < nth; t++) {   // the count above the k-th key first, so the ties go after them
++            const int64_t t0 = n * t / nth, t1 = n * (t + 1) / nth;
++            const int32_t * ct = (const int32_t *) (locals[t] + (t1 - t0));
++            const uint32_t m = hist[t * 2048 + b];
++            for (uint32_t j = 0; j < m; j++) above += lg_top_k_key(locals[t][ct[j] - t0]) > prefix;
++        }
++        uint32_t e = 0;
++        for (int t = 0; t < nth; t++) {
++            const int64_t t0 = n * t / nth, t1 = n * (t + 1) / nth;
++            const int32_t * ct = (const int32_t *) (locals[t] + (t1 - t0));
++            const uint32_t m = hist[t * 2048 + b];
++            for (uint32_t j = 0; j < m; j++) {
++                const uint32_t key = lg_top_k_key(locals[t][ct[j] - t0]);
++                if (key > prefix) {
++                    dst[o++] = ct[j];
++                } else if (key == prefix && e < need) {
++                    dst[n_above + above + e++] = ct[j];
++                }
++            }
++        }
++    }
++    ggml_barrier(params->threadpool);   // the shared scratch is reused by the next row
++    return true;
++}
++
+ static void ggml_compute_forward_top_k_f32(
+     const ggml_compute_params * params,
+     ggml_tensor * dst) {
+@@ -8385,10 +8500,15 @@ static void ggml_compute_forward_top_k_f32(
+     const int top_k = ne0;
+ 
+     if (nr < nth && nth > 1 && ne00 >= (int64_t) nth * 2048 + 64 && !getenv("LG_TOPK_SORT")) {
++        float * locals[GGML_MAX_N_THREADS];
++        for (int t = 0; t < nth; t++) locals[t] = (float *) ((int32_t *) params->wdata + (ne00 + CACHE_LINE_SIZE_F32) * t + nth * 2048 + 64);
++        const int64_t cap = (ne00 + CACHE_LINE_SIZE_F32) - (nth * 2048 + 64) - (ne00 / nth + 1);   // room after a local copy
+         for (int64_t i = 0; i < nr; i++) {
+-            lg_top_k_row_team(params, (const float *) ((const char *) src0->data + i*nb01), ne00, top_k,
+-                              (int32_t *) ((char *) dst->data + i*nb1), (uint32_t *) params->wdata,
+-                              (float *) ((int32_t *) params->wdata + (ne00 + CACHE_LINE_SIZE_F32) * ith + nth * 2048 + 64));
++            const float * row = (const float *) ((const char *) src0->data + i*nb01);
++            int32_t * out = (int32_t *) ((char *) dst->data + i*nb1);
++            if (getenv("LG_TOPK_OLD") || !lg_top_k_row_team2(params, row, ne00, top_k, out, (uint32_t *) params->wdata, locals, cap)) {
++                lg_top_k_row_team(params, row, ne00, top_k, out, (uint32_t *) params->wdata, locals[ith]);
++            }
+         }
+         return;
+     }
+diff --git a/ggml/src/ggml-hexagon/htp/act-ops.c b/ggml/src/ggml-hexagon/htp/act-ops.c
+index 6416d2d..5d785a7 100644
+--- a/ggml/src/ggml-hexagon/htp/act-ops.c
++++ b/ggml/src/ggml-hexagon/htp/act-ops.c
+@@ -621,6 +621,51 @@ static void glu_geglu_f32_per_thread(unsigned int nth, unsigned int ith, void *
+          (unsigned) HAP_perf_qtimer_count_to_us(t2 - t1));
+ }
+ 
++// LG: GEGLU for a single row (one word while talking). The general path runs it on one thread as 10 passes over
++// VTCM; here the row is split by columns over all threads and the same 10 steps run in registers in one pass (the
++// same vector ops in the same order, so results are bit-identical).
++#if __HVX_ARCH__ < 79   // same ops as hvx-arith.h's HVX_OP_MUL_F32 / HVX_OP_ADD_F32
++#define LG_MUL_F32(a, b) Q6_Vsf_equals_Vqf32(Q6_Vqf32_vmpy_VsfVsf(a, b))
++#define LG_ADD_F32(a, b) Q6_Vsf_equals_Vqf32(Q6_Vqf32_vadd_VsfVsf(a, b))
++#else
++#define LG_MUL_F32(a, b) Q6_Vsf_vmpy_VsfVsf(a, b)
++#define LG_ADD_F32(a, b) Q6_Vsf_vadd_VsfVsf(a, b)
++#endif
++static void lg_geglu_cols_thread(unsigned int nth, unsigned int ith, void * data) {
++    struct htp_act_context * actx = (struct htp_act_context *) data;
++    struct htp_ops_context * octx = actx->octx;
++    const uint32_t per = actx->nc / nth, c0 = per * ith;
++    const HVX_Vector * restrict x = (const HVX_Vector *) (octx->src0_spad.data + ith * octx->src0_spad.size_per_thread);
++    const HVX_Vector * restrict g = (const HVX_Vector *) (octx->src1_spad.data + ith * octx->src1_spad.size_per_thread);
++    HVX_Vector * restrict       d = (HVX_Vector *) (octx->dst_spad.data + ith * octx->dst_spad.size_per_thread);
++    dma_queue * q = octx->ctx->dma[ith];
++
++    dma_queue_push_ddr_to_vtcm(q, dma_make_ptr((void *) x, actx->data_src0 + c0 * sizeof(float)), per * sizeof(float), per * sizeof(float), 1);
++    dma_queue_push_ddr_to_vtcm(q, dma_make_ptr((void *) g, actx->data_src1 + c0 * sizeof(float)), per * sizeof(float), per * sizeof(float), 1);
++    dma_queue_pop(q);
++    dma_queue_pop(q);
++
++    const HVX_Vector va = hvx_vec_splat_f32(GELU_COEF_A), vs = hvx_vec_splat_f32(SQRT_2_OVER_PI);
++    const HVX_Vector one = hvx_vec_splat_f32(1.0f), half = hvx_vec_splat_f32(0.5f), inf = hvx_vec_splat_f32(INFINITY);
++    #pragma unroll(4)
++    for (uint32_t i = 0; i < per / 32; i++) {
++        const HVX_Vector xv = x[i];
++        HVX_Vector r = LG_MUL_F32(xv, xv);
++        r = LG_MUL_F32(r, va);
++        r = Q6_V_vmux_QVV(Q6_Q_vcmp_eq_VwVw(inf, r), inf, LG_ADD_F32(r, one));
++        r = LG_MUL_F32(xv, r);
++        r = LG_MUL_F32(r, vs);
++        r = hvx_vec_tanh_f32(r);
++        r = Q6_V_vmux_QVV(Q6_Q_vcmp_eq_VwVw(inf, r), inf, LG_ADD_F32(r, one));
++        r = LG_MUL_F32(xv, r);
++        r = LG_MUL_F32(r, half);
++        d[i] = LG_MUL_F32(r, g[i]);
++    }
++
++    dma_queue_push_vtcm_to_ddr(q, dma_make_ptr(actx->data_dst + c0 * sizeof(float), (void *) d), per * sizeof(float), per * sizeof(float), 1);
++    dma_queue_flush(q);
++}
++
+ static int execute_op_activations_f32(struct htp_ops_context * octx) {
+     const struct htp_tensor * src0 = octx->src[0];
+     const struct htp_tensor * src1 = octx->src[1];
+@@ -761,6 +806,18 @@ static int execute_op_activations_f32(struct htp_ops_context * octx) {
+     actx.data_src1 = data_src1;
+     actx.data_dst  = (uint8_t *) dst->data;
+ 
++    const uint32_t lg_nt = octx->n_threads;
++    if (octx->op == HTP_OP_GLU_GEGLU && src0_nrows == 1 && lg_nt > 1 && actx.nc % (32 * lg_nt) == 0 &&
++        3 * lg_nt * hex_round_up(actx.nc / lg_nt * sizeof(float), 128) <= octx->ctx->vtcm_size) {
++        const size_t sz = hex_round_up(actx.nc / lg_nt * sizeof(float), 128);
++        octx->src0_spad.size_per_thread = octx->src1_spad.size_per_thread = octx->dst_spad.size_per_thread = sz;
++        octx->src0_spad.data = octx->ctx->vtcm_base;
++        octx->src1_spad.data = octx->src0_spad.data + sz * lg_nt;
++        octx->dst_spad.data  = octx->src1_spad.data + sz * lg_nt;
++        worker_pool_run_func(octx->ctx->worker_pool, lg_geglu_cols_thread, &actx, lg_nt);
++        return HTP_STATUS_OK;
++    }
++
+     worker_pool_run_func(octx->ctx->worker_pool, act_op_func, &actx, n_threads);
+     return HTP_STATUS_OK;
+ }
+diff --git a/ggml/src/ggml-hexagon/htp/flash-attn-ops.c b/ggml/src/ggml-hexagon/htp/flash-attn-ops.c
+index 939a5bc..0e4e258 100644
+--- a/ggml/src/ggml-hexagon/htp/flash-attn-ops.c
++++ b/ggml/src/ggml-hexagon/htp/flash-attn-ops.c
+@@ -634,21 +634,47 @@ static void flash_attn_ext_f16_thread(unsigned int nth, unsigned int ith, void *
+ // LG: the blocks of a mask row that have at least one key not at -inf. A block whose every key is -inf (outside the
+ // sliding window, or an empty cache cell) adds exactly nothing (P = 0), so its K/V copy and math are skipped, as the
+ // CPU skips such keys one by one. One mask block is one HVX vector (64 fp16); the test runs on a cached copy.
++// A live block that also holds -inf keys is marked LG_FA_PARTIAL: its masked K/V rows get zeroed in VTCM, so the value
++// sums need no per-key check (those keys have P = 0 and their rows may be stale or empty cells).
++#define LG_FA_PARTIAL 0x8000
+ static uint32_t lg_fa_live_blocks(uint16_t * list, const __fp16 * mrow, uint32_t n_blocks, uint32_t nek1) {
+-    uint64_t __attribute__((aligned(VLEN))) buf[VLEN / 8];
++    uint16_t __attribute__((aligned(VLEN))) h[VLEN / 2];
+     uint32_t n = 0;
+     for (uint32_t ib = 0; ib < n_blocks; ++ib) {
+         const uint32_t bs = MIN(FLASH_ATTN_BLOCK_SIZE, nek1 - ib * FLASH_ATTN_BLOCK_SIZE);
+-        *(HVX_Vector *) buf = *(const HVX_UVector *) (mrow + ib * FLASH_ATTN_BLOCK_SIZE);
+-        const uint16_t * h = (const uint16_t *) buf;
+-        bool live = false;
+-        uint32_t i = 0;
+-        for (; i + 4 <= bs && !live; i += 4) live = buf[i / 4] != 0xFC00FC00FC00FC00ull;
+-        for (; i < bs && !live; ++i) live = h[i] != 0xFC00;
+-        if (live) list[n++] = ib;
++        *(HVX_Vector *) h = *(const HVX_UVector *) (mrow + ib * FLASH_ATTN_BLOCK_SIZE);
++        uint32_t dead = 0;
++        for (uint32_t i = 0; i < bs; ++i) dead += h[i] == 0xFC00;
++        if (dead < bs) list[n++] = ib | (dead ? LG_FA_PARTIAL : 0);
+     }
+     return n;
+ }
++
++static void lg_fa_zero_masked(uint8_t * k_base, uint8_t * v_base, size_t k_stride, size_t v_stride, uint32_t nk, uint32_t nv,
++                              const __fp16 * mrow, uint32_t bs) {
++    uint16_t __attribute__((aligned(VLEN))) h[VLEN / 2];
++    *(HVX_Vector *) h = *(const HVX_UVector *) mrow;
++    for (uint32_t i = 0; i < bs; ++i) {
++        if (h[i] != 0xFC00) continue;
++        HVX_Vector * kr = (HVX_Vector *) (k_base + i * k_stride);
++        HVX_Vector * vr = (HVX_Vector *) (v_base + i * v_stride);
++        for (uint32_t j = 0; j < nk; ++j) kr[j] = Q6_V_vzero();
++        for (uint32_t j = 0; j < nv; ++j) vr[j] = Q6_V_vzero();
++    }
++}
++
++// value sums for nk keys of one head, NV fp16 vectors per row (a compile-time 4 or 8 after inlining)
++static inline __attribute__((always_inline)) void lg_fa_vsum(HVX_Vector * restrict vacc, const uint8_t * restrict v_base,
++                                                            size_t stride, const __fp16 * restrict p, uint32_t nk, const uint32_t NV) {
++    for (uint32_t jj = 0; jj < nk; jj++) {
++        const HVX_Vector S = hvx_vec_splat_f16(p[jj]);
++        const HVX_Vector * restrict vrow = (const HVX_Vector *) (v_base + jj * stride);
++        #pragma unroll
++        for (uint32_t i = 0; i < NV; i++) {
++            vacc[i] = Q6_Vqf16_vadd_Vqf16Vqf16(vacc[i], Q6_Vqf16_vmpy_VhfVhf(vrow[i], S));
++        }
++    }
++}
+ #ifndef LG_FA_GROUPED_OFF
+ #define getenv_lg_fa_off() 0
+ #else
+@@ -687,6 +713,52 @@ static inline HVX_Vector lg_dot_f16_rx32_qf32(const void * restrict y, const uin
+     return HVX_OP_MUL_F32(hvx_vec_splat_f32(s), sums);
+ }
+ 
++// q . k for 32 keys, NV fp16 vectors per row (a compile-time 4 or 8 after inlining). Each key's products are summed in
++// qf32; the 32 per-key vectors are then folded in one shuffle-and-add tree (all in qf32) so lane j ends up holding key
++// j's total, instead of a 4-key reduction with float conversions between steps.
++static inline __attribute__((always_inline)) HVX_Vector lg_qf32_fold(HVX_Vector a, HVX_Vector b, int bytes) {
++    const HVX_VectorPair w = Q6_W_vshuff_VVR(b, a, bytes);
++    return Q6_Vqf32_vadd_Vqf32Vqf32(Q6_V_lo_W(w), Q6_V_hi_W(w));
++}
++static inline __attribute__((always_inline)) HVX_Vector lg_dot4_fold(const HVX_Vector * restrict y, const uint8_t * restrict x,
++                                                                    size_t stride, const uint32_t NV) {
++    const HVX_Vector * restrict x0 = (const HVX_Vector *) x;
++    const HVX_Vector * restrict x1 = (const HVX_Vector *) (x + stride);
++    const HVX_Vector * restrict x2 = (const HVX_Vector *) (x + stride * 2);
++    const HVX_Vector * restrict x3 = (const HVX_Vector *) (x + stride * 3);
++    HVX_Vector a0l = Q6_V_vzero(), a0h = Q6_V_vzero(), a1l = Q6_V_vzero(), a1h = Q6_V_vzero();
++    HVX_Vector a2l = Q6_V_vzero(), a2h = Q6_V_vzero(), a3l = Q6_V_vzero(), a3h = Q6_V_vzero();
++    #pragma unroll
++    for (uint32_t i = 0; i < NV; i++) {
++        const HVX_Vector yy = y[i];
++        HVX_VectorPair m;
++        m = Q6_Wqf32_vmpy_VhfVhf(x0[i], yy); a0l = Q6_Vqf32_vadd_Vqf32Vqf32(a0l, Q6_V_lo_W(m)); a0h = Q6_Vqf32_vadd_Vqf32Vqf32(a0h, Q6_V_hi_W(m));
++        m = Q6_Wqf32_vmpy_VhfVhf(x1[i], yy); a1l = Q6_Vqf32_vadd_Vqf32Vqf32(a1l, Q6_V_lo_W(m)); a1h = Q6_Vqf32_vadd_Vqf32Vqf32(a1h, Q6_V_hi_W(m));
++        m = Q6_Wqf32_vmpy_VhfVhf(x2[i], yy); a2l = Q6_Vqf32_vadd_Vqf32Vqf32(a2l, Q6_V_lo_W(m)); a2h = Q6_Vqf32_vadd_Vqf32Vqf32(a2h, Q6_V_hi_W(m));
++        m = Q6_Wqf32_vmpy_VhfVhf(x3[i], yy); a3l = Q6_Vqf32_vadd_Vqf32Vqf32(a3l, Q6_V_lo_W(m)); a3h = Q6_Vqf32_vadd_Vqf32Vqf32(a3h, Q6_V_hi_W(m));
++    }
++    const HVX_Vector k01 = lg_qf32_fold(Q6_Vqf32_vadd_Vqf32Vqf32(a0l, a0h), Q6_Vqf32_vadd_Vqf32Vqf32(a1l, a1h), 4);
++    const HVX_Vector k23 = lg_qf32_fold(Q6_Vqf32_vadd_Vqf32Vqf32(a2l, a2h), Q6_Vqf32_vadd_Vqf32Vqf32(a3l, a3h), 4);
++    return lg_qf32_fold(k01, k23, 8);   // lanes repeat [k0 k1 k2 k3]
++}
++static __attribute__((noinline)) HVX_Vector lg_dot32_core(const HVX_Vector * restrict yv, const uint8_t * restrict x, size_t stride) {
++    HVX_Vector g[4];
++    #pragma unroll
++    for (uint32_t j = 0; j < 4; j++) {
++        const HVX_Vector a = lg_dot4_fold(yv, x + stride * (8 * j), stride, 4);
++        const HVX_Vector b = lg_dot4_fold(yv, x + stride * (8 * j + 4), stride, 4);
++        g[j] = lg_qf32_fold(a, b, 16);   // lanes repeat [k0 .. k7] of this group of 8
++    }
++    return lg_qf32_fold(lg_qf32_fold(g[0], g[1], 32), lg_qf32_fold(g[2], g[3], 32), 64);
++}
++// 256 dims in one pass, 512 as two 256-dim halves (folding is linear)
++static inline HVX_Vector lg_dot32_tree(const void * restrict y, const uint8_t * restrict x, size_t stride, uint32_t halves, float s) {
++    const HVX_Vector * restrict yv = (const HVX_Vector *) y;
++    HVX_Vector h = lg_dot32_core(yv, x, stride);
++    if (halves == 2) h = Q6_Vqf32_vadd_Vqf32Vqf32(h, lg_dot32_core(yv + 4, x + 4 * VLEN, stride));
++    return HVX_OP_MUL_F32(hvx_vec_splat_f32(s), Q6_Vsf_equals_Vqf32(h));
++}
++
+ static void lg_flash_attn_grouped_thread(unsigned int nth, unsigned int ith, void * data) {
+     struct htp_fa_context * factx = (struct htp_fa_context *) data;
+     const struct htp_ops_context * octx = factx->octx;
+@@ -752,7 +824,7 @@ static void lg_flash_attn_grouped_thread(unsigned int nth, unsigned int ith, voi
+         }
+ 
+         for (uint32_t bi = 0; bi < MIN(nbl, 2); ++bi) {
+-            const uint32_t ib = blist[bi];
++            const uint32_t ib = blist[bi] & ~LG_FA_PARTIAL;
+             const uint32_t ic_start = ib * FLASH_ATTN_BLOCK_SIZE;
+             const uint32_t bs = MIN(FLASH_ATTN_BLOCK_SIZE, nek1 - ic_start);
+             const uint8_t * k_src = (const uint8_t *) k->data + (ic_start*nbk1 + ik2*nbk2 + ik3*nbk3);
+@@ -777,12 +849,16 @@ static void lg_flash_attn_grouped_thread(unsigned int nth, unsigned int ith, voi
+         }
+ 
+         for (uint32_t bi = 0; bi < nbl; ++bi) {
+-            const uint32_t ib = blist[bi];
++            const uint32_t ib = blist[bi] & ~LG_FA_PARTIAL;
+             const uint32_t ic_start = ib * FLASH_ATTN_BLOCK_SIZE;
+             const uint32_t bs = MIN(FLASH_ATTN_BLOCK_SIZE, nek1 - ic_start);
+             uint8_t * k_base = dma_queue_pop(dma).dst;
+             uint8_t * v_base = dma_queue_pop(dma).dst;
+             __fp16  * m_base = mask ? dma_queue_pop(dma).dst : NULL;
++            if (blist[bi] & LG_FA_PARTIAL) {
++                lg_fa_zero_masked(k_base, v_base, factx->size_k_row_padded, factx->size_v_row_padded, DK / VLEN_FP16, nvd,
++                                  mp_base + ic_start, bs);
++            }
+ 
+             for (uint32_t j = 0; j < G; ++j) {
+                 const uint32_t h = ik2 * G + j;
+@@ -796,7 +872,10 @@ static void lg_flash_attn_grouped_thread(unsigned int nth, unsigned int ith, voi
+ #ifdef LG_FA_NO_DOT
+                     HVX_Vector scores = hvx_vec_splat_f32(0.0f); (void) q_ptr;
+ #else
+-                    HVX_Vector scores = lg_dot_f16_rx32_qf32(q_ptr[j], k_base + ic * factx->size_k_row_padded, factx->size_k_row_padded, DK / VLEN_FP16, factx->scale);
++                    const uint8_t * kb = k_base + ic * factx->size_k_row_padded;
++                    HVX_Vector scores = DK == 256 ? lg_dot32_tree(q_ptr[j], kb, factx->size_k_row_padded, 1, factx->scale) :
++                                        DK == 512 ? lg_dot32_tree(q_ptr[j], kb, factx->size_k_row_padded, 2, factx->scale) :
++                                        lg_dot_f16_rx32_qf32(q_ptr[j], kb, factx->size_k_row_padded, DK / VLEN_FP16, factx->scale);
+ #endif
+                     if (factx->logit_softcap != 0.0f) {
+                         scores = hvx_vec_tanh_f32(scores);
+@@ -835,20 +914,21 @@ static void lg_flash_attn_grouped_thread(unsigned int nth, unsigned int ith, voi
+                     p_sum_vec = HVX_OP_ADD_F32(p_sum_vec, P);
+                     __fp16 __attribute__((aligned(VLEN))) p_arr[VLEN_FP16];
+                     hvx_vec_f32_to_f16_a(p_arr, P, hvx_vec_splat_f32(0));
+-                    float __attribute__((aligned(128))) P_arr[VLEN_FP32];
+-                    hvx_vec_store_a(P_arr, 128, P);
+ #ifdef LG_FA_NO_V
+                     const uint32_t nk = 0;
+ #else
+                     const uint32_t nk = MIN(VLEN_FP32, bs - ic2);
+ #endif
+-                    for (uint32_t jj = 0; jj < nk; jj++) {
+-                        if (P_arr[jj] == 0.0f) continue;   // masked or empty cache rows may hold garbage
+-                        const HVX_Vector S = hvx_vec_splat_f16(p_arr[jj]);
+-                        const HVX_Vector * vrow = (const HVX_Vector *) (v_base + (ic2 + jj) * factx->size_v_row_padded);
+-                        #pragma unroll
+-                        for (uint32_t i = 0; i < LG_FA_MAXV; i++) {
+-                            if (i < nvd) {
++                    const uint8_t * vb = v_base + ic2 * factx->size_v_row_padded;
++                    if (nvd == 4) {
++                        lg_fa_vsum(vacc, vb, factx->size_v_row_padded, p_arr, nk, 4);
++                    } else if (nvd == 8) {
++                        lg_fa_vsum(vacc, vb, factx->size_v_row_padded, p_arr, nk, 8);
++                    } else {
++                        for (uint32_t jj = 0; jj < nk; jj++) {
++                            const HVX_Vector S = hvx_vec_splat_f16(p_arr[jj]);
++                            const HVX_Vector * vrow = (const HVX_Vector *) (vb + jj * factx->size_v_row_padded);
++                            for (uint32_t i = 0; i < nvd; i++) {
+                                 vacc[i] = Q6_Vqf16_vadd_Vqf16Vqf16(vacc[i], Q6_Vqf16_vmpy_VhfVhf(vrow[i], S));
+                             }
+                         }
+@@ -870,7 +950,7 @@ static void lg_flash_attn_grouped_thread(unsigned int nth, unsigned int ith, voi
+             }
+ 
+             if (bi + 2 < nbl) {
+-                const uint32_t next_ic_start = blist[bi + 2] * FLASH_ATTN_BLOCK_SIZE;
++                const uint32_t next_ic_start = (blist[bi + 2] & ~LG_FA_PARTIAL) * FLASH_ATTN_BLOCK_SIZE;
+                 const uint32_t nbs = MIN(FLASH_ATTN_BLOCK_SIZE, nek1 - next_ic_start);
+                 const uint8_t * k_src = (const uint8_t *) k->data + (next_ic_start*nbk1 + ik2*nbk2 + ik3*nbk3);
+                 dma_queue_push(dma, dma_make_ptr(k_base, k_src), factx->size_k_row_padded, nbk1, size_k_row, nbs);
+diff --git a/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c b/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
+index 2985025..740a447 100644
+--- a/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
++++ b/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
+@@ -46,6 +46,12 @@ static uint32_t lg_q2k_xcache_ncols;
+ uint32_t lg_q4_xcache_src;
+ static uint8_t * lg_xbuf, * lg_tbuf;   // cached heap: quantized inputs (shared by both formats), raw-input scratch
+ 
++#ifdef LG_NO_FUSE
++#define getenv_lg_nofuse() 1
++#else
++#define getenv_lg_nofuse() 0
++#endif
++
+ struct lg_q2k {
+     const struct htp_tensor * src0, * src1, * dst;
+     struct htp_context * ctx;
+@@ -59,6 +65,9 @@ struct lg_q2k {
+     uint8_t * wbuf;                  // VTCM per thread: two tile buffers
+     float   * xtmp;                  // per thread: one super-block of raw inputs, copied in with HVX (cached heap)
+     uint32_t n_jobs;
++    uint32_t fuse;                   // one column: each thread quantizes its share inside the tile job (see lg_q2k_mv_job)
++    uint8_t * xin;                   // VTCM per thread: its share of the raw input row, brought in by DMA
++    volatile uint32_t qdone;         // threads done quantizing
+ };
+ 
+ // one super-block of one column, as the CPU's quantize_row_q8_K. x is 128-byte aligned in cached memory; w is a
+@@ -252,16 +261,44 @@ static void lg_stage_flush(unsigned ith, const struct htp_tensor * dst, uint32_t
+ static void lg_q2k_mv_job(unsigned int nth, unsigned int ith, void * data) {
+     struct lg_q2k * c = (struct lg_q2k *) data;
+     const uint32_t per = (c->ntiles + nth - 1) / nth;
+-    const uint32_t t0 = per * ith, t1 = MIN(t0 + per, c->ntiles);
+-    if (t0 >= t1) return;
++    const uint32_t t0 = MIN(per * ith, c->ntiles), t1 = MIN(t0 + per, c->ntiles);
+ 
+     dma_queue * q = c->ctx->dma[ith];
+     uint8_t * buf0 = c->wbuf + (size_t) ith * LG_NBUF * c->tile_bytes;
+     const uint8_t * w = (const uint8_t *) c->src0->data;
++
++    // fused (one column): this thread's share of the input row comes in by DMA ahead of its first tiles, and is
++    // quantized while those tiles are in flight; then all threads wait for the whole row before computing
++    uint32_t s0 = 0, s1 = 0;
++    float * xin = NULL;
++    if (c->fuse) {
++        const uint32_t ps = (c->nsb + nth - 1) / nth;
++        s0 = MIN(ps * ith, c->nsb); s1 = MIN(s0 + ps, c->nsb);
++        xin = (float *) (c->xin + (size_t) ith * c->K * sizeof(float));
++        if (s0 < s1) {
++            const size_t nb = (size_t) (s1 - s0) * LG_SB_INPUTS * sizeof(float);
++            dma_queue_push_ddr_to_vtcm(q, dma_make_ptr(xin, (const float *) c->src1->data + (size_t) s0 * LG_SB_INPUTS), nb, nb, 1);
++        }
++    }
+     for (uint32_t t = t0; t < MIN(t0 + LG_NBUF - 1, t1); t++) {
+         dma_queue_push_ddr_to_vtcm(q, dma_make_ptr(buf0 + ((t - t0) % LG_NBUF) * c->tile_bytes, w + (size_t) t * c->tile_bytes),
+                                    c->tile_bytes, c->tile_bytes, 1);
+     }
++    if (c->fuse) {
++        if (s0 < s1) {
++            dma_queue_pop(q);
++            float * tmp = c->xtmp + (size_t) ith * 2 * LG_SB_INPUTS;
++            for (uint32_t s = s0; s < s1; s++) {
++                for (int v = 0; v < LG_SB_INPUTS * 4 / 128; v++) {
++                    ((HVX_Vector *) tmp)[v] = ((const HVX_Vector *) (xin + (size_t) (s - s0) * LG_SB_INPUTS))[v];
++                }
++                lg_q2k_quant_sb(tmp, c->xq + (size_t) s * LG_SB_INPUTS, c->xsum + (size_t) s * 8, c->xd + s, (int32_t *) (tmp + LG_SB_INPUTS));
++            }
++        }
++        __atomic_fetch_add(&c->qdone, 1, __ATOMIC_RELEASE);
++        while (__atomic_load_n(&c->qdone, __ATOMIC_ACQUIRE) < nth) { }
++    }
++    if (t0 >= t1) return;
+ 
+     const HVX_Vector one_hf = Q6_Vh_vsplat_R(0x3c00);   // 1.0 in fp16
+     for (uint32_t t = t0; t < t1; t++) {
+@@ -406,9 +443,17 @@ int lg_op_matmul_q2k(struct htp_ops_context * octx) {
+         c.xd   = (float *) p;
+ 
+         const bool cached = (ncols <= max_cols && lg_q2k_xcache_src == src1->data && lg_q2k_xcache_ncols == ncols);
++        c.fuse = 0;
+         if (octx->src[2]) {
+             lg_copy_prequant(octx->src[2], c.K, ncols, c.nsb * 8, c.nsb, col0, c.ncols, c.xq, c.xsum, c.xd);
+             lg_q2k_xcache_src = lg_q4_xcache_src = 0;
++        } else if (!cached && ncols == 1 && !getenv_lg_nofuse() && wbytes + (size_t) c.n_jobs * c.K * sizeof(float) <= octx->ctx->vtcm_size) {
++            c.fuse  = 1;
++            c.xin   = octx->ctx->vtcm_base + wbytes;
++            c.qdone = 0;
++            lg_q2k_xcache_src   = src1->data;
++            lg_q2k_xcache_ncols = 1;
++            lg_q4_xcache_src    = 0;
+         } else if (!cached) {
+             worker_pool_run_func(octx->ctx->worker_pool, lg_q2k_quant_job, &c, MIN(c.n_jobs, c.ncols * c.nsb));
+             lg_q2k_xcache_src   = (ncols <= max_cols) ? src1->data : 0;
+@@ -447,6 +492,9 @@ struct lg_q4 {
+     float   * xd;       // [ncols][K / 32]  the block scale, rounded to fp16 like the CPU's
+     float   * xtmp;     // per thread: 256 raw inputs
+     uint8_t * wbuf;
++    uint32_t  fuse;     // one column: quantize inside the tile job (as lg_q2k)
++    uint8_t * xin;
++    volatile uint32_t qdone;
+ };
+ 
+ #ifdef LG_TRACE
+@@ -464,6 +512,7 @@ static void lg_q4_quant_check(const float * x, const int8_t * q, float dq) {   /
+ }
+ #endif
+ 
++static void lg_q4_quant_256(struct lg_q4 * c, uint32_t col, uint32_t ch, float * tmp);
+ static void lg_q4_quant_job(unsigned int nth, unsigned int ith, void * data) {
+     struct lg_q4 * c = (struct lg_q4 *) data;
+     const uint32_t nchunk = c->K / 256;                     // copy in 256 inputs (8 blocks) at a time
+@@ -475,6 +524,13 @@ static void lg_q4_quant_job(unsigned int nth, unsigned int ith, void * data) {
+         const uint32_t col = i / nchunk, ch = i % nchunk;
+         const float * xs = (const float *) ((const uint8_t *) c->src1->data + (size_t) (c->col0 + col) * c->src1->nb[1]) + ch * 256;
+         for (int v = 0; v < 8; v++) ((HVX_Vector *) tmp)[v] = ((const HVX_UVector *) xs)[v];
++        lg_q4_quant_256(c, col, ch, tmp);
++    }
++}
++
++// 256 inputs (8 blocks) of column col, chunk ch, already in tmp (cached): q8_0 as the CPU
++static void lg_q4_quant_256(struct lg_q4 * c, uint32_t col, uint32_t ch, float * tmp) {
++    {
+         int32_t * w = (int32_t *) (tmp + 256);
+         for (int b = 0; b < 8; b++) {
+             const HVX_Vector vx = ((const HVX_Vector *) tmp)[b];
+@@ -528,16 +584,42 @@ static void lg_q4_row_check(const struct lg_q4 * c, const uint8_t * tile, uint32
+ static void lg_q4_mv_job(unsigned int nth, unsigned int ith, void * data) {
+     struct lg_q4 * c = (struct lg_q4 *) data;
+     const uint32_t per = (c->ntiles + nth - 1) / nth;
+-    const uint32_t t0 = per * ith, t1 = MIN(t0 + per, c->ntiles);
+-    if (t0 >= t1) return;
++    const uint32_t t0 = MIN(per * ith, c->ntiles), t1 = MIN(t0 + per, c->ntiles);
+ 
+     dma_queue * q = c->ctx->dma[ith];
+     uint8_t * buf0 = c->wbuf + (size_t) ith * LG_NBUF * c->tile_bytes;
+     const uint8_t * w = (const uint8_t *) c->src0->data;
++
++    // fused (one column), as lg_q2k_mv_job: input share by DMA, quantized while the first tiles are in flight
++    const uint32_t nchunk = c->K / 256;
++    uint32_t s0 = 0, s1 = 0;
++    float * xin = NULL;
++    if (c->fuse) {
++        const uint32_t ps = (nchunk + nth - 1) / nth;
++        s0 = MIN(ps * ith, nchunk); s1 = MIN(s0 + ps, nchunk);
++        xin = (float *) (c->xin + (size_t) ith * c->K * sizeof(float));
++        if (s0 < s1) {
++            const size_t nb = (size_t) (s1 - s0) * 256 * sizeof(float);
++            dma_queue_push_ddr_to_vtcm(q, dma_make_ptr(xin, (const float *) c->src1->data + (size_t) s0 * 256), nb, nb, 1);
++        }
++    }
+     for (uint32_t t = t0; t < MIN(t0 + LG_NBUF - 1, t1); t++) {
+         dma_queue_push_ddr_to_vtcm(q, dma_make_ptr(buf0 + ((t - t0) % LG_NBUF) * c->tile_bytes, w + (size_t) t * c->tile_bytes),
+                                    c->tile_bytes, c->tile_bytes, 1);
+     }
++    if (c->fuse) {
++        if (s0 < s1) {
++            dma_queue_pop(q);
++            float * tmp = c->xtmp + (size_t) ith * 2 * LG_SB_INPUTS;
++            for (uint32_t ch = s0; ch < s1; ch++) {
++                for (int v = 0; v < 8; v++) ((HVX_Vector *) tmp)[v] = ((const HVX_Vector *) (xin + (size_t) (ch - s0) * 256))[v];
++                lg_q4_quant_256(c, 0, ch, tmp);
++            }
++        }
++        __atomic_fetch_add(&c->qdone, 1, __ATOMIC_RELEASE);
++        while (__atomic_load_n(&c->qdone, __ATOMIC_ACQUIRE) < nth) { }
++    }
++    if (t0 >= t1) return;
+ 
+     const HVX_Vector one_hf = Q6_Vh_vsplat_R(0x3c00);
+     const HVX_Vector nib    = Q6_Vb_vsplat_R(0x0f);
+@@ -687,9 +769,17 @@ int lg_op_matmul_q4_0(struct htp_ops_context * octx) {
+         c.xd    = (float *) p;
+ 
+         const bool cached = (ncols <= max_cols && lg_q4_xcache_src == src1->data && lg_q4_xcache_ncols == ncols);
++        c.fuse = 0;
+         if (octx->src[2]) {
+             lg_copy_prequant(octx->src[2], c.K, ncols, c.K / 32, c.K / 32, col0, c.ncols, c.xq, c.xsum8, c.xd);
+             lg_q2k_xcache_src = lg_q4_xcache_src = 0;
++        } else if (!cached && ncols == 1 && !getenv_lg_nofuse() && wbytes + (size_t) c.n_jobs * c.K * sizeof(float) <= octx->ctx->vtcm_size) {
++            c.fuse  = 1;
++            c.xin   = octx->ctx->vtcm_base + wbytes;
++            c.qdone = 0;
++            lg_q4_xcache_src   = src1->data;
++            lg_q4_xcache_ncols = 1;
++            lg_q2k_xcache_src  = 0;
+         } else if (!cached) {
+             worker_pool_run_func(octx->ctx->worker_pool, lg_q4_quant_job, &c, MIN(c.n_jobs, c.ncols * (c.K / 256)));
+             lg_q4_xcache_src   = (ncols <= max_cols) ? src1->data : 0;
+diff --git a/ggml/src/ggml-hexagon/htp/rope-ops.c b/ggml/src/ggml-hexagon/htp/rope-ops.c
+index c839044..172e7c1 100644
+--- a/ggml/src/ggml-hexagon/htp/rope-ops.c
++++ b/ggml/src/ggml-hexagon/htp/rope-ops.c
+@@ -202,6 +202,49 @@ static __attribute__((noinline)) void rope_cache_init(const float    theta_base,
+     }
+ }
+ 
++// LG: every layer at the same position with the same rope settings builds the same cos/sin table, and below v79
++// that build is a scalar cosf/sinf loop (~20-30 us per call, each thread). Each thread keeps its last few tables in
++// cached memory and copies a hit into VTCM; a miss builds exactly as before, so the table is bit-identical.
++#define LG_ROPE_NENT  4
++#define LG_ROPE_MAXNE 512
++struct lg_rope_ent {
++    float    tab[LG_ROPE_MAXNE] __attribute__((aligned(128)));
++    int32_t  pos;
++    uint32_t ne0, age;
++    const float * ff;
++    float    ff0, ff1, fs, ts, ef, af, c0, c1;
++};
++static struct lg_rope_ent lg_rope_ents[HTP_MAX_NTHREADS][LG_ROPE_NENT];
++static uint32_t lg_rope_clock[HTP_MAX_NTHREADS];
++
++static void lg_rope_cache_init(uint32_t ith, int32_t pos, const float freq_scale, const float * freq_factors,
++                               float * corr_dims, const uint32_t ne0, const float ext_factor, const float mscale,
++                               float * cache, const float theta_scale) {
++    if (ne0 > LG_ROPE_MAXNE || ith >= HTP_MAX_NTHREADS) {
++        rope_cache_init(pos, freq_scale, freq_factors, corr_dims, ne0, ext_factor, mscale, cache, theta_scale);
++        return;
++    }
++    const float ff0 = freq_factors ? freq_factors[0] : 0.0f, ff1 = freq_factors ? freq_factors[ne0 / 2 - 1] : 0.0f;
++    struct lg_rope_ent * ents = lg_rope_ents[ith];
++    struct lg_rope_ent * e = &ents[0];
++    for (uint32_t i = 0; i < LG_ROPE_NENT; i++) {
++        struct lg_rope_ent * c = &ents[i];
++        if (c->ne0 == ne0 && c->pos == pos && c->ff == freq_factors && c->ff0 == ff0 && c->ff1 == ff1 &&
++            c->fs == freq_scale && c->ts == theta_scale && c->ef == ext_factor && c->af == mscale &&
++            c->c0 == corr_dims[0] && c->c1 == corr_dims[1]) {
++            c->age = ++lg_rope_clock[ith];
++            hvx_copy_f32_ua((uint8_t *) cache, (const uint8_t *) c->tab, ne0);
++            return;
++        }
++        if (c->age < e->age) e = c;
++    }
++    rope_cache_init(pos, freq_scale, freq_factors, corr_dims, ne0, ext_factor, mscale, e->tab, theta_scale);
++    e->pos = pos; e->ne0 = ne0; e->ff = freq_factors; e->ff0 = ff0; e->ff1 = ff1; e->fs = freq_scale;
++    e->ts = theta_scale; e->ef = ext_factor; e->af = mscale; e->c0 = corr_dims[0]; e->c1 = corr_dims[1];
++    e->age = ++lg_rope_clock[ith];
++    hvx_copy_f32_ua((uint8_t *) cache, (const uint8_t *) e->tab, ne0);
++}
++
+ // pos_t/h/w/e: the four position ids for this sequence step (t=time, h=height, w=width, e=extra).
+ // sections[4]: number of head dims assigned to each position component.
+ static __attribute__((noinline)) void mrope_cache_init(const float    pos_t,
+@@ -521,9 +564,9 @@ static void rope_job_f32(unsigned int nth, unsigned int ith, void * data) {
+                             ne0, rctx->ext_factor, rctx->attn_factor,
+                             theta_cache, rctx->theta_scale);
+                     } else {
+-                       rope_cache_init(pos[i2], rctx->freq_scale, freq_factors, rctx->corr_dims,
+-                                        ne0, rctx->ext_factor, rctx->attn_factor,
+-                                        theta_cache, rctx->theta_scale);
++                       lg_rope_cache_init(ith, pos[i2], rctx->freq_scale, freq_factors, rctx->corr_dims,
++                                          ne0, rctx->ext_factor, rctx->attn_factor,
++                                          theta_cache, rctx->theta_scale);
+                     }
+                 }
+ 
+diff --git a/tests/test-backend-ops.cpp b/tests/test-backend-ops.cpp
+index 266a752..49fb0da 100644
+--- a/tests/test-backend-ops.cpp
++++ b/tests/test-backend-ops.cpp
+@@ -7717,6 +7717,11 @@ static std::vector<std::unique_ptr<test_case>> make_test_cases_eval() {
+             }
+         }
+     }
++    // LG: one row at Gemma 4 E4B's FFN width (the single-row GEGLU path on the NPU)
++    test_cases.emplace_back(new test_glu_split(GGML_GLU_OP_GEGLU, GGML_TYPE_F32, { 10240, 1, 1, 1 }, 0));
++    for (bool swapped : {false, true}) {
++        test_cases.emplace_back(new test_glu(GGML_GLU_OP_GEGLU, GGML_TYPE_F32, { 20480, 1, 1, 1 }, 0, swapped));
++    }
+ 
+     for (int v : {0, 1}) {
+         for (float alpha : {.5f, 1.702f}) {

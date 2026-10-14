@@ -1,0 +1,235 @@
+From e0a7633380ed5e70865ffe9a9382e33cb6e0b693 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Tue, 13 Oct 2026 22:35:20 -0700
+Subject: [PATCH 18/30] ggml-hexagon FA: grouped-query path, each K/V block
+ fetched once for all query heads that share it (2176/2176 FA tests pass)
+
+---
+ ggml/src/ggml-hexagon/htp/flash-attn-ops.c | 200 ++++++++++++++++++++-
+ 1 file changed, 199 insertions(+), 1 deletion(-)
+
+diff --git a/ggml/src/ggml-hexagon/htp/flash-attn-ops.c b/ggml/src/ggml-hexagon/htp/flash-attn-ops.c
+index b7511cd..311b66f 100644
+--- a/ggml/src/ggml-hexagon/htp/flash-attn-ops.c
++++ b/ggml/src/ggml-hexagon/htp/flash-attn-ops.c
+@@ -621,6 +621,194 @@ static void flash_attn_ext_f16_thread(unsigned int nth, unsigned int ith, void *
+     htp_trace_event_stop(tr, HTP_TRACE_EVT_HVX_COMP, ir0);
+ }
+ 
++// LG: grouped-query version. The original walks the whole K/V cache once per query head, so with 8 query heads
++// sharing 2 KV heads (Gemma 4 E4B) every K/V block is DMA'd 4 times. Here one work item is (token, KV head): its
++// LG_FA_G query heads walk the blocks together, so each block is fetched once; per head the math is the original's
++// (same scores, softcap, mask, online softmax, V accumulation). Used when rk2 > 1, the mask is shared by all heads
++// and there are no sinks; otherwise the original runs.
++#define LG_FA_MAXG 8
++#ifndef LG_FA_GROUPED_OFF
++#define getenv_lg_fa_off() 0
++#else
++#define getenv_lg_fa_off() 1
++#endif
++
++static void lg_flash_attn_grouped_thread(unsigned int nth, unsigned int ith, void * data) {
++    struct htp_fa_context * factx = (struct htp_fa_context *) data;
++    const struct htp_ops_context * octx = factx->octx;
++    const struct htp_tensor * q     = octx->src[0];
++    const struct htp_tensor * k     = octx->src[1];
++    const struct htp_tensor * v     = octx->src[2];
++    const struct htp_tensor * mask  = octx->src[3];
++    const struct htp_tensor * dst   = octx->dst;
++
++    const uint32_t neq1 = q->ne[1], neq2 = q->ne[2];
++    const uint32_t nek1 = k->ne[1], nek2 = k->ne[2];
++    const uint32_t G    = neq2 / nek2;
++    const uint32_t nbq1 = q->nb[1], nbq2 = q->nb[2], nbq3 = q->nb[3];
++    const uint32_t nbk1 = k->nb[1], nbk2 = k->nb[2], nbk3 = k->nb[3];
++    const uint32_t nbv1 = v->nb[1], nbv2 = v->nb[2], nbv3 = v->nb[3];
++
++    // work items: (iq3, iq1, ik2)
++    const uint32_t nitems = q->ne[3] * neq1 * nek2;
++    const uint32_t per = (nitems + nth - 1) / nth;
++    const uint32_t it0 = per * ith, it1 = MIN(it0 + per, nitems);
++    if (it0 >= it1) return;
++
++    dma_queue * dma = octx->ctx->dma[ith];
++    const uint32_t DK = k->ne[0], DV = v->ne[0];
++    const size_t size_q_row = DK * ((q->type == HTP_TYPE_F32) ? 4 : 2);
++    const size_t size_k_row = DK * sizeof(__fp16);
++    const size_t size_v_row = DV * sizeof(__fp16);
++    const size_t size_acc   = hex_round_up(DV * sizeof(float), 128);
++
++    uint8_t * spad_q = octx->src0_spad.data + octx->src0_spad.size_per_thread * ith;   // G rows
++    uint8_t * spad_k = octx->src1_spad.data + octx->src1_spad.size_per_thread * ith;
++    uint8_t * spad_v = octx->src2_spad.data + octx->src2_spad.size_per_thread * ith;
++    uint8_t * spad_m = octx->src3_spad.data + octx->src3_spad.size_per_thread * ith;
++    uint8_t * spad_a = octx->dst_spad.data  + octx->dst_spad.size_per_thread  * ith;   // G accumulators
++
++    const HVX_Vector logit_cap = hvx_vec_splat_f32(factx->logit_softcap);
++    dma_cache m_cache;
++    dma_cache_init(&m_cache, spad_m, factx->size_m_block, DMA_CACHE_MAX_SIZE);
++
++    for (uint32_t it = it0; it < it1; ++it) {
++        const uint32_t ik2 = it % nek2;
++        const uint32_t iq1 = (it / nek2) % neq1;
++        const uint32_t iq3 = it / (nek2 * neq1);
++        const uint32_t ik3 = fastdiv(iq3, &factx->broadcast_rk3);
++        const uint32_t iv3 = fastdiv(iq3, &factx->broadcast_rv3);
++        const uint32_t iv2 = ik2;   // rk2 == rv2 is checked by the caller
++
++        for (uint32_t j = 0; j < G; ++j) {
++            const uint8_t * q_row_ptr = (const uint8_t *) q->data + (iq1*nbq1 + (ik2*G + j)*nbq2 + iq3*nbq3);
++            dma_queue_push(dma, dma_make_ptr(spad_q + j * factx->size_q_row_padded, q_row_ptr), factx->size_q_row_padded, nbq1, size_q_row, 1);
++        }
++
++        const __fp16 * mp_base = NULL;
++        if (mask) {
++            const uint32_t im3 = fastmodulo(iq3, mask->ne[3], &factx->src3_div3);
++            mp_base = (const __fp16 *) ((const uint8_t *) mask->data + iq1*mask->nb[1] + im3*mask->nb[3]);
++        }
++
++        for (uint32_t ib = 0; ib < MIN(factx->n_blocks, 2); ++ib) {
++            const uint32_t ic_start = ib * FLASH_ATTN_BLOCK_SIZE;
++            const uint32_t bs = MIN(FLASH_ATTN_BLOCK_SIZE, nek1 - ic_start);
++            const uint8_t * k_src = (const uint8_t *) k->data + (ic_start*nbk1 + ik2*nbk2 + ik3*nbk3);
++            dma_queue_push(dma, dma_make_ptr(spad_k + (ib % 2) * factx->size_k_block, k_src), factx->size_k_row_padded, nbk1, size_k_row, bs);
++            const uint8_t * v_src = (const uint8_t *) v->data + (ic_start*nbv1 + iv2*nbv2 + iv3*nbv3);
++            dma_queue_push(dma, dma_make_ptr(spad_v + (ib % 2) * factx->size_v_block, v_src), factx->size_v_row_padded, nbv1, size_v_row, bs);
++            if (mask) {
++                dma_cache_push(dma, &m_cache, (const uint8_t *) (mp_base + ic_start), bs * 2, bs * 2, bs * 2, 1);
++            }
++        }
++
++        HVX_Vector S_vec[LG_FA_MAXG], M_vec[LG_FA_MAXG];
++        uint8_t * q_ptr[LG_FA_MAXG];
++        for (uint32_t j = 0; j < G; ++j) {
++            S_vec[j] = hvx_vec_splat_f32(0.0f);
++            M_vec[j] = hvx_vec_splat_f32(-INFINITY);
++            hvx_splat_f32_a(spad_a + j * size_acc, 0, DV);
++            q_ptr[j] = dma_queue_pop(dma).dst;
++            if (factx->is_q_fp32) {
++                hvx_copy_f16_f32_aa(q_ptr[j], q_ptr[j], DK);
++            }
++        }
++
++        for (uint32_t ib = 0; ib < factx->n_blocks; ++ib) {
++            const uint32_t ic_start = ib * FLASH_ATTN_BLOCK_SIZE;
++            const uint32_t bs = MIN(FLASH_ATTN_BLOCK_SIZE, nek1 - ic_start);
++            uint8_t * k_base = dma_queue_pop(dma).dst;
++            uint8_t * v_base = dma_queue_pop(dma).dst;
++            __fp16  * m_base = mask ? dma_queue_pop(dma).dst : NULL;
++
++            for (uint32_t j = 0; j < G; ++j) {
++                const uint32_t h = ik2 * G + j;
++                const HVX_Vector slope_vec = hvx_vec_splat_f16(factx->slopes[h]);
++                float * VKQ32 = (float *) (spad_a + j * size_acc);
++
++                HVX_Vector sb_scores[FLASH_ATTN_BLOCK_SIZE / VLEN_FP32];
++                HVX_Vector v_max = hvx_vec_splat_f32(-INFINITY);
++                uint32_t ic = 0;
++                for (uint32_t iv = 0; ic < bs; ic += VLEN_FP32, ++iv) {
++                    HVX_Vector scores = hvx_dot_f16_f16_aa_rx32(q_ptr[j], k_base + ic * factx->size_k_row_padded, factx->size_k_row_padded, DK, factx->scale);
++                    if (factx->logit_softcap != 0.0f) {
++                        scores = hvx_vec_tanh_f32(scores);
++                        scores = HVX_OP_MUL_F32(scores, logit_cap);
++                    }
++                    if (mask) {
++                        HVX_Vector m_vals_f16 = *(const HVX_UVector *) (m_base + ic);
++                        HVX_VectorPred is_inf = Q6_Q_vcmp_eq_VhVh(m_vals_f16, Q6_Vh_vsplat_R(0xFC00));
++                        m_vals_f16 = Q6_V_vmux_QVV(is_inf, Q6_Vh_vsplat_R(0xFBFF), m_vals_f16);
++                        HVX_VectorPair m_vals_f32_pair = Q6_Wqf32_vmpy_VhfVhf(Q6_Vh_vshuff_Vh(m_vals_f16), slope_vec);
++                        scores = Q6_Vsf_equals_Vqf32(Q6_Vqf32_vadd_Vqf32Vsf(Q6_V_lo_W(m_vals_f32_pair), scores));
++                    }
++                    const uint32_t valid_lanes = bs - ic;
++                    if (valid_lanes < VLEN_FP32) {
++                        scores = Q6_V_vmux_QVV(Q6_Q_vsetq_R(valid_lanes * 4), scores, hvx_vec_splat_f32(-INFINITY));
++                    }
++                    sb_scores[iv] = scores;
++                    v_max = hvx_vec_reduce_max2_f32(scores, v_max);
++                }
++
++                HVX_Vector M_new_vec = Q6_Vsf_vmax_VsfVsf(v_max, M_vec[j]);
++                HVX_Vector ms_vec    = hvx_vec_exp_f32(HVX_OP_SUB_F32(M_vec[j], M_new_vec));
++                M_vec[j] = M_new_vec;
++                hvx_scale_vec_f32_aa((uint8_t *) VKQ32, (const uint8_t *) VKQ32, DV, ms_vec);
++
++                HVX_Vector p_sum_vec = hvx_vec_splat_f32(0.0f);
++                for (uint32_t ic2 = 0, iv = 0; ic2 < bs; ic2 += VLEN_FP32, ++iv) {
++                    HVX_Vector P = hvx_vec_exp_f32(HVX_OP_SUB_F32(sb_scores[iv], M_vec[j]));
++                    p_sum_vec = HVX_OP_ADD_F32(p_sum_vec, P);
++                    __fp16 __attribute__((aligned(VLEN))) p_arr[VLEN_FP16];
++                    hvx_vec_f32_to_f16_a(p_arr, P, hvx_vec_splat_f32(0));
++                    float __attribute__((aligned(128))) P_arr[VLEN_FP32];
++                    hvx_vec_store_a(P_arr, 128, P);
++                    for (uint32_t jj = 0; jj < VLEN_FP32; jj += 2) {
++                        const uint32_t cur_ic = ic2 + jj;
++                        if (cur_ic >= bs) break;
++                        if (cur_ic + 1 == bs) {
++                            if (P_arr[jj] != 0.0f) {
++                                hvx_mad_f32_f16_aa(VKQ32, v_base + cur_ic * factx->size_v_row_padded, (p_arr + jj), DV);
++                            }
++                            break;
++                        }
++                        if (P_arr[jj] == 0.0f && P_arr[jj + 1] == 0.0f) continue;
++                        const uint8_t * v_ptr = v_base + cur_ic * factx->size_v_row_padded;
++                        hvx_mad_f32_f16_aa_rx2(VKQ32, v_ptr, v_ptr + factx->size_v_row_padded, (p_arr + jj), (p_arr + jj + 1), DV);
++                    }
++                }
++                p_sum_vec = hvx_vec_reduce_sum_f32(p_sum_vec);
++                S_vec[j] = HVX_OP_ADD_F32(HVX_OP_MUL_F32(S_vec[j], ms_vec), p_sum_vec);
++            }
++
++            if (ib + 2 < factx->n_blocks) {
++                const uint32_t next_ic_start = (ib + 2) * FLASH_ATTN_BLOCK_SIZE;
++                const uint32_t nbs = MIN(FLASH_ATTN_BLOCK_SIZE, nek1 - next_ic_start);
++                const uint8_t * k_src = (const uint8_t *) k->data + (next_ic_start*nbk1 + ik2*nbk2 + ik3*nbk3);
++                dma_queue_push(dma, dma_make_ptr(k_base, k_src), factx->size_k_row_padded, nbk1, size_k_row, nbs);
++                const uint8_t * v_src = (const uint8_t *) v->data + (next_ic_start*nbv1 + iv2*nbv2 + iv3*nbv3);
++                dma_queue_push(dma, dma_make_ptr(v_base, v_src), factx->size_v_row_padded, nbv1, size_v_row, nbs);
++                if (mask) {
++                    dma_cache_push(dma, &m_cache, (const uint8_t *) (mp_base + next_ic_start), nbs * 2, nbs * 2, nbs * 2, 1);
++                }
++            }
++        }
++
++        for (uint32_t j = 0; j < G; ++j) {
++            float * VKQ32 = (float *) (spad_a + j * size_acc);
++            const float S = hvx_vec_get_f32(S_vec[j]);
++            hvx_scale_f32_aa((uint8_t *) VKQ32, (const uint8_t *) VKQ32, DV, S == 0.0f ? 0.0f : 1.0f/S);
++            uint8_t * dst_ptr = (uint8_t *) dst->data + (ik2*G + j) * dst->nb[1] + iq1 * dst->nb[2] + iq3 * dst->nb[3];
++            if (dst->type == HTP_TYPE_F32) {
++                hvx_copy_f32_ua(dst_ptr, (uint8_t *) VKQ32, DV);
++            } else if (dst->type == HTP_TYPE_F16) {
++                hvx_copy_f16_f32_ua(dst_ptr, (uint8_t *) VKQ32, DV);
++            }
++        }
++    }
++}
++
+ int op_flash_attn_ext(struct htp_ops_context * octx) {
+     const struct htp_tensor * q    = octx->src[0];
+     const struct htp_tensor * k    = octx->src[1];
+@@ -713,6 +901,15 @@ int op_flash_attn_ext(struct htp_ops_context * octx) {
+ 
+     size_t size_vkq_acc = hex_round_up(v->ne[0] * sizeof(float), 128); // VKQ32
+ 
++    // LG: grouped-query path (see lg_flash_attn_grouped_thread)
++    const uint32_t lg_g = q->ne[2] / k->ne[2];
++    const bool lg_grouped = !getenv_lg_fa_off() && k->ne[2] * lg_g == q->ne[2] && lg_g > 1 && lg_g <= LG_FA_MAXG &&
++                            v->ne[2] == k->ne[2] && octx->src[4] == NULL && (!mask || mask->ne[2] == 1);
++    if (lg_grouped) {
++        size_q_block *= lg_g;
++        size_vkq_acc *= lg_g;
++    }
++
+     octx->src0_spad.size_per_thread = size_q_block * 1;
+     octx->src1_spad.size_per_thread = factx.size_k_block * 2;
+     octx->src2_spad.size_per_thread = factx.size_v_block * 2;
+@@ -738,7 +935,8 @@ int op_flash_attn_ext(struct htp_ops_context * octx) {
+     octx->dst_spad.data  = octx->src3_spad.data + octx->src3_spad.size; octx->dst_spad.src  = NULL;
+ 
+     if (!(octx->flags & HTP_OPFLAGS_SKIP_COMPUTE)) {
+-        worker_pool_run_func(octx->ctx->worker_pool, flash_attn_ext_f16_thread, &factx, octx->n_threads);
++        worker_pool_run_func(octx->ctx->worker_pool, lg_grouped ? lg_flash_attn_grouped_thread : flash_attn_ext_f16_thread,
++                             &factx, octx->n_threads);
+     }
+ 
+     return HTP_STATUS_OK;

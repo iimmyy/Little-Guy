@@ -1,0 +1,162 @@
+From 092657e9f40993d018509a951f1af9204422f33d Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Sun, 11 Oct 2026 10:19:36 -0700
+Subject: [PATCH 07/30] vulkan/opencl: work around Adreno 643 driver bugs for
+ q2_K
+
+Turnip (Mesa 25.2 and 26.2) returns wrong values for single-byte storage-buffer reads on Adreno 643: every mat-vec shader that reads block bytes (q2_K, q3_K, q6_K) fails test-backend-ops, while those reading 16/32-bit words (q4_K, q5_K) pass. The q2_K mat-vec and the q2_K mul_mm loader now read scales through their 32-bit words (and the mat-vec no longer stages them in a shared cache); q2_K MUL_MAT passes for 1-4 and 9 columns, and Gemma 4 E4B (clean q2_K brain, output on CPU) answers correctly on the GPU. 5-8 column mat-vec variants still hit hangcheck. Adds LG_VK_NO_SUBGROUPS / LG_VK_NO_FORCE_SG diagnostics. OpenCL cpy.cl: route ne00 through a volatile so the Adreno 1.855 compiler does not emit IMIN with two constant registers.
+---
+ ggml/src/ggml-opencl/kernels/cpy.cl           |  5 +-
+ ggml/src/ggml-vulkan/ggml-vulkan.cpp          | 10 ++-
+ .../vulkan-shaders/mul_mat_vec_q2_k.comp      | 66 ++++++++-----------
+ .../vulkan-shaders/mul_mm_funcs.glsl          |  3 +-
+ 4 files changed, 42 insertions(+), 42 deletions(-)
+
+diff --git a/ggml/src/ggml-opencl/kernels/cpy.cl b/ggml/src/ggml-opencl/kernels/cpy.cl
+index adbd2e7..e91fb23 100644
+--- a/ggml/src/ggml-opencl/kernels/cpy.cl
++++ b/ggml/src/ggml-opencl/kernels/cpy.cl
+@@ -209,7 +209,10 @@ kernel void kernel_cpy_f32_f32_pack(
+     dst = (global float*)((global char*)dst + offsetd);
+ 
+     int lsz = get_local_size(0);
+-    int tpr = min(ne00, lsz);          // threads per row
++    // threads per row; ne00 goes through a volatile so the Adreno 1.855 compiler does not emit IMIN with two
++    // constant-register operands, which its instruction validator rejects ("# of constant registers must be < 2")
++    volatile int ne00_v = ne00;
++    int tpr = min((int) ne00_v, lsz);
+     int rpw = lsz / tpr;               // rows per workgroup
+     int lid = get_local_id(0);
+     int row = get_group_id(0)*rpw + lid / tpr;
+diff --git a/ggml/src/ggml-vulkan/ggml-vulkan.cpp b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+index 5fbebc6..0eed28d 100644
+--- a/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -4710,15 +4710,19 @@ static void ggml_vk_load_shaders(vk_device& device, vk_pipeline requested) {
+     }
+     uint32_t rm_iq = 2 * rm_kq;
+ 
+-    const bool use_subgroups = device->subgroup_arithmetic && device->architecture != vk_device_architecture::AMD_GCN;
++    // Little Guy diagnostics for Adreno 643 / Turnip: LG_VK_NO_SUBGROUPS=1 uses shared-memory reductions in the
++    // mat-vec shaders, LG_VK_NO_FORCE_SG=1 keeps subgroup reductions but stops requiring a subgroup size.
++    const bool use_subgroups = device->subgroup_arithmetic && device->architecture != vk_device_architecture::AMD_GCN &&
++                               !getenv("LG_VK_NO_SUBGROUPS");
+     // Ensure a subgroup size >= 16 is available
+     const bool use_subgroups16 = use_subgroups && subgroup_min_size_16;
+ 
+     const uint32_t subgroup_size = (device->vendor_id == VK_VENDOR_ID_INTEL && device->subgroup_size_control && device->subgroup_min_size <= 16 && device->subgroup_max_size >= 16) ? 16 : device->subgroup_size;
+     const uint32_t subgroup_size16 = std::max(subgroup_size, 16u);
+ 
+-    const uint32_t force_subgroup_size = use_subgroups ? subgroup_size : 0;
+-    const uint32_t force_subgroup_size16 = use_subgroups16 ? subgroup_size16 : 0;
++    const bool lg_no_force_sg = getenv("LG_VK_NO_FORCE_SG") != nullptr;
++    const uint32_t force_subgroup_size = (use_subgroups && !lg_no_force_sg) ? subgroup_size : 0;
++    const uint32_t force_subgroup_size16 = (use_subgroups16 && !lg_no_force_sg) ? subgroup_size16 : 0;
+     static constexpr uint32_t mul_mat_vec_num_bindings = 5;
+     static constexpr uint32_t mul_mat_vec_id_num_bindings = 6;
+ 
+diff --git a/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vec_q2_k.comp b/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vec_q2_k.comp
+index 975cec8..d387780 100644
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vec_q2_k.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vec_q2_k.comp
+@@ -5,34 +5,26 @@
+ 
+ layout(local_size_x_id = 0, local_size_y = 1, local_size_z = 1) in;
+ 
+-shared FLOAT_TYPE sccache1[2][BLOCK_SIZE/16][16];
+-shared FLOAT_TYPE sccache2[2][BLOCK_SIZE/16][16];
+-
++// Each thread reads the 8 pouch scales it needs straight from the block, as 32-bit words. Upstream read them byte by
++// byte into a shared cache; on Adreno 643 with Turnip (Mesa 25.2 and 26.2) the 8-bit storage reads give wrong values,
++// while shaders that read 16- or 32-bit words (q4_K, q5_K) are correct.
+ FLOAT_TYPE temp[NUM_COLS][NUM_ROWS];
+-uint csel = 0;
+ 
+ void calc_superblock(const uint a_offset, const uint b_offset, const uint itid, const uint v_im, const uint ix, const uint q_offset, const uint y_offset, const uint i, const uint num_blocks_per_row, const uint first_row, const uint num_rows, const bool all_threads) {
+     const uint y_idx = i * QUANT_K + y_offset;
+ 
+     [[unroll]] for (uint n = 0; n < num_rows; ++n) {
+         const uint ib0 = a_offset + (first_row+n)*num_blocks_per_row;
+-        csel ^= 1;
+-
+-        if (!all_threads) { // when we don't have enough blocks to use all threads
+-            if (i < num_blocks_per_row) {
+-                const uint32_t scale = uint32_t(data_a[ib0 + i].scales[itid]);
+-                sccache1[csel][ix][itid] = FLOAT_TYPE(scale & 0xF);
+-                sccache2[csel][ix][itid] = FLOAT_TYPE((scale >> 4) & 0xF);
+-            }
+-            barrier();
+-
+-            if (i >= num_blocks_per_row)
+-                continue;
+-        } else {
+-            const uint32_t scale = uint32_t(data_a[ib0 + i].scales[itid]);
+-            sccache1[csel][ix][itid] = FLOAT_TYPE(scale & 0xF);
+-            sccache2[csel][ix][itid] = FLOAT_TYPE((scale >> 4) & 0xF);
+-            barrier();
++        if (!all_threads && i >= num_blocks_per_row)
++            continue;
++
++        // the 8 scale bytes come in as two 32-bit words: single-byte storage reads return wrong values on Adreno 643
++        const uint32_t sw[2] = { data_a_packed32[ib0 + i].scales[2*v_im], data_a_packed32[ib0 + i].scales[2*v_im + 1] };
++        FLOAT_TYPE sc1[8], sc2[8];
++        [[unroll]] for (uint k = 0; k < 8; ++k) {
++            const uint32_t scale = (sw[k / 4] >> (8 * (k % 4))) & 0xFF;
++            sc1[k] = FLOAT_TYPE(scale & 0xF);
++            sc2[k] = FLOAT_TYPE((scale >> 4) & 0xF);
+         }
+ 
+         const uint32_t qs_u32 = uint32_t(data_a_packed16[ib0 + i].qs[q_offset / 2]) | (uint32_t(data_a_packed16[ib0 + i].qs[q_offset / 2 + 8]) << 16);
+@@ -56,22 +48,22 @@ void calc_superblock(const uint a_offset, const uint b_offset, const uint itid,
+             FLOAT_TYPE sum1 = FLOAT_TYPE(0.0);
+             FLOAT_TYPE sum2 = FLOAT_TYPE(0.0);
+             [[unroll]] for (int l = 0; l < 2; ++l) {
+-                sum1 = fma(FLOAT_TYPE(b0[l]),   sccache1[csel][ix][    8*v_im] * qs_u32_0[l  ],
+-                       fma(FLOAT_TYPE(b16[l]),  sccache1[csel][ix][1 + 8*v_im] * qs_u32_0[l+2],
+-                       fma(FLOAT_TYPE(b32[l]),  sccache1[csel][ix][2 + 8*v_im] * qs_u32_2[l  ],
+-                       fma(FLOAT_TYPE(b48[l]),  sccache1[csel][ix][3 + 8*v_im] * qs_u32_2[l+2],
+-                       fma(FLOAT_TYPE(b64[l]),  sccache1[csel][ix][4 + 8*v_im] * qs_u32_4[l  ],
+-                       fma(FLOAT_TYPE(b80[l]),  sccache1[csel][ix][5 + 8*v_im] * qs_u32_4[l+2],
+-                       fma(FLOAT_TYPE(b96[l]),  sccache1[csel][ix][6 + 8*v_im] * qs_u32_6[l  ],
+-                       fma(FLOAT_TYPE(b112[l]), sccache1[csel][ix][7 + 8*v_im] * qs_u32_6[l+2], sum1))))))));
+-                sum2 = fma(FLOAT_TYPE(b0[l]),   sccache2[csel][ix][    8*v_im],
+-                       fma(FLOAT_TYPE(b16[l]),  sccache2[csel][ix][1 + 8*v_im],
+-                       fma(FLOAT_TYPE(b32[l]),  sccache2[csel][ix][2 + 8*v_im],
+-                       fma(FLOAT_TYPE(b48[l]),  sccache2[csel][ix][3 + 8*v_im],
+-                       fma(FLOAT_TYPE(b64[l]),  sccache2[csel][ix][4 + 8*v_im],
+-                       fma(FLOAT_TYPE(b80[l]),  sccache2[csel][ix][5 + 8*v_im],
+-                       fma(FLOAT_TYPE(b96[l]),  sccache2[csel][ix][6 + 8*v_im],
+-                       fma(FLOAT_TYPE(b112[l]), sccache2[csel][ix][7 + 8*v_im], sum2))))))));
++                sum1 = fma(FLOAT_TYPE(b0[l]),   sc1[0] * qs_u32_0[l  ],
++                       fma(FLOAT_TYPE(b16[l]),  sc1[1] * qs_u32_0[l+2],
++                       fma(FLOAT_TYPE(b32[l]),  sc1[2] * qs_u32_2[l  ],
++                       fma(FLOAT_TYPE(b48[l]),  sc1[3] * qs_u32_2[l+2],
++                       fma(FLOAT_TYPE(b64[l]),  sc1[4] * qs_u32_4[l  ],
++                       fma(FLOAT_TYPE(b80[l]),  sc1[5] * qs_u32_4[l+2],
++                       fma(FLOAT_TYPE(b96[l]),  sc1[6] * qs_u32_6[l  ],
++                       fma(FLOAT_TYPE(b112[l]), sc1[7] * qs_u32_6[l+2], sum1))))))));
++                sum2 = fma(FLOAT_TYPE(b0[l]),   sc2[0],
++                       fma(FLOAT_TYPE(b16[l]),  sc2[1],
++                       fma(FLOAT_TYPE(b32[l]),  sc2[2],
++                       fma(FLOAT_TYPE(b48[l]),  sc2[3],
++                       fma(FLOAT_TYPE(b64[l]),  sc2[4],
++                       fma(FLOAT_TYPE(b80[l]),  sc2[5],
++                       fma(FLOAT_TYPE(b96[l]),  sc2[6],
++                       fma(FLOAT_TYPE(b112[l]), sc2[7], sum2))))))));
+             }
+             temp[j][n] = fma(dm.x, sum1, fma(-dm.y, sum2, temp[j][n]));
+         }
+diff --git a/ggml/src/ggml-vulkan/vulkan-shaders/mul_mm_funcs.glsl b/ggml/src/ggml-vulkan/vulkan-shaders/mul_mm_funcs.glsl
+index 56a8a0f..951825e 100644
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/mul_mm_funcs.glsl
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/mul_mm_funcs.glsl
+@@ -163,7 +163,8 @@ void load_a_to_shmem(const uint pos_a, const uint row, const uint col, const uin
+             const uint qsshift = ((iqs % 64) / 16) * 2;        // 0,2,4,6
+ 
+             const vec4 qs = vec4(unpack8((data_a_packed32[ib].qs[qsi / 2] >> qsshift) & 0x03030303));
+-            const uint scales = data_a[ib].scales[scalesi];
++            // scale byte through its 32-bit word: single-byte storage reads are wrong on Adreno 643 (Turnip)
++            const uint scales = (data_a_packed32[ib].scales[scalesi / 4] >> (8 * (scalesi % 4))) & 0xFF;
+             const vec2 dm = vec2(data_a[ib].dm);
+ 
+             const vec4 v = dm.x * float(scales & 0xF) * qs - dm.y * float(scales >> 4);

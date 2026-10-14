@@ -1,0 +1,96 @@
+From 0c90b111c7e874d28de9d2f1b9342d5279b499e4 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Tue, 13 Oct 2026 23:54:19 -0700
+Subject: [PATCH 22/30] lg-q2k-ops: several-column paths unpack each weight
+ vector once for 4-8 columns (prompt reading; KL unchanged, speed unchanged:
+ reading is bound by per-column result stores and vrmpy issue, see notes)
+
+---
+ ggml/src/ggml-hexagon/htp/lg-q2k-ops.c | 59 ++++++++++++++++++++++++++
+ 1 file changed, 59 insertions(+)
+
+diff --git a/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c b/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
+index a8f9f05..2150949 100644
+--- a/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
++++ b/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
+@@ -285,7 +285,13 @@ static void lg_q2k_mv_job(unsigned int nth, unsigned int ith, void * data) {
+                 }
+                 for (int k = 0; k < nc; k++) {
+                     float * y = (float *) ((uint8_t *) c->dst->data + (size_t) (c->col0 + col0 + k) * c->dst->nb[1]) + (size_t) t * LG_TILE_ROWS;
++                    
++#ifndef LG_NO_STORE
+                     *(HVX_UVector *) y = Q6_Vsf_equals_Vqf32(acc[k]);
++#else
++                    (void) y; (void) acc[k];
++#endif
++
+                 }
+             }
+             continue;
+@@ -382,6 +388,7 @@ int lg_op_matmul_q2k(struct htp_ops_context * octx) {
+ 
+ #define LG_Q4_PAIR_BYTES 1152
+ #define LG_Q4_PAIR       64
++#define LG_MC4           4     // columns per pass in the several-column path
+ 
+ static uint32_t lg_q4_xcache_ncols;
+ 
+@@ -503,6 +510,58 @@ static void lg_q4_mv_job(unsigned int nth, unsigned int ith, void * data) {
+             dma_queue_push_ddr_to_vtcm(q, dma_make_ptr(buf0 + ((tn - t0) % LG_NBUF) * c->tile_bytes, w + (size_t) tn * c->tile_bytes),
+                                        c->tile_bytes, c->tile_bytes, 1);
+         }
++        if (c->ncols > 1) {
++            // several columns (prompt reading): unpack each weight vector once for LG_MC4 columns
++            for (uint32_t col0 = 0; col0 < c->ncols; col0 += LG_MC4) {
++                const int nc = (int) MIN(LG_MC4, c->ncols - col0);
++                uint32_t ck[LG_MC4];
++                for (int k = 0; k < LG_MC4; k++) ck[k] = col0 + MIN(k, nc - 1);
++                HVX_Vector acc[LG_MC4];
++                #pragma unroll
++                for (int k = 0; k < LG_MC4; k++) acc[k] = Q6_V_vzero();
++                for (uint32_t p = 0; p < c->npair; p++) {
++                    const HVX_Vector * pv = (const HVX_Vector *) (tile + (size_t) p * LG_Q4_PAIR_BYTES);
++                    const HVX_VectorPair dw = Q6_Wqf32_vmpy_VhfVhf(pv[8], one_hf);
++                    for (int b = 0; b < 2; b++) {
++                        HVX_Vector lo[4], hi[4];
++                        #pragma unroll
++                        for (int v = 0; v < 4; v++) {
++                            lo[v] = Q6_V_vand_VV(pv[4 * b + v], nib);
++                            hi[v] = Q6_V_vand_VV(Q6_Vuh_vlsr_VuhR(pv[4 * b + v], 4), nib);
++                        }
++                        const HVX_Vector d = Q6_Vsf_equals_Vqf32(b ? Q6_V_hi_W(dw) : Q6_V_lo_W(dw));
++                        const uint32_t blk = 2 * p + b;
++                        #pragma unroll
++                        for (int k = 0; k < LG_MC4; k++) {
++                            const int32_t * xb = (const int32_t *) (c->xq + (size_t) ck[k] * c->K) + blk * 8;
++                            HVX_Vector s0 = Q6_Vw_vrmpy_VubRb(lo[0], xb[0]);
++                            HVX_Vector s1 = Q6_Vw_vrmpy_VubRb(hi[0], xb[4]);
++                            s0 = Q6_Vw_vrmpyacc_VwVubRb(s0, lo[1], xb[1]);
++                            s1 = Q6_Vw_vrmpyacc_VwVubRb(s1, hi[1], xb[5]);
++                            s0 = Q6_Vw_vrmpyacc_VwVubRb(s0, lo[2], xb[2]);
++                            s1 = Q6_Vw_vrmpyacc_VwVubRb(s1, hi[2], xb[6]);
++                            s0 = Q6_Vw_vrmpyacc_VwVubRb(s0, lo[3], xb[3]);
++                            s1 = Q6_Vw_vrmpyacc_VwVubRb(s1, hi[3], xb[7]);
++                            const HVX_Vector isum = Q6_Vw_vsub_VwVw(Q6_Vw_vadd_VwVw(s0, s1),
++                                                                    Q6_V_vsplat_R(c->xsum8[(size_t) ck[k] * (c->K / 32) + blk]));
++                            const HVX_Vector a = Q6_Vsf_equals_Vqf32(Q6_Vqf32_vmpy_VsfVsf(Q6_Vsf_equals_Vw(isum), d));
++                            acc[k] = Q6_Vqf32_vadd_Vqf32Vqf32(acc[k], Q6_Vqf32_vmpy_VsfVsf(a, hvx_vec_splat_f32(c->xd[(size_t) ck[k] * (c->K / 32) + blk])));
++                        }
++                    }
++                }
++                for (int k = 0; k < nc; k++) {
++                    float * y = (float *) ((uint8_t *) c->dst->data + (size_t) (c->col0 + col0 + k) * c->dst->nb[1]) + (size_t) t * LG_TILE_ROWS;
++                    
++#ifndef LG_NO_STORE
++                    *(HVX_UVector *) y = Q6_Vsf_equals_Vqf32(acc[k]);
++#else
++                    (void) y; (void) acc[k];
++#endif
++
++                }
++            }
++            continue;
++        }
+         for (uint32_t col = 0; col < c->ncols; col++) {
+             const int32_t * x4 = (const int32_t *) (c->xq + (size_t) col * c->K);
+             const int32_t * s8 = c->xsum8 + (size_t) col * (c->K / 32);

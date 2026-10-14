@@ -1,0 +1,61 @@
+From 6ab8e2dcea0004e0145f00b84ce772e7468f8bbe Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Wed, 14 Oct 2026 04:28:17 -0700
+Subject: [PATCH 29/30] ggml-hexagon: SET_ROWS flushes only the rows it wrote;
+ the generic dst flush of a whole KV cache (MBs, over HEX_L2_FLUSH_SIZE)
+ cleaned the entire data cache 48 times per token. Host inputs flushed once
+ per batch. Talking d768 9.77 -> 10.29, d1800 9.57 -> 10.04 tok/s (3
+ alternating rounds); SET_ROWS 20/20, FA 2176/2176, decode KL 0.0125
+ (unchanged)
+
+---
+ ggml/src/ggml-hexagon/htp/main.c         | 8 ++++++--
+ ggml/src/ggml-hexagon/htp/set-rows-ops.c | 2 ++
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/ggml/src/ggml-hexagon/htp/main.c b/ggml/src/ggml-hexagon/htp/main.c
+index 8268092..558a42e 100644
+--- a/ggml/src/ggml-hexagon/htp/main.c
++++ b/ggml/src/ggml-hexagon/htp/main.c
+@@ -804,6 +804,7 @@ static void proc_op_req(struct htp_ops_context * octx, struct htp_tensor *tens,
+         if (!(src->flags & HTP_TENSOR_FLUSHED) && (src->flags & HTP_TENSOR_COMPUTE)) {
+             // flush compute buffers on input
+             hex_l2flush((void *) src->data, src->size);
++            src->flags |= HTP_TENSOR_FLUSHED;   // LG: the host does not change it during the batch; once is enough
+         }
+ 
+         FARF(HIGH, "prep-src #%u: data %p size %u : %u:%u:%u:%u", op->src[i], (void*) src->data, src->size,
+@@ -820,8 +821,11 @@ static void proc_op_req(struct htp_ops_context * octx, struct htp_tensor *tens,
+ 
+     (void) execute_op(octx);
+ 
+-    // flush buffers on output
+-    hex_l2flush((void *) dst->data, dst->size);
++    // flush buffers on output. LG: SET_ROWS flushes the rows it wrote itself: its dst is a whole KV cache (MBs),
++    // and over HEX_L2_FLUSH_SIZE this cleans the entire data cache, 48 times per token for ~1 KB of writes
++    if (octx->op != HTP_OP_SET_ROWS) {
++        hex_l2flush((void *) dst->data, dst->size);
++    }
+     dst->flags |= HTP_TENSOR_FLUSHED;
+ 
+     FARF(HIGH, "post-dst #%u: data %p size %u : %u:%u:%u:%u", op->dst, (void*) dst->data, dst->size,
+diff --git a/ggml/src/ggml-hexagon/htp/set-rows-ops.c b/ggml/src/ggml-hexagon/htp/set-rows-ops.c
+index 58c5496..26727e7 100644
+--- a/ggml/src/ggml-hexagon/htp/set-rows-ops.c
++++ b/ggml/src/ggml-hexagon/htp/set-rows-ops.c
+@@ -92,6 +92,7 @@ static void set_rows_thread_f32_f32(unsigned int nth, unsigned int ith, void *da
+ 
+                 // copy row
+                 hvx_copy_f32_uu((uint8_t *)dst_ptr, (const uint8_t *)src0_ptr, ne00);
++                hex_l2flush((void *) dst_ptr, ne00 * sizeof(float));   // LG: just this row (see proc_op_req)
+             }
+         }
+     }
+@@ -138,6 +139,7 @@ static void set_rows_thread_f16_f32(unsigned int nth, unsigned int ith, void *da
+                 uint8_t*       dst_ptr  = (uint8_t *)       octx->dst->data  + i1*nb1 + i02*nb2  + i03*nb3;
+ 
+                 hvx_copy_f16_f32_uu(dst_ptr, src0_ptr, ne00);
++                hex_l2flush((void *) dst_ptr, ne00 * sizeof(__fp16));   // LG: just this row (see proc_op_req)
+             }
+         }
+     }
