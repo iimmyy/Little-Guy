@@ -5,6 +5,8 @@ build the result from whole-model "donor" files, and measure it. Runs on a Linux
   squeeze.py <config> donors      quantize the donor levels the config lists (skips existing files)
   squeeze.py <config> probe       one variant per (group, layer block, level) on the base recipe -> probes.json
   squeeze.py <config> allocate    greedy: best KL drop per extra byte until the budget -> recipe.json
+  squeeze.py <config> refine      like allocate, but re-measures: each round probes the most promising upgrades on
+                                  top of the current mix and keeps the best few -> recipe.json (gains don't add up)
   squeeze.py <config> build       assemble recipe.json from the donors -> <name>.gguf
   squeeze.py <config> score FILE  KL and same-top vs the reference on the eval text(s)
 
@@ -15,6 +17,22 @@ from pathlib import Path
 
 cfg_path, cmd = Path(sys.argv[1]), sys.argv[2]
 C = json.loads(cfg_path.read_text())
+ROOT = Path(__file__).resolve().parents[2]   # relative paths in a config are relative to the repo
+
+
+def _abs(x):
+    return str(x if Path(x).is_absolute() else ROOT / x)
+
+
+for k in ("scratch", "work", "engine_bin", "gguf_py", "bf16", "frame"):
+    if k in C:
+        C[k] = _abs(C[k])
+for d in C.get("donors", []):
+    d["file"] = _abs(d["file"])
+for spec in C["levels"].values():
+    spec["files"] = [_abs(f) for f in spec["files"]]
+for ev in C["evals"]:
+    ev["text"], ev["base"] = _abs(ev["text"]), _abs(ev["base"])
 S = Path(C["scratch"]); B = Path(C["engine_bin"]); OUT = Path(C.get("work", S / "squeeze")); OUT.mkdir(parents=True, exist_ok=True)
 sys.path.insert(0, C["gguf_py"])
 import gguf
@@ -89,7 +107,7 @@ def score(path, chunks=None, evals=None):
     for ev in (evals or C["evals"]):
         env = dict(os.environ, LG_DICT_PREVIEW="0", **ev.get("env", {}))
         r = subprocess.run([str(B / "llama-perplexity"), "-m", str(path), "-f", ev["text"], "-c", str(ev.get("ctx", 512)),
-                            "--chunks", str(chunks or ev["chunks"]), "-t", str(C.get("threads", 16)),
+                            "--chunks", str(chunks or ev["chunks"]), "-t", str(C.get("threads", 16))] + (["-ngl", "99"] if C.get("gpu") else []) + [
                             "--kl-divergence-base", ev["base"], "--kl-divergence"], capture_output=True, text=True, env=env)
         kld = re.search(r"Mean\s+KLD:\s+([0-9.]+)", r.stdout + r.stderr)
         top = re.search(r"Same top p:\s+([0-9.]+)", r.stdout + r.stderr)
@@ -160,6 +178,64 @@ def allocate():
     log(f"recipe: {len(chosen)} upgrades, {used / 1e9:.2f} GB, predicted KL {recipe['predicted_kl']:.4f}")
 
 
+def refine():
+    """batch greedy with re-measurement: predicted gains from probes.json only rank the candidates"""
+    P = json.loads((OUT / "probes.json").read_text())
+    base_b = P["base"]["bytes"]
+    budget = C["budget_gb"] * 1e9
+    per_round, keep = C.get("refine_probe", 12), C.get("refine_keep", 3)
+    est = {}   # "group:block" -> {level: (extra bytes vs base, estimated KL drop)}
+    for k, v in P.items():
+        if k != "base":
+            g, b, lv = k.split(":")
+            est.setdefault(f"{g}:{b}", {})[lv] = (v["bytes"] - base_b, kl_sum(P["base"]["score"]) - kl_sum(v["score"]))
+    cur = {"groups": dict(BASE), "blocks": {}}
+    tmp = OUT / "refine.gguf"
+    cur_b, cur_k = base_b, kl_sum(P["base"]["score"])
+    rf = OUT / "refine.json"
+    hist = []
+    while True:
+        cands = []
+        for gb, opts in est.items():
+            have = cur["blocks"].get(gb)
+            hb, hk = opts[have] if have else (0, 0.0)
+            for lv, (db, dk) in opts.items():
+                if have and int(lv) <= int(have):
+                    continue
+                xb = db - hb
+                if xb > 0 and cur_b + xb <= budget and dk - hk > 0:
+                    cands.append(((dk - hk) / xb, gb, lv, xb))
+        cands = sorted(cands, reverse=True)[:per_round]
+        if not cands:
+            break
+        measured = []
+        for _, gb, lv, xb in cands:
+            r = {"groups": cur["groups"], "blocks": dict(cur["blocks"], **{gb: lv})}
+            nb = assemble(r, tmp)
+            nk = kl_sum(score(tmp, C["probe_chunks"], C["evals"][:1]))
+            drop = cur_k - nk
+            measured.append((drop / (nb - cur_b), gb, lv, nb - cur_b, drop))
+            log(f"  {gb} -> {lv}: +{(nb - cur_b) / 1e9:.3f} GB, measured KL drop {drop:.4f}")
+            o = est[gb]; have = cur["blocks"].get(gb); hb, hk = o[have] if have else (0, 0.0)
+            o[lv] = (o[lv][0], hk + max(drop, 0.0))   # learned: this upgrade's real gain at the current mix
+        took, used_blocks = 0, set()
+        for ratio, gb, lv, xb, drop in sorted(measured, reverse=True):
+            if ratio <= 0 or gb in used_blocks or cur_b + xb > budget or took >= keep:
+                continue
+            cur["blocks"][gb] = lv; used_blocks.add(gb); cur_b += xb; took += 1
+        if not took:
+            break
+        cur_b = assemble(cur, tmp)
+        cur_k = kl_sum(score(tmp, C["probe_chunks"], C["evals"][:1]))
+        hist.append({"blocks": dict(cur["blocks"]), "bytes": cur_b, "kl": cur_k})
+        rf.write_text(json.dumps(hist, indent=1))
+        log(f"round {len(hist)}: {len(cur['blocks'])} upgrades, {cur_b / 1e9:.3f} GB, measured KL {cur_k:.4f}")
+    tmp.unlink(missing_ok=True)
+    recipe = {"groups": dict(BASE), "blocks": cur["blocks"], "bytes": cur_b, "measured_kl": cur_k}
+    (OUT / "recipe.json").write_text(json.dumps(recipe, indent=1))
+    log(f"refined recipe: {len(cur['blocks'])} upgrades, {cur_b / 1e9:.2f} GB, measured KL {cur_k:.4f}")
+
+
 def build():
     recipe = json.loads((OUT / "recipe.json").read_text())
     out = OUT / f"{C['name']}.gguf"
@@ -170,6 +246,7 @@ def build():
 if cmd == "donors": donors()
 elif cmd == "probe": probe()
 elif cmd == "allocate": allocate()
+elif cmd == "refine": refine()
 elif cmd == "build": build()
 elif cmd == "score": print(json.dumps(score(Path(sys.argv[3])), indent=1))
 else: sys.exit(__doc__)

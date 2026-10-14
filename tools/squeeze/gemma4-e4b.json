@@ -1,0 +1,28 @@
+{
+ "name": "e4b-squeezed",
+ "scratch": ".run/weights/squeeze-e4b",
+ "work": ".run/weights/squeeze-e4b/work",
+ "engine_bin": ".run/lcpp-src/build-mac/bin",
+ "gguf_py": ".run/lcpp-src/gguf-py",
+ "bf16": ".run/weights/masters/qat-bf16.gguf",
+ "frame": ".run/weights/experiments/down-mix/mix-21-preview.gguf",
+ "threads": 12,
+ "gpu": true,
+ "n_layer": 42,
+ "block": 7,
+ "groups": ["attn_q", "attn_k", "attn_v", "attn_output", "ffn_gate", "ffn_up", "ffn_down"],
+ "target_note": "board NPU: only Q2_K and Q4_0 have NPU kernels, so no 3-bit level",
+ "donors": [],
+ "levels": {
+  "2": {"files": [".run/weights/experiments/down-mix/all-down-q2k.gguf", ".run/weights/squeeze-e4b/e4b-q2rest.gguf"], "type": "Q2_K"},
+  "4": {"files": [".run/weights/brains/qat-Q4_0-f16proj.gguf"], "type": "Q4_0"}
+ },
+ "base": {"attn_q": "2", "attn_k": "2", "attn_v": "2", "attn_output": "2", "ffn_gate": "2", "ffn_up": "2", "ffn_down": "2"},
+ "probe_levels": ["4"],
+ "probe_chunks": 4,
+ "budget_gb": 4.66,
+ "evals": [
+  {"name": "chat", "text": ".run/weights/squeeze-e4b/chat_eval.txt", "base": ".run/weights/squeeze-e4b/e4b_kl_chat.bin", "chunks": 4, "env": {"LG_PPL_SPECIAL": "1"}},
+  {"name": "raw", "text": "docs/2026-09-28.md", "base": ".run/weights/squeeze-e4b/e4b_kl_base.bin", "chunks": 4}
+ ]
+}
