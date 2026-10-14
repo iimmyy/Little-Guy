@@ -11,7 +11,8 @@ restored when the service stops.
 Quiet mode (for nights without a fan): while QUIET_FLAG exists, the status
 lights are off and every clock is held under a ceiling (QUIET_MHZ), on top of
 the heat steps above. `quiet-mode on|off|status` flips the flag; it survives
-reboots.
+reboots. Lights alone: while DARK_FLAG exists the lights stay off at full clocks
+(`quiet-mode lights off|on`).
 """
 import glob, os, signal, subprocess, sys, syslog, time
 
@@ -20,6 +21,7 @@ RESTORE_C = int(os.environ.get("RESTORE_C", 72))
 SHUTDOWN_C = int(os.environ.get("SHUTDOWN_C", 95))
 SENSORS = ("cpu", "gpuss", "nspss", "ddr")
 QUIET_FLAG = "/var/lib/littleguy/quiet"
+DARK_FLAG = "/var/lib/littleguy/lights-off"
 QUIET_MHZ = {"policy0": 1200, "policy4": 1400, "policy7": 1400, "gpu": 300}  # roughly a third of full power
 LEDS = {"blue:status": "heartbeat", "mmc0::": "mmc0", "mmc1::": "mmc1"}  # light: its normal trigger
 
@@ -97,16 +99,21 @@ def main():
     signal.signal(signal.SIGTERM, stop)
     syslog.syslog(f"watching: throttle {THROTTLE_C}C, restore {RESTORE_C}C, shutdown {SHUTDOWN_C}C")
     critical = 0
-    was_quiet = None
+    was_quiet = was_dark = None
     while True:
         quiet = os.path.exists(QUIET_FLAG)
+        dark = quiet or os.path.exists(DARK_FLAG)
         if quiet != was_quiet:
             for k in domains:
                 k.apply(quiet)
-            set_lights(quiet)
             if was_quiet is not None:
-                syslog.syslog("quiet mode on: lights off, clocks capped" if quiet else "quiet mode off: lights and full clocks back")
+                syslog.syslog("quiet mode on: clocks capped" if quiet else "quiet mode off: full clocks back")
             was_quiet = quiet
+        if dark != was_dark:
+            set_lights(dark)
+            if was_dark is not None:
+                syslog.syslog("lights off" if dark else "lights on")
+            was_dark = dark
         temp, sensor = hottest()
         if temp >= THROTTLE_C:
             stepped = [k for k in domains if k.level < len(k.steps) - 1]
