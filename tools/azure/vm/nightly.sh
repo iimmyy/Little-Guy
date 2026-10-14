@@ -14,7 +14,7 @@ exec > >(tee -a "$LOG") 2>&1
 echo "== $(date -u) nightly start"
 
 until az login --identity -o none 2>/dev/null; do sleep 15; done   # the identity endpoint needs a moment after boot
-blob() { az storage blob "$@" --account-name "$ST" --auth-mode login -o none; }
+blob() { az storage blob "$@" --account-name "$ST" --auth-mode login --no-progress -o none; }
 
 rm -rf "$W" && mkdir -p "$W" && cd "$W"
 blob download -c build -n lcpp-src.tar.gz -f src.tar.gz || { echo "no source snapshot in storage"; exit 1; }
