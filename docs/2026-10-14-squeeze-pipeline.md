@@ -138,3 +138,24 @@ Copied from Azure in 8 parallel ssh byte ranges (~7 MB/s vs ~2.5 MB/s single str
   GPU limit. With -ub 256 it reads 4K at 99.5 and 8K at 95 tok/s (no real speed cost).
 - Swap: 6.5 GB already used by other apps before the tests; 33 MB paged out during the 8K run. Not yet a clean
   "no swap" test.
+
+## 2026-10-15: community baseline (tools/squeeze/community_31b.sh)
+
+Importance matrix from WikiText-2 test (80 x 512 tokens, on Q8_0), stock llama.cpp types quantized from the QAT bf16.
+Same evals as the squeeze runs (chat / raw, KL vs Q8_0, 4 chunks).
+
+| 31B | Size | Chat KL | Chat top | Raw KL | Raw top |
+|---|---|---|---|---|---|
+| Google Q4_0 (official) | 17.65 GB | 0.064 | | 0.097 | 88.4% |
+| imatrix Q3_K_M | 15.29 GB | 0.193 | 82.9% | 0.240 | 80.3% |
+| plain Q3_K_M (no imatrix) | 15.29 GB | 0.240 | 79.8% | 0.318 | 77.5% |
+| our 16 GB fit (squeeze v1) | 15.26 GB | 0.299 | 79.5% | 0.348 | 75.8% |
+| imatrix IQ3_M | 14.42 GB | 0.307 | 78.6% | 0.355 | 77.3% |
+| imatrix Q3_K_S | 13.76 GB | 0.381 | 76.3% | 0.401 | 74.1% |
+| brain C recipe | 13.86 GB | | | 0.767 | 62.8% |
+
+- At the same size, even plain Q3_K_M (no importance matrix) beats squeeze v1. v1 mixed extremes (Q2_K + Q4_0) and
+  only searched Q2_K / Q3_K / Q4_0 in 15-layer blocks; spreading bits evenly with K-quant scales wins.
+- The importance matrix cuts drift another ~20-25% (chat 0.240 -> 0.193, raw 0.318 -> 0.240).
+- Brain C vs imatrix Q3_K_S at the same size: raw KL 0.767 vs 0.401.
+- v2 must search the stock K/IQ types with importance-weighted rounding, and beat imatrix Q3_K_M at equal size.
