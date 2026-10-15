@@ -97,3 +97,30 @@ not the squeeze's (a fine-tuning target).
 - Benchmark files pinned with checksums (research/big-model/get_bench.sh, bench.sha256).
 - Mac storage: the external drive linked at USB 2.0 (480 Mb/s, a Samsung 990 EVO Plus in a 10 Gb/s enclosure): the
   cable. 213 GB of old brains moved there anyway, verified (94 files, same sizes), Mac 40 -> 211 GB free.
+
+## 2026-10-15: 31B quality-target and 16 GB fit
+
+Top-down trim from the official 4-bit (built from donors: 18.10 GB, chat KL 0.0636).
+
+- Quality target (official drift +10%, KL <= 0.070): 1 downgrade, 17.87 GB, KL 0.0685. Only ~1% smaller.
+  The QAT 4-bit is the sweet spot; every 2/3-bit track costs more than the budget allows.
+- Size target (16 GB, so it fits a 24 GB Mac's GPU limit of 19.07 GB with room for context):
+
+| Round | Downgrades | Size | Chat KL |
+|---|---|---|---|
+| start | 0 | 18.10 GB | 0.064 |
+| 1 | 4 | 16.82 GB | 0.194 |
+| 2 | 8 | 16.44 GB | 0.215 |
+| 3 | 11 | 15.26 GB | 0.299 |
+
+Same tests, 31B, vs 8-bit:
+
+| 31B | Size | Raw KL | Raw same top | Chat KL | Chat same top |
+|---|---|---|---|---|---|
+| Google official 4-bit | 17.65 GB | 0.097 | 88.4% | 0.064 | |
+| 16 GB fit | 15.26 GB | 0.348 | 75.8% | 0.299 | 79.5% |
+| Brain C recipe | 13.86 GB | 0.767 | 62.8% | | |
+
+- The 16 GB fit is less than half brain C's raw drift, and about 3.5x Google's. Not "no quality loss".
+- Azure note: the VM was deallocated mid-run (auto-shutdown reset by another tool); the probe results were rebuilt
+  from pipeline.log, no re-measurement. The scratch disk is now mounted by UUID so restarts can't move it.
