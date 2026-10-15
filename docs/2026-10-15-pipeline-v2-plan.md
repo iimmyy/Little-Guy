@@ -34,3 +34,17 @@ F. Verify: same ruler, plus size, bytes per word, speed on the 24 GB Mac.
   2048 tokens in 115 s).
 - KL reference logits cost 0.5 MB per scored token (262k vocab x 2 bytes): 16 chunks x 1024 scored tokens = 8 GB
   per text.
+
+## v2 design: any model in (2026-10-15)
+
+1. Discover: arch, layer count and every 2D blk tensor from the model's own GGUF (no hand-written group lists).
+2. Donors: the whole model at each stock type with the importance matrix, --pure (each tensor exactly that type):
+   Q2_K, IQ3_XXS, IQ3_S, IQ4_XS, Q4_K, Q5_K, Q6_K.
+3. Predict harm per (tensor, layer, type) without running the model: importance-weighted rounding error
+   (sum over columns of imatrix x squared error), calibrated against a few measured KL probes.
+4. Allocate per tensor and layer (knapsack on predicted harm vs bytes).
+5. Build, measure KL, fix the worst spots, repeat a few rounds.
+6. Final: the full ruler on the Mac (public held-out text, private paper, benchmarks), vs the community curve.
+
+Win condition: our quality-vs-size curve above the community curve; headline = the smallest size within the noise
+floor of the official 4-bit. Proven on 2-3 model families, not just Gemma.
