@@ -5,7 +5,7 @@ this script sends the questions over the network.
 usage: npu_behavior.py [N] [brain on the board] [devices]   e.g. npu_behavior.py 40 mix-21-preview NPU
 devices: comma-separated subset of CPU,NPU (default both)
 """
-import json, subprocess, sys, time, urllib.request
+import json, os, subprocess, sys, time, urllib.request
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "behavior"))
 from common import BOARD_SSH, load_persona
@@ -15,6 +15,7 @@ N = int(sys.argv[1]) if len(sys.argv) > 1 else 40
 BRAIN = sys.argv[2] if len(sys.argv) > 2 else "mix-21-preview"
 HOST = BOARD_SSH.split("@")[-1] or "q6a"
 PORT = 8095
+SEED0 = int(os.environ.get("SEED0", "1000"))   # a different SEED0 replicates a result on fresh dice rolls
 SAMPLING = {"max_tokens": 90, "temperature": 0.8, "top_k": 64, "top_p": 0.95}
 ENV = "cd ~/preview2 && LD_LIBRARY_PATH=lib ADSP_LIBRARY_PATH=$HOME/preview2/lib GGML_HEXAGON_USE_HMX=0 GGML_HEXAGON_OPBATCH=4096"
 DEVICES = {"CPU": "GGML_HEXAGON_NDEV=0 bin/llama-server --device none -ngl 0",
@@ -42,7 +43,7 @@ def run(device):
             out[key] = []
             for i in range(N):
                 body = {"messages": [{"role": "system", "content": load_persona()}, {"role": "user", "content": q}],
-                        "seed": 1000 + i, **SAMPLING}
+                        "seed": SEED0 + i, **SAMPLING}
                 req = urllib.request.Request(url + "/v1/chat/completions", json.dumps(body).encode(),
                                              {"Content-Type": "application/json"})
                 r = json.load(urllib.request.urlopen(req, timeout=900))
@@ -57,7 +58,7 @@ def run(device):
 
 ONLY = sys.argv[3].split(",") if len(sys.argv) > 3 else list(DEVICES)
 results = {d: run(d) for d in DEVICES if d in ONLY}
-print(f"\n{BRAIN}, {N} replies per question, same seeds on both\n")
+print(f"\n{BRAIN}, {N} replies per question, seeds {SEED0}..{SEED0 + N - 1}\n")
 rows = {}
 for d, (out, _) in results.items():
     for key, replies in out.items():

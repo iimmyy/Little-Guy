@@ -249,7 +249,11 @@ def trim():
     the best-ranked ones on the current mix and keeps the cheapest few while the measured KL stays <= target_kl"""
     P = json.loads((OUT / "probes.json").read_text())
     top = max(LEVELS, key=int)
-    target = C["target_kl"]
+    target = C.get("target_kl")      # quality mode: stop before KL passes this
+    target_b = C.get("target_gb")    # size mode: keep trimming the least harmful tracks until the file fits
+    target_b = target_b * 1e9 if target_b else None
+    if target is None:
+        target = float("inf")
     per_round, keep = C.get("refine_probe", 12), C.get("refine_keep", 3)
     base_b = P["base"]["bytes"]
     gain, nbytes = {}, {}   # "group:block" -> {level: KL gain vs all-low base}, {level: bytes vs base}
@@ -269,6 +273,8 @@ def trim():
     hist = [{"blocks": {}, "bytes": cur_b, "kl": cur_k}]
     tried_bad = set()
     while True:
+        if target_b is not None and cur_b <= target_b:
+            log(f"size target {target_b / 1e9:.2f} GB reached"); break
         cands = []
         for gb in gain:
             have = cur["blocks"].get(gb, top)
@@ -310,7 +316,7 @@ def trim():
     tmp.unlink(missing_ok=True)
     recipe = {"groups": cur["groups"], "blocks": cur["blocks"], "bytes": cur_b, "measured_kl": cur_k}
     (OUT / "recipe.json").write_text(json.dumps(recipe, indent=1))
-    log(f"trimmed recipe: {len(cur['blocks'])} downgrades, {cur_b / 1e9:.2f} GB, measured KL {cur_k:.4f} (target {target})")
+    log(f"trimmed recipe: {len(cur['blocks'])} downgrades, {cur_b / 1e9:.2f} GB, measured KL {cur_k:.4f}")
 
 
 def build():
