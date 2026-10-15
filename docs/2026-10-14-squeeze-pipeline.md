@@ -124,3 +124,17 @@ Same tests, 31B, vs 8-bit:
 - The 16 GB fit is less than half brain C's raw drift, and about 3.5x Google's. Not "no quality loss".
 - Azure note: the VM was deallocated mid-run (auto-shutdown reset by another tool); the probe results were rebuilt
   from pipeline.log, no re-measurement. The scratch disk is now mounted by UUID so restarts can't move it.
+
+### 16 GB fit on the Mac (M4 Pro 24 GB, Metal, -ngl 99, same session)
+
+Copied from Azure in 8 parallel ssh byte ranges (~7 MB/s vs ~2.5 MB/s single stream), sha256 matched.
+
+| 31B | Talking (tg32) | Reading 1K / 2K / 4K / 8K prompt |
+|---|---|---|
+| 16 GB fit | 12.6-12.8 tok/s | 105 / 97 / fails at default batch / 95 with -ub 256 |
+| Brain C | 14.2-14.3 tok/s | 105 / 103 / 100 / |
+
+- The 16 GB fit fails a 3-4K prompt at the default micro-batch (512): file + context + workspace crosses the 19.07 GB
+  GPU limit. With -ub 256 it reads 4K at 99.5 and 8K at 95 tok/s (no real speed cost).
+- Swap: 6.5 GB already used by other apps before the tests; 33 MB paged out during the 8K run. Not yet a clean
+  "no swap" test.
