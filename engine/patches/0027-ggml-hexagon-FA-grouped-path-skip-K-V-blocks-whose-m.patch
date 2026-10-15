@@ -1,7 +1,7 @@
 From 4737ab83f65251bbbeecc52e8ddc8d3350d592b7 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Wed, 14 Oct 2026 02:03:02 -0700
-Subject: [PATCH 27/32] ggml-hexagon FA (grouped path): skip K/V blocks whose
+Subject: [PATCH 27/33] ggml-hexagon FA (grouped path): skip K/V blocks whose
  mask is -inf for every key (outside the sliding window or empty cells), as
  the CPU skips such keys; 2176/2176 FA tests pass; talking d768 9.04 ->
  9.1-9.4, d1800 8.55 -> 8.8-9.1 tok/s (CPU 8.9 / 8.5-8.6)

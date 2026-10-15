@@ -1,7 +1,7 @@
 From 35324e24e34b32b862624bdeef7ddac332d8b3c0 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Sat, 10 Oct 2026 19:40:14 -0700
-Subject: [PATCH 04/32] ggml-quants: add a careful, data-free Q2_K compressor
+Subject: [PATCH 04/33] ggml-quants: add a careful, data-free Q2_K compressor
  behind LG_Q2K_CAREFUL
 
 Starts from the reference result, then alternates a least-squares refit of d and dmin with an exhaustive search of every 4-bit scale and min pair per group of 16, keeping the closest state. Same format. On 16 tensors of Gemma 4 E4B QAT it lands 1.2-1.4 dB closer to the master than the reference.

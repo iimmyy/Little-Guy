@@ -1,7 +1,7 @@
 From 699293e1d8c0de27c11600e8149cc29bd0910a19 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Wed, 14 Oct 2026 00:33:17 -0700
-Subject: [PATCH 24/32] ggml-hexagon: co-op prompt reading (LG_COOP=1): the NPU
+Subject: [PATCH 24/33] ggml-hexagon: co-op prompt reading (LG_COOP=1): the NPU
  computes a share of each big matmul from its tiles while the CPU computes the
  rest from a repacked copy and runs every other op; reading 16 -> 38.5 tok/s
  (CPU alone 37.8), KL vs CPU 0.003; decode stays NPU-only

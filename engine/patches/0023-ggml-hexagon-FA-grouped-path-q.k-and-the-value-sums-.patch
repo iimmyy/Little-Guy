@@ -1,7 +1,7 @@
 From f28ec6ff694a240afd6978ffa40feed8e1adab30 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Wed, 14 Oct 2026 00:09:50 -0700
-Subject: [PATCH 23/32] ggml-hexagon FA (grouped path): q.k and the value sums
+Subject: [PATCH 23/33] ggml-hexagon FA (grouped path): q.k and the value sums
  accumulate in qf32 in registers, converted once per block (2176/2176 FA tests
  pass; attention 16.1 -> 15.1 ms/word at 768 context)
 

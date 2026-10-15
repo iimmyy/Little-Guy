@@ -1,7 +1,7 @@
 From f8a7c13349c740e5b6f2104508abb4a3611a6f96 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Sun, 11 Oct 2026 14:30:25 -0700
-Subject: [PATCH 08/32] CPU repack: LG_BIGLITTLE=1 hands out smaller chunks and
+Subject: [PATCH 08/33] CPU repack: LG_BIGLITTLE=1 hands out smaller chunks and
  stops slow cores from taking the last ones
 
 On big.LITTLE boards every thread waits at the end of each matrix for the slowest one. With the rail on,

@@ -1,7 +1,7 @@
 From 78a55544f09863ee74859f2d1a1b30aca21ae700 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Wed, 14 Oct 2026 01:43:40 -0700
-Subject: [PATCH 26/32] ggml-hexagon: short batches (under LG_COOP_MIN) run as
+Subject: [PATCH 26/33] ggml-hexagon: short batches (under LG_COOP_MIN) run as
  CPU graph segments on the CPU copies, only NPU-only matmuls (dictionary
  preview) go to the NPU between them; pp12 29.8 -> 31.3 tok/s (CPU 31.6), KL
  0. FA grouped path: value sums in qf16, widened once per block (2176/2176 FA

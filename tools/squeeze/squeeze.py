@@ -9,6 +9,9 @@ build the result from whole-model "donor" files, and measure it. Runs on a Linux
                                   top of the current mix and keeps the best few -> recipe.json (gains don't add up).
                                   With "target_kl" in the config it stops at the first mix at or below that KL
                                   (quality-first: the smallest file as good as a reference, e.g. the official 4-bit)
+  squeeze.py <config> trim        top-down: start with every group at the top level (e.g. the official 4-bit) and
+                                  keep the downgrades that save the most bytes per unit of KL, re-measured each round,
+                                  while KL stays at or below target_kl -> recipe.json
   squeeze.py <config> build       assemble recipe.json from the donors -> <name>.gguf
   squeeze.py <config> score FILE  KL and same-top vs the reference on the eval text(s)
 
@@ -241,6 +244,75 @@ def refine():
     log(f"refined recipe: {len(cur['blocks'])} upgrades, {cur_b / 1e9:.2f} GB, measured KL {cur_k:.4f}")
 
 
+def trim():
+    """top-down: priors from probes.json (upgrade gains on the all-low base) rank the downgrades; each round measures
+    the best-ranked ones on the current mix and keeps the cheapest few while the measured KL stays <= target_kl"""
+    P = json.loads((OUT / "probes.json").read_text())
+    top = max(LEVELS, key=int)
+    target = C["target_kl"]
+    per_round, keep = C.get("refine_probe", 12), C.get("refine_keep", 3)
+    base_b = P["base"]["bytes"]
+    gain, nbytes = {}, {}   # "group:block" -> {level: KL gain vs all-low base}, {level: bytes vs base}
+    for k, v in P.items():
+        if k != "base":
+            g, b, lv = k.split(":")
+            gain.setdefault(f"{g}:{b}", {})[lv] = kl_sum(P["base"]["score"]) - kl_sum(v["score"])
+            nbytes.setdefault(f"{g}:{b}", {})[lv] = v["bytes"] - base_b
+    for gb in gain:
+        for lv in BASE.values():
+            gain[gb].setdefault(lv, 0.0); nbytes[gb].setdefault(lv, 0)
+    cur = {"groups": {g: top for g in GROUPS}, "blocks": {}}
+    tmp = OUT / "trim.gguf"
+    cur_b = assemble(cur, tmp)
+    cur_k = kl_sum(score(tmp, C["probe_chunks"], C["evals"][:1]))
+    log(f"start: all {top}-bit, {cur_b / 1e9:.3f} GB, KL {cur_k:.4f}, target {target}")
+    hist = [{"blocks": {}, "bytes": cur_b, "kl": cur_k}]
+    tried_bad = set()
+    while True:
+        cands = []
+        for gb in gain:
+            have = cur["blocks"].get(gb, top)
+            for lv in gain[gb]:
+                if int(lv) >= int(have) or (gb, lv) in tried_bad:
+                    continue
+                harm = max(gain[gb][have] - gain[gb][lv], 1e-4)
+                saved = nbytes[gb][have] - nbytes[gb][lv]
+                if saved > 0:
+                    cands.append((harm / saved, gb, lv))
+        cands = sorted(cands)[:per_round]
+        if not cands:
+            break
+        measured = []
+        for _, gb, lv in cands:
+            r = {"groups": cur["groups"], "blocks": dict(cur["blocks"], **{gb: lv})}
+            nb = assemble(r, tmp)
+            nk = kl_sum(score(tmp, C["probe_chunks"], C["evals"][:1]))
+            measured.append((max(nk - cur_k, 1e-6) / (cur_b - nb), gb, lv, cur_b - nb, nk - cur_k))
+            log(f"  {gb} -> {lv}: -{(cur_b - nb) / 1e9:.3f} GB, measured KL +{nk - cur_k:.4f}")
+        took, room, used = 0, target - cur_k, set()
+        for ratio, gb, lv, saved, harm in sorted(measured):
+            if took >= keep or gb in used:
+                continue
+            if harm > room:
+                tried_bad.add((gb, lv)); continue
+            cur["blocks"][gb] = lv; used.add(gb); room -= max(harm, 0); took += 1
+        if not took:
+            break
+        cur_b = assemble(cur, tmp)
+        cur_k = kl_sum(score(tmp, C["probe_chunks"], C["evals"][:1]))
+        if cur_k > target:   # combined moves overshot: undo this round's last move and stop there
+            log(f"  overshoot: KL {cur_k:.4f} > {target}; reverting to the previous round")
+            prev = hist[-1]; cur["blocks"] = dict(prev["blocks"]); cur_b, cur_k = prev["bytes"], prev["kl"]
+            break
+        hist.append({"blocks": dict(cur["blocks"]), "bytes": cur_b, "kl": cur_k})
+        (OUT / "trim.json").write_text(json.dumps(hist, indent=1))
+        log(f"round {len(hist) - 1}: {len(cur['blocks'])} downgrades, {cur_b / 1e9:.3f} GB, measured KL {cur_k:.4f}")
+    tmp.unlink(missing_ok=True)
+    recipe = {"groups": cur["groups"], "blocks": cur["blocks"], "bytes": cur_b, "measured_kl": cur_k}
+    (OUT / "recipe.json").write_text(json.dumps(recipe, indent=1))
+    log(f"trimmed recipe: {len(cur['blocks'])} downgrades, {cur_b / 1e9:.2f} GB, measured KL {cur_k:.4f} (target {target})")
+
+
 def build():
     recipe = json.loads((OUT / "recipe.json").read_text())
     out = OUT / f"{C['name']}.gguf"
@@ -252,6 +324,7 @@ if cmd == "donors": donors()
 elif cmd == "probe": probe()
 elif cmd == "allocate": allocate()
 elif cmd == "refine": refine()
+elif cmd == "trim": trim()
 elif cmd == "build": build()
 elif cmd == "score": print(json.dumps(score(Path(sys.argv[3])), indent=1))
 else: sys.exit(__doc__)
