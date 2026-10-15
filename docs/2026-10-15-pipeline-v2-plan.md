@@ -22,8 +22,15 @@ D. Allocation: mixed precision, standard llama.cpp types only.
 E. Rounding: importance-weighted (imatrix), then error-compensating (GPTQ-style) if a gap remains.
 F. Verify: same ruler, plus size, bytes per word, speed on the 24 GB Mac.
 
-## Open decisions
+## Decisions (2026-10-15)
 
-- Test text: held-out tail of WikiText-2 test (already pinned, calibration uses the first ~41k tokens) vs a public
-  chat dataset (new download).
-- Compute: Azure CPU (slow, hours per benchmark) vs a GPU VM for measurement.
+- Public test text: WikiText-2 test from the first article boundary past the midpoint (641,668 chars), disjoint from
+  the imatrix calibration (first 80 x 512 tokens). Plus HellaSwag / Winogrande / ARC / MMLU (pinned).
+- Private test text: one unpublished paper (provisional patent), Mac only; never leaves the machine, numbers only in
+  notes. Unpublished means the model cannot have seen it in training.
+- All measurement on the Mac (M4 Pro 24 GB), one engine build, for consistency. Azure only builds files.
+- Q8_0 reference (32.6 GB) does not fit in RAM: runs on CPU from disk, once per text.
+- Google's Q4_0 does not fit the Mac GPU even with 40 of 60 layers offloaded: measured on CPU (~18 tokens/s reading,
+  2048 tokens in 115 s).
+- KL reference logits cost 0.5 MB per scored token (262k vocab x 2 bytes): 16 chunks x 1024 scored tokens = 8 GB
+  per text.
