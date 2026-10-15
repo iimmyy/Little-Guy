@@ -2,7 +2,8 @@
 tests/behavior/persona_ab.py, scored with the same checks. The board runs llama-server (fork engine in ~/preview2);
 this script sends the questions over the network.
 
-usage: npu_behavior.py [N] [brain on the board]      e.g. npu_behavior.py 40 mix-21-preview
+usage: npu_behavior.py [N] [brain on the board] [devices]   e.g. npu_behavior.py 40 mix-21-preview NPU
+devices: comma-separated subset of CPU,NPU (default both)
 """
 import json, subprocess, sys, time, urllib.request
 from pathlib import Path
@@ -54,7 +55,8 @@ def run(device):
         srv.wait()
 
 
-results = {d: run(d) for d in DEVICES}
+ONLY = sys.argv[3].split(",") if len(sys.argv) > 3 else list(DEVICES)
+results = {d: run(d) for d in DEVICES if d in ONLY}
 print(f"\n{BRAIN}, {N} replies per question, same seeds on both\n")
 rows = {}
 for d, (out, _) in results.items():
@@ -66,7 +68,8 @@ for d, (out, _) in results.items():
 print(f"{'check':34s} " + "  ".join(f"{d:>6s}" for d in results))
 for name, per in rows.items():
     print(f"{name:34s} " + "  ".join(f"{per.get(d, 0):>3d}/{N}" for d in results))
-same = sum(a == b for k in QUESTIONS for a, b in zip(results["CPU"][0][k], results["NPU"][0][k]))
-print(f"\nword-for-word identical replies: {same}/{N * len(QUESTIONS)}")
+if len(results) == 2:
+    same = sum(a == b for k in QUESTIONS for a, b in zip(results["CPU"][0][k], results["NPU"][0][k]))
+    print(f"\nword-for-word identical replies: {same}/{N * len(QUESTIONS)}")
 print("talking speed (server): " + "  ".join(f"{d} {s:.2f} words/s" for d, (_, s) in results.items()))
 json.dump({d: o for d, (o, _) in results.items()}, open(Path("/tmp") / f"npu_behavior_{BRAIN}.json", "w"), indent=1)

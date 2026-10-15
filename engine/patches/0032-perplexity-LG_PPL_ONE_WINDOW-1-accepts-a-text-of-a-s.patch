@@ -1,0 +1,51 @@
+From 127673e0720f26c6ce9a92e714cb26645c98d2bc Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Wed, 14 Oct 2026 17:31:06 -0700
+Subject: [PATCH 32/32] perplexity: LG_PPL_ONE_WINDOW=1 accepts a text of a
+ single window (each chunk is scored on its own), for one persona-plus-chat
+ transcript
+
+---
+ tools/perplexity/perplexity.cpp | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/tools/perplexity/perplexity.cpp b/tools/perplexity/perplexity.cpp
+index 7147107..4244ad5 100644
+--- a/tools/perplexity/perplexity.cpp
++++ b/tools/perplexity/perplexity.cpp
+@@ -39,6 +39,13 @@ struct results_log_softmax {
+ 
+ // LG: LG_PPL_SPECIAL=1 reads chat markers (e.g. Gemma's <|turn>) in the text as the model's control tokens, so an
+ // instruction-tuned model can be scored on chat-formatted text
++// LG: LG_PPL_ONE_WINDOW=1 accepts a text of a single window (each chunk is scored on its own; the 2x rule is only a
++// guard), e.g. one persona-plus-chat transcript that must stay in one window
++static int lg_min_tokens(int n_ctx) {
++    static const bool one = [] { const char * e = getenv("LG_PPL_ONE_WINDOW"); return e && atoi(e) > 0; }();
++    return one ? n_ctx : 2*n_ctx;
++}
++
+ static bool lg_parse_special() {
+     static const bool on = [] { const char * e = getenv("LG_PPL_SPECIAL"); return e && atoi(e) > 0; }();
+     return on;
+@@ -318,8 +325,8 @@ static results_perplexity perplexity_v2(llama_context * ctx, const common_params
+ 
+     const int n_ctx = llama_n_ctx(ctx);
+ 
+-    if (int(tokens.size()) < 2*n_ctx) {
+-        LOG_ERR("%s: you need at least %d tokens to evaluate perplexity with a context of %d\n",__func__,2*n_ctx,
++    if (int(tokens.size()) < lg_min_tokens(n_ctx)) {
++        LOG_ERR("%s: you need at least %d tokens to evaluate perplexity with a context of %d\n",__func__,lg_min_tokens(n_ctx),
+                 n_ctx);
+         LOG_ERR("%s: the data file you provided tokenizes to only %zu tokens\n",__func__,tokens.size());
+         return {std::move(tokens), 0., {}, {}};
+@@ -484,8 +491,8 @@ static results_perplexity perplexity(llama_context * ctx, const common_params &
+     auto tim2 = std::chrono::high_resolution_clock::now();
+     LOG_INF("%s: tokenization took %g ms\n",__func__,1e-3*std::chrono::duration_cast<std::chrono::microseconds>(tim2-tim1).count());
+ 
+-    if (int(tokens.size()) < 2*n_ctx) {
+-        LOG_ERR("%s: you need at least %d tokens to evaluate perplexity with a context of %d\n",__func__,2*n_ctx,
++    if (int(tokens.size()) < lg_min_tokens(n_ctx)) {
++        LOG_ERR("%s: you need at least %d tokens to evaluate perplexity with a context of %d\n",__func__,lg_min_tokens(n_ctx),
+                 n_ctx);
+         LOG_ERR("%s: the data file you provided tokenizes to only %zu tokens\n",__func__,tokens.size());
+         return {std::move(tokens), 0., {}, {}};
