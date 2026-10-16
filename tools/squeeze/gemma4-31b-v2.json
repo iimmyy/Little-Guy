@@ -1,0 +1,24 @@
+{
+ "name": "31b-v2",
+ "work": "/mnt/squeeze/v2",
+ "engine_bin": "/scratch/src/build/bin",
+ "gguf_py": "/scratch/src/gguf-py",
+ "bf16": "/scratch/31b-bf16.gguf",
+ "imatrix": "/scratch/31b.imatrix",
+ "threads": 16,
+ "harm_row_step": 8,
+ "top": "Q4_0",
+ "cal_type": "IQ3_XXS",
+ "cal_blocks": 4,
+ "donors": {
+  "Q4_0": "/scratch/google/gemma-4-31B_q4_0-it.gguf",
+  "IQ4_XS": "/mnt/squeeze/31b-pure-IQ4_XS.gguf",
+  "IQ3_S": "/mnt/squeeze/31b-pure-IQ3_S.gguf",
+  "Q3_K": "/mnt/squeeze/31b-pure-Q3_K.gguf",
+  "IQ3_XXS": "/mnt/squeeze/31b-pure-IQ3_XXS.gguf",
+  "Q2_K": "/mnt/squeeze/31b-pure-Q2_K.gguf"
+ },
+ "evals": [
+  {"name": "wiki", "text": "/scratch/bench/wiki.eval.txt", "base": "/scratch/31b_q8_wiki512.kl", "ctx": 512, "chunks": 8}
+ ]
+}
