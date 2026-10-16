@@ -137,3 +137,15 @@ Board (Q6A NPU, engine ~/preview3 with the Q3_K kernel; NPU vs board CPU KL 0.00
   7/200 (3.5%). The matched brain is faithful to the original; mix-21's low rate is a side effect of its distortion.
   Inventing his day is the base model's habit (persona / fine-tuning). Kept mix-21 live per the agreed rule; matched
   Q3_K (e4b-q3k-mm-preview) is on the board for Immy's call. Original Q4_0 talks at 6.6 words/s on the NPU.
+
+## 2026-10-16 morning: near-original E4B, behavior-checker audit, reset
+
+- Near-original E4B (v3 at 2.09 GB matrices, 2.40 GB/word with preview): persona KL 0.047, chat 0.045, held-out 0.030
+  vs Google QAT Q4_0 0.039 / 0.029 / 0.027; board NPU 7.40 tok/s vs Google 6.0 (mix-21 9.27). v3 at 2.19 GB/word:
+  persona 0.090, 7.9 tok/s.
+- 31B Google Q4_0 on the Mac rulers: wiki 0.089, held-out chat 0.049 (ours 13.21 GB: 0.278 / 0.190).
+- Behavior checker audit (replies read one by one): keyword checks miss "I'm not sure" dodges, count wrong "it's okay"
+  answers as warnings, undercount invented days without persona (5 flagged vs ~33 by reading), and cannot see invented
+  facts. Behavior verdicts from 2026-10-15/16 need re-deciding by reading. Replies are now saved per run
+  (.run/results/behavior/), survivors archived.
+- Reset: pause board runs, write a behavior rubric, one clean head-to-head read in full, then decide.
