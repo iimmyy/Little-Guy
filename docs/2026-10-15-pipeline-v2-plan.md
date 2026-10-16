@@ -79,3 +79,19 @@ Mac GPU. Inputs recorded on the first 16,384 tokens of the calibration text (LG_
 - Drift -40% at an identical size; only ~15% of codes changed. Per-matrix output error -71% in-sample, -19..-88%
   held-out (ffn_down weakest: 10,240 inputs, ~12k recorded rows).
 - Matching runs ~33 min for the whole E4B on the Mac CPU (numpy).
+
+## Correction (2026-10-15, late): output matching overfits the calibration text
+
+Same files, every E4B ruler (persona = private persona chat; chat / raw = write-up texts; wiki = public held-out half):
+
+| E4B | Per word | Persona | Chat | Raw | Wiki |
+|---|---|---|---|---|---|
+| mix-21 (live) | 1.78 GB | 0.482 | 0.441 | 0.491 | 0.447 |
+| mix-21, matched on WikiText | 1.78 GB | 0.547 | 0.474 | 0.577 | 0.316 |
+| Q3_K + importance matrix | 2.04 GB | 0.341 | 0.269 | 0.325 | 0.261 |
+| Q3_K, matched on WikiText | 2.04 GB | 0.354 | 0.288 | 0.323 | 0.156 |
+
+- Matching on WikiText inputs only helps WikiText-like inputs; on chat it ties (3-bit) or hurts (2-bit, 4 levels: each
+  re-picked code is a big jump). The earlier "-40%" is in-domain only. mix-21 matched does NOT go live.
+- Plain Q3_K beats the live mix-21 on every ruler by 29-42% for ~15% more bytes per word.
+- Next: calibrate on representative text (model-generated conversations, none of the eval texts), stronger damping.
