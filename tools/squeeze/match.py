@@ -9,7 +9,7 @@ ref: the full-precision model (bf16). donor: the whole model at one stock type (
 act dir: input rows recorded by llama-imatrix with LG_ACT_DUMP (one file per distinct input, f16).
 Supported types: Q4_0, Q3_K, Q2_K.
 """
-import os, re, sys, time
+import json, os, re, sys, time
 from pathlib import Path
 
 import numpy as np
@@ -220,13 +220,14 @@ def build(ref_p, don_p, act_dir, out_p):
             continue
         vt = f.types[0]
         w.add_key_value(f.name, f.contents(), vt, sub_type=f.types[-1] if vt == gguf.GGUFValueType.ARRAY else None)
-    data, tot_s, tot_m = {}, 0.0, 0.0
+    data, tot_s, tot_m, side = {}, 0.0, 0.0, {}
     names = [t.name for t in top.tensors if re.match(r"blk\.\d+\.(%s)\.weight$" % "|".join(ACT), t.name)]
     for i, n in enumerate(names):
         r = one(ref, don, act_dir, n, check=(i < 3))
         if r is None:
             continue
         data[n] = r[0]; tot_s += r[1]; tot_m += r[2]
+        side[n] = {"stock": r[1], "matched": r[2], "bytes": int(r[0].nbytes), "type": don[n].tensor_type.name}
         log(f"{n}: output error {r[1]:.4g} -> {r[2]:.4g} ({100 * (1 - r[2] / r[1]):.1f}% less), codes changed {100 * r[3]:.1f}%")
     for t in top.tensors:
         arr = data.get(t.name, t.data)
@@ -235,6 +236,7 @@ def build(ref_p, don_p, act_dir, out_p):
     for t in top.tensors:
         w.write_tensor_data(data.get(t.name, t.data), tensor_endianess=top.endianess)
     w.close()
+    Path(out_p + ".json").write_text(json.dumps(side, indent=1))   # per-matrix output error, for allocation
     log(f"built {out_p}: total output error {tot_s:.4g} -> {tot_m:.4g} ({100 * (1 - tot_m / tot_s):.1f}% less)")
 
 

@@ -41,6 +41,7 @@ sys.path.insert(0, C["gguf_py"])
 import gguf
 from gguf.quants import dequantize
 
+GPU = ["-ngl", "99"] if C.get("gpu") else []
 UNIT = re.compile(r"blk\.(\d+)\.([a-z0-9_]+)\.weight$")
 
 
@@ -114,6 +115,18 @@ def harm():
                 hf.write_text(json.dumps(H, indent=1)); log(f"  {i}/{len(todo)}")
 
 
+def harm_from():
+    """harm.json from match.py sidecars: the output error LEFT AFTER matching, per matrix per type (v3: match first,
+    then allocate); only matrices matched in every type take part in allocation"""
+    H = {}
+    for ty, p in C["harm_from"].items():
+        for n, v in json.loads(Path(_abs(p)).read_text()).items():
+            H.setdefault(n, {})[ty] = {"harm": v["matched"], "bytes": v["bytes"], "type": v["type"]}
+    H = {n: o for n, o in H.items() if len(o) == len(C["harm_from"])}
+    (W / "harm.json").write_text(json.dumps(H, indent=1))
+    log(f"harm from matching: {len(H)} matrices x {len(C['harm_from'])} types")
+
+
 # ---------------------------------------------------------------- build and score
 
 def assemble(recipe, out):
@@ -141,7 +154,7 @@ def score(path, evals=None, chunks=None):
     for ev in (evals or C["evals"]):
         env = dict(os.environ, LG_DICT_PREVIEW="0", **ev.get("env", {}))
         r = subprocess.run([str(B / "llama-perplexity"), "-m", str(path), "-f", ev["text"], "-c", str(ev.get("ctx", 512)),
-                            "--chunks", str(chunks or ev["chunks"]), "-t", str(C.get("threads", 16)),
+                            "--chunks", str(chunks or ev["chunks"]), "-t", str(C.get("threads", 16))] + GPU + [
                             "--kl-divergence-base", ev["base"], "--kl-divergence"], capture_output=True, text=True, env=env)
         o = r.stdout + r.stderr
         kld = re.search(r"Mean\s+KLD:\s+([0-9.]+)\s+±\s+([0-9.]+)", o)
@@ -186,7 +199,7 @@ def score_tokens(path, ev):
     tmp = W / "cand.kl"
     env = dict(os.environ, LG_DICT_PREVIEW="0", **ev.get("env", {}))
     subprocess.run([str(B / "llama-perplexity"), "-m", str(path), "-f", ev["text"], "-c", str(ev.get("ctx", 512)),
-                    "--chunks", str(ev["chunks"]), "-t", str(C.get("threads", 16)), "--kl-divergence-base", str(tmp)],
+                    "--chunks", str(ev["chunks"]), "-t", str(C.get("threads", 16))] + GPU + ["--kl-divergence-base", str(tmp)],
                    capture_output=True, text=True, env=env, check=True)
     k = token_kl(ev["base"], tmp)
     tmp.unlink()
@@ -223,12 +236,12 @@ def calibrate():
     k0 = np.load(bf)
     cal["base"] = {"kld": float(k0.mean()), "tokens": len(k0)}
     log(f"base: KL {k0.mean():.4f} over {len(k0)} tokens")
-    for g in D["groups"]:
+    for g in sorted({U[n]["group"] for n in H}):
         for b in range(C.get("cal_blocks", 4)):
             key = f"{g}:{b}"
             if key in cal and "dkl_se" in cal[key]:
                 continue
-            names = [n for n, u in U.items() if u["group"] == g and depth_block(u["layer"], D["n_layer"]) == b]
+            names = [n for n, u in U.items() if n in H and u["group"] == g and depth_block(u["layer"], D["n_layer"]) == b]
             assemble({n: low for n in names}, tmp)
             dk, se = paired(score_tokens(tmp, ev), k0, per_chunk)
             dh = sum(H[n][low]["harm"] - H[n][top]["harm"] for n in names)
@@ -253,10 +266,10 @@ def allocate(gb):
     bisect lam until the file fits gb. Predicted KL per matrix = scale(group, block) x harm."""
     D = units(); U = D["units"]; H = json.loads((W / "harm.json").read_text())
     S, med = scales()
-    other = sum(int(t.n_bytes) for n, t in tensors(C["donors"][C["top"]]).items() if n not in U)
+    other = sum(int(t.n_bytes) for n, t in tensors(C["donors"][C["top"]]).items() if n not in H)
     budget = gb * 1e9 - other
     cost = {n: {ty: (S.get(f"{U[n]['group']}:{depth_block(U[n]['layer'], D['n_layer'])}", med) * h["harm"], h["bytes"])
-                for ty, h in H[n].items()} for n in U}
+                for ty, h in H[n].items()} for n in H}
 
     def pick(lam):
         r = {n: min(o, key=lambda ty: o[ty][0] + lam * o[ty][1]) for n, o in cost.items()}
@@ -303,6 +316,7 @@ def curve(gbs):
 
 if cmd == "discover": discover()
 elif cmd == "harm": harm()
+elif cmd == "harm_from": harm_from()
 elif cmd == "calibrate": calibrate()
 elif cmd == "allocate": allocate(float(args[0]))
 elif cmd == "build": build(float(args[0]))
