@@ -2,7 +2,7 @@
 (self-generated, so it carries no outside data and none of the eval texts or behavior-test questions), written as
 Gemma chat turns. Run against a llama-server holding the full-precision or 8-bit model.
 
-usage: make_selfchat.py <server url> <out.txt> [n prompts]
+usage: make_selfchat.py <server url> <out.txt> [n prompts] [eval]   ("eval": the held-out prompt set)
 """
 import itertools, json, random, sys, urllib.request
 
@@ -26,15 +26,30 @@ TASKS = ["Can you help me with {t}?", "Explain {t} like I'm twelve.", "Give me t
          "My friend says {t} is easy. Is that true?"]
 
 
+# held-out set for evaluation: different topics and different kinds of request, never used for calibration
+EVAL_TOPICS = ["a sourdough starter", "a parking ticket", "learning chess openings", "renting a first apartment",
+               "a squeaky door", "a toddler who won't sleep", "the moon landing", "how batteries work", "a resume gap",
+               "a vegetarian week of meals", "bird watching", "a stuck zipper", "the roman empire", "a home workout",
+               "a podcast idea", "how tides work", "a phone that overheats", "a museum visit", "knitting a scarf",
+               "a slow wifi connection", "plate tectonics", "a group project", "a used car purchase", "earthquakes",
+               "a picky eater", "a sunburn", "binary numbers", "a fridge that smells", "a hiking trail", "inflation"]
+EVAL_TASKS = ["Quick question about {t}: where do I even start?", "Pretend you're a coach and talk me through {t}.",
+              "What would you say to someone nervous about {t}?", "List the pros and cons of {t}.",
+              "Write a two-line poem about {t}.", "I think I messed up with {t}. What now?",
+              "Compare two ways of handling {t}.", "Correct me if I'm wrong: {t} is mostly about patience."]
+
+
 def main():
     url, out = sys.argv[1], sys.argv[2]
     n = int(sys.argv[3]) if len(sys.argv) > 3 else 240
-    prompts = [task.format(t=topic) for task, topic in itertools.product(TASKS, TOPICS)]
+    held_out = len(sys.argv) > 4 and sys.argv[4] == "eval"
+    tasks, topics = (EVAL_TASKS, EVAL_TOPICS) if held_out else (TASKS, TOPICS)
+    prompts = [task.format(t=topic) for task, topic in itertools.product(tasks, topics)]
     random.Random(0).shuffle(prompts)
     turns = []
     for i, p in enumerate(prompts[:n]):
         body = {"messages": [{"role": "user", "content": p}], "max_tokens": 220, "temperature": 0.8, "top_p": 0.95,
-                "seed": i}
+                "seed": i + (100000 if held_out else 0)}
         req = urllib.request.Request(url + "/v1/chat/completions", json.dumps(body).encode(), {"Content-Type": "application/json"})
         reply = json.load(urllib.request.urlopen(req, timeout=600))["choices"][0]["message"]["content"].strip()
         turns.append(f"<|turn>user\n{p}<turn|>\n<|turn>model\n{reply}<turn|>\n")

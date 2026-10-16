@@ -223,13 +223,30 @@ def build(ref_p, don_p, act_dir, out_p):
         w.add_key_value(f.name, f.contents(), vt, sub_type=f.types[-1] if vt == gguf.GGUFValueType.ARRAY else None)
     data, tot_s, tot_m, side = {}, 0.0, 0.0, {}
     names = [t.name for t in top.tensors if re.match(r"blk\.\d+\.(%s)\.weight$" % "|".join(ACT), t.name)]
+    cache = os.environ.get("LG_MATCH_CACHE")                       # shards share results through a cache folder:
+    shard = os.environ.get("LG_MATCH_SHARD")                       # LG_MATCH_SHARD=i/n matches every n-th matrix only
+    if cache:
+        Path(cache).mkdir(parents=True, exist_ok=True)
     for i, n in enumerate(names):
-        r = one(ref, don, act_dir, n, check=(i < 3))
-        if r is None:
+        cf = Path(cache) / (n + ".npz") if cache else None
+        if cf and cf.exists():
+            z = np.load(cf); r = (z["new"], float(z["es"]), float(z["em"]), float(z["ch"]))
+        elif shard and i % int(shard.split("/")[1]) != int(shard.split("/")[0]):
+            continue
+        else:
+            r = one(ref, don, act_dir, n, check=(i < 3))
+            if r is None:
+                continue
+            if cf:
+                np.savez(cf, new=r[0], es=r[1], em=r[2], ch=r[3])
+        if shard:
+            log(f"{n}: output error {r[1]:.4g} -> {r[2]:.4g} ({100 * (1 - r[2] / r[1]):.1f}% less), codes changed {100 * r[3]:.1f}%")
             continue
         data[n] = r[0]; tot_s += r[1]; tot_m += r[2]
         side[n] = {"stock": r[1], "matched": r[2], "bytes": int(r[0].nbytes), "type": don[n].tensor_type.name}
         log(f"{n}: output error {r[1]:.4g} -> {r[2]:.4g} ({100 * (1 - r[2] / r[1]):.1f}% less), codes changed {100 * r[3]:.1f}%")
+    if shard:
+        log("shard done"); return
     for t in top.tensors:
         arr = data.get(t.name, t.data)
         w.add_tensor_info(t.name, arr.shape, arr.dtype, arr.nbytes, t.tensor_type)

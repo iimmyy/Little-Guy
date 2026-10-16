@@ -1,6 +1,7 @@
 #!/bin/bash
 # Little Guy's brains on every E4B ruler (Mac GPU), KL and same-top vs E4B Q8_0:
-#   persona (private persona chat, one window), chat, raw (squeeze-e4b evals), wiki (public held-out half)
+#   persona (private persona chat, one window), chat, raw (squeeze-e4b evals), wiki (public held-out half),
+#   heldout (model-generated chat on prompts never used for calibration, tools/squeeze/make_selfchat.py eval)
 # usage: tools/squeeze/score_e4b.sh <brain.gguf> [...]
 cd "$(dirname "$0")/../.."
 B=.run/lcpp-src/build-mac/bin; E=.run/weights/squeeze-e4b; S=/Volumes/Music/LittleGuy/weights/stageB
@@ -16,4 +17,5 @@ for m in "$@"; do
   kl chat $m $E/chat_eval.txt $E/e4b_kl_chat.bin 512 4 LG_PPL_SPECIAL=1
   kl raw $m docs/2026-09-28.md $E/e4b_kl_base.bin 512 4
   kl wiki $m .run/bench/wiki.eval.txt $S/e4b_q8_wiki512.kl 512 32
+  [ -f $S/e4b_q8_heldout.kl ] && kl heldout $m .run/bench/chat_heldout.txt $S/e4b_q8_heldout.kl 512 32 LG_PPL_SPECIAL=1
 done

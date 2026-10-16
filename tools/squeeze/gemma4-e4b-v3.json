@@ -1,26 +1,34 @@
 {
  "name": "e4b-v3",
- "work": "/Volumes/Music/LittleGuy/weights/stageB/v3",
+ "work": "/Volumes/Music/LittleGuy/weights/stageB/v3mix",
  "engine_bin": ".run/lcpp-src/build-mac/bin",
  "gguf_py": ".run/lcpp-src/gguf-py",
  "bf16": "/Volumes/Music/LittleGuy/weights/masters/qat-bf16.gguf",
- "imatrix": "/Volumes/Music/LittleGuy/weights/stageB/e4b.imatrix",
- "threads": 10,
+ "imatrix": "/Volumes/Music/LittleGuy/weights/stageB/e4b-mix.imatrix",
+ "threads": 8,
  "gpu": true,
  "top": "Q4_0",
  "cal_type": "Q3_K",
  "cal_blocks": 4,
  "donors": {
-  "Q4_0": "/Volumes/Music/LittleGuy/weights/stageB/e4b-match-Q4_0.gguf",
-  "Q3_K": "/Volumes/Music/LittleGuy/weights/stageB/e4b-match-Q3_K.gguf",
-  "Q2_K": "/Volumes/Music/LittleGuy/weights/stageB/e4b-match-Q2_K.gguf"
+  "Q4_0": "/Volumes/Music/LittleGuy/weights/stageB/e4b-mixmatch-d0.1-Q4_0.gguf",
+  "Q3_K": "/Volumes/Music/LittleGuy/weights/stageB/e4b-mixmatch-d0.1-Q3_K.gguf",
+  "Q2_K": "/Volumes/Music/LittleGuy/weights/stageB/e4b-mixmatch-d0.1-Q2_K.gguf"
  },
  "harm_from": {
-  "Q4_0": "/Volumes/Music/LittleGuy/weights/stageB/e4b-match-Q4_0.gguf.json",
-  "Q3_K": "/Volumes/Music/LittleGuy/weights/stageB/e4b-match-Q3_K.gguf.json",
-  "Q2_K": "/Volumes/Music/LittleGuy/weights/stageB/e4b-match-Q2_K.gguf.json"
+  "Q4_0": "/Volumes/Music/LittleGuy/weights/stageB/e4b-mixmatch-d0.1-Q4_0.gguf.json",
+  "Q3_K": "/Volumes/Music/LittleGuy/weights/stageB/e4b-mixmatch-d0.1-Q3_K.gguf.json",
+  "Q2_K": "/Volumes/Music/LittleGuy/weights/stageB/e4b-mixmatch-d0.1-Q2_K.gguf.json"
  },
  "evals": [
-  {"name": "wiki", "text": ".run/bench/wiki.eval.txt", "base": "/Volumes/Music/LittleGuy/weights/stageB/e4b_q8_wiki512.kl", "ctx": 512, "chunks": 32}
- ]
+  {
+   "name": "wiki",
+   "text": ".run/bench/wiki.eval.txt",
+   "base": "/Volumes/Music/LittleGuy/weights/stageB/e4b_q8_wiki512.kl",
+   "ctx": 512,
+   "chunks": 32
+  }
+ ],
+ "note": "board levels (NPU kernels: Q2_K, Q3_K, Q4_0); sizes = 7-group bytes + 2.951 GB frame; per word with preview = 7-group bytes + 0.308 GB",
+ "keep_builds": true
 }

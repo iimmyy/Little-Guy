@@ -40,7 +40,10 @@ def run(device):
             except Exception:
                 time.sleep(1)
         out, speed = {}, []
+        only = os.environ.get("ONLY_Q")   # e.g. ONLY_Q=day: just that question (more tries on one check)
         for key, q in QUESTIONS.items():
+            if only and key not in only.split(","):
+                continue
             out[key] = []
             for i in range(N):
                 body = {"messages": [{"role": "system", "content": load_persona()}, {"role": "user", "content": q}],
@@ -71,7 +74,7 @@ print(f"{'check':34s} " + "  ".join(f"{d:>6s}" for d in results))
 for name, per in rows.items():
     print(f"{name:34s} " + "  ".join(f"{per.get(d, 0):>3d}/{N}" for d in results))
 if len(results) == 2:
-    same = sum(a == b for k in QUESTIONS for a, b in zip(results["CPU"][0][k], results["NPU"][0][k]))
+    same = sum(a == b for k in results["CPU"][0] for a, b in zip(results["CPU"][0][k], results["NPU"][0][k]))
     print(f"\nword-for-word identical replies: {same}/{N * len(QUESTIONS)}")
 print("talking speed (server): " + "  ".join(f"{d} {s:.2f} words/s" for d, (_, s) in results.items()))
 json.dump({d: o for d, (o, _) in results.items()}, open(Path("/tmp") / f"npu_behavior_{BRAIN}.json", "w"), indent=1)
