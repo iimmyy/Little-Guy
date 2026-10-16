@@ -48,3 +48,10 @@ F. Verify: same ruler, plus size, bytes per word, speed on the 24 GB Mac.
 
 Win condition: our quality-vs-size curve above the community curve; headline = the smallest size within the noise
 floor of the official 4-bit. Proven on 2-3 model families, not just Gemma.
+
+## Next models (generality)
+
+- Model #2: Gemma 4 26B-A4B (mixture of experts, ~4B active of 26B). ROCK 5C (RK3588S2, 32 GB) runs Unsloth's
+  QAT UD-Q4_K_XL (14.2 GB) at 7.00 tok/s generation, 15.9 prompt (forum.radxa.com/t/31145); E4B int-4 at 8.81,
+  31B int-4 at 1.42 (forum.radxa.com/t/31241). Q6A has 12 GB (2 x 6 GB LPDDR5): the 26B-A4B needs ~9-10 GB to fit.
+  New lever for MoE: per-expert allocation (rarely routed experts tolerate fewer bits).
