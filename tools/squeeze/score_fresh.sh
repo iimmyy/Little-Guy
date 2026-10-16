@@ -13,9 +13,9 @@ run() {  # model text ctx chunks extra-args... (env: LG_PPL_SPECIAL)
   LG_DICT_PREVIEW=0 $B/llama-perplexity -m $m -f $t -c $c --chunks $k -ngl 99 "$@" 2>&1
 }
 if [ "$1" = base ]; then
-  run $REF $WIKI 512 64 --kl-divergence-base $W/ref_wiki.kl | grep -E "^Final|error" ; echo "wiki base done"
-  LG_PPL_SPECIAL=1 run $REF $CHAT 512 64 --kl-divergence-base $W/ref_heldout.kl | grep -E "^Final|error"; echo "heldout base done"
-  run $REF $WIKI 512 999999 | grep -E "^Final|error"
+  run $REF $WIKI 512 64 --kl-divergence-base $W/ref_wiki.kl | grep -E "Final estimate|error" ; echo "wiki base done"
+  LG_PPL_SPECIAL=1 run $REF $CHAT 512 64 --kl-divergence-base $W/ref_heldout.kl | grep -E "Final estimate|error"; echo "heldout base done"
+  run $REF $WIKI 512 999999 | grep -E "Final estimate|error"
   exit
 fi
 for m in "$@"; do
@@ -27,5 +27,5 @@ for m in "$@"; do
       grep -E "^Mean    KLD|^Same top p" | sed -E 's/Mean +KLD: +/KL /; s/Same top p: +/same-top /' | tr '\n' ' ')"
   done
   unset LG_PPL_SPECIAL
-  printf "  %-8s %s\n" ppl "$(run $m $WIKI 512 999999 | grep -E '^Final' | sed 's/Final estimate: //')"
+  printf "  %-8s %s\n" ppl "$(run $m $WIKI 512 999999 | grep -E 'Final estimate' | sed 's/.*Final estimate: //')"
 done

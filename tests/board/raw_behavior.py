@@ -59,6 +59,13 @@ def stop(srv):
 
 
 def main():
+    name = Path(MODEL).stem
+    tag = f"{name}__{WHERE}__seeds{SEED0}-{SEED0 + N - 1}"
+    OUT.mkdir(parents=True, exist_ok=True)
+    for p in (OUT / f"{tag}.json", OUT / f"{tag}.md", OUT / f"{tag}.partial.jsonl"):
+        if p.exists():
+            sys.exit(f"{p} exists; evidence is never overwritten")
+    live = open(OUT / f"{tag}.partial.jsonl", "a")   # every reply is on disk the moment it arrives (a crash loses nothing)
     srv, url, sha, engine = start()
     out = {}
     try:
@@ -71,6 +78,7 @@ def main():
         for key, q in QUESTIONS.items():
             out[key] = []
             for i in range(N):
+                print(f"asking {key} seed {SEED0 + i}", flush=True)   # names the reply in flight if the engine crashes
                 body = {"messages": [{"role": "user", "content": q}], "seed": SEED0 + i, **SAMPLING}
                 req = urllib.request.Request(url + "/v1/chat/completions", json.dumps(body).encode(),
                                              {"Content-Type": "application/json"})
@@ -78,17 +86,12 @@ def main():
                 c = r["choices"][0]
                 out[key].append({"seed": SEED0 + i, "reply": c["message"]["content"], "finish": c["finish_reason"],
                                  "tokens": r["usage"]["completion_tokens"], "tok_s": r["timings"]["predicted_per_second"]})
+                live.write(json.dumps({"question": key, **out[key][-1]}, ensure_ascii=False) + "\n"); live.flush()
             print(f"{key}: done", flush=True)
     finally:
         stop(srv)
-    name = Path(MODEL).stem
     meta = {"model": name, "sha256": sha, "engine": engine, "sampling": SAMPLING, "system_prompt": None,
             "seeds": [SEED0, SEED0 + N - 1], "date": datetime.datetime.now().isoformat(timespec="minutes")}
-    OUT.mkdir(parents=True, exist_ok=True)
-    tag = f"{name}__{WHERE}__seeds{SEED0}-{SEED0 + N - 1}"
-    for p in (OUT / f"{tag}.json", OUT / f"{tag}.md"):
-        if p.exists():
-            sys.exit(f"{p} exists; evidence is never overwritten")
     (OUT / f"{tag}.json").write_text(json.dumps({"meta": meta, "replies": out}, indent=1, ensure_ascii=False))
     md = [f"# {name}: raw behavior replies", "",
           f"- model file sha256: `{sha}`", f"- engine: {engine}", "- system prompt: none (raw model)",
