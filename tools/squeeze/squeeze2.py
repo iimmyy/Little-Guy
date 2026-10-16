@@ -151,6 +151,55 @@ def score(path, evals=None, chunks=None):
     return res
 
 
+# ---------------------------------------------------------------- paired scoring
+
+def read_logprobs(path):
+    """llama-perplexity --kl-divergence-base file -> (per-token log-prob rows, n_vocab, tokens per chunk)"""
+    with open(path, "rb") as f:
+        assert f.read(8) == b"_logits_"
+        n_ctx, n_vocab, n_chunk = np.frombuffer(f.read(12), dtype=np.int32)
+    nv = 2 * ((n_vocab + 1) // 2) + 4
+    off = 8 + 12 + 4 * n_chunk * n_ctx
+    rows = np.memmap(path, dtype=np.uint16, mode="r", offset=off).reshape(-1, nv)
+    return rows, int(n_vocab), int(n_ctx - 1 - n_ctx // 2)
+
+
+def _decode(rows, n_vocab):
+    head = np.ascontiguousarray(rows[:, :4]).view(np.float32)       # [scale, min log-prob] per token
+    return head[:, 1:2].astype(np.float64) + rows[:, 4:4 + n_vocab].astype(np.float64) * head[:, 0:1]
+
+
+def token_kl(ref_path, cand_path, step=32):
+    """per-token KL(reference || candidate) from two saved log-prob files of the same text"""
+    ref, n_vocab, _ = read_logprobs(ref_path)
+    cand, n2, _ = read_logprobs(cand_path)
+    assert n_vocab == n2 and ref.shape == cand.shape
+    out = np.empty(ref.shape[0])
+    for i in range(0, ref.shape[0], step):
+        lr, lc = _decode(ref[i:i + step], n_vocab), _decode(cand[i:i + step], n_vocab)
+        out[i:i + step] = (np.exp(lr) * (lr - lc)).sum(1)
+    return out
+
+
+def score_tokens(path, ev):
+    """run the model once over the eval text, saving its log-probs; return its per-token KL vs the reference"""
+    tmp = W / "cand.kl"
+    env = dict(os.environ, LG_DICT_PREVIEW="0", **ev.get("env", {}))
+    subprocess.run([str(B / "llama-perplexity"), "-m", str(path), "-f", ev["text"], "-c", str(ev.get("ctx", 512)),
+                    "--chunks", str(ev["chunks"]), "-t", str(C.get("threads", 16)), "--kl-divergence-base", str(tmp)],
+                   capture_output=True, text=True, env=env, check=True)
+    k = token_kl(ev["base"], tmp)
+    tmp.unlink()
+    return k
+
+
+def paired(k, k0, per_chunk):
+    """mean KL increase over the base on the same tokens; standard error from chunk means (tokens within a chunk
+    are correlated, chunks are not)"""
+    d = (k - k0).reshape(-1, per_chunk).mean(1)
+    return float(d.mean()), float(d.std(ddof=1) / np.sqrt(len(d)))
+
+
 # ---------------------------------------------------------------- calibrate
 
 def depth_block(layer, n_layer):
@@ -165,24 +214,27 @@ def calibrate():
     cf = W / "cal.json"
     cal = json.loads(cf.read_text()) if cf.exists() else {}
     tmp = W / "cal.gguf"
-    ev = C["evals"][:1]
-    if "base" not in cal:
+    ev = C["evals"][0]
+    _, _, per_chunk = read_logprobs(ev["base"])
+    bf = W / "base_tokkl.npy"
+    if not bf.exists():
         assemble({}, tmp)
-        cal["base"] = score(tmp, ev); cf.write_text(json.dumps(cal, indent=1)); log("base", cal["base"])
-    k0 = cal["base"][ev[0]["name"]]["kld"]
+        np.save(bf, score_tokens(tmp, ev))
+    k0 = np.load(bf)
+    cal["base"] = {"kld": float(k0.mean()), "tokens": len(k0)}
+    log(f"base: KL {k0.mean():.4f} over {len(k0)} tokens")
     for g in D["groups"]:
         for b in range(C.get("cal_blocks", 4)):
             key = f"{g}:{b}"
-            if key in cal:
+            if key in cal and "dkl_se" in cal[key]:
                 continue
             names = [n for n, u in U.items() if u["group"] == g and depth_block(u["layer"], D["n_layer"]) == b]
             assemble({n: low for n in names}, tmp)
-            s = score(tmp, ev)
-            dk = s[ev[0]["name"]]["kld"] - k0
+            dk, se = paired(score_tokens(tmp, ev), k0, per_chunk)
             dh = sum(H[n][low]["harm"] - H[n][top]["harm"] for n in names)
-            cal[key] = {"score": s, "dkl": dk, "dharm": dh, "scale": dk / dh if dh > 0 else None}
+            cal[key] = {"dkl": dk, "dkl_se": se, "dharm": dh, "scale": dk / dh if dh > 0 else None}
             cf.write_text(json.dumps(cal, indent=1))
-            log(f"{key} -> {low}: KL +{dk:.4f}, harm +{dh:.3g}, scale {cal[key]['scale']}")
+            log(f"{key} -> {low}: KL +{dk:.4f} ± {se:.4f} (paired), harm +{dh:.3g}, scale {cal[key]['scale']}")
     tmp.unlink(missing_ok=True)
 
 
