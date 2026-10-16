@@ -79,3 +79,7 @@ if len(results) == 2:
     print(f"\nword-for-word identical replies: {same}/{N * len(QUESTIONS)}")
 print("talking speed (server): " + "  ".join(f"{d} {s:.2f} words/s" for d, (_, s) in results.items()))
 json.dump({d: o for d, (o, _) in results.items()}, open(Path("/tmp") / f"npu_behavior_{BRAIN}.json", "w"), indent=1)
+# keep every run's replies (rescoring later, e.g. with a judge instead of the word lists)
+keep = Path(__file__).resolve().parents[2] / ".run/results/behavior"; keep.mkdir(parents=True, exist_ok=True)
+tag = f"{BRAIN}__persona-{os.environ.get('PERSONA', 'default')}__seeds{SEED0}__{os.environ.get('ONLY_Q', 'all')}"
+json.dump({d: o for d, (o, _) in results.items()}, open(keep / f"{tag}.json", "w"), indent=1)
