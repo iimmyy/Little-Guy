@@ -55,3 +55,12 @@ floor of the official 4-bit. Proven on 2-3 model families, not just Gemma.
   QAT UD-Q4_K_XL (14.2 GB) at 7.00 tok/s generation, 15.9 prompt (forum.radxa.com/t/31145); E4B int-4 at 8.81,
   31B int-4 at 1.42 (forum.radxa.com/t/31241). Q6A has 12 GB (2 x 6 GB LPDDR5): the 26B-A4B needs ~9-10 GB to fit.
   New lever for MoE: per-expert allocation (rarely routed experts tolerate fewer bits).
+
+## v3 order (Immy, 2026-10-15): match first, then allocate
+
+Output matching first, allocation second. For every matrix and every candidate type: round with error compensation
+(GPTQ-style, using the input covariance from calibration text) so the matrix's OUTPUT matches the original, then
+measure the residual output error. Allocate bits on that residual, not on plain rounding error: a matrix that looks bad
+under plain rounding may match well after compensation and never need the extra bit. Each extra bit doubles the levels
+(2-bit 4, 3-bit 8, 4-bit 16) for ~+33% bytes on that matrix (3 -> 4), so it is spent only where matching falls short.
+Needs: full input covariance per matrix (an imatrix extension), a compensating quantizer that writes stock types.
