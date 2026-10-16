@@ -64,3 +64,18 @@ measure the residual output error. Allocate bits on that residual, not on plain 
 under plain rounding may match well after compensation and never need the extra bit. Each extra bit doubles the levels
 (2-bit 4, 3-bit 8, 4-bit 16) for ~+33% bytes on that matrix (3 -> 4), so it is spent only where matching falls short.
 Needs: full input covariance per matrix (an imatrix extension), a compensating quantizer that writes stock types.
+
+## Stage B result 1: output matching on E4B, 3-bit (2026-10-15)
+
+Same ruler for all rows: WikiText-2 test second half (held out from calibration), 32 x 512 chunks, KL vs E4B Q8_0,
+Mac GPU. Inputs recorded on the first 16,384 tokens of the calibration text (LG_ACT_DUMP), importance matrix on 80 x 512.
+
+| E4B | Bytes | KL | Same top |
+|---|---|---|---|
+| Q3_K --pure + importance matrix (stock rounding) | 3,267,811,488 | 0.261 | 77.2% |
+| same file, codes re-picked by output matching | 3,267,811,488 | 0.156 | 82.4% |
+| Google QAT Q4_0 (reference) | 5,154,940,832 | 0.033 | 91.3% |
+
+- Drift -40% at an identical size; only ~15% of codes changed. Per-matrix output error -71% in-sample, -19..-88%
+  held-out (ffn_down weakest: 10,240 inputs, ~12k recorded rows).
+- Matching runs ~33 min for the whole E4B on the Mac CPU (numpy).
