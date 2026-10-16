@@ -46,7 +46,8 @@ def run(device):
                 continue
             out[key] = []
             for i in range(N):
-                body = {"messages": [{"role": "system", "content": load_persona()}, {"role": "user", "content": q}],
+                sysmsg = [{"role": "system", "content": load_persona()}] if load_persona() else []   # PERSONA=none: no system prompt
+                body = {"messages": sysmsg + [{"role": "user", "content": q}],
                         "seed": SEED0 + i, **SAMPLING}
                 req = urllib.request.Request(url + "/v1/chat/completions", json.dumps(body).encode(),
                                              {"Content-Type": "application/json"})

@@ -39,5 +39,7 @@ def persona_path(name=None):
 
 
 def load_persona(name=None):
-    """The persona text Little Guy reads, without the # note lines."""
+    """The persona text Little Guy reads, without the # note lines. PERSONA=none: no persona at all (the raw model)."""
+    if (name or os.environ.get("PERSONA")) == "none":
+        return ""
     return "\n".join(l for l in persona_path(name).read_text().splitlines() if l.strip() and not l.startswith("#"))
