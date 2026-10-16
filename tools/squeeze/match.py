@@ -134,7 +134,7 @@ ACT = {"attn_q": "attn_q", "attn_k": "attn_q", "attn_v": "attn_q", "ffn_gate": "
        "attn_output": "attn_output", "ffn_down": "ffn_down"}
 
 
-HOLD = 8   # every HOLD-th recorded row is held out of the fit and only used to check the result
+HOLD = 8   # without a hold.json: every HOLD-th recorded row is held out of the fit and only used to check the result
 
 
 def hessian(act_dir, name):
@@ -150,24 +150,35 @@ def rows(f, n_col, step=8192):
         yield i, np.asarray(x[i:i + step], dtype=np.float32)
 
 
+def hold_from(f):
+    """row where the held-out documents start (calib_split.json saved as hold.json next to the recording), or None"""
+    h = Path(f).parent / "hold.json"
+    return json.loads(h.read_text())["hold_from_row"] if h.exists() else None
+
+
 def grams(f, n_col, fq=None):
-    """X^T X / n over the fit rows and over the held-out rows (every HOLD-th). With fq (inputs recorded from the partly
+    """X^T X / n over the fit rows and over the held-out rows: whole held-out documents when the recording has a
+    hold.json (every row from hold_from_row on), else every HOLD-th row. With fq (inputs recorded from the partly
     compressed model, same text and rows): Hq = Xq^T Xq / n and C = X^T Xq / n on the fit rows, for the sequential target."""
-    keys = ("fit", "hold") if fq is None else ("fit", "hold", "C")
+    h0 = hold_from(f)
+    keys = ("fit", "hold") if fq is None else ("fit", "hold", "C", "C_hold", "X_hold")
     acc = {k: np.zeros((n_col, n_col)) for k in keys}
     cnt = {"fit": 0, "hold": 0}
     src = rows(f, n_col) if fq is None else zip(rows(f, n_col), rows(fq, n_col))
     for item in src:
         (i, X), Xq = (item, None) if fq is None else (item[0], item[1][1])
         n = len(X) if Xq is None else min(len(X), len(Xq))
-        hold = (np.arange(i, i + n) % HOLD) == HOLD - 1
+        idx = np.arange(i, i + n)
+        hold = idx >= h0 if h0 is not None else (idx % HOLD) == HOLD - 1
         A = (X if Xq is None else Xq)[:n]                           # the inputs this matrix will actually see
         acc["fit"] += A[~hold].T @ A[~hold]                         # each piece in float32 (fast), summed in float64
         acc["hold"] += A[hold].T @ A[hold]
         if Xq is not None:
             acc["C"] += X[:n][~hold].T @ A[~hold]
+            acc["C_hold"] += X[:n][hold].T @ A[hold]                # for the true held-out error vs the original
+            acc["X_hold"] += X[:n][hold].T @ X[:n][hold]
         cnt["fit"] += int((~hold).sum()); cnt["hold"] += int(hold.sum())
-    out = {k: v / max(cnt["hold" if k == "hold" else "fit"], 1) for k, v in acc.items()}
+    out = {k: v / max(cnt["hold" if "hold" in k else "fit"], 1) for k, v in acc.items()}
     out["n_fit"], out["n_hold"] = cnt["fit"], cnt["hold"]
     return out
 
@@ -308,6 +319,7 @@ def one(ref, don, act_dir, name):
     fq = hessian(cfg["seq"], name) if cfg["seq"] else None
     G = grams(f, n_col, fq)
     H, Hh = G["fit"], G["hold"]
+    W0 = W
     if fq is not None:
         lam = cfg["damp"] * np.mean(np.diag(H)) + 1e-12
         Hd, Cd = H.copy(), G["C"].copy()
@@ -331,6 +343,12 @@ def one(ref, don, act_dir, name):
     E0, E1 = a * c0 + b - W, got - W                                    # stock rounding vs matched, same target
     rep = {"fit_stock": out_err(E0, H), "fit_matched": out_err(E1, H), "hold_stock": out_err(E0, Hh),
            "hold_matched": out_err(E1, Hh), "changed": float(np.mean(c0 != c1)), "n_fit": G["n_fit"], "n_hold": G["n_hold"]}
+    if fq is not None:   # held-out rows: this layer on the drifted inputs vs the ORIGINAL layer on the original inputs
+        def true_err(Q):
+            Q = Q.astype(np.float64); W64 = W0.astype(np.float64)
+            return float(np.einsum("ij,ij->", Q @ Hh, Q) - 2 * np.einsum("ij,ij->", W64 @ G["C_hold"], Q)
+                         + np.einsum("ij,ij->", W64 @ G["X_hold"], W64))
+        rep["hold_stock"], rep["hold_matched"] = true_err(a * c0 + b), true_err(got)
     return new, rep
 
 

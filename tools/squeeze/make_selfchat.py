@@ -85,6 +85,8 @@ def main():
     else:
         parts = [f"<|turn>user\n{p}<turn|>\n<|turn>model\n{r}<turn|>\n" for p, r in zip(prompts, replies)]
     open(out, "w").write("".join(parts))
+    json.dump([{"prompt": p, "seed": seed0 + i, "reply": r} for i, (p, r) in enumerate(zip(prompts, replies))],
+              open(out + ".json", "w"), indent=1, ensure_ascii=False)   # every document on its own (whole-document splits)
     print(f"{len(parts)} {mode} samples, {sum(map(len, parts))} chars")
 
 
