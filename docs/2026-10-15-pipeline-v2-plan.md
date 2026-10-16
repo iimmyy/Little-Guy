@@ -95,3 +95,41 @@ Same files, every E4B ruler (persona = private persona chat; chat / raw = write-
   re-picked code is a big jump). The earlier "-40%" is in-domain only. mix-21 matched does NOT go live.
 - Plain Q3_K beats the live mix-21 on every ruler by 29-42% for ~15% more bytes per word.
 - Next: calibrate on representative text (model-generated conversations, none of the eval texts), stronger damping.
+
+## 2026-10-16 night: representative calibration, 3-bit NPU kernel, Little Guy on the board
+
+Calibration text: 240 self-generated chat exchanges (E4B Q8 answering everyday prompts, tools/squeeze/make_selfchat.py)
+interleaved with the WikiText calibration half (.run/bench/calib_mix.txt), chat markers as control tokens.
+Held-out chat ruler: 160 exchanges on different topics and request types (make_selfchat.py eval).
+
+E4B, KL vs Q8_0 (lower is better), bytes read per generated word:
+
+| E4B | Per word | Persona | Chat | Raw | Wiki | Held-out chat |
+|---|---|---|---|---|---|---|
+| mix-21 (live) | 1.78 | 0.482 | 0.441 | 0.491 | 0.447 | 0.391 |
+| Q3_K, mixed imatrix | 2.04 | 0.300 | 0.269 | 0.305 | 0.260 | 0.213 |
+| Q3_K, mixed imatrix, matched (damping 0.1) | 2.04 | 0.167 | 0.213 | 0.260 | 0.173 | 0.144 |
+| community IQ3_XXS (same imatrix) | 2.03 | 0.372 | 0.310 | 0.362 | 0.337 | 0.290 |
+| community Q2_K | 2.05 | 0.426 | 0.437 | 0.521 | 0.437 | 0.391 |
+| community Q3_K_S | 2.30 | 0.282 | 0.249 | 0.289 | 0.242 | 0.203 |
+| community IQ3_M | 2.36 | 0.241 | 0.178 | 0.196 | 0.173 | 0.155 |
+| community Q3_K_M | 2.50 | 0.152 | 0.115 | 0.133 | 0.114 | 0.095 |
+| community Q4_K_S | 2.84 | 0.044 | 0.022 | 0.024 | 0.023 | 0.019 |
+| Google QAT Q4_0 | 2.83 | 0.039 | 0.029 | 0.033 | 0.033 | 0.027 |
+
+- Damping 0.1 generalizes better than 0.01 (persona 0.167 vs 0.254). Matched Q3_K at 2.04 GB/word ~ community IQ3_M at
+  2.36 (14% fewer bytes); half the drift of the same-size community quant.
+
+Board (Q6A NPU, engine ~/preview3 with the Q3_K kernel; NPU vs board CPU KL 0.004 on Q3_K):
+
+| 80 tries (seeds 1000, 5000) | mix-21 | Q3_K plain (wiki imatrix) | Q3_K matched (mixed) |
+|---|---|---|---|
+| Dayvigo warns first | 57 | 57 | 78 |
+| Dayvigo dodges first | 13 | 9 | 0 |
+| dog firm no | 77 | 78 | 80 |
+| pasta "Hm" | 25 | 16 | 6 |
+| invents his day (200 tries) | 7 | 5 (of 80) | 26 |
+| chat speed, NPU (words/s) | 10.2 | 8.65 | 8.53 |
+
+- Matched Q3_K invents his day 13% vs mix-21 3.5%: does not go live (rule: tie or beat every check).
+- Open: the 262,144-row dictionary is wrong on the NPU Q3_K kernel (kept off; the preview is Q2_K).
