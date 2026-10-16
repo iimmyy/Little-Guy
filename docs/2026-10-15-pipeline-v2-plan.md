@@ -133,3 +133,7 @@ Board (Q6A NPU, engine ~/preview3 with the Q3_K kernel; NPU vs board CPU KL 0.00
 
 - Matched Q3_K invents his day 13% vs mix-21 3.5%: does not go live (rule: tie or beat every check).
 - Open: the 262,144-row dictionary is wrong on the NPU Q3_K kernel (kept off; the preview is Q2_K).
+- Original Google QAT Q4_0 on the same board test: invents his day 29/200 (14.5%), matched Q3_K 26/200 (13%), mix-21
+  7/200 (3.5%). The matched brain is faithful to the original; mix-21's low rate is a side effect of its distortion.
+  Inventing his day is the base model's habit (persona / fine-tuning). Kept mix-21 live per the agreed rule; matched
+  Q3_K (e4b-q3k-mm-preview) is on the board for Immy's call. Original Q4_0 talks at 6.6 words/s on the NPU.
