@@ -1,7 +1,7 @@
 From e9432908278110fbead2c4d0a24616a546485196 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Fri, 9 Oct 2026 08:05:49 -0700
-Subject: [PATCH 02/34] server: skip SWA checkpoint restore when the cache
+Subject: [PATCH 02/35] server: skip SWA checkpoint restore when the cache
  still holds every position
 
 pos_min == 0 means nothing has slid out of the sliding window yet, so a

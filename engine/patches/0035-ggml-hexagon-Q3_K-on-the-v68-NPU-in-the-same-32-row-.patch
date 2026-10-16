@@ -1,0 +1,497 @@
+From d29ef34ca16b52af84cadb80c1fde5fdd66e3384 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Thu, 15 Oct 2026 23:31:50 -0700
+Subject: [PATCH 35/35] ggml-hexagon: Q3_K on the v68 NPU in the same 32-row
+ tiles (low 2 bits in the Q2_K layout, high-bit planes, packed 6-bit scales
+ unpacked on the DSP, exact integer math as ggml_vec_dot_q3_K_q8_K); co-op
+ copy and q8_K pre-quantization shared with Q2_K. NPU vs board CPU KL 0.004 on
+ E4B Q3_K. Open: matrices over 131072 rows (the full dictionary) come out
+ wrong, kept off the NPU. test-backend-ops: tile-shaped Q2_K/Q3_K/Q4_0 cases
+
+---
+ ggml/src/ggml-hexagon/ggml-hexagon.cpp | 135 +++++++++++++++-
+ ggml/src/ggml-hexagon/htp/htp-ops.h    |   1 +
+ ggml/src/ggml-hexagon/htp/lg-q2k-ops.c | 216 +++++++++++++++++++++++++
+ ggml/src/ggml-hexagon/htp/main.c       |   2 +-
+ ggml/src/ggml-hexagon/htp/matmul-ops.c |   4 +
+ tests/test-backend-ops.cpp             |   8 +
+ 6 files changed, 363 insertions(+), 3 deletions(-)
+
+diff --git a/ggml/src/ggml-hexagon/ggml-hexagon.cpp b/ggml/src/ggml-hexagon/ggml-hexagon.cpp
+index f7aa48d..3378b0b 100644
+--- a/ggml/src/ggml-hexagon/ggml-hexagon.cpp
++++ b/ggml/src/ggml-hexagon/ggml-hexagon.cpp
+@@ -1687,6 +1687,106 @@ static void repack_lgtile_q2_K(void * data, const ggml_tensor * t, size_t size)
+     }
+ }
+ 
++// LG: Q3_K in the same 32-row tiles (htp/lg-q2k-ops.c, lg_op_matmul_q3k), the same bytes as the original blocks
++// (32 x 110 per super-block). Super-blocks go in pairs (7040 bytes, 55 vectors); an odd last one takes 3520:
++//   pair:   low0 0, high0 2048, low1 3072, high1 5120, sc0 6144, sc1 6528, d 6912 (lanes 0..31 first, 32..63 second)
++//   single: low 0, high 2048, sc 3072, d 3456
++//   low:  16 x 128 B, the Q2_K tile layout of the low 2 bits
++//   high:  8 x 128 B, vector v, word r, byte j: bit k = high bit of input 32v + 4k + j, bit 4 + k of input 32v + 16 + 4k + j
++//   sc:    3 x 128 B, vector v, word r = bytes 4v..4v+3 of row r's packed 6-bit scales
++// block_q3_K by byte offset: hmask at 0, qs at 32, scales at 96, d at 108. Input 16p + t of a super-block, with
++// n = p / 8, j = (p % 8) / 2, h = p % 2: low bits in qs[32n + 16h + t] at shift 2j, high bit in hmask[16h + t] bit 4n + j.
++#define LG_Q3K_SB_BYTES 3520
++
++static size_t lg_q3k_sb_off(int64_t sb, int64_t nsb, size_t * lo, size_t * hi, size_t * sc, size_t * d) {
++    const size_t base = (size_t) (sb / 2) * 2 * LG_Q3K_SB_BYTES;
++    const bool second = sb % 2, single = (sb == nsb - 1) && (nsb % 2);
++    *lo = base + (second ? 3072 : 0);
++    *hi = *lo + 2048;
++    *sc = base + (single ? 3072 : 6144 + (second ? 384 : 0));
++    *d  = base + (single ? 3456 : 6912 + (second ? 64 : 0));
++    return base;
++}
++
++static void lg_q3k_tile(uint8_t * o, const uint8_t * const * blk, int64_t sb, int64_t nsb) {
++    size_t lo, hi, sc, dd;
++    lg_q3k_sb_off(sb, nsb, &lo, &hi, &sc, &dd);
++    for (int r = 0; r < LG_Q2K_ROWS; r++) {
++        const uint8_t * b = blk[r], * hm = b, * qs = b + 32;
++        for (int p = 0; p < 16; p++) {
++            const int n = p / 8, j = (p % 8) / 2, h = p % 2;
++            for (int jj = 0; jj < 4; jj++) {
++                uint8_t vl = 0, vh = 0;
++                for (int k = 0; k < 4; k++) {
++                    const int t = 4 * k + jj;
++                    vl |= ((qs[32 * n + 16 * h + t] >> (2 * j)) & 3) << (2 * k);
++                    vh |= ((hm[16 * h + t] >> (4 * n + j)) & 1) << k;
++                }
++                o[lo + p * 128 + 4 * r + jj] = vl;
++                o[hi + (p / 2) * 128 + 4 * r + jj] |= vh << (4 * (p % 2));
++            }
++        }
++        for (int v = 0; v < 3; v++) memcpy(o + sc + v * 128 + 4 * r, b + 96 + 4 * v, 4);
++        memcpy(o + dd + 2 * r, b + 108, 2);
++    }
++}
++
++static void lg_q3k_untile(uint8_t * const * blk, const uint8_t * o, int64_t sb, int64_t nsb) {
++    size_t lo, hi, sc, dd;
++    lg_q3k_sb_off(sb, nsb, &lo, &hi, &sc, &dd);
++    for (int r = 0; r < LG_Q2K_ROWS; r++) {
++        uint8_t * b = blk[r], * hm = b, * qs = b + 32;
++        memset(b, 0, 96);
++        for (int p = 0; p < 16; p++) {
++            const int n = p / 8, j = (p % 8) / 2, h = p % 2;
++            for (int jj = 0; jj < 4; jj++) {
++                const uint8_t vl = o[lo + p * 128 + 4 * r + jj];
++                const uint8_t vh = o[hi + (p / 2) * 128 + 4 * r + jj] >> (4 * (p % 2));
++                for (int k = 0; k < 4; k++) {
++                    const int t = 4 * k + jj;
++                    qs[32 * n + 16 * h + t] |= ((vl >> (2 * k)) & 3) << (2 * j);
++                    hm[16 * h + t] |= ((vh >> k) & 1) << (4 * n + j);
++                }
++            }
++        }
++        for (int v = 0; v < 3; v++) memcpy(b + 96 + 4 * v, o + sc + v * 128 + 4 * r, 4);
++        memcpy(b + 108, o + dd + 2 * r, 2);
++    }
++}
++
++static void repack_q3_K_lgtile(ggml_tensor * t, const void * data, size_t size) {
++    const int64_t K = t->ne[0], N = ggml_nrows(t), nsb = K / QK_K;
++    GGML_ASSERT(K % QK_K == 0 && N % LG_Q2K_ROWS == 0 && size == ggml_nbytes(t));
++    const size_t row = ggml_row_size(t->type, K), tile_bytes = (size_t) nsb * LG_Q3K_SB_BYTES;
++    const uint8_t * src = (const uint8_t *) data;
++    uint8_t * dst = (uint8_t *) t->data;
++    std::vector<uint8_t> o(tile_bytes);
++    const uint8_t * blk[LG_Q2K_ROWS];
++    for (int64_t tile = 0; tile < N / LG_Q2K_ROWS; tile++) {
++        std::fill(o.begin(), o.end(), 0);
++        for (int64_t sb = 0; sb < nsb; sb++) {
++            for (int r = 0; r < LG_Q2K_ROWS; r++) blk[r] = src + (tile * LG_Q2K_ROWS + r) * row + sb * sizeof(block_q3_K);
++            lg_q3k_tile(o.data(), blk, sb, nsb);
++        }
++        memcpy(dst + tile * tile_bytes, o.data(), tile_bytes);
++    }
++}
++
++static void repack_lgtile_q3_K(void * data, const ggml_tensor * t, size_t size) {
++    const int64_t K = t->ne[0], N = ggml_nrows(t), nsb = K / QK_K;
++    GGML_ASSERT(size == ggml_nbytes(t));
++    const size_t row = ggml_row_size(t->type, K), tile_bytes = (size_t) nsb * LG_Q3K_SB_BYTES;
++    uint8_t * dst = (uint8_t *) data;
++    const uint8_t * src = (const uint8_t *) t->data;
++    uint8_t * blk[LG_Q2K_ROWS];
++    for (int64_t tile = 0; tile < N / LG_Q2K_ROWS; tile++) {
++        for (int64_t sb = 0; sb < nsb; sb++) {
++            for (int r = 0; r < LG_Q2K_ROWS; r++) blk[r] = dst + (tile * LG_Q2K_ROWS + r) * row + sb * sizeof(block_q3_K);
++            lg_q3k_untile(blk, src + tile * tile_bytes, sb, nsb);
++        }
++    }
++}
++
+ // LG: Q4_0 in the same 32-row tiles (htp/lg-q2k-ops.c, lg_op_matmul_q4_0). Per (tile, pair of 32-input blocks)
+ // 1152 bytes: 8 x 128 B weights (vector 4b + v, word r = qs[4v .. 4v+3] of row r's block b) and 1 x 128 B scales
+ // (fp16 lane 2r = d of row r's first block, 2r + 1 = its second). block_q4_0 = d (2 bytes) then qs[16].
+@@ -1777,7 +1877,7 @@ static ggml_backend_buffer_type_t lg_cpu_repack_buft() {
+ }
+ 
+ static void lg_coop_make_copy(const ggml_tensor * t, const void * data) {
+-    if (!lg_coop_on() || (t->type != GGML_TYPE_Q2_K && t->type != GGML_TYPE_Q4_0)) return;
++    if (!lg_coop_on() || (t->type != GGML_TYPE_Q2_K && t->type != GGML_TYPE_Q3_K && t->type != GGML_TYPE_Q4_0)) return;
+     const int64_t K = t->ne[0], N = t->ne[1];
+     if (ggml_nrows(t) != N || N > 16384 || N % 32) return;
+     const char * f = getenv("LG_COOP_NPU");
+@@ -1883,7 +1983,7 @@ struct lg_pool {
+ static const void * lg_pq_last[2];   // input last quantized into each format's buffer (reset per graph)
+ 
+ static ggml_tensor * lg_coop_prequant(ggml_hexagon_session * sess, const ggml_tensor * w, const ggml_tensor * x) {
+-    const bool q2k = w->type == GGML_TYPE_Q2_K;
++    const bool q2k = w->type == GGML_TYPE_Q2_K || w->type == GGML_TYPE_Q3_K;   // q8_K inputs (Q4_0: q8_0)
+     static ggml_backend_buffer_t bufs[2] = { nullptr, nullptr };
+     static size_t caps[2] = { 0, 0 };
+     static ggml_tensor pqs[2];
+@@ -2020,6 +2120,12 @@ static void ggml_backend_hexagon_buffer_set_tensor(ggml_backend_buffer_t buffer,
+             lg_coop_make_copy(tensor, data);
+             break;
+ 
++        case GGML_TYPE_Q3_K:   // LG
++            GGML_ASSERT(offset == 0);
++            repack_q3_K_lgtile(tensor, data, size);
++            lg_coop_make_copy(tensor, data);
++            break;
++
+         default:
+             memcpy((char *) tensor->data + offset, data, size);
+             break;
+@@ -2072,6 +2178,11 @@ static void ggml_backend_hexagon_buffer_get_tensor(ggml_backend_buffer_t buffer,
+             repack_lgtile_q2_K(data, tensor, size);
+             break;
+ 
++        case GGML_TYPE_Q3_K:   // LG
++            GGML_ASSERT(offset == 0);
++            repack_lgtile_q3_K(data, tensor, size);
++            break;
++
+         default:
+             memcpy(data, (const char *) tensor->data + offset, size);
+             break;
+@@ -3058,6 +3169,25 @@ static bool ggml_hexagon_supported_mul_mat(const struct ggml_hexagon_session * s
+             }
+             break;
+ 
++        case GGML_TYPE_Q3_K:   // LG: htp/lg-q2k-ops.c
++            if (getenv("LG_HEX_NO_Q3K") || src0->ne[0] % QK_K || src0->ne[1] % 32 || src0->ne[2] != 1 || src0->ne[3] != 1) {
++                return false;
++            }
++            {   // LG_Q3K_ONLY_K / LG_Q3K_MAX_N: restrict which Q3_K matmuls go to the NPU (bisecting)
++                const char * ek = getenv("LG_Q3K_ONLY_K"), * en = getenv("LG_Q3K_MAX_N");
++                if ((ek && src0->ne[0] != atoll(ek)) || (en && src0->ne[1] > atoll(en))) return false;
++            }
++            if (src0->ne[1] > 131072) {   // OPEN BUG: the full 262144-row dictionary comes out wrong on the NPU (rows
++                return false;             // up to 21504 verified exact vs the CPU); the dictionary preview is Q2_K anyway
++            }
++            if (src1->type != GGML_TYPE_F32 || src1->ne[2] != 1 || src1->ne[3] != 1 || ggml_nrows(src1) > 1024) {
++                return false;
++            }
++            if (src0->buffer && !ggml_backend_buffer_is_hexagon_repack(src0->buffer)) {
++                return false;
++            }
++            break;
++
+         case GGML_TYPE_Q4_0:   // LG: 32-row tiles (htp/lg-q2k-ops.c)
+             if (getenv("LG_HEX_NO_Q4") || src0->ne[0] % 256 || src0->ne[1] % 32 || src0->ne[2] != 1 || src0->ne[3] != 1) {
+                 return false;
+@@ -4509,6 +4639,7 @@ template<typename T, int BASE=10> std::string vec_to_str(std::vector<T> v) {
+ 
+ static void ggml_hexagon_init(ggml_backend_reg * reg) {
+     // Basic sanity checks to make sure definitions match
++    static_assert((unsigned int) HTP_TYPE_Q3_K == (unsigned int) GGML_TYPE_Q3_K, "please update hexagon_type to match ggml_type");
+     static_assert((unsigned int) HTP_TYPE_Q4_0 == (unsigned int) GGML_TYPE_Q4_0,
+                   "please update hexagon_type to match ggml_type");
+     static_assert((unsigned int) HTP_TYPE_Q4_1 == (unsigned int) GGML_TYPE_Q4_1,
+diff --git a/ggml/src/ggml-hexagon/htp/htp-ops.h b/ggml/src/ggml-hexagon/htp/htp-ops.h
+index 8d49b26..cb85534 100644
+--- a/ggml/src/ggml-hexagon/htp/htp-ops.h
++++ b/ggml/src/ggml-hexagon/htp/htp-ops.h
+@@ -23,6 +23,7 @@ enum htp_data_type {
+     HTP_TYPE_Q4_1   = 3,
+     HTP_TYPE_Q8_0   = 8,
+     HTP_TYPE_Q2_K   = 10,   // LG: repacked into 32-row tiles (lg-q2k-ops.c)
++    HTP_TYPE_Q3_K   = 11,   // LG: same tiles, low 2 bits + high bit planes (lg-q2k-ops.c)
+     HTP_TYPE_IQ4_NL = 20,
+     HTP_TYPE_I32    = 26,
+     HTP_TYPE_I64    = 27,
+diff --git a/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c b/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
+index 42ca4fc..eddd38b 100644
+--- a/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
++++ b/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
+@@ -791,3 +791,219 @@ int lg_op_matmul_q4_0(struct htp_ops_context * octx) {
+     octx->src1_spad.src = NULL;
+     return HTP_STATUS_OK;
+ }
++
++// ---------------------------------------------------------------------------------------------------------------
++// Q3_K in the same 32-row tiles (repack_q3_K_lgtile in ggml-hexagon.cpp), the same bytes as the original blocks.
++// Super-blocks go in pairs (7040 bytes); an odd last one takes 3520:
++//   pair:   low0 0, high0 2048, low1 3072, high1 5120, sc0 6144, sc1 6528, d 6912 (fp16 lanes 0..31, then 32..63)
++//   single: low 0, high 2048, sc 3072, d 3456
++//   low:  16 x 128 B in the Q2_K tile layout (vector p: inputs 16p..16p+15, word r = row r, bits 2k+1:2k of byte j
++//         = low 2 bits of input 16p + 4k + j)
++//   high:  8 x 128 B, vector v, word r, byte j: bit k = high bit of input 32v + 4k + j, bit 4 + k of 32v + 16 + 4k + j
++//   sc:    3 x 128 B, vector v, word r = bytes 4v..4v+3 of row r's packed 6-bit scales (ggml's Q3_K packing)
++// Inputs are the Q2_K kernel's q8_K (same quantization, same buffers). With codes c = low + 4 * high in 0..7, biased
++// scales s' = scale + 32 in 0..63, pouch sums b and their total B, per row and super-block
++//   sum_p (s'_p - 32) * sum_i (c_i - 4) x_i = S - 32 A - 4 M + 128 B,
++//   S = sum_p s'_p a_p,  A = sum_p a_p,  a_p = sum_i c_i x_i,  M = sum_p s'_p b_p,
++// all integer and exact, as the CPU's ggml_vec_dot_q3_K_q8_K; times d * xd in float.
++
++#define LG_Q3K_SB 3520
++
++static inline HVX_Vector lg_q3k_hbit(HVX_Vector hv, int s) {   // byte bit 2 = bit s of each byte
++    const HVX_Vector four = Q6_Vb_vsplat_R(4);
++    return s >= 2 ? Q6_V_vand_VV(Q6_Vuh_vlsr_VuhR(hv, s - 2), four) : Q6_V_vand_VV(Q6_Vh_vasl_VhR(hv, 2 - s), four);
++}
++
++static inline HVX_Vector lg_q3k_sb(const HVX_Vector * restrict lo, const HVX_Vector * restrict hi, const HVX_Vector * restrict sc,
++                                   const int32_t * restrict x4, const int32_t * restrict xsb, int32_t B) {
++    const HVX_Vector three = Q6_Vb_vsplat_R(3), m6 = Q6_V_vsplat_R(0x3f);
++    const HVX_Vector k1 = Q6_V_vsplat_R(0x03030303), k2 = Q6_V_vsplat_R(0x0f0f0f0f);
++    const HVX_Vector a0 = sc[0], a1 = sc[1], t = sc[2];
++    HVX_Vector sv[4];
++    sv[0] = Q6_V_vor_VV(Q6_V_vand_VV(a0, k2), Q6_Vw_vasl_VwR(Q6_V_vand_VV(t, k1), 4));
++    sv[1] = Q6_V_vor_VV(Q6_V_vand_VV(a1, k2), Q6_Vw_vasl_VwR(Q6_V_vand_VV(Q6_Vuw_vlsr_VuwR(t, 2), k1), 4));
++    sv[2] = Q6_V_vor_VV(Q6_V_vand_VV(Q6_Vuw_vlsr_VuwR(a0, 4), k2), Q6_Vw_vasl_VwR(Q6_V_vand_VV(Q6_Vuw_vlsr_VuwR(t, 4), k1), 4));
++    sv[3] = Q6_V_vor_VV(Q6_V_vand_VV(Q6_Vuw_vlsr_VuwR(a1, 4), k2), Q6_Vw_vasl_VwR(Q6_V_vand_VV(Q6_Vuw_vlsr_VuwR(t, 6), k1), 4));
++    HVX_Vector S = Q6_V_vzero(), A = Q6_V_vzero(), Ml = Q6_V_vzero(), Mh = Q6_V_vzero();
++    #pragma unroll(4)
++    for (int q4 = 0; q4 < 4; q4++) {
++        const HVX_Vector svq = sv[q4];                                 // byte i: s' of pouch 4 * q4 + i
++        Ml = Q6_Vuw_vrmpyacc_VuwVubRub(Ml, svq, xsb[q4]);
++        Mh = Q6_Vw_vrmpyacc_VwVubRb(Mh, svq, xsb[4 + q4]);
++        #pragma unroll(4)
++        for (int i = 0; i < 4; i++) {
++            const int p = 4 * q4 + i, hs = 4 * (p % 2);
++            const HVX_Vector pk = lo[p], hv = hi[p / 2];
++            const int32_t * xb = x4 + 4 * p;
++            HVX_Vector a = Q6_Vw_vrmpy_VubRb(Q6_V_vor_VV(Q6_V_vand_VV(pk, three), lg_q3k_hbit(hv, hs)), xb[0]);
++            a = Q6_Vw_vrmpyacc_VwVubRb(a, Q6_V_vor_VV(Q6_V_vand_VV(Q6_Vuh_vlsr_VuhR(pk, 2), three), lg_q3k_hbit(hv, hs + 1)), xb[1]);
++            a = Q6_Vw_vrmpyacc_VwVubRb(a, Q6_V_vor_VV(Q6_V_vand_VV(Q6_Vuh_vlsr_VuhR(pk, 4), three), lg_q3k_hbit(hv, hs + 2)), xb[2]);
++            a = Q6_Vw_vrmpyacc_VwVubRb(a, Q6_V_vor_VV(Q6_V_vand_VV(Q6_Vuh_vlsr_VuhR(pk, 6), three), lg_q3k_hbit(hv, hs + 3)), xb[3]);
++            A = Q6_Vw_vadd_VwVw(A, a);
++            S = Q6_Vw_vadd_VwVw(S, Q6_Vw_vmpyie_VwVuh(a, Q6_V_vand_VV(Q6_Vuw_vlsr_VuwR(svq, 8 * i), m6)));
++        }
++    }
++    const HVX_Vector M = Q6_Vw_vadd_VwVw(Q6_Vw_vasl_VwR(Mh, 8), Ml);
++    HVX_Vector T = Q6_Vw_vsub_VwVw(S, Q6_Vw_vasl_VwR(A, 5));
++    T = Q6_Vw_vsub_VwVw(T, Q6_Vw_vasl_VwR(M, 2));
++    return Q6_Vw_vadd_VwVw(T, Q6_V_vsplat_R(128 * B));
++}
++
++static inline int32_t lg_q3k_total(const int32_t * xsb) {   // B = sum of the 16 pouch sums (low bytes + 256 * high bytes)
++    const uint8_t * l = (const uint8_t *) xsb;
++    const int8_t  * h = (const int8_t *) (xsb + 4);
++    int32_t B = 0;
++    for (int g = 0; g < 16; g++) B += (int32_t) l[g] + 256 * (int32_t) h[g];
++    return B;
++}
++
++#define LG_Q3K_MAXSB 128
++static int32_t lg_q3k_B[HTP_MAX_NTHREADS][LG_Q3K_MAXSB];
++
++static void lg_q3k_mv_job(unsigned int nth, unsigned int ith, void * data) {
++    struct lg_q2k * c = (struct lg_q2k *) data;
++    const uint32_t per = (c->ntiles + nth - 1) / nth;
++    const uint32_t t0 = MIN(per * ith, c->ntiles), t1 = MIN(t0 + per, c->ntiles);
++    const size_t stride = hex_round_up(c->tile_bytes, 128);
++
++    dma_queue * q = c->ctx->dma[ith];
++    uint8_t * buf0 = c->wbuf + (size_t) ith * LG_NBUF * stride;
++    const uint8_t * w = (const uint8_t *) c->src0->data;
++
++    uint32_t s0 = 0, s1 = 0;
++    float * xin = NULL;
++    if (c->fuse) {
++        const uint32_t ps = (c->nsb + nth - 1) / nth;
++        s0 = MIN(ps * ith, c->nsb); s1 = MIN(s0 + ps, c->nsb);
++        xin = (float *) (c->xin + (size_t) ith * c->K * sizeof(float));
++        if (s0 < s1) {
++            const size_t nb = (size_t) (s1 - s0) * LG_SB_INPUTS * sizeof(float);
++            dma_queue_push_ddr_to_vtcm(q, dma_make_ptr(xin, (const float *) c->src1->data + (size_t) s0 * LG_SB_INPUTS), nb, nb, 1);
++        }
++    }
++    for (uint32_t t = t0; t < MIN(t0 + LG_NBUF - 1, t1); t++) {
++        dma_queue_push_ddr_to_vtcm(q, dma_make_ptr(buf0 + ((t - t0) % LG_NBUF) * stride, w + (size_t) t * c->tile_bytes),
++                                   c->tile_bytes, c->tile_bytes, 1);
++    }
++    if (c->fuse) {
++        if (s0 < s1) {
++            dma_queue_pop(q);
++            float * tmp = c->xtmp + (size_t) ith * 2 * LG_SB_INPUTS;
++            for (uint32_t s = s0; s < s1; s++) {
++                for (int v = 0; v < LG_SB_INPUTS * 4 / 128; v++) {
++                    ((HVX_Vector *) tmp)[v] = ((const HVX_Vector *) (xin + (size_t) (s - s0) * LG_SB_INPUTS))[v];
++                }
++                lg_q2k_quant_sb(tmp, c->xq + (size_t) s * LG_SB_INPUTS, c->xsum + (size_t) s * 8, c->xd + s, (int32_t *) (tmp + LG_SB_INPUTS));
++            }
++        }
++        __atomic_fetch_add(&c->qdone, 1, __ATOMIC_RELEASE);
++        while (__atomic_load_n(&c->qdone, __ATOMIC_ACQUIRE) < nth) { hex_pause(); }
++    }
++    if (t0 >= t1) return;
++
++    int32_t * Bone = lg_q3k_B[ith];   // one column: the totals once per job instead of once per tile
++    if (c->ncols == 1) {
++        for (uint32_t s = 0; s < c->nsb; s++) Bone[s] = lg_q3k_total(c->xsum + (size_t) s * 8);
++    }
++    for (uint32_t t = t0; t < t1; t++) {
++        const uint8_t * tile = (const uint8_t *) dma_queue_pop(q).dst;
++        const uint32_t tn = t + LG_NBUF - 1;
++        if (tn < t1) {
++            dma_queue_push_ddr_to_vtcm(q, dma_make_ptr(buf0 + ((tn - t0) % LG_NBUF) * stride, w + (size_t) tn * c->tile_bytes),
++                                       c->tile_bytes, c->tile_bytes, 1);
++        }
++        for (uint32_t col = 0; col < c->ncols; col++) {
++            const int32_t * x4 = (const int32_t *) (c->xq + (size_t) col * c->K);
++            const int32_t * xs = c->xsum + (size_t) col * (c->nsb * 8);
++            const float   * xd = c->xd + (size_t) col * c->nsb;
++            HVX_Vector acc = Q6_V_vzero();
++            for (uint32_t s = 0; s < c->nsb; s++) {
++                const size_t base = (size_t) (s / 2) * 2 * LG_Q3K_SB;
++                const bool second = s % 2, single = (s == c->nsb - 1) && (c->nsb % 2);
++                const uint8_t * lo = tile + base + (second ? 3072 : 0);
++                const uint8_t * sc = tile + base + (single ? 3072 : 6144 + (second ? 384 : 0));
++                const uint8_t * dv = tile + base + (single ? 3456 : 6912);
++                const int32_t B = c->ncols == 1 ? Bone[s] : lg_q3k_total(xs + s * 8);
++                const HVX_Vector T = lg_q3k_sb((const HVX_Vector *) lo, (const HVX_Vector *) (lo + 2048), (const HVX_Vector *) sc,
++                                               x4 + s * (LG_SB_INPUTS / 4), xs + s * 8, B);
++                const HVX_VectorPair dd = hvx_vec_f16_to_f32(*(const HVX_Vector *) dv);
++                const HVX_Vector d = second ? Q6_V_hi_W(dd) : Q6_V_lo_W(dd);
++                const HVX_Vector a = Q6_Vsf_equals_Vqf32(Q6_Vqf32_vmpy_VsfVsf(Q6_Vsf_equals_Vw(T), d));
++                acc = Q6_Vqf32_vadd_Vqf32Vqf32(acc, Q6_Vqf32_vmpy_VsfVsf(a, hvx_vec_splat_f32(xd[s])));
++            }
++            float * y = (float *) ((uint8_t *) c->dst->data + (size_t) (c->col0 + col) * c->dst->nb[1]) + (size_t) t * LG_TILE_ROWS;
++            *(HVX_UVector *) y = Q6_Vsf_equals_Vqf32(acc);
++        }
++    }
++}
++
++int lg_op_matmul_q3k(struct htp_ops_context * octx) {
++    const struct htp_tensor * src0 = octx->src[0];
++    const struct htp_tensor * src1 = octx->src[1];
++    const struct htp_tensor * dst  = octx->dst;
++
++    struct lg_q2k c;
++    memset(&c, 0, sizeof(c));
++    c.src0 = src0; c.src1 = src1; c.dst = dst; c.ctx = octx->ctx;
++    c.K = src0->ne[0];
++    c.N = src0->ne[1];
++    if (c.K % LG_SB_INPUTS || c.N % LG_TILE_ROWS || src1->type != HTP_TYPE_F32 || src1->ne[2] != 1 || src1->ne[3] != 1 ||
++        c.K / LG_SB_INPUTS > LG_Q3K_MAXSB) {
++        return HTP_STATUS_NO_SUPPORT;
++    }
++    c.nsb        = c.K / LG_SB_INPUTS;
++    c.ntiles     = c.N / LG_TILE_ROWS;
++    c.tile_bytes = (size_t) c.nsb * LG_Q3K_SB;
++    c.n_jobs     = octx->n_threads;
++
++    // VTCM: per thread LG_NBUF tile buffers, each rounded up to 128 bytes (an odd super-block count leaves a
++    // half vector, and the last d vector is read whole)
++    const size_t wbytes   = hex_round_up(LG_NBUF * hex_round_up(c.tile_bytes, 128) * c.n_jobs, 128) + 128;
++    const size_t col_size = hex_round_up(c.K, 128) + hex_round_up(c.K / 16 * 4, 128) + hex_round_up(c.nsb * 4, 128);
++    if (octx->ctx->vtcm_size < wbytes || c.n_jobs > HTP_MAX_NTHREADS || col_size > LG_XBUF) {
++        return HTP_STATUS_VTCM_TOO_SMALL;
++    }
++    if (octx->flags & HTP_OPFLAGS_SKIP_COMPUTE) {
++        return HTP_STATUS_OK;
++    }
++    if (!lg_xbuf && !(lg_xbuf = memalign(128, LG_XBUF))) return HTP_STATUS_INTERNAL_ERR;
++    if (!lg_tbuf && !(lg_tbuf = memalign(128, HTP_MAX_NTHREADS * 2 * LG_SB_INPUTS * 4))) return HTP_STATUS_INTERNAL_ERR;
++    uint8_t * xbuf = lg_xbuf, * tbuf = lg_tbuf;
++    const uint32_t max_cols = MIN(LG_XBUF / col_size, LG_STAGE_MAXC);
++    const uint32_t ncols    = src1->ne[1];
++    c.wbuf = octx->ctx->vtcm_base;
++    c.xtmp = (float *) tbuf;
++
++    for (uint32_t col0 = 0; col0 < ncols; col0 += max_cols) {
++        c.col0  = col0;
++        c.ncols = MIN(max_cols, ncols - col0);
++        uint8_t * p = xbuf;
++        c.xq   = (int8_t *) p;  p += hex_round_up((size_t) c.ncols * c.K, 128);
++        c.xsum = (int32_t *) p; p += hex_round_up((size_t) c.ncols * (c.K / 16) * 4, 128);
++        c.xd   = (float *) p;
++
++        // the same q8_K inputs as Q2_K: share its cache (gate and up, q/k/v)
++        const bool cached = (ncols <= max_cols && lg_q2k_xcache_src == src1->data && lg_q2k_xcache_ncols == ncols);
++        c.fuse = 0;
++        if (octx->src[2]) {
++            lg_copy_prequant(octx->src[2], c.K, ncols, c.nsb * 8, c.nsb, col0, c.ncols, c.xq, c.xsum, c.xd);
++            lg_q2k_xcache_src = lg_q4_xcache_src = 0;
++        } else if (!cached && ncols == 1 && !getenv_lg_nofuse() && wbytes + (size_t) c.n_jobs * c.K * sizeof(float) <= octx->ctx->vtcm_size) {
++            c.fuse  = 1;
++            c.xin   = octx->ctx->vtcm_base + wbytes;
++            c.qdone = 0;
++            lg_q2k_xcache_src   = src1->data;
++            lg_q2k_xcache_ncols = 1;
++            lg_q4_xcache_src    = 0;
++        } else if (!cached) {
++            worker_pool_run_func(octx->ctx->worker_pool, lg_q2k_quant_job, &c, MIN(c.n_jobs, c.ncols * c.nsb));
++            lg_q2k_xcache_src   = (ncols <= max_cols) ? src1->data : 0;
++            lg_q2k_xcache_ncols = ncols;
++            lg_q4_xcache_src    = 0;
++        }
++        worker_pool_run_func(octx->ctx->worker_pool, lg_q3k_mv_job, &c, c.n_jobs);
++    }
++
++    octx->src1_spad.src = NULL;
++    return HTP_STATUS_OK;
++}
+diff --git a/ggml/src/ggml-hexagon/htp/main.c b/ggml/src/ggml-hexagon/htp/main.c
+index 558a42e..c683b00 100644
+--- a/ggml/src/ggml-hexagon/htp/main.c
++++ b/ggml/src/ggml-hexagon/htp/main.c
+@@ -569,7 +569,7 @@ static inline void profile_stop(uint32_t mode, struct profile_data * d) {
+ }
+ 
+ static int execute_op(struct htp_ops_context * octx) {
+-    if (!(octx->op == HTP_OP_MUL_MAT && (octx->src[0]->type == HTP_TYPE_Q2_K || octx->src[0]->type == HTP_TYPE_Q4_0))) {
++    if (!(octx->op == HTP_OP_MUL_MAT && (octx->src[0]->type == HTP_TYPE_Q2_K || octx->src[0]->type == HTP_TYPE_Q3_K || octx->src[0]->type == HTP_TYPE_Q4_0))) {
+         lg_q2k_xcache_src = lg_q4_xcache_src = 0;   // a new input may land at the same address after other ops
+     }
+     switch (octx->op) {
+diff --git a/ggml/src/ggml-hexagon/htp/matmul-ops.c b/ggml/src/ggml-hexagon/htp/matmul-ops.c
+index 25aad22..ecbe55a 100644
+--- a/ggml/src/ggml-hexagon/htp/matmul-ops.c
++++ b/ggml/src/ggml-hexagon/htp/matmul-ops.c
+@@ -4709,6 +4709,7 @@ static int op_matmul_hvx(struct htp_ops_context * octx) {
+ 
+ int lg_op_matmul_q2k(struct htp_ops_context * octx);
+ int lg_op_matmul_q4_0(struct htp_ops_context * octx);
++int lg_op_matmul_q3k(struct htp_ops_context * octx);
+ 
+ int op_matmul(struct htp_ops_context * octx) {
+     htp_matmul_tensors_preamble;
+@@ -4716,6 +4717,9 @@ int op_matmul(struct htp_ops_context * octx) {
+     if (src0->type == HTP_TYPE_Q2_K) {
+         return lg_op_matmul_q2k(octx);
+     }
++    if (src0->type == HTP_TYPE_Q3_K) {   // LG
++        return lg_op_matmul_q3k(octx);
++    }
+     if (src0->type == HTP_TYPE_Q4_0) {   // LG: 32-row tiles, see lg-q2k-ops.c
+         return lg_op_matmul_q4_0(octx);
+     }
+diff --git a/tests/test-backend-ops.cpp b/tests/test-backend-ops.cpp
+index 49fb0da..33fd63f 100644
+--- a/tests/test-backend-ops.cpp
++++ b/tests/test-backend-ops.cpp
+@@ -8549,6 +8549,14 @@ static std::vector<std::unique_ptr<test_case>> make_test_cases_eval() {
+     test_cases.emplace_back(new test_mul_mat(GGML_TYPE_F32, GGML_TYPE_F32, 16, 32, 32, { 1,  1}, {1, 1}, {0, 1, 2, 3}, 64, 3));
+     test_cases.emplace_back(new test_mul_mat(GGML_TYPE_F32, GGML_TYPE_F32, 64, 77, 77, {12,1}, {1,1}));
+ 
++    // LG: shapes the v68 NPU's 32-row tile kernels take (rows % 32, inputs % 256, even and odd super-block counts)
++    for (ggml_type t : {GGML_TYPE_Q2_K, GGML_TYPE_Q3_K, GGML_TYPE_Q4_0}) {
++        for (int k : {512, 768, 2560}) {
++            for (int n : {1, 3}) {
++                test_cases.emplace_back(new test_mul_mat(t, GGML_TYPE_F32, 64, n, k, {1, 1}, {1, 1}));
++            }
++        }
++    }
+     test_cases.emplace_back(new test_mul_mat(GGML_TYPE_Q4_0, GGML_TYPE_F32, 576, 512, 576, {1,1}, {1,1}));
+     test_cases.emplace_back(new test_mul_mat(GGML_TYPE_Q4_0, GGML_TYPE_F32, 1, 2048, 8192, {1,  1}, {1, 1}));
+     for (ggml_type type_a : all_types) {

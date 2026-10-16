@@ -17,7 +17,8 @@ HOST = BOARD_SSH.split("@")[-1] or "q6a"
 PORT = 8095
 SEED0 = int(os.environ.get("SEED0", "1000"))   # a different SEED0 replicates a result on fresh dice rolls
 SAMPLING = {"max_tokens": 90, "temperature": 0.8, "top_k": 64, "top_p": 0.95}
-ENV = "cd ~/preview2 && LD_LIBRARY_PATH=lib ADSP_LIBRARY_PATH=$HOME/preview2/lib GGML_HEXAGON_USE_HMX=0 GGML_HEXAGON_OPBATCH=4096"
+ENGINE = os.environ.get("ENGINE", "preview2")   # engine folder on the board (bin + lib)
+ENV = f"cd ~/{ENGINE} && LD_LIBRARY_PATH=lib ADSP_LIBRARY_PATH=$HOME/{ENGINE}/lib GGML_HEXAGON_USE_HMX=0 GGML_HEXAGON_OPBATCH=4096"
 DEVICES = {"CPU": "GGML_HEXAGON_NDEV=0 bin/llama-server --device none -ngl 0",
            "NPU": "bin/llama-server --device HTP0 -ngl 99"}
 

@@ -1,7 +1,7 @@
 From c8f910ae2e899aa41d565c633a5397ef8b936894 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Thu, 15 Oct 2026 04:09:00 -0700
-Subject: [PATCH 33/34] lg-q2k-ops: the fused input-quantize barrier pauses
+Subject: [PATCH 33/35] lg-q2k-ops: the fused input-quantize barrier pauses
  while spinning (a bare spin steals issue slots from the thread it waits for);
  after an NPU watchdog crash 100+ replies into a behavior test
 

@@ -145,23 +145,24 @@ def hessian(act_dir, name):
 
 def gram(x, n_col):
     X = x.reshape(-1, n_col).astype(np.float32)
-    return (X.T @ X).astype(np.float64) / X.shape[0]
+    return (X.T @ X) / np.float32(X.shape[0])
 
 
 def out_err(E, H):
     return float(np.einsum("ij,ij->", E @ H, E))
 
 
-def match(W, H, a, b, code0, qmax, block=128, damp=0.01):
+def match(W, H, a, b, code0, qmax, block=128, damp=float(os.environ.get("LG_MATCH_DAMP", "0.01"))):
     """GPTQ with a fixed grid: W (rows, cols) float, H (cols, cols); returns new codes"""
-    W = W.astype(np.float64).copy()
-    H = H.copy()
+    dt = np.float64 if W.shape[1] <= 12288 else np.float32   # 31B ffn_down (21504 inputs): float32 halves memory
+    W = W.astype(dt).copy()
+    H = H.astype(dt)
     dead = np.diag(H) == 0
     H[dead, dead] = 1
     W[:, dead] = 0
     H[np.diag_indices_from(H)] += damp * np.mean(np.diag(H))
     Hinv = np.linalg.cholesky(np.linalg.inv(H)).T                                # upper
-    a = a.astype(np.float64); b = b.astype(np.float64)
+    a = a.astype(dt); b = b.astype(dt)
     code = code0.copy()
     C = W.shape[1]
     for i1 in range(0, C, block):
@@ -173,7 +174,7 @@ def match(W, H, a, b, code0, qmax, block=128, damp=0.01):
             col = i1 + k
             w, ac, bc = W1[:, k], a[:, col], b[:, col]
             ok = ac != 0
-            c = code0[:, col].astype(np.float64)
+            c = code0[:, col].astype(dt)
             c[ok] = np.clip(np.rint((w[ok] - bc[ok]) / ac[ok]), 0, qmax)
             q = ac * c + bc
             e = (w - q) / Hi[k, k]
