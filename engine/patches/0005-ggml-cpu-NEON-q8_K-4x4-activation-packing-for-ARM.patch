@@ -1,7 +1,7 @@
 From ef1f57304da148bdcfb76b39fd4d6ebfcbee448c Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Sat, 10 Oct 2026 21:39:46 -0700
-Subject: [PATCH 05/33] ggml-cpu: NEON q8_K 4x4 activation packing for ARM
+Subject: [PATCH 05/34] ggml-cpu: NEON q8_K 4x4 activation packing for ARM
 
 ARM used the scalar generic for the q8_Kx4 layout read by the q2_K and q4_K 8x4 trays. The NEON version gives identical bytes (checked on random, heavy-tailed, all-zero, tied and exact-half inputs) and is 10.8x faster on an Apple core.
 ---

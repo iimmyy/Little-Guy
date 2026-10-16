@@ -1,7 +1,7 @@
 From 4c22c72e6edc5974aeffcf7dda99d7136a14c364 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Tue, 13 Oct 2026 22:27:09 -0700
-Subject: [PATCH 16/33] ggml-hexagon v68: vectorized q8_K/q8_0 input quantizers
+Subject: [PATCH 16/34] ggml-hexagon v68: vectorized q8_K/q8_0 input quantizers
  (bit-exact vs the CPU, integer rounding), per-batch input-cache reset,
  LG_HEX_NO_Q2K/NO_Q4/F16_CPU switches
 

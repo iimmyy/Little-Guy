@@ -1,7 +1,7 @@
 From 8b0659f1244221daf79af517ed357fdd13941471 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Tue, 13 Oct 2026 22:44:35 -0700
-Subject: [PATCH 19/33] lg-q2k-ops: min correction for 4 pouches per vrmpy
+Subject: [PATCH 19/34] lg-q2k-ops: min correction for 4 pouches per vrmpy
  (pouch sums split into bytes), one accumulator chain per pouch: 2-bit math
  ~20% cheaper, NPU 9.73 vs CPU 9.62 words/s on mix-21
 
