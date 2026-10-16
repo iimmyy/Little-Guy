@@ -34,7 +34,7 @@ def _abs(x):
 for k in ("work", "engine_bin", "gguf_py", "bf16", "imatrix"):
     C[k] = _abs(C[k])
 C["donors"] = {t: _abs(f) for t, f in C["donors"].items()}
-for ev in C["evals"]:
+for ev in C["evals"] + ([C["probe"]] if "probe" in C else []):
     ev["text"], ev["base"] = _abs(ev["text"]), _abs(ev["base"])
 W = Path(C["work"]); W.mkdir(parents=True, exist_ok=True); B = Path(C["engine_bin"])
 sys.path.insert(0, C["gguf_py"])
@@ -120,8 +120,9 @@ def harm_from():
     then allocate); only matrices matched in every type take part in allocation"""
     H = {}
     for ty, p in C["harm_from"].items():
-        for n, v in json.loads(Path(_abs(p)).read_text()).items():
-            H.setdefault(n, {})[ty] = {"harm": v["matched"], "bytes": v["bytes"], "type": v["type"]}
+        side = json.loads(Path(_abs(p)).read_text())
+        for n, v in side.get("matrices", side).items():   # held-out error when the sidecar has it (fresh builds)
+            H.setdefault(n, {})[ty] = {"harm": v.get("hold_matched", v["matched"]), "bytes": v["bytes"], "type": v["type"]}
     H = {n: o for n, o in H.items() if len(o) == len(C["harm_from"])}
     (W / "harm.json").write_text(json.dumps(H, indent=1))
     log(f"harm from matching: {len(H)} matrices x {len(C['harm_from'])} types")
@@ -170,7 +171,7 @@ def read_logprobs(path):
     """llama-perplexity --kl-divergence-base file -> (per-token log-prob rows, n_vocab, tokens per chunk)"""
     with open(path, "rb") as f:
         assert f.read(8) == b"_logits_"
-        n_ctx, n_vocab, n_chunk = np.frombuffer(f.read(12), dtype=np.int32)
+        n_ctx, n_vocab, n_chunk = (int(v) for v in np.frombuffer(f.read(12), dtype=np.int32))   # Python ints: offsets pass 2^31
     nv = 2 * ((n_vocab + 1) // 2) + 4
     off = 8 + 12 + 4 * n_chunk * n_ctx
     rows = np.memmap(path, dtype=np.uint16, mode="r", offset=off).reshape(-1, nv)
@@ -227,7 +228,8 @@ def calibrate():
     cf = W / "cal.json"
     cal = json.loads(cf.read_text()) if cf.exists() else {}
     tmp = W / "cal.gguf"
-    ev = C["evals"][0]
+    ev = C["probe"]   # its own dev text: never one of the rulers results are reported on
+    assert all(ev["text"] != e["text"] for e in C["evals"]), "probe text must not be a ruler"
     _, _, per_chunk = read_logprobs(ev["base"])
     bf = W / "base_tokkl.npy"
     if not bf.exists():

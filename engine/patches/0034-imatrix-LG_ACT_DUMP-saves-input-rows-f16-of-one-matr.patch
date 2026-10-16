@@ -1,7 +1,7 @@
 From de70e0e8b585df78f2e17ed748249f929db478d9 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Thu, 15 Oct 2026 20:29:25 -0700
-Subject: [PATCH 34/35] imatrix: LG_ACT_DUMP saves input rows (f16) of one
+Subject: [PATCH 34/36] imatrix: LG_ACT_DUMP saves input rows (f16) of one
  matrix per distinct input, LG_ACT_MAX caps rows, for output-matching
  quantization
 

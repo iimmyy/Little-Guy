@@ -1,7 +1,7 @@
 From 931c97ed1162e738f96c235dd7e26f06f58b5d3d Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Tue, 13 Oct 2026 23:08:31 -0700
-Subject: [PATCH 21/35] ggml-hexagon: close NPU sessions at exit (the registry
+Subject: [PATCH 21/36] ggml-hexagon: close NPU sessions at exit (the registry
  was never deleted; on kernel 7.0 fastrpc every process leaked ~32 MB of
  mapped buffers until the NPU could not map a model)
 

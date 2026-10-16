@@ -1,0 +1,53 @@
+From ad454af15980069077b96643ebe81265141817d9 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Fri, 16 Oct 2026 10:13:11 -0700
+Subject: [PATCH 36/36] imatrix: LG_ACT_EVERY keeps every k-th input row over
+ the whole text (position-only, so two models keep the same rows)
+
+---
+ tools/imatrix/imatrix.cpp | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
+
+diff --git a/tools/imatrix/imatrix.cpp b/tools/imatrix/imatrix.cpp
+index 85e9f3a..4353858 100644
+--- a/tools/imatrix/imatrix.cpp
++++ b/tools/imatrix/imatrix.cpp
+@@ -385,23 +385,35 @@ bool IMatrixCollector::collect_imatrix(struct ggml_tensor * t, bool ask, void *
+             }
+         }
+         // Little Guy: LG_ACT_DUMP=<dir> saves the input rows (f16, appended) of one matrix per distinct input
+-        // (attn_q also feeds k/v, ffn_gate also feeds up), at most LG_ACT_MAX rows each, for output-matching quantization
++        // (attn_q also feeds k/v, ffn_gate also feeds up), at most LG_ACT_MAX rows each, for output-matching quantization.
++        // LG_ACT_EVERY=<k> keeps every k-th row (counted over the whole text), so a capped sample still spans all of it;
++        // the choice depends only on the row's position, so two models fed the same text keep the same rows.
+         static const char * lg_act_dir = getenv("LG_ACT_DUMP");
+         if (lg_act_dir && n_mat == 1) {
+             static const char * lg_wanted[] = { ".attn_q.weight", ".ffn_gate.weight", ".attn_output.weight", ".ffn_down.weight" };
+             static const int64_t lg_max = getenv("LG_ACT_MAX") ? atoll(getenv("LG_ACT_MAX")) : INT64_MAX;
+-            static std::unordered_map<std::string, int64_t> lg_rows;
++            static const int64_t lg_every = getenv("LG_ACT_EVERY") ? std::max<int64_t>(1, atoll(getenv("LG_ACT_EVERY"))) : 1;
++            static std::unordered_map<std::string, int64_t> lg_rows, lg_seen;
+             bool want = false;
+             for (const char * s : lg_wanted) {
+                 want |= wname.size() > strlen(s) && wname.compare(wname.size() - strlen(s), strlen(s), s) == 0;
+             }
++            static int lg_lo = -1, lg_hi = 1 << 30;   // LG_ACT_LAYERS=lo-hi: only these layers (one stage at a time)
++            if (lg_lo < 0) { lg_lo = 0; if (const char * e = getenv("LG_ACT_LAYERS")) sscanf(e, "%d-%d", &lg_lo, &lg_hi); }
++            int il = -1;
++            if (want && sscanf(wname.c_str(), "blk.%d.", &il) == 1 && (il < lg_lo || il > lg_hi)) want = false;
+             int64_t & have = lg_rows[wname];
++            int64_t & seen = lg_seen[wname];
+             if (want && have < lg_max) {
+                 FILE * f = fopen((std::string(lg_act_dir) + "/" + wname + ".f16").c_str(), "ab");
+                 std::vector<ggml_fp16_t> buf(src1->ne[0]);
+                 for (int64_t i3 = 0; i3 < src1->ne[3] && have < lg_max; ++i3) {
+                     for (int64_t i2 = 0; i2 < src1->ne[2] && have < lg_max; ++i2) {
+-                        for (int64_t row = 0; row < src1->ne[1] && have < lg_max; ++row, ++have) {
++                        for (int64_t row = 0; row < src1->ne[1] && have < lg_max; ++row) {
++                            if (seen++ % lg_every != 0) {
++                                continue;
++                            }
++                            ++have;
+                             const float * x = (const float *) (data + row * src1->nb[1] + i2 * src1->nb[2] + i3 * src1->nb[3]);
+                             ggml_fp32_to_fp16_row(x, buf.data(), src1->ne[0]);
+                             fwrite(buf.data(), sizeof(ggml_fp16_t), buf.size(), f);

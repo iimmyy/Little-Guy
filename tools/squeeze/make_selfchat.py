@@ -1,10 +1,16 @@
 """Calibration text that looks like the model's real job: the model answers varied everyday prompts itself
 (self-generated, so it carries no outside data and none of the eval texts or behavior-test questions), written as
-Gemma chat turns. Run against a llama-server holding the full-precision or 8-bit model.
+Gemma chat turns. Run against a llama-server holding the full-precision model, with no system prompt.
 
-usage: make_selfchat.py <server url> <out.txt> [n prompts] [eval]   ("eval": the held-out prompt set)
+usage: make_selfchat.py <server url> <out.txt> [n prompts] [chat|eval|plain]
+  chat  (default) everyday requests, written as chat turns
+  eval  the held-out request set (different topics and kinds of request), for the held-out chat ruler only
+  dev   everyday requests the calibration set did not use (prompts after the first 300), for the bit-mix probes
+  plain the model writes short reference articles; saved as plain prose with no chat markers, so calibration also
+        covers ordinary text without borrowing WikiText (WikiText-2 test stays a clean ruler)
 """
 import itertools, json, random, sys, urllib.request
+from concurrent.futures import ThreadPoolExecutor
 
 TOPICS = ["cooking dinner on a budget", "a broken bike chain", "learning guitar chords", "a job interview tomorrow",
           "saving money each month", "a houseplant with yellow leaves", "a long road trip", "sleeping better",
@@ -18,7 +24,7 @@ TOPICS = ["cooking dinner on a budget", "a broken bike chain", "learning guitar 
           "a recipe for two", "a dog that pulls on the leash", "choosing a laptop", "an argument with a sibling",
           "the french revolution", "photosynthesis", "a solar panel", "a cold that won't go away", "jet lag",
           "learning to swim as an adult", "a wedding speech", "volunteering", "a tight deadline at work"]
-TASKS = ["Can you help me with {t}?", "Explain {t} like I'm twelve.", "Give me three quick tips about {t}.",
+TASKS = ["Can you help me with {t}?", "Explain {t} like I'm twelve.", "Give me some quick tips about {t}.",
          "What's the most common mistake people make with {t}?", "I'm stressed about {t}. Any advice?",
          "Write a short friendly message to a friend about {t}.", "Make a simple step-by-step plan for {t}.",
          "What do I need to know before dealing with {t}?", "Is it worth spending money on {t}? Be honest.",
@@ -39,24 +45,47 @@ EVAL_TASKS = ["Quick question about {t}: where do I even start?", "Pretend you'r
               "Compare two ways of handling {t}.", "Correct me if I'm wrong: {t} is mostly about patience."]
 
 
+# subjects for the plain-prose set: none of them overlap the chat, eval or behavior topics
+PLAIN_TOPICS = ["the printing press", "volcanoes", "the human heart", "coral reefs", "the violin", "glaciers",
+                "the silk road", "honeybees", "the steam engine", "jazz", "the periodic table", "rainforests",
+                "the olympic games", "lighthouses", "penicillin", "the great wall of china", "owls", "the telescope",
+                "deserts", "the internet", "chess", "whales", "the renaissance", "electricity", "mount everest",
+                "the amazon river", "vaccination history", "the bicycle", "tea", "the moon", "dinosaurs",
+                "the roman alphabet", "mushrooms", "radio", "the pyramids of giza", "octopuses", "the euro",
+                "airplanes", "the human brain", "maple syrup", "the arctic", "origami", "the printing of money",
+                "earth's atmosphere", "the piano", "ancient greece", "sharks", "concrete", "the nile",
+                "photography", "the immune system", "trains", "salt", "the solar system", "wolves", "paper",
+                "the industrial revolution", "bees and pollination", "clocks", "the ocean floor"]
+PLAIN_TASKS = ["Write a short encyclopedia article about {t}.", "Write a few paragraphs explaining the history of {t}.",
+               "Describe how {t} works, in plain prose."]
+
+
+def ask(url, p, seed):
+    body = {"messages": [{"role": "user", "content": p}], "max_tokens": 400, "temperature": 0.8, "top_p": 0.95,
+            "seed": seed}
+    req = urllib.request.Request(url + "/v1/chat/completions", json.dumps(body).encode(), {"Content-Type": "application/json"})
+    return json.load(urllib.request.urlopen(req, timeout=900))["choices"][0]["message"]["content"].strip()
+
+
 def main():
     url, out = sys.argv[1], sys.argv[2]
     n = int(sys.argv[3]) if len(sys.argv) > 3 else 240
-    held_out = len(sys.argv) > 4 and sys.argv[4] == "eval"
-    tasks, topics = (EVAL_TASKS, EVAL_TOPICS) if held_out else (TASKS, TOPICS)
+    mode = sys.argv[4] if len(sys.argv) > 4 else "chat"
+    tasks, topics, seed0 = {"chat": (TASKS, TOPICS, 0), "dev": (TASKS, TOPICS, 300000), "eval": (EVAL_TASKS, EVAL_TOPICS, 100000),
+                            "plain": (PLAIN_TASKS, PLAIN_TOPICS, 200000)}[mode]
     prompts = [task.format(t=topic) for task, topic in itertools.product(tasks, topics)]
     random.Random(0).shuffle(prompts)
-    turns = []
-    for i, p in enumerate(prompts[:n]):
-        body = {"messages": [{"role": "user", "content": p}], "max_tokens": 220, "temperature": 0.8, "top_p": 0.95,
-                "seed": i + (100000 if held_out else 0)}
-        req = urllib.request.Request(url + "/v1/chat/completions", json.dumps(body).encode(), {"Content-Type": "application/json"})
-        reply = json.load(urllib.request.urlopen(req, timeout=600))["choices"][0]["message"]["content"].strip()
-        turns.append(f"<|turn>user\n{p}<turn|>\n<|turn>model\n{reply}<turn|>\n")
-        if i % 20 == 0:
-            print(i, len(reply), flush=True)
-    open(out, "w").write("".join(turns))
-    print(f"{len(turns)} exchanges, {sum(map(len, turns))} chars")
+    prompts = prompts[300:300 + n] if mode == "dev" else prompts[:n]   # calibration takes at most the first 300
+    with ThreadPoolExecutor(4) as pool:   # the server runs 4 slots; seeds keep every reply reproducible
+        replies = list(pool.map(lambda ip: ask(url, ip[1], seed0 + ip[0]), enumerate(prompts)))
+    if mode == "chat":
+        assert n <= 300, "chat calibration uses the first 300 prompts; the rest are the dev set"
+    if mode == "plain":
+        parts = [r + "\n\n" for r in replies]
+    else:
+        parts = [f"<|turn>user\n{p}<turn|>\n<|turn>model\n{r}<turn|>\n" for p, r in zip(prompts, replies)]
+    open(out, "w").write("".join(parts))
+    print(f"{len(parts)} {mode} samples, {sum(map(len, parts))} chars")
 
 
 if __name__ == "__main__":
