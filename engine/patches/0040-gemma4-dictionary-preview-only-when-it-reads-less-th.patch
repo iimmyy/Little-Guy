@@ -1,0 +1,32 @@
+From aa8b8ec66267863b99efdaabca8d27a269eb1756 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Fri, 16 Oct 2026 22:37:58 -0700
+Subject: [PATCH 40/40] gemma4: dictionary preview only when it reads less than
+ the full dictionary (n_shortlist x n_outputs <= n_vocab); batches scoring
+ many words at once take the plain head. With a 16384 shortlist, a 512-output
+ batch planned 86 GB of gathered rows and context creation failed on the board
+
+---
+ src/models/gemma4.cpp | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/src/models/gemma4.cpp b/src/models/gemma4.cpp
+index 2da57b5..1d7803a 100644
+--- a/src/models/gemma4.cpp
++++ b/src/models/gemma4.cpp
+@@ -441,8 +441,13 @@ llama_model_gemma4::graph::graph(const llama_model & model, const llm_graph_para
+     }();
+     const int64_t n_vocab_out = model.output->ne[1];
+     // a batch with no outputs (prompt chunks whose words are not scored) has nothing to shortlist; its zero-row
+-    // shapes would divide by zero in ggml_mul_mat's broadcast check, and the plain path handles zero rows
+-    const bool use_preview = model.tok_embd_preview && !model.output_s && n_shortlist > 0 && n_shortlist < n_vocab_out && cur->ne[1] > 0;
++    // shapes would divide by zero in ggml_mul_mat's broadcast check, and the plain path handles zero rows.
++    // The preview only pays when it reads less than the full dictionary: n_shortlist rows per output word against
++    // n_vocab rows once. Past that (many outputs at once, e.g. scoring a whole text) the plain head is cheaper, and the
++    // gathered rows would need n_shortlist x n_outputs x n_embd floats (86 GB for 16384 x 512 on E4B).
++    const int64_t n_out = cur->ne[1];
++    const bool use_preview = model.tok_embd_preview && !model.output_s && n_shortlist > 0 && n_shortlist < n_vocab_out &&
++                             n_out > 0 && n_shortlist * n_out <= n_vocab_out;
+ 
+     auto softcap = [&](ggml_tensor * x) {
+         if (hparams.f_final_logit_softcapping) {

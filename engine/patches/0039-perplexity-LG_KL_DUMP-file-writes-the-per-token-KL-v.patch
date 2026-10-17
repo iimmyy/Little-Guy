@@ -1,0 +1,32 @@
+From 81f92cf9079cb800cbc18ad041848f74f432c671 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Fri, 16 Oct 2026 22:25:51 -0700
+Subject: [PATCH 39/40] perplexity: LG_KL_DUMP=<file> writes the per-token KL
+ values (float32, text order) before the summary sorts them, so runs can be
+ compared token by token without saving 8.5 GB of log-probs
+
+---
+ tools/perplexity/perplexity.cpp | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/tools/perplexity/perplexity.cpp b/tools/perplexity/perplexity.cpp
+index 4244ad5..cfffce8 100644
+--- a/tools/perplexity/perplexity.cpp
++++ b/tools/perplexity/perplexity.cpp
+@@ -1921,6 +1921,16 @@ static void kl_divergence(llama_context * ctx, const common_params & params) {
+     llama_batch_free(batch);
+     LOG("\n");
+ 
++    // LG: LG_KL_DUMP=<file> writes the per-token KL values (float32, in text order) before they are sorted below, so two
++    // runs on the same text can be compared token by token without saving every token's log-probs (8.5 GB on Gemma 4)
++    if (const char * dump = getenv("LG_KL_DUMP")) {
++        FILE * f = fopen(dump, "wb");
++        if (f) {
++            fwrite(kld_values.data(), sizeof(float), kld.count, f);
++            fclose(f);
++        }
++    }
++
+     if (kld.count < 100) return; // we do not wish to do statistics on so few values
+ 
+     std::sort(kld_values.begin(), kld_values.end());

@@ -1,7 +1,7 @@
 From 411aa350261255c2c1883347164faa6482e9d603 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Fri, 16 Oct 2026 21:04:23 -0700
-Subject: [PATCH 38/38] gemma4: dictionary preview skips batches with no
+Subject: [PATCH 38/40] gemma4: dictionary preview skips batches with no
  outputs (zero-row shortlist shapes divided by zero in ggml_mul_mat on CUDA;
  the plain lm_head path handles zero rows)
 

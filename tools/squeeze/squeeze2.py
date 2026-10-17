@@ -132,11 +132,14 @@ def harm_from():
 
 # ---------------------------------------------------------------- build and score
 
-def assemble(recipe, out):
-    """recipe {matrix name: type}; every other tensor and all metadata come from the top donor"""
+def assemble(recipe, out, align=None):
+    """recipe {matrix name: type}; every other tensor and all metadata come from the top donor. align (power of two)
+    starts every tensor on that boundary, so a matrix whose types all fit in one block can change type in place."""
     top = gguf.GGUFReader(C["donors"][C["top"]])
     by = {ty: tensors(f) for ty, f in C["donors"].items() if ty in set(recipe.values())}
     w = gguf.GGUFWriter(str(out), top.fields[gguf.Keys.General.ARCHITECTURE].contents(), endianess=top.endianess)
+    if align:
+        w.add_custom_alignment(align)
     for f in top.fields.values():
         if f.name == gguf.Keys.General.ARCHITECTURE or f.name.startswith("GGUF."):
             continue
@@ -217,8 +220,17 @@ TMP = Path(os.environ.get("LG_SQ_TMP", str(W)))   # e.g. /dev/shm: probe builds 
 
 def score_tokens(path, ev):
     """run the model once over the eval text, saving its log-probs; return its per-token KL vs the reference"""
-    tmp = TMP / "cand.kl"
     env = dict(os.environ, LG_DICT_PREVIEW="0", **ev.get("env", {}))
+    if C.get("kl_dump"):   # the engine compares against the reference itself and writes only the per-token KL
+        out = TMP / "cand.kld"
+        env["LG_KL_DUMP"] = str(out)
+        subprocess.run([str(B / "llama-perplexity"), "-m", str(path), "-f", ev["text"], "-c", str(ev.get("ctx", 512)),
+                        "--chunks", str(ev["chunks"]), "-t", str(C.get("threads", 16))] + GPU + [
+                        "--kl-divergence-base", ev["base"], "--kl-divergence"], capture_output=True, text=True, env=env, check=True)
+        k = np.fromfile(out, dtype=np.float32).astype(np.float64)
+        out.unlink()
+        return k
+    tmp = TMP / "cand.kl"
     subprocess.run([str(B / "llama-perplexity"), "-m", str(path), "-f", ev["text"], "-c", str(ev.get("ctx", 512)),
                     "--chunks", str(ev["chunks"]), "-t", str(C.get("threads", 16))] + GPU + ["--kl-divergence-base", str(tmp)],
                    capture_output=True, text=True, env=env, check=True)
@@ -280,15 +292,51 @@ def single():
     bits will not be picked at 2). Resumes from work/single.json."""
     H = json.loads((W / "harm.json").read_text())
     lows = list(C["single_types"])
-    sf = W / "single.json"
+    sf = W / C.get("single_file", "single.json")
     S = json.loads(sf.read_text()) if sf.exists() else {}
     ev = C["probe"]
     assert all(ev["text"] != e["text"] for e in C["evals"]), "probe text must not be a ruler"
     _, _, per_chunk = read_logprobs(ev["base"])
-    bf = W / "base_tokkl.npy"
+    bf = W / ("base_tokkl_dump.npy" if C.get("kl_dump") else "base_tokkl.npy")
     if not bf.exists():
         assemble({}, TMP / "probe.gguf"); np.save(bf, score_tokens(TMP / "probe.gguf", ev))
     k0 = np.load(bf)
+    probe = TMP / "probe.gguf"
+    if C.get("inplace"):
+        # one copy of the start file, rebuilt fresh each run (a crash can't leave a swapped matrix behind); each probe
+        # writes one matrix's lower-type bytes into its own slot (lower types are smaller) and its type number into the
+        # tensor table, runs, and restores both. Same bytes as a full rebuild, without writing 5 GB per probe.
+        A = C.get("inplace_align", 1 << 24)   # 16 MiB: every E4B block matrix fits one block at any type
+        assemble({}, probe, align=A)
+        import hashlib
+        def digest():
+            h = hashlib.sha256()
+            with open(probe, "rb") as f:
+                for blk in iter(lambda: f.read(1 << 24), b""):
+                    h.update(blk)
+            return h.hexdigest()
+        start_hash = digest()
+        log(f"in-place probe copy {start_hash[:12]}")
+        R = gguf.GGUFReader(str(probe), "r+")
+        T = {t.name: t for t in R.tensors}
+        donor = {ty: tensors(C["donors"][ty]) for ty in lows}
+
+        def put(n, ty):
+            t, src = T[n], donor[ty][n]
+            new = np.asarray(src.data).view(np.uint8).ravel()
+            pad = lambda x: (x + A - 1) // A * A
+            assert tuple(src.shape) == tuple(t.shape) and pad(new.nbytes) == pad(int(t.n_bytes)), n
+            old = (int(t.field.parts[4][0]), np.array(R.data[t.data_offset:t.data_offset + int(t.n_bytes)]))
+            R.data[t.data_offset:t.data_offset + new.nbytes] = new
+            t.field.parts[4][0] = int(src.tensor_type)
+            R.data.flush()
+            return old
+
+        def take_back(n, old):
+            t = T[n]
+            R.data[t.data_offset:t.data_offset + old[1].nbytes] = old[1]
+            t.field.parts[4][0] = old[0]
+            R.data.flush()
     for i, ty in enumerate(lows):
         names = sorted(H)
         if i > 0:
@@ -297,12 +345,24 @@ def single():
         todo = [n for n in names if ty not in S.get(n, {})]
         log(f"single {ty}: {len(todo)} matrices to measure ({len(names)} eligible)")
         for j, n in enumerate(todo, 1):
-            assemble({n: ty}, TMP / "probe.gguf")
-            dk, se = paired(score_tokens(TMP / "probe.gguf", ev), k0, per_chunk)
+            if C.get("inplace"):
+                old = put(n, ty)
+                try:
+                    k = score_tokens(probe, ev)
+                finally:
+                    take_back(n, old)
+            else:
+                assemble({n: ty}, probe)
+                k = score_tokens(probe, ev)
+            dk, se = paired(k, k0, per_chunk)
             S.setdefault(n, {})[ty] = {"dkl": dk, "dkl_se": se, "saved": H[n][C["top"]]["bytes"] - H[n][ty]["bytes"]}
             sf.write_text(json.dumps(S, indent=1))
             log(f"  {j}/{len(todo)} {n} -> {ty}: KL +{dk:.6f} +- {se:.6f}, saves {S[n][ty]['saved'] / 1e6:.1f} MB")
-    (TMP / "probe.gguf").unlink(missing_ok=True)
+    if C.get("inplace"):
+        end_hash = digest()
+        log(f"in-place probe copy at the end {end_hash[:12]}: {'every matrix restored' if end_hash == start_hash else 'CHANGED'}")
+        assert end_hash == start_hash, "probe copy changed: a matrix was not restored"
+    probe.unlink(missing_ok=True)
 
 
 def scales():
@@ -323,7 +383,7 @@ def allocate(gb):
     other = sum(int(t.n_bytes) for n, t in tensors(C["donors"][C["top"]]).items() if n not in H)
     budget = gb * 1e9 - other
     if C.get("cost") == "measured":   # single.json: each matrix's own measured KL increase per type (top costs 0)
-        M = json.loads((W / "single.json").read_text())
+        M = json.loads((W / C.get("single_file", "single.json")).read_text())
         cost = {n: {ty: (0.0 if ty == C["top"] else M[n][ty]["dkl"], h["bytes"]) for ty, h in H[n].items()
                     if ty == C["top"] or ty in M.get(n, {})} for n in H}
     else:
