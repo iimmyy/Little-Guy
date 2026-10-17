@@ -189,6 +189,21 @@ def token_kl(ref_path, cand_path, step=32):
     cand, n2, _ = read_logprobs(cand_path)
     assert n_vocab == n2 and ref.shape == cand.shape
     out = np.empty(ref.shape[0])
+    try:   # same sum on a GPU when there is one (float64 there too)
+        import torch
+        dev = "cuda" if torch.cuda.is_available() else None
+    except ImportError:
+        dev = None
+    if dev:
+        def dec(rows):
+            r = torch.from_numpy(np.ascontiguousarray(rows).view(np.int16)).to(dev).to(torch.int32) & 0xFFFF
+            head = torch.from_numpy(np.ascontiguousarray(rows[:, :4]).view(np.float32).copy()).to(dev).double()
+            return head[:, 1:2] + r[:, 4:4 + n_vocab].double() * head[:, 0:1]
+        step = 512
+        for i in range(0, ref.shape[0], step):
+            lr, lc = dec(ref[i:i + step]), dec(cand[i:i + step])
+            out[i:i + step] = (torch.exp(lr) * (lr - lc)).sum(1).cpu().numpy()
+        return out
     for i in range(0, ref.shape[0], step):
         lr, lc = _decode(ref[i:i + step], n_vocab), _decode(cand[i:i + step], n_vocab)
         out[i:i + step] = (np.exp(lr) * (lr - lc)).sum(1)
