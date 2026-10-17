@@ -1,6 +1,6 @@
 {
  "name": "e4b-rung3",
- "note": "Ladder rung 3 on AWS: start = the fixed file (Google's 4-bit, block scales right), move the least harmful block matrices to matched Q3_K. Rulers and probe built with build-cublas + GGML_CUDA_FORCE_CUBLAS_COMPUTE_32F=1 (set it in the environment). Paths are on the AWS machine (~ = /home/ubuntu).",
+ "note": "Ladder rung 3 on AWS: start = the fixed file (Google's 4-bit, block scales right), move the least harmful block matrices to matched Q3_K or Q2_K (Immy's idea, 2026-10-15: output matching, then pick the bit count per place: more where one bit buys a lot of closeness, fewer where matching already covers it). Rulers and probe built with build-cublas + GGML_CUDA_FORCE_CUBLAS_COMPUTE_32F=1 (set it in the environment). Paths are on the AWS machine (~ = /home/ubuntu).",
  "work": "/home/ubuntu/work/rung3",
  "engine_bin": "/home/ubuntu/work/lcpp-src/build-cublas/bin",
  "gguf_py": "/home/ubuntu/work/lcpp-src/gguf-py",
@@ -13,18 +13,48 @@
  "cal_blocks": 4,
  "donors": {
   "Q4_0": "/home/ubuntu/work/fresh/google-rightscale.gguf",
-  "Q3_K": "/home/ubuntu/work/fresh/matched-Q3_K.slim.gguf"
+  "Q3_K": "/home/ubuntu/work/fresh/matched-Q3_K.slim.gguf",
+  "Q2_K": "/home/ubuntu/work/fresh/matched-Q2_K.slim.gguf"
  },
  "harm_from": {
   "Q4_0": "/home/ubuntu/work/fresh/stock-Q4_0.gguf.json",
-  "Q3_K": "/home/ubuntu/work/fresh/matched-Q3_K.gguf.json"
+  "Q3_K": "/home/ubuntu/work/fresh/matched-Q3_K.gguf.json",
+  "Q2_K": "/home/ubuntu/work/fresh/matched-Q2_K.gguf.json"
  },
- "probe": {"name": "dev", "text": "/home/ubuntu/work/fresh/dev_chat.txt", "base": "/home/ubuntu/work/fresh-f32/ref_dev.kl",
-           "ctx": 512, "chunks": 64, "env": {"LG_PPL_SPECIAL": "1"}},
+ "probe": {
+  "name": "dev",
+  "text": "/home/ubuntu/work/fresh/dev_chat.txt",
+  "base": "/home/ubuntu/work/fresh-f32/ref_dev.kl",
+  "ctx": 512,
+  "chunks": 64,
+  "env": {
+   "LG_PPL_SPECIAL": "1"
+  }
+ },
  "evals": [
-  {"name": "wiki", "text": "/home/ubuntu/work/bench/wiki.test.raw", "base": "/home/ubuntu/work/fresh-f32/ref_wiki.kl", "ctx": 512, "chunks": 64},
-  {"name": "heldout", "text": "/home/ubuntu/work/fresh/chat_heldout.txt", "base": "/home/ubuntu/work/fresh-f32/ref_heldout.kl",
-   "ctx": 512, "chunks": 64, "env": {"LG_PPL_SPECIAL": "1"}}
+  {
+   "name": "wiki",
+   "text": "/home/ubuntu/work/bench/wiki.test.raw",
+   "base": "/home/ubuntu/work/fresh-f32/ref_wiki.kl",
+   "ctx": 512,
+   "chunks": 64
+  },
+  {
+   "name": "heldout",
+   "text": "/home/ubuntu/work/fresh/chat_heldout.txt",
+   "base": "/home/ubuntu/work/fresh-f32/ref_heldout.kl",
+   "ctx": 512,
+   "chunks": 64,
+   "env": {
+    "LG_PPL_SPECIAL": "1"
+   }
+  }
  ],
- "keep_builds": true
+ "keep_builds": true,
+ "single_types": [
+  "Q3_K",
+  "Q2_K"
+ ],
+ "single_next_below": 0.0001,
+ "cost": "measured"
 }

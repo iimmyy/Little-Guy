@@ -7,6 +7,8 @@ measured KL probes (calibration). A budget is then spent where it removes the mo
   squeeze2.py <config> discover          list the model's weight matrices -> work/units.json
   squeeze2.py <config> harm              importance-weighted rounding error per matrix per donor type -> work/harm.json
   squeeze2.py <config> calibrate         measured KL per (group, depth block) downgrade -> work/cal.json
+  squeeze2.py <config> single            measured KL of each matrix moved on its own -> work/single.json
+                                         (config cost=measured makes allocate use it instead of harm x scale)
   squeeze2.py <config> allocate GB       cheapest predicted harm at GB -> work/recipe-<GB>.json
   squeeze2.py <config> build GB          assemble the recipe from the donors -> work/<name>-<GB>.gguf
   squeeze2.py <config> score FILE        KL and same-top vs the reference on the eval text(s)
@@ -210,9 +212,12 @@ def token_kl(ref_path, cand_path, step=32):
     return out
 
 
+TMP = Path(os.environ.get("LG_SQ_TMP", str(W)))   # e.g. /dev/shm: probe builds and candidate logits stay in RAM
+
+
 def score_tokens(path, ev):
     """run the model once over the eval text, saving its log-probs; return its per-token KL vs the reference"""
-    tmp = W / "cand.kl"
+    tmp = TMP / "cand.kl"
     env = dict(os.environ, LG_DICT_PREVIEW="0", **ev.get("env", {}))
     subprocess.run([str(B / "llama-perplexity"), "-m", str(path), "-f", ev["text"], "-c", str(ev.get("ctx", 512)),
                     "--chunks", str(ev["chunks"]), "-t", str(C.get("threads", 16))] + GPU + ["--kl-divergence-base", str(tmp)],
@@ -268,6 +273,38 @@ def calibrate():
     tmp.unlink(missing_ok=True)
 
 
+def single():
+    """measured, not predicted: move ONE matrix from the top type to each lower type on top of the start file, measure
+    the paired KL increase on the probe text, put it back. First every matrix at the first lower type; a further type
+    only for matrices whose cost at the previous type is below single_next_below (a matrix that already hurts at 3
+    bits will not be picked at 2). Resumes from work/single.json."""
+    H = json.loads((W / "harm.json").read_text())
+    lows = list(C["single_types"])
+    sf = W / "single.json"
+    S = json.loads(sf.read_text()) if sf.exists() else {}
+    ev = C["probe"]
+    assert all(ev["text"] != e["text"] for e in C["evals"]), "probe text must not be a ruler"
+    _, _, per_chunk = read_logprobs(ev["base"])
+    bf = W / "base_tokkl.npy"
+    if not bf.exists():
+        assemble({}, TMP / "probe.gguf"); np.save(bf, score_tokens(TMP / "probe.gguf", ev))
+    k0 = np.load(bf)
+    for i, ty in enumerate(lows):
+        names = sorted(H)
+        if i > 0:
+            prev, cut = lows[i - 1], C.get("single_next_below", 1e-4)
+            names = [n for n in names if S.get(n, {}).get(prev, {}).get("dkl", 1) < cut]
+        todo = [n for n in names if ty not in S.get(n, {})]
+        log(f"single {ty}: {len(todo)} matrices to measure ({len(names)} eligible)")
+        for j, n in enumerate(todo, 1):
+            assemble({n: ty}, TMP / "probe.gguf")
+            dk, se = paired(score_tokens(TMP / "probe.gguf", ev), k0, per_chunk)
+            S.setdefault(n, {})[ty] = {"dkl": dk, "dkl_se": se, "saved": H[n][C["top"]]["bytes"] - H[n][ty]["bytes"]}
+            sf.write_text(json.dumps(S, indent=1))
+            log(f"  {j}/{len(todo)} {n} -> {ty}: KL +{dk:.6f} +- {se:.6f}, saves {S[n][ty]['saved'] / 1e6:.1f} MB")
+    (TMP / "probe.gguf").unlink(missing_ok=True)
+
+
 def scales():
     """(group, block) -> KL per unit of harm; groups without a usable measurement use the median"""
     cal = json.loads((W / "cal.json").read_text())
@@ -282,11 +319,16 @@ def allocate(gb):
     """Lagrangian knapsack: for a price lam per byte each matrix takes the type minimising predicted KL + lam * bytes;
     bisect lam until the file fits gb. Predicted KL per matrix = scale(group, block) x harm."""
     D = units(); U = D["units"]; H = json.loads((W / "harm.json").read_text())
-    S, med = scales()
+    S, med = scales() if C.get("cost") != "measured" else ({}, 0.0)
     other = sum(int(t.n_bytes) for n, t in tensors(C["donors"][C["top"]]).items() if n not in H)
     budget = gb * 1e9 - other
-    cost = {n: {ty: (S.get(f"{U[n]['group']}:{depth_block(U[n]['layer'], D['n_layer'])}", med) * h["harm"], h["bytes"])
-                for ty, h in H[n].items()} for n in H}
+    if C.get("cost") == "measured":   # single.json: each matrix's own measured KL increase per type (top costs 0)
+        M = json.loads((W / "single.json").read_text())
+        cost = {n: {ty: (0.0 if ty == C["top"] else M[n][ty]["dkl"], h["bytes"]) for ty, h in H[n].items()
+                    if ty == C["top"] or ty in M.get(n, {})} for n in H}
+    else:
+        cost = {n: {ty: (S.get(f"{U[n]['group']}:{depth_block(U[n]['layer'], D['n_layer'])}", med) * h["harm"], h["bytes"])
+                    for ty, h in H[n].items()} for n in H}
 
     def pick(lam):
         r = {n: min(o, key=lambda ty: o[ty][0] + lam * o[ty][1]) for n, o in cost.items()}
@@ -335,6 +377,7 @@ if cmd == "discover": discover()
 elif cmd == "harm": harm()
 elif cmd == "harm_from": harm_from()
 elif cmd == "calibrate": calibrate()
+elif cmd == "single": single()
 elif cmd == "allocate": allocate(float(args[0]))
 elif cmd == "build": build(float(args[0]))
 elif cmd == "score": print(json.dumps(score(Path(args[0])), indent=1))
