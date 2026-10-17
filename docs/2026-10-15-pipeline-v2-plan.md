@@ -164,3 +164,16 @@ Board (Q6A NPU, engine ~/preview3 with the Q3_K kernel; NPU vs board CPU KL 0.00
   Google's own model invents its day, dodges Dayvigo and invents what it is; those are not compression damage.
 - Next: a ladder of single changes from the fixed file (dictionary preview, lossless packing, matched 3/2-bit, training-free
   weight edits), each checked against the 16-bit, toward faster while still matching it.
+
+## 2026-10-16/17 night: ladder on an AWS L40S (rungs 1-3)
+
+- AWS rebuild matches the Mac bit for bit (16-bit: 666/666 tensors; fixed file: same sha256). GPU arithmetic needs
+  care: default CUDA (8-bit inputs) reads the fixed file's drift 5x high; the cuBLAS f32 build reads 1.5x the Mac's.
+- Rung 1, dictionary preview: the top word was never missed (65,536 positions). The full-distribution drift depends
+  on the shortlist size (1,024 adds 0.0040 wiki; 16,384 adds 0.00009). On the board the predicted +12% did not hold:
+  shortlist rows get unpacked through memory. Measured: 1,024 +8%, 4,096 +3.5%, 8,192 ~0, 16,384 -6%. Giving
+  off-list words their rough score cuts drift 2.5-3x but cost 5-9% speed on the board. Open.
+- Rung 2, lossless packing of the 4-bit codes: 3.775 bits per code, at most 4.4% fewer bytes. Parked.
+- Rung 3, 3/2-bit parts with output matching: measured every matrix on its own, then a checked ladder. For this
+  QAT model 4 bits is the floor: the first 12 MB at 3-bit quadruple wiki drift (0.00049 -> 0.0021); Google's level
+  of drift is reached at -191 MB. A probe text the model wrote itself under-predicts damage on human text 36x.
