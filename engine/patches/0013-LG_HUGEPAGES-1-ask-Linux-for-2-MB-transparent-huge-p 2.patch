@@ -1,0 +1,68 @@
+From 91590824516d27347b904d36b3bfabdc76e0b0e1 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Tue, 13 Oct 2026 16:24:02 -0700
+Subject: [PATCH 13/35] LG_HUGEPAGES=1: ask Linux for 2 MB transparent huge
+ pages on big buffers and the mapped model
+
+---
+ ggml/src/ggml.c    | 21 ++++++++++++++++++++-
+ src/llama-mmap.cpp |  7 +++++++
+ 2 files changed, 27 insertions(+), 1 deletion(-)
+
+diff --git a/ggml/src/ggml.c b/ggml/src/ggml.c
+index 0f682fd..7995a4d 100644
+--- a/ggml/src/ggml.c
++++ b/ggml/src/ggml.c
+@@ -36,6 +36,9 @@
+ #if defined(__gnu_linux__)
+ #include <syscall.h>
+ #endif
++#if defined(__linux__)
++#include <sys/mman.h>
++#endif
+ 
+ #if defined(__APPLE__)
+ #include <unistd.h>
+@@ -364,7 +367,23 @@ void * ggml_aligned_malloc(size_t size) {
+             break;
+     }
+   #else
+-    int result = posix_memalign(&aligned_memory, alignment, size);
++    int result;
++  #if defined(__linux__)
++    // LG_HUGEPAGES=1: big buffers (weights with --no-mmap, repacked weights, KV) start on a 2 MB boundary and ask
++    // for transparent huge pages, so a 4.6 GB brain needs ~2,300 address-translation entries instead of ~1.1 million.
++    static int lg_huge = -1;
++    if (lg_huge < 0) {
++        const char * e = getenv("LG_HUGEPAGES");
++        lg_huge = e && atoi(e) != 0;
++    }
++    if (lg_huge && size >= (2u << 20)) {
++        result = posix_memalign(&aligned_memory, 2u << 20, size);
++        if (result == 0 && madvise(aligned_memory, size, MADV_HUGEPAGE) != 0) {
++            GGML_LOG_WARN("%s: madvise(MADV_HUGEPAGE) failed: %s\n", __func__, strerror(errno));
++        }
++    } else
++  #endif
++    result = posix_memalign(&aligned_memory, alignment, size);
+   #endif
+     if (result != 0) {
+         // Handle allocation failure
+diff --git a/src/llama-mmap.cpp b/src/llama-mmap.cpp
+index ed572da..be7e118 100644
+--- a/src/llama-mmap.cpp
++++ b/src/llama-mmap.cpp
+@@ -465,6 +465,13 @@ struct llama_mmap::impl {
+                         strerror(errno));
+             }
+         }
++#ifdef __linux__
++        // LG_HUGEPAGES=1 (see ggml_aligned_malloc): also ask for huge pages on the mapped file; this only takes
++        // effect if the kernel can back read-only file mappings with them
++        if (getenv("LG_HUGEPAGES") && atoi(getenv("LG_HUGEPAGES")) != 0 && madvise(addr, file->size(), MADV_HUGEPAGE)) {
++            LLAMA_LOG_WARN("warning: madvise(.., MADV_HUGEPAGE) failed: %s\n", strerror(errno));
++        }
++#endif
+         if (numa) {
+             if (posix_madvise(addr, file->size(), POSIX_MADV_RANDOM)) {
+                 LLAMA_LOG_WARN("warning: posix_madvise(.., POSIX_MADV_RANDOM) failed: %s\n",

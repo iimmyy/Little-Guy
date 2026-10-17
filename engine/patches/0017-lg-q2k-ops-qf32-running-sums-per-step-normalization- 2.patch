@@ -1,0 +1,41 @@
+From ed5486e7ee7561e151f042ae3706ab2f051216ec Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Tue, 13 Oct 2026 22:28:38 -0700
+Subject: [PATCH 17/35] lg-q2k-ops: qf32 running sums (per-step normalization
+ cost 3% with no KL change)
+
+---
+ ggml/src/ggml-hexagon/htp/lg-q2k-ops.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c b/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
+index 014d8ae..6acf925 100644
+--- a/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
++++ b/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
+@@ -213,10 +213,10 @@ static void lg_q2k_mv_job(unsigned int nth, unsigned int ith, void * data) {
+                 const HVX_Vector a  = Q6_Vqf32_vmpy_VsfVsf(Q6_Vsf_equals_Vw(S), d);
+                 const HVX_Vector b  = Q6_Vqf32_vmpy_VsfVsf(Q6_Vsf_equals_Vw(M), mn);
+                 const HVX_Vector ab = Q6_Vsf_equals_Vqf32(Q6_Vqf32_vsub_Vqf32Vqf32(a, b));
+-                acc = Q6_Vsf_equals_Vqf32(Q6_Vqf32_vadd_Vqf32Vsf(Q6_Vqf32_vmpy_VsfVsf(ab, hvx_vec_splat_f32(xd[s])), acc));  // keep acc in sf: qf32 sums drift
++                acc = Q6_Vqf32_vadd_Vqf32Vqf32(acc, Q6_Vqf32_vmpy_VsfVsf(ab, hvx_vec_splat_f32(xd[s])));  // qf32 sum: normalizing each step measured no KL change, ~3% slower
+             }
+             float * y = (float *) ((uint8_t *) c->dst->data + (size_t) (c->col0 + col) * c->dst->nb[1]) + (size_t) t * LG_TILE_ROWS;
+-            *(HVX_UVector *) y = acc;
++            *(HVX_UVector *) y = Q6_Vsf_equals_Vqf32(acc);
+         }
+     }
+ }
+@@ -425,11 +425,11 @@ static void lg_q4_mv_job(unsigned int nth, unsigned int ith, void * data) {
+                     const HVX_Vector isum = Q6_Vw_vsub_VwVw(Q6_Vw_vadd_VwVw(s0, s1), Q6_V_vsplat_R(s8[2 * p + b]));
+                     const HVX_Vector d = Q6_Vsf_equals_Vqf32(b ? Q6_V_hi_W(dw) : Q6_V_lo_W(dw));
+                     const HVX_Vector a = Q6_Vsf_equals_Vqf32(Q6_Vqf32_vmpy_VsfVsf(Q6_Vsf_equals_Vw(isum), d));
+-                    acc = Q6_Vsf_equals_Vqf32(Q6_Vqf32_vadd_Vqf32Vsf(Q6_Vqf32_vmpy_VsfVsf(a, hvx_vec_splat_f32(xd[2 * p + b])), acc));
++                    acc = Q6_Vqf32_vadd_Vqf32Vqf32(acc, Q6_Vqf32_vmpy_VsfVsf(a, hvx_vec_splat_f32(xd[2 * p + b])));
+                 }
+             }
+             float * y = (float *) ((uint8_t *) c->dst->data + (size_t) (c->col0 + col) * c->dst->nb[1]) + (size_t) t * LG_TILE_ROWS;
+-            *(HVX_UVector *) y = acc;
++            *(HVX_UVector *) y = Q6_Vsf_equals_Vqf32(acc);
+ #ifdef LG_TRACE
+             if (ith == 0 && (t % 16) == 0) lg_q4_row_check(c, tile, col, y[0]);
+ #endif

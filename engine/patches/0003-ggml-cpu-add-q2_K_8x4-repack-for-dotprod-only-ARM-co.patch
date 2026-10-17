@@ -1,7 +1,7 @@
 From a8b273e2972e2bcb4c8a63099c5ff1f4d2ccf570 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Fri, 9 Oct 2026 08:05:49 -0700
-Subject: [PATCH 03/36] ggml-cpu: add q2_K_8x4 repack for dotprod-only ARM
+Subject: [PATCH 03/38] ggml-cpu: add q2_K_8x4 repack for dotprod-only ARM
  cores
 
 Adds a q2_K 8x4 interleave with NEON gemv/gemm kernels for CPUs with

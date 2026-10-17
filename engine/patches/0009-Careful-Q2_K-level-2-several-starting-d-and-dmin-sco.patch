@@ -1,7 +1,7 @@
 From 872a6b262f8e8fcc53b609acdbbbd2ec606b5685 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Sun, 11 Oct 2026 14:30:40 -0700
-Subject: [PATCH 09/36] Careful Q2_K level 2: several starting d and dmin,
+Subject: [PATCH 09/38] Careful Q2_K level 2: several starting d and dmin,
  scored by how well their grids fit each group's ideal
 
 LG_Q2K_CAREFUL=2 with LG_Q2K_STARTS, LG_Q2K_RADIUS and LG_Q2K_ITERS. Built brains C2 and D; saturates at

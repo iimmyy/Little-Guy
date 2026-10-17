@@ -1,0 +1,28 @@
+From e9432908278110fbead2c4d0a24616a546485196 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Fri, 9 Oct 2026 08:05:49 -0700
+Subject: [PATCH 02/35] server: skip SWA checkpoint restore when the cache
+ still holds every position
+
+pos_min == 0 means nothing has slid out of the sliding window yet, so a
+checkpoint restore only forced the last reply to be processed again on
+every turn.
+---
+ tools/server/server-context.cpp | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/tools/server/server-context.cpp b/tools/server/server-context.cpp
+index 39b7eb2..dc388e9 100644
+--- a/tools/server/server-context.cpp
++++ b/tools/server/server-context.cpp
+@@ -3281,7 +3281,9 @@ private:
+                                     SLT_WRN(slot, "%s\n", st1.str().c_str());
+                                 }
+ 
+-                                if (pos_min >= pos_min_thold) {
++                                // pos_min == 0 means the SWA cache still holds every position, so nothing is missing
++                                // and a checkpoint restore would only force re-processing of the last reply
++                                if (pos_min > 0 && pos_min >= pos_min_thold) {
+                                     // search for a context checkpoint
+                                     const auto it = std::find_if(
+                                         slot.prompt.checkpoints.rbegin(),

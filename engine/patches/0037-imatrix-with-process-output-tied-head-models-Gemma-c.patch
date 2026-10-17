@@ -1,0 +1,36 @@
+From 0fe97ce0db9fe2b349249b455875b68dd65b10a3 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Fri, 16 Oct 2026 20:36:50 -0700
+Subject: [PATCH 37/38] imatrix: with --process-output, tied-head models
+ (Gemma) count token_embd.weight as the output matrix, and LG_ACT_DUMP saves
+ its input rows (the final hidden state per word), for measuring the
+ dictionary preview shortlist
+
+---
+ tools/imatrix/imatrix.cpp | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/tools/imatrix/imatrix.cpp b/tools/imatrix/imatrix.cpp
+index 4353858..b4e94ea 100644
+--- a/tools/imatrix/imatrix.cpp
++++ b/tools/imatrix/imatrix.cpp
+@@ -238,7 +238,8 @@ bool IMatrixCollector::collect_imatrix(struct ggml_tensor * t, bool ask, void *
+         if (t->op != GGML_OP_MUL_MAT) return false;
+         // why are small batches ignored (<16 tokens)?
+         if (src1->ne[1] < 16 || src1->type != GGML_TYPE_F32) return false;
+-        if (!(wname.substr(0, 4) == "blk." || (m_params.process_output && wname == "output.weight"))) return false;
++        // Little Guy: tied-head models (Gemma) score words with token_embd.weight itself, so it counts as the output too
++        if (!(wname.substr(0, 4) == "blk." || (m_params.process_output && (wname == "output.weight" || wname == "token_embd.weight")))) return false;
+         return true;
+     }
+ 
+@@ -398,6 +399,9 @@ bool IMatrixCollector::collect_imatrix(struct ggml_tensor * t, bool ask, void *
+             for (const char * s : lg_wanted) {
+                 want |= wname.size() > strlen(s) && wname.compare(wname.size() - strlen(s), strlen(s), s) == 0;
+             }
++            if (wname == "output.weight" || wname == "token_embd.weight") {
++                want = m_params.process_output;   // the word-scoring input (final hidden state), with --process-output
++            }
+             static int lg_lo = -1, lg_hi = 1 << 30;   // LG_ACT_LAYERS=lo-hi: only these layers (one stage at a time)
+             if (lg_lo < 0) { lg_lo = 0; if (const char * e = getenv("LG_ACT_LAYERS")) sscanf(e, "%d-%d", &lg_lo, &lg_hi); }
+             int il = -1;

@@ -1,0 +1,110 @@
+From 78a55544f09863ee74859f2d1a1b30aca21ae700 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Wed, 14 Oct 2026 01:43:40 -0700
+Subject: [PATCH 26/35] ggml-hexagon: short batches (under LG_COOP_MIN) run as
+ CPU graph segments on the CPU copies, only NPU-only matmuls (dictionary
+ preview) go to the NPU between them; pp12 29.8 -> 31.3 tok/s (CPU 31.6), KL
+ 0. FA grouped path: value sums in qf16, widened once per block (2176/2176 FA
+ tests pass)
+
+---
+ ggml/src/ggml-hexagon/ggml-hexagon.cpp     | 44 ++++++++++++++++++++++
+ ggml/src/ggml-hexagon/htp/flash-attn-ops.c | 15 ++++----
+ 2 files changed, 52 insertions(+), 7 deletions(-)
+
+diff --git a/ggml/src/ggml-hexagon/ggml-hexagon.cpp b/ggml/src/ggml-hexagon/ggml-hexagon.cpp
+index 63ace41..f7aa48d 100644
+--- a/ggml/src/ggml-hexagon/ggml-hexagon.cpp
++++ b/ggml/src/ggml-hexagon/ggml-hexagon.cpp
+@@ -3742,6 +3742,50 @@ static ggml_status ggml_backend_hexagon_graph_compute(ggml_backend_t backend, gg
+             if (node.opcode == HTP_OP_MUL_MAT && t->src[1] && t->src[1]->ne[1] > 1 && lg_coop_w.count(t->src[0])) { lg_reading = true; break; }
+         }
+     }
++    // LG: a short batch (under LG_COOP_MIN tokens) runs as one CPU graph: matmul nodes are copied with src0 swapped
++    // for the CPU's repacked copy (same output memory), so there is no per-matmul round trip or graph setup
++    if (lg_reading) {
++        int64_t ncols = 0;
++        for (const auto & node : nodes) if (node.opcode == HTP_OP_MUL_MAT && node.node->src[1]) ncols = std::max(ncols, node.node->src[1]->ne[1]);
++        if (ncols < lg_coop_min_cols()) {
++            // CPU graph segments; a matmul only the NPU can read (the dictionary preview) runs on the NPU between them
++            static std::vector<ggml_tensor> copies;
++            static std::vector<ggml_tensor *> seg;
++            copies.clear();
++            copies.reserve(graph->n_nodes);
++            seg.clear();
++            auto run_seg = [&]() {
++                if (seg.empty()) return;
++                static std::vector<uint8_t> meta;
++                meta.resize(ggml_graph_overhead_custom(seg.size() + 8, false) + 1024);
++                ggml_init_params ip = { meta.size(), meta.data(), true };
++                ggml_context * ctx = ggml_init(ip);
++                ggml_cgraph * gf = ggml_new_graph_custom(ctx, seg.size() + 8, false);
++                for (auto * n : seg) gf->nodes[gf->n_nodes++] = n;
++                ggml_backend_graph_compute(lg_coop_cpu(), gf);
++                ggml_free(ctx);
++                seg.clear();
++            };
++            for (const auto & node : nodes) {
++                ggml_tensor * t = node.node;
++                auto it = node.opcode == HTP_OP_MUL_MAT ? lg_coop_w.find(t->src[0]) : lg_coop_w.end();
++                if (it != lg_coop_w.end()) {
++                    copies.push_back(*t);
++                    copies.back().src[0] = it->second.w;
++                    seg.push_back(&copies.back());
++                } else if (t->src[0] && t->src[0]->buffer && ggml_backend_buffer_is_hexagon_repack(t->src[0]->buffer)) {
++                    run_seg();
++                    sess->enqueue_op(node);
++                    sess->flush();
++                } else {
++                    seg.push_back(t);
++                    for (auto * f : node.fused) seg.push_back(f);
++                }
++            }
++            run_seg();
++            return GGML_STATUS_SUCCESS;
++        }
++    }
+     if (lg_reading) {
+         lg_pq_last[0] = lg_pq_last[1] = nullptr;
+         ggml_tensor * pend[512];
+diff --git a/ggml/src/ggml-hexagon/htp/flash-attn-ops.c b/ggml/src/ggml-hexagon/htp/flash-attn-ops.c
+index 0255a47..9b5407b 100644
+--- a/ggml/src/ggml-hexagon/htp/flash-attn-ops.c
++++ b/ggml/src/ggml-hexagon/htp/flash-attn-ops.c
+@@ -797,9 +797,11 @@ static void lg_flash_attn_grouped_thread(unsigned int nth, unsigned int ith, voi
+ 
+                 // V: this head's block sum stays in registers as qf32 (one multiply and two adds per 64 values per
+                 // key) and joins the stored f32 total once per block, instead of a load, convert and store per key
+-                HVX_VectorPair vacc[LG_FA_MAXV];
++                // block sums in qf16 like the CPU's own FP16 accumulator (one multiply and one add per 64 values per
++                // key); widened to f32 and added to the stored total once per block
++                HVX_Vector vacc[LG_FA_MAXV];
+                 #pragma unroll
+-                for (uint32_t i = 0; i < LG_FA_MAXV; i++) vacc[i] = Q6_W_vcombine_VV(Q6_V_vzero(), Q6_V_vzero());
++                for (uint32_t i = 0; i < LG_FA_MAXV; i++) vacc[i] = Q6_V_vzero();
+                 HVX_Vector p_sum_vec = hvx_vec_splat_f32(0.0f);
+                 for (uint32_t ic2 = 0, iv = 0; ic2 < bs; ic2 += VLEN_FP32, ++iv) {
+                     HVX_Vector P = hvx_vec_exp_f32(HVX_OP_SUB_F32(sb_scores[iv], M_vec[j]));
+@@ -820,9 +822,7 @@ static void lg_flash_attn_grouped_thread(unsigned int nth, unsigned int ith, voi
+                         #pragma unroll
+                         for (uint32_t i = 0; i < LG_FA_MAXV; i++) {
+                             if (i < nvd) {
+-                                const HVX_VectorPair m = Q6_Wqf32_vmpy_VhfVhf(Q6_Vh_vshuff_Vh(vrow[i]), S);
+-                                vacc[i] = Q6_W_vcombine_VV(Q6_Vqf32_vadd_Vqf32Vqf32(Q6_V_hi_W(m), Q6_V_hi_W(vacc[i])),
+-                                                           Q6_Vqf32_vadd_Vqf32Vqf32(Q6_V_lo_W(m), Q6_V_lo_W(vacc[i])));
++                                vacc[i] = Q6_Vqf16_vadd_Vqf16Vqf16(vacc[i], Q6_Vqf16_vmpy_VhfVhf(vrow[i], S));
+                             }
+                         }
+                     }
+@@ -832,8 +832,9 @@ static void lg_flash_attn_grouped_thread(unsigned int nth, unsigned int ith, voi
+                     #pragma unroll
+                     for (uint32_t i = 0; i < LG_FA_MAXV; i++) {
+                         if (i < nvd) {
+-                            vy[i] = Q6_W_vcombine_VV(Q6_Vsf_equals_Vqf32(Q6_Vqf32_vadd_Vqf32Vsf(Q6_V_hi_W(vacc[i]), Q6_V_hi_W(vy[i]))),
+-                                                     Q6_Vsf_equals_Vqf32(Q6_Vqf32_vadd_Vqf32Vsf(Q6_V_lo_W(vacc[i]), Q6_V_lo_W(vy[i]))));
++                            const HVX_VectorPair w = Q6_Wqf32_vmpy_VhfVhf(Q6_Vh_vshuff_Vh(Q6_Vhf_equals_Vqf16(vacc[i])), Q6_Vh_vsplat_R(0x3c00));
++                            vy[i] = Q6_W_vcombine_VV(Q6_Vsf_equals_Vqf32(Q6_Vqf32_vadd_Vqf32Vsf(Q6_V_hi_W(w), Q6_V_hi_W(vy[i]))),
++                                                     Q6_Vsf_equals_Vqf32(Q6_Vqf32_vadd_Vqf32Vsf(Q6_V_lo_W(w), Q6_V_lo_W(vy[i]))));
+                         }
+                     }
+                 }

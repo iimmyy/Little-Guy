@@ -1,7 +1,7 @@
 From ed5486e7ee7561e151f042ae3706ab2f051216ec Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Tue, 13 Oct 2026 22:28:38 -0700
-Subject: [PATCH 17/36] lg-q2k-ops: qf32 running sums (per-step normalization
+Subject: [PATCH 17/38] lg-q2k-ops: qf32 running sums (per-step normalization
  cost 3% with no KL change)
 
 ---

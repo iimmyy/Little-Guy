@@ -1,7 +1,7 @@
 From 565b6b3ccfbb94de698abff64c105279b7f66462 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Tue, 13 Oct 2026 16:42:44 -0700
-Subject: [PATCH 14/36] test-backend-ops: LG_N_THREADS sets the thread count
+Subject: [PATCH 14/38] test-backend-ops: LG_N_THREADS sets the thread count
  for perf runs
 
 ---

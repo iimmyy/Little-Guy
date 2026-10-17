@@ -1,0 +1,369 @@
+From 4d1d5063ae6ff04696f7aee0ce4a31be268b7ba0 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Wed, 14 Oct 2026 01:25:19 -0700
+Subject: [PATCH 25/35] ggml-hexagon co-op reading: the CPU pre-quantizes the
+ NPU share's input (q8_K/q8_0 into the NPU layout, compute-usage buffer so the
+ NPU drops stale cache lines), reuses it for gate/up and q/k, groups CPU ops
+ into one graph, keeps a full CPU copy so batches under LG_COOP_MIN (32) run
+ CPU-only; persona reading 31 -> 35 tok/s in the server, KL 0.0036 (CPU-only
+ path bit-identical)
+
+---
+ ggml/src/ggml-hexagon/ggml-hexagon.cpp | 199 ++++++++++++++++++++++---
+ ggml/src/ggml-hexagon/htp/lg-q2k-ops.c |  22 ++-
+ 2 files changed, 200 insertions(+), 21 deletions(-)
+
+diff --git a/ggml/src/ggml-hexagon/ggml-hexagon.cpp b/ggml/src/ggml-hexagon/ggml-hexagon.cpp
+index dad70c2..63ace41 100644
+--- a/ggml/src/ggml-hexagon/ggml-hexagon.cpp
++++ b/ggml/src/ggml-hexagon/ggml-hexagon.cpp
+@@ -18,6 +18,8 @@
+ #include <unordered_map>
+ #include <regex>
+ #include <queue>
++#include <functional>
++#include <condition_variable>
+ 
+ #ifdef _WIN32
+ #    include <sal.h>
+@@ -1739,8 +1741,8 @@ static void repack_lgtile_q4_0(void * data, const ggml_tensor * t, size_t size)
+ struct lg_cpu_copy {
+     ggml_context *        ctx;
+     ggml_backend_buffer_t buf;
+-    ggml_tensor *         w;     // rows [a, N) of the weight, repacked for the CPU
+-    int64_t               a;     // rows [0, a) stay on the NPU
++    ggml_tensor *         w;     // the whole weight, repacked for the CPU
++    int64_t               a;     // co-op: rows [0, a) on the NPU, [a, N) on the CPU
+ };
+ static std::unordered_map<const ggml_tensor *, lg_cpu_copy> lg_coop_w;
+ static std::mutex lg_coop_mtx;
+@@ -1751,6 +1753,12 @@ static bool lg_coop_on() {
+     return on;
+ }
+ 
++static int64_t lg_coop_min_cols() {
++    static int64_t n = -1;
++    if (n < 0) { const char * e = getenv("LG_COOP_MIN"); n = e ? atoll(e) : 32; }
++    return n;
++}
++
+ static ggml_backend_buffer_type_t lg_cpu_repack_buft() {
+     static ggml_backend_buffer_type_t buft = nullptr;
+     static bool done = false;
+@@ -1779,12 +1787,13 @@ static void lg_coop_make_copy(const ggml_tensor * t, const void * data) {
+     if (!buft) return;
+     ggml_init_params ip = { ggml_tensor_overhead() * 2, nullptr, true };
+     ggml_context * ctx = ggml_init(ip);
+-    ggml_tensor * w = ggml_new_tensor_2d(ctx, t->type, K, N - a);
++    ggml_tensor * w = ggml_new_tensor_2d(ctx, t->type, K, N);
+     ggml_backend_buffer_t buf = ggml_backend_alloc_ctx_tensors_from_buft(ctx, buft);
+     if (!buf) { ggml_free(ctx); return; }
+     ggml_backend_buffer_set_usage(buf, GGML_BACKEND_BUFFER_USAGE_WEIGHTS);
+     const size_t row = ggml_row_size(t->type, K);
+-    ggml_backend_tensor_set(w, (const uint8_t *) data + a * row, 0, (N - a) * row);
++    ggml_backend_tensor_set(w, data, 0, N * row);
++    (void) row;
+     std::lock_guard<std::mutex> lk(lg_coop_mtx);
+     lg_coop_w[t] = { ctx, buf, w, a };
+ }
+@@ -1799,14 +1808,15 @@ static ggml_backend_t lg_coop_cpu() {
+     ggml_threadpool_params tp = ggml_threadpool_params_default(nt);
+     for (int i = 4; i < 4 + nt && i < GGML_MAX_N_THREADS; i++) tp.cpumask[i] = true;   // the big cores
+     tp.strict_cpu = true;
++    tp.poll       = 0;   // sleep between graphs: spinning on the big cores slows the CPU's share of every decoded word
+     ggml_threadpool * pool = ggml_threadpool_new(&tp);
+     if (pool) ggml_backend_cpu_set_threadpool(b, pool);
+     return b;
+ }
+ 
+ // rows [a, N) of dst = W_cpu x src1, written into the (host-visible) NPU buffer next to the NPU's rows
+-static void lg_coop_cpu_part(const lg_cpu_copy & cc, const ggml_tensor * dst, const ggml_tensor * src1) {
+-    const int64_t K = src1->ne[0], ncols = src1->ne[1], Nc = cc.w->ne[1];
++static void lg_coop_cpu_part(const lg_cpu_copy & cc, const ggml_tensor * dst, const ggml_tensor * src1, int64_t a) {
++    const int64_t K = src1->ne[0], ncols = src1->ne[1], Nc = cc.w->ne[1] - a;
+     static std::vector<uint8_t> meta, out;
+     meta.resize(ggml_tensor_overhead() * 8 + ggml_graph_overhead() + 4096);
+     out.resize((size_t) Nc * ncols * sizeof(float));
+@@ -1815,24 +1825,147 @@ static void lg_coop_cpu_part(const lg_cpu_copy & cc, const ggml_tensor * dst, co
+     ggml_tensor * x = ggml_new_tensor_2d(ctx, GGML_TYPE_F32, K, ncols);
+     x->data  = src1->data;
+     x->nb[1] = src1->nb[1]; x->nb[2] = x->nb[1] * ncols; x->nb[3] = x->nb[2];
+-    ggml_tensor * y = ggml_mul_mat(ctx, cc.w, x);
++    // rows [a, N) of the CPU copy; the repacked layouts keep whole 8-row groups, and a is a multiple of 32
++    ggml_tensor * wv = ggml_view_2d(ctx, cc.w, cc.w->ne[0], Nc, cc.w->nb[1], a * cc.w->nb[1]);
++    wv->buffer = cc.w->buffer;   // keeps the CPU on its repacked kernels for this view
++    wv->extra  = cc.w->extra;
++    ggml_tensor * y = ggml_mul_mat(ctx, wv, x);
+     y->data = out.data();
+     ggml_cgraph * gf = ggml_new_graph(ctx);
+     ggml_build_forward_expand(gf, y);
+     ggml_backend_graph_compute(lg_coop_cpu(), gf);
+     for (int64_t col = 0; col < ncols; col++) {
+-        memcpy((uint8_t *) dst->data + col * dst->nb[1] + cc.a * sizeof(float), out.data() + (size_t) col * Nc * sizeof(float), Nc * sizeof(float));
++        memcpy((uint8_t *) dst->data + col * dst->nb[1] + a * sizeof(float), out.data() + (size_t) col * Nc * sizeof(float), Nc * sizeof(float));
+     }
+     ggml_free(ctx);
+ }
+ 
+ // compute graph nodes on the CPU (prompt reading in co-op mode); the tensors live in host-visible NPU buffers
++// The NPU's share used to start by quantizing all of src1 itself (~2 ms per matmul on its scalar units, whatever
++// its share). The CPU quantizes it once (its own q8_K / q8_0, 4 threads) straight into the layout of the NPU
++// kernels' input buffer (lg-q2k-ops.c), passed as the op's src[2].
++static size_t lg_r128(size_t n) { return (n + 127) & ~(size_t) 127; }
++
++// small persistent pool for the host-side pre-quantization (spawning threads per matmul cost ~0.2 ms each time)
++struct lg_pool {
++    std::vector<std::thread> th;
++    std::mutex m;
++    std::condition_variable cv, done_cv;
++    std::function<void(int)> job;
++    int n = 0, gen = 0, pending = 0;
++    bool quit = false;
++    explicit lg_pool(int nthreads) : n(nthreads) {
++        for (int i = 1; i < n; i++) th.emplace_back([this, i] {
++            int seen = 0;
++            for (;;) {
++                std::unique_lock<std::mutex> lk(m);
++                cv.wait(lk, [&] { return quit || gen != seen; });
++                if (quit) return;
++                seen = gen;
++                auto f = job;
++                lk.unlock();
++                f(i);
++                lk.lock();
++                if (--pending == 0) done_cv.notify_one();
++            }
++        });
++    }
++    void run(const std::function<void(int)> & f) {
++        { std::lock_guard<std::mutex> lk(m); job = f; pending = n - 1; gen++; }
++        cv.notify_all();
++        f(0);
++        std::unique_lock<std::mutex> lk(m);
++        done_cv.wait(lk, [&] { return pending == 0; });
++    }
++    ~lg_pool() { { std::lock_guard<std::mutex> lk(m); quit = true; } cv.notify_all(); for (auto & t : th) t.join(); }
++};
++
++static const void * lg_pq_last[2];   // input last quantized into each format's buffer (reset per graph)
++
++static ggml_tensor * lg_coop_prequant(ggml_hexagon_session * sess, const ggml_tensor * w, const ggml_tensor * x) {
++    const bool q2k = w->type == GGML_TYPE_Q2_K;
++    static ggml_backend_buffer_t bufs[2] = { nullptr, nullptr };
++    static size_t caps[2] = { 0, 0 };
++    static ggml_tensor pqs[2];
++    static int64_t last_ncols[2];
++    ggml_backend_buffer_t & buf = bufs[q2k];
++    size_t & cap = caps[q2k];
++    ggml_tensor & pq = pqs[q2k];
++    const int64_t K = x->ne[0], ncols = x->ne[1];
++    if (lg_pq_last[q2k] == x->data && last_ncols[q2k] == ncols && pq.ne[0]) {
++        return &pq;   // same input as the previous matmul of this format (gate and up, q and k)
++    }
++    const int64_t nsum = q2k ? (K / 256) * 8 : K / 32;      // words per column
++    const int64_t nxd  = q2k ? K / 256 : K / 32;            // floats per column
++    const size_t o_sum = lg_r128((size_t) ncols * K), o_xd = o_sum + lg_r128((size_t) ncols * nsum * 4);
++    const size_t total = o_xd + lg_r128((size_t) ncols * nxd * 4);
++    if (!buf || cap < total) {
++        if (buf) ggml_backend_buffer_free(buf);
++        cap = std::max(total, (size_t) 8 << 20);
++        buf = ggml_backend_buft_alloc_buffer(&sess->buffer_type, cap);
++        if (!buf) { cap = 0; return nullptr; }
++        // compute usage: the NPU then drops its cached copy of the buffer before reading (the CPU rewrites it per matmul)
++        ggml_backend_buffer_set_usage(buf, GGML_BACKEND_BUFFER_USAGE_COMPUTE);
++    }
++    uint8_t * base = (uint8_t *) ggml_backend_buffer_get_base(buf);
++    const ggml_type qt = q2k ? GGML_TYPE_Q8_K : GGML_TYPE_Q8_0;
++    const ggml_from_float_t from_float = ggml_get_type_traits_cpu(qt)->from_float;
++    auto work = [&](int64_t c0, int64_t c1) {
++        thread_local std::vector<uint8_t> tmp;
++        tmp.resize(ggml_row_size(qt, K));
++        for (int64_t col = c0; col < c1; col++) {
++            from_float((const float *) ((const uint8_t *) x->data + col * x->nb[1]), tmp.data(), K);
++            int8_t  * xq  = (int8_t *) (base + (size_t) col * K);
++            int32_t * xs  = (int32_t *) (base + o_sum) + col * nsum;
++            float   * xd  = (float *) (base + o_xd) + col * nxd;
++            if (q2k) {
++                const block_q8_K * b = (const block_q8_K *) tmp.data();
++                for (int64_t s = 0; s < K / 256; s++) {
++                    memcpy(xq + s * 256, b[s].qs, 256);
++                    uint8_t * lo = (uint8_t *) (xs + s * 8), * hi = (uint8_t *) (xs + s * 8 + 4);
++                    for (int g = 0; g < 16; g++) { lo[g] = (uint8_t) (b[s].bsums[g] & 0xff); hi[g] = (uint8_t) (int8_t) (b[s].bsums[g] >> 8); }
++                    xd[s] = b[s].d;
++                }
++            } else {
++                const block_q8_0 * b = (const block_q8_0 *) tmp.data();
++                for (int64_t i = 0; i < K / 32; i++) {
++                    memcpy(xq + i * 32, b[i].qs, 32);
++                    int32_t sum = 0;
++                    for (int j = 0; j < 32; j++) sum += b[i].qs[j];
++                    xs[i] = 8 * sum;
++                    xd[i] = GGML_FP16_TO_FP32(b[i].d);
++                }
++            }
++        }
++    };
++    static lg_pool pool(4);
++    pool.run([&](int t) { work(ncols * t / 4, ncols * (t + 1) / 4); });
++    lg_pq_last[q2k] = x->data;
++    last_ncols[q2k] = ncols;
++    pq = {};
++    pq.type = GGML_TYPE_I8;
++    pq.ne[0] = (int64_t) total; pq.ne[1] = pq.ne[2] = pq.ne[3] = 1;
++    pq.nb[0] = 1; pq.nb[1] = pq.nb[2] = pq.nb[3] = total;
++    pq.data = base; pq.buffer = buf;
++    return &pq;
++}
++
++static struct lg_prof_t {
++    int64_t send = 0, cpu = 0, wait = 0, ops = 0, npu_only = 0, n_mm = 0, n_ops = 0;
++    ~lg_prof_t() {
++        if (getenv("LG_COOP_PROF") && n_mm) {
++            fprintf(stderr, "lg-coop: %lld matmuls: send %.1f ms, cpu rows %.1f ms, wait npu %.1f ms | %lld cpu ops %.1f ms | npu-only matmuls %.1f ms\n",
++                    (long long) n_mm, send / 1e3, cpu / 1e3, wait / 1e3, (long long) n_ops, ops / 1e3, npu_only / 1e3);
++        }
++    }
++} lg_prof;
++
+ static void lg_cpu_compute_nodes(ggml_tensor * const * n, int count) {
+     static std::vector<uint8_t> meta;
+-    meta.resize(ggml_graph_overhead_custom(16, false) + 1024);
++    meta.resize(ggml_graph_overhead_custom(512, false) + 1024);
+     ggml_init_params ip = { meta.size(), meta.data(), true };
+     ggml_context * ctx = ggml_init(ip);
+-    ggml_cgraph * gf = ggml_new_graph_custom(ctx, 16, false);
++    ggml_cgraph * gf = ggml_new_graph_custom(ctx, 512, false);
+     for (int i = 0; i < count; i++) gf->nodes[gf->n_nodes++] = n[i];
+     ggml_backend_graph_compute(lg_coop_cpu(), gf);
+     ggml_free(ctx);
+@@ -3610,31 +3743,59 @@ static ggml_status ggml_backend_hexagon_graph_compute(ggml_backend_t backend, gg
+         }
+     }
+     if (lg_reading) {
++        lg_pq_last[0] = lg_pq_last[1] = nullptr;
++        ggml_tensor * pend[512];
++        int npend = 0;
++        auto run_pending = [&]() {
++            if (!npend) return;
++            lg_pq_last[0] = lg_pq_last[1] = nullptr;   // these ops may rewrite memory a cached input came from
++            const int64_t lt0 = ggml_time_us();
++            lg_cpu_compute_nodes(pend, npend);
++            lg_prof.ops += ggml_time_us() - lt0; lg_prof.n_ops += npend;
++            npend = 0;
++        };
+         for (const auto & node : nodes) {
+             ggml_tensor * t = node.node;
++            const bool cpu_op = !(node.opcode == HTP_OP_MUL_MAT && t->src[1]->ne[1] > 1 && lg_coop_w.count(t->src[0])) &&
++                                !(t->src[0] && t->src[0]->buffer && ggml_backend_buffer_is_hexagon_repack(t->src[0]->buffer));
++            if (cpu_op) {
++                if (npend + 1 + (int) node.fused.size() > 512) run_pending();
++                pend[npend++] = t;
++                for (auto * f : node.fused) pend[npend++] = f;
++                continue;
++            }
++            run_pending();
+             auto it = (node.opcode == HTP_OP_MUL_MAT && t->src[1]->ne[1] > 1) ? lg_coop_w.find(t->src[0]) : lg_coop_w.end();
+-            if (it != lg_coop_w.end()) {
++            if (it != lg_coop_w.end() && t->src[1]->ne[1] < lg_coop_min_cols()) {
++                const int64_t lt0 = ggml_time_us();
++                lg_coop_cpu_part(it->second, t, t->src[1], 0);   // few columns: the round trip to the NPU costs more than its share
++                lg_prof.cpu += ggml_time_us() - lt0; lg_prof.n_mm++;
++            } else if (it != lg_coop_w.end()) {
+                 const lg_cpu_copy & cc = it->second;
+                 ggml_tensor fsrc0 = *t->src[0];
+                 fsrc0.ne[1] = cc.a; fsrc0.nb[2] = fsrc0.nb[3] = fsrc0.nb[1] * cc.a;
+                 ggml_tensor fdst = *t;
+                 fdst.ne[0] = cc.a; fdst.src[0] = &fsrc0;
++                const int64_t lt0 = ggml_time_us();
++                if (!getenv("LG_COOP_NOPQ")) fdst.src[2] = lg_coop_prequant(sess, t->src[0], t->src[1]);
+                 htp_opnode fn = { &fdst, {}, HTP_OP_MUL_MAT };
+                 sess->enqueue_op(fn);
+                 sess->flush_batch();
+-                lg_coop_cpu_part(cc, t, t->src[1]);
++                const int64_t lt1 = ggml_time_us();
++                lg_coop_cpu_part(cc, t, t->src[1], cc.a);
++                const int64_t lt2 = ggml_time_us();
+                 sess->flush_pending(true);
++                const int64_t lt3 = ggml_time_us();
++                lg_prof.send += lt1 - lt0; lg_prof.cpu += lt2 - lt1; lg_prof.wait += lt3 - lt2; lg_prof.n_mm++;
+             } else if (t->src[0] && t->src[0]->buffer && ggml_backend_buffer_is_hexagon_repack(t->src[0]->buffer)) {
++                const int64_t lt0 = ggml_time_us();
+                 sess->enqueue_op(node);   // weights only the NPU can read (its tiles)
+                 sess->flush();
+-            } else {
+-                ggml_tensor * n[16];
+-                int count = 0;
+-                n[count++] = t;
+-                for (auto * f : node.fused) if (count < 16) n[count++] = f;
+-                lg_cpu_compute_nodes(n, count);
++                lg_pq_last[0] = lg_pq_last[1] = nullptr;
++                lg_prof.npu_only += ggml_time_us() - lt0;
+             }
+         }
++        run_pending();
+         return GGML_STATUS_SUCCESS;
+     }
+ 
+@@ -3654,7 +3815,7 @@ static ggml_status ggml_backend_hexagon_graph_compute(ggml_backend_t backend, gg
+                     htp_opnode fn = { &fdst, {}, HTP_OP_MUL_MAT };
+                     sess->enqueue_op(fn);
+                     sess->flush_batch();                             // send without waiting
+-                    lg_coop_cpu_part(cc, t, t->src[1]);              // the CPU takes rows [a, N) meanwhile
++                    lg_coop_cpu_part(cc, t, t->src[1], cc.a);        // the CPU takes rows [a, N) meanwhile
+                     sess->flush_pending(true);
+                     continue;
+                 }
+diff --git a/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c b/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
+index 6826f7a..2985025 100644
+--- a/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
++++ b/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
+@@ -25,6 +25,7 @@
+ 
+ #include "hex-dma.h"
+ #include "hvx-utils.h"
++#include "hvx-copy.h"
+ 
+ #define GGML_COMMON_DECL_C
+ #include "ggml-common.h"
+@@ -346,6 +347,17 @@ static void lg_q2k_mv_job(unsigned int nth, unsigned int ith, void * data) {
+     }
+ }
+ 
++// Pre-quantized inputs from the host (co-op prompt reading): src[2] holds xq for all columns, then the sums, then
++// the scales, each region 128-byte aligned. Copy this pass's columns into the cached buffer.
++static void lg_copy_prequant(const struct htp_tensor * pq, uint32_t K, uint32_t ncols_all, uint32_t nsum, uint32_t nxd,
++                             uint32_t col0, uint32_t ncols, int8_t * xq, int32_t * xs, float * xd) {
++    const uint8_t * base = (const uint8_t *) pq->data;
++    const uint32_t o_sum = hex_round_up(ncols_all * K, 128), o_xd = o_sum + hex_round_up(ncols_all * nsum * 4, 128);
++    hvx_copy_uu((uint8_t *) xq, base + (size_t) col0 * K, ncols * K, 1);
++    hvx_copy_uu((uint8_t *) xs, base + o_sum + (size_t) col0 * nsum * 4, ncols * nsum * 4, 1);
++    hvx_copy_uu((uint8_t *) xd, base + o_xd + (size_t) col0 * nxd * 4, ncols * nxd * 4, 1);
++}
++
+ int lg_op_matmul_q2k(struct htp_ops_context * octx) {
+     const struct htp_tensor * src0 = octx->src[0];
+     const struct htp_tensor * src1 = octx->src[1];
+@@ -394,7 +406,10 @@ int lg_op_matmul_q2k(struct htp_ops_context * octx) {
+         c.xd   = (float *) p;
+ 
+         const bool cached = (ncols <= max_cols && lg_q2k_xcache_src == src1->data && lg_q2k_xcache_ncols == ncols);
+-        if (!cached) {
++        if (octx->src[2]) {
++            lg_copy_prequant(octx->src[2], c.K, ncols, c.nsb * 8, c.nsb, col0, c.ncols, c.xq, c.xsum, c.xd);
++            lg_q2k_xcache_src = lg_q4_xcache_src = 0;
++        } else if (!cached) {
+             worker_pool_run_func(octx->ctx->worker_pool, lg_q2k_quant_job, &c, MIN(c.n_jobs, c.ncols * c.nsb));
+             lg_q2k_xcache_src   = (ncols <= max_cols) ? src1->data : 0;
+             lg_q2k_xcache_ncols = ncols;
+@@ -672,7 +687,10 @@ int lg_op_matmul_q4_0(struct htp_ops_context * octx) {
+         c.xd    = (float *) p;
+ 
+         const bool cached = (ncols <= max_cols && lg_q4_xcache_src == src1->data && lg_q4_xcache_ncols == ncols);
+-        if (!cached) {
++        if (octx->src[2]) {
++            lg_copy_prequant(octx->src[2], c.K, ncols, c.K / 32, c.K / 32, col0, c.ncols, c.xq, c.xsum8, c.xd);
++            lg_q2k_xcache_src = lg_q4_xcache_src = 0;
++        } else if (!cached) {
+             worker_pool_run_func(octx->ctx->worker_pool, lg_q4_quant_job, &c, MIN(c.n_jobs, c.ncols * (c.K / 256)));
+             lg_q4_xcache_src   = (ncols <= max_cols) ? src1->data : 0;
+             lg_q4_xcache_ncols = ncols;

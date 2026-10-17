@@ -1,0 +1,338 @@
+From 4c22c72e6edc5974aeffcf7dda99d7136a14c364 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Tue, 13 Oct 2026 22:27:09 -0700
+Subject: [PATCH 16/35] ggml-hexagon v68: vectorized q8_K/q8_0 input quantizers
+ (bit-exact vs the CPU, integer rounding), per-batch input-cache reset,
+ LG_HEX_NO_Q2K/NO_Q4/F16_CPU switches
+
+---
+ ggml/src/ggml-hexagon/ggml-hexagon.cpp |   9 +-
+ ggml/src/ggml-hexagon/htp/lg-q2k-ops.c | 165 +++++++++++++++++++------
+ ggml/src/ggml-hexagon/htp/main.c       |   4 +-
+ 3 files changed, 138 insertions(+), 40 deletions(-)
+
+diff --git a/ggml/src/ggml-hexagon/ggml-hexagon.cpp b/ggml/src/ggml-hexagon/ggml-hexagon.cpp
+index fd53fc4..d08caf4 100644
+--- a/ggml/src/ggml-hexagon/ggml-hexagon.cpp
++++ b/ggml/src/ggml-hexagon/ggml-hexagon.cpp
+@@ -2803,7 +2803,7 @@ static bool ggml_hexagon_supported_mul_mat(const struct ggml_hexagon_session * s
+ 
+     switch (src0->type) {
+         case GGML_TYPE_Q2_K:   // LG: htp/lg-q2k-ops.c
+-            if (src0->ne[0] % QK_K || src0->ne[1] % 32 || src0->ne[2] != 1 || src0->ne[3] != 1) {
++            if (getenv("LG_HEX_NO_Q2K") || src0->ne[0] % QK_K || src0->ne[1] % 32 || src0->ne[2] != 1 || src0->ne[3] != 1) {
+                 return false;
+             }
+             if (src1->type != GGML_TYPE_F32 || src1->ne[2] != 1 || src1->ne[3] != 1 || ggml_nrows(src1) > 1024) {
+@@ -2815,7 +2815,7 @@ static bool ggml_hexagon_supported_mul_mat(const struct ggml_hexagon_session * s
+             break;
+ 
+         case GGML_TYPE_Q4_0:   // LG: 32-row tiles (htp/lg-q2k-ops.c)
+-            if (src0->ne[0] % 256 || src0->ne[1] % 32 || src0->ne[2] != 1 || src0->ne[3] != 1) {
++            if (getenv("LG_HEX_NO_Q4") || src0->ne[0] % 256 || src0->ne[1] % 32 || src0->ne[2] != 1 || src0->ne[3] != 1) {
+                 return false;
+             }
+             if (src1->type != GGML_TYPE_F32 || src1->ne[2] != 1 || src1->ne[3] != 1 || ggml_nrows(src1) > 1024) {
+@@ -2849,6 +2849,11 @@ static bool ggml_hexagon_supported_mul_mat(const struct ggml_hexagon_session * s
+             break;
+ 
+         case GGML_TYPE_F16:
++            // LG: LG_HEX_F16_CPU=1 leaves F16-weight matmuls (Gemma 4's per_layer_model_proj) to the CPU; this path
++            // rounds the inputs to fp16. Measured on mix-21: no KL change, 4% slower, so off by default.
++            if (src1->type == GGML_TYPE_F32 && getenv("LG_HEX_F16_CPU")) {
++                return false;
++            }
+             if (src0->nb[1] < src0->nb[0]) {
+                 GGML_LOG_DEBUG("ggml_hexagon_supported_mul_mat: permuted F16 src0 not supported\n");
+                 return false;
+diff --git a/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c b/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
+index 8efc3e1..014d8ae 100644
+--- a/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
++++ b/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
+@@ -58,41 +58,86 @@ struct lg_q2k {
+     uint32_t n_jobs;
+ };
+ 
+-// one super-block of one column, as the CPU's quantize_row_q8_K
+-static void lg_q2k_quant_sb(const float * restrict x, int8_t * restrict q, int32_t * restrict bsum, float * restrict d) {
+-    float amax = 0.0f, max = 0.0f;
+-    for (int j = 0; j < LG_SB_INPUTS; j++) {
+-        const float ax = fabsf(x[j]);
+-        if (ax > amax) { amax = ax; max = x[j]; }
++// one super-block of one column, as the CPU's quantize_row_q8_K. x is 128-byte aligned in cached memory; w is a
++// 1 KB aligned scratch. The product runs in qf32 (v68 has no IEEE vector float math) and is rounded with
++// lg_round_sf_to_w; it can differ from the CPU's nearest_int only on exact .5 ties.
++static inline HVX_Vector lg_reduce_min_f32(HVX_Vector v) {
++    for (unsigned width = 4; width < 128; width <<= 1) v = Q6_Vsf_vmin_VsfVsf(Q6_V_vror_VR(v, width), v);
++    return v;
++}
++
++// Round an sf vector (|v| < 2^22) to the nearest int32, ties away from zero, with integer ops only: v68 has no
++// IEEE vector float math and qf32 cannot carry the magic-number trick's 24 integer bits.
++static inline HVX_Vector lg_round_sf_to_w(HVX_Vector v) {
++    const HVX_Vector e  = Q6_V_vand_VV(Q6_Vuw_vlsr_VuwR(v, 23), Q6_V_vsplat_R(0xff));
++    const HVX_Vector m  = Q6_V_vor_VV(Q6_V_vand_VV(v, Q6_V_vsplat_R(0x7fffff)), Q6_V_vsplat_R(0x800000));
++    const HVX_Vector sh = Q6_Vw_vmin_VwVw(Q6_Vw_vsub_VwVw(Q6_V_vsplat_R(150), e), Q6_V_vsplat_R(31));  // |v| < 0.5 -> 0
++    const HVX_Vector hf = Q6_Vw_vasl_VwVw(Q6_V_vsplat_R(1), Q6_Vw_vsub_VwVw(sh, Q6_V_vsplat_R(1)));
++    const HVX_Vector r  = Q6_Vw_vasr_VwVw(Q6_Vw_vadd_VwVw(m, hf), sh);
++    return Q6_V_vmux_QVV(Q6_Q_vcmp_gt_VwVw(Q6_V_vzero(), v), Q6_Vw_vsub_VwVw(Q6_V_vzero(), r), r);
++}
++
++static void lg_q2k_quant_sb(const float * restrict x, int8_t * restrict q, int32_t * restrict bsum, float * restrict d,
++                            int32_t * restrict w) {
++    const HVX_Vector * vx = (const HVX_Vector *) x;
++    HVX_Vector vmx = vx[0], vmn = vx[0];
++    for (int i = 1; i < 8; i++) {
++        vmx = Q6_Vsf_vmax_VsfVsf(vmx, vx[i]);
++        vmn = Q6_Vsf_vmin_VsfVsf(vmn, vx[i]);
+     }
+-    if (amax == 0.0f) {
++    const float mx = hvx_vec_get_f32(hvx_vec_reduce_max_f32(vmx));
++    const float mn = hvx_vec_get_f32(lg_reduce_min_f32(vmn));
++    // the value with the largest magnitude; on a tie between +a and -a the result is the same either way
++    // (q and the scale both flip sign)
++    const float max = (mx >= -mn) ? mx : mn;
++    if (max == 0.0f) {
+         *d = 0.0f;
+         memset(q, 0, LG_SB_INPUTS);
+         for (int g = 0; g < LG_SB_INPUTS / 16; g++) bsum[g] = 0;
+         return;
+     }
+     const float iscale = -127.0f / max;
+-    for (int j = 0; j < LG_SB_INPUTS; j++) {
+-        float v = iscale * x[j] + 12582912.0f;          // nearest_int, as in ggml-quants.c
+-        int32_t i;
+-        memcpy(&i, &v, 4);
+-        i = (i & 0x007fffff) - 0x00400000;
+-        q[j] = (int8_t) (i < 127 ? i : 127);
++    const HVX_Vector vs = hvx_vec_splat_f32(iscale), lim = Q6_V_vsplat_R(127);
++    HVX_Vector * vw = (HVX_Vector *) w;
++    for (int i = 0; i < 8; i++) {
++        vw[i] = Q6_Vw_vmin_VwVw(lg_round_sf_to_w(Q6_Vsf_equals_Vqf32(Q6_Vqf32_vmpy_VsfVsf(vx[i], vs))), lim);
+     }
+     for (int g = 0; g < LG_SB_INPUTS / 16; g++) {
+-        int32_t s = 0;
+-        for (int t = 0; t < 16; t++) s += q[16 * g + t];
+-        bsum[g] = s;
++        int32_t sum = 0;
++        for (int t = 0; t < 16; t++) { const int32_t k = w[16 * g + t]; q[16 * g + t] = (int8_t) k; sum += k; }
++        bsum[g] = sum;
+     }
+     *d = 1.0f / iscale;
+ }
+ 
++#include "lg-trace.h"
++#ifdef LG_TRACE
++static unsigned lg_chk_n, lg_chk_bad, lg_chk_maxd, lg_chk_dbad;
++static void lg_q2k_quant_check(const float * x, const int8_t * q, float d) {
++    float amax = 0.0f, max = 0.0f;
++    for (int j = 0; j < 256; j++) { const float ax = fabsf(x[j]); if (ax > amax) { amax = ax; max = x[j]; } }
++    if (amax == 0.0f) return;
++    const float iscale = -127.0f / max;
++    if (d != 1.0f / iscale) lg_chk_dbad++;
++    for (int j = 0; j < 256; j++) {
++        float v = iscale * x[j] + 12582912.0f; int32_t i; memcpy(&i, &v, 4); i = (i & 0x007fffff) - 0x00400000;
++        if (i > 127) i = 127;
++        int df = i - q[j]; if (df < 0) df = -df;
++        if (df) { lg_chk_bad++; if ((unsigned) df > lg_chk_maxd) lg_chk_maxd = df; }
++    }
++    if (++lg_chk_n % 2000 == 0) {
++        lg_trace_kv("q8K blocks checked", lg_chk_n); lg_trace_kv("  values differing", lg_chk_bad);
++        lg_trace_kv("  max diff", lg_chk_maxd); lg_trace_kv("  scale differs", lg_chk_dbad);
++    }
++}
++#endif
++
+ static void lg_q2k_quant_job(unsigned int nth, unsigned int ith, void * data) {
+     struct lg_q2k * c = (struct lg_q2k *) data;
+     const uint32_t total = c->ncols * c->nsb;
+     const uint32_t per   = (total + nth - 1) / nth;
+     const uint32_t i0 = per * ith, i1 = MIN(i0 + per, total);
+-    float * tmp = c->xtmp + (size_t) ith * LG_SB_INPUTS;
++    float * tmp = c->xtmp + (size_t) ith * 2 * LG_SB_INPUTS;
+     for (uint32_t i = i0; i < i1; i++) {
+         const uint32_t col = i / c->nsb, s = i % c->nsb;
+         const float * xs = (const float *) ((const uint8_t *) c->src1->data + (size_t) (c->col0 + col) * c->src1->nb[1]) + s * LG_SB_INPUTS;
+@@ -100,7 +145,10 @@ static void lg_q2k_quant_job(unsigned int nth, unsigned int ith, void * data) {
+             ((HVX_Vector *) tmp)[v] = ((const HVX_UVector *) xs)[v];
+         }
+         lg_q2k_quant_sb(tmp, c->xq + (size_t) col * c->K + s * LG_SB_INPUTS, c->xsum + (size_t) col * (c->K / 16) + s * 16,
+-                        c->xd + (size_t) col * c->nsb + s);
++                        c->xd + (size_t) col * c->nsb + s, (int32_t *) (tmp + LG_SB_INPUTS));
++#ifdef LG_TRACE
++        lg_q2k_quant_check(tmp, c->xq + (size_t) col * c->K + s * LG_SB_INPUTS, c->xd[(size_t) col * c->nsb + s]);
++#endif
+     }
+ }
+ 
+@@ -165,10 +213,10 @@ static void lg_q2k_mv_job(unsigned int nth, unsigned int ith, void * data) {
+                 const HVX_Vector a  = Q6_Vqf32_vmpy_VsfVsf(Q6_Vsf_equals_Vw(S), d);
+                 const HVX_Vector b  = Q6_Vqf32_vmpy_VsfVsf(Q6_Vsf_equals_Vw(M), mn);
+                 const HVX_Vector ab = Q6_Vsf_equals_Vqf32(Q6_Vqf32_vsub_Vqf32Vqf32(a, b));
+-                acc = Q6_Vqf32_vadd_Vqf32Vqf32(acc, Q6_Vqf32_vmpy_VsfVsf(ab, hvx_vec_splat_f32(xd[s])));
++                acc = Q6_Vsf_equals_Vqf32(Q6_Vqf32_vadd_Vqf32Vsf(Q6_Vqf32_vmpy_VsfVsf(ab, hvx_vec_splat_f32(xd[s])), acc));  // keep acc in sf: qf32 sums drift
+             }
+             float * y = (float *) ((uint8_t *) c->dst->data + (size_t) (c->col0 + col) * c->dst->nb[1]) + (size_t) t * LG_TILE_ROWS;
+-            *(HVX_UVector *) y = Q6_Vsf_equals_Vqf32(acc);
++            *(HVX_UVector *) y = acc;
+         }
+     }
+ }
+@@ -202,7 +250,7 @@ int lg_op_matmul_q2k(struct htp_ops_context * octx) {
+         return HTP_STATUS_OK;
+     }
+     if (!lg_xbuf && !(lg_xbuf = memalign(128, LG_XBUF))) return HTP_STATUS_INTERNAL_ERR;
+-    if (!lg_tbuf && !(lg_tbuf = memalign(128, HTP_MAX_NTHREADS * LG_SB_INPUTS * 4))) return HTP_STATUS_INTERNAL_ERR;
++    if (!lg_tbuf && !(lg_tbuf = memalign(128, HTP_MAX_NTHREADS * 2 * LG_SB_INPUTS * 4))) return HTP_STATUS_INTERNAL_ERR;
+     uint8_t * xbuf = lg_xbuf, * tbuf = lg_tbuf;
+     const uint32_t max_cols = LG_XBUF / col_size;
+     const uint32_t ncols    = src1->ne[1];
+@@ -257,39 +305,81 @@ struct lg_q4 {
+     uint8_t * wbuf;
+ };
+ 
++#ifdef LG_TRACE
++static unsigned lgq4_n, lgq4_bad, lgq4_dbad;
++static void lg_q4_quant_check(const float * x, const int8_t * q, float dq) {   // CPU: ggml_quantize_mat_q8_0_4x4
++    float amax = 0.0f;
++    for (int j = 0; j < 32; j++) amax = fmaxf(amax, fabsf(x[j]));
++    const float d = amax / 127.0f, id = d ? 1.0f / d : 0.0f;
++    if (dq != (float) (__fp16) d) lgq4_dbad++;
++    for (int j = 0; j < 32; j++) {
++        float v = x[j] * id + 12582912.0f; int32_t i; memcpy(&i, &v, 4); i = (i & 0x007fffff) - 0x00400000;
++        if (i != q[j]) lgq4_bad++;
++    }
++    if (++lgq4_n % 20000 == 0) { lg_trace_kv("q8_0 blocks", lgq4_n); lg_trace_kv("  values differing", lgq4_bad); lg_trace_kv("  scales differing", lgq4_dbad); }
++}
++#endif
++
+ static void lg_q4_quant_job(unsigned int nth, unsigned int ith, void * data) {
+     struct lg_q4 * c = (struct lg_q4 *) data;
+     const uint32_t nchunk = c->K / 256;                     // copy in 256 inputs (8 blocks) at a time
+     const uint32_t total = c->ncols * nchunk;
+     const uint32_t per = (total + nth - 1) / nth;
+     const uint32_t i0 = per * ith, i1 = MIN(i0 + per, total);
+-    float * tmp = c->xtmp + (size_t) ith * 256;
++    float * tmp = c->xtmp + (size_t) ith * 2 * LG_SB_INPUTS;
+     for (uint32_t i = i0; i < i1; i++) {
+         const uint32_t col = i / nchunk, ch = i % nchunk;
+         const float * xs = (const float *) ((const uint8_t *) c->src1->data + (size_t) (c->col0 + col) * c->src1->nb[1]) + ch * 256;
+         for (int v = 0; v < 8; v++) ((HVX_Vector *) tmp)[v] = ((const HVX_UVector *) xs)[v];
++        int32_t * w = (int32_t *) (tmp + 256);
+         for (int b = 0; b < 8; b++) {
+-            const float * x = tmp + 32 * b;
+-            float amax = 0.0f;
+-            for (int j = 0; j < 32; j++) amax = fmaxf(amax, fabsf(x[j]));
++            const HVX_Vector vx = ((const HVX_Vector *) tmp)[b];
++            const float amax = hvx_vec_get_f32(hvx_vec_reduce_max_f32(Q6_V_vand_VV(vx, Q6_V_vsplat_R(0x7fffffff))));
+             const float d  = amax / 127.0f;
+             const float id = d ? 1.0f / d : 0.0f;
++            ((HVX_Vector *) w)[b] = lg_round_sf_to_w(Q6_Vsf_equals_Vqf32(Q6_Vqf32_vmpy_VsfVsf(vx, hvx_vec_splat_f32(id))));
+             const uint32_t blk = ch * 8 + b;
+             int8_t * q = c->xq + (size_t) col * c->K + blk * 32;
+             int32_t s = 0;
+-            for (int j = 0; j < 32; j++) {
+-                float v = x[j] * id + 12582912.0f;           // round to nearest even, as vcvtnq_s32_f32
+-                int32_t k;
+-                memcpy(&k, &v, 4);
+-                k = (k & 0x007fffff) - 0x00400000;
+-                q[j] = (int8_t) k;
+-                s += k;
+-            }
++            for (int j = 0; j < 32; j++) { const int32_t k = w[32 * b + j]; q[j] = (int8_t) k; s += k; }
+             c->xsum8[(size_t) col * (c->K / 32) + blk] = 8 * s;
+             c->xd[(size_t) col * (c->K / 32) + blk]    = (float) (__fp16) d;
++#ifdef LG_TRACE
++            lg_q4_quant_check(tmp + 32 * b, q, c->xd[(size_t) col * (c->K / 32) + blk]);
++#endif
++        }
++    }
++}
++
++#ifdef LG_TRACE
++static unsigned lg4_bad, lg4_rows; static float lg4_maxrel;
++// scalar reference for row 0 of a tile, from the tile layout itself
++static void lg_q4_row_check(const struct lg_q4 * c, const uint8_t * tile, uint32_t col, float got) {
++    const int8_t * xq = c->xq + (size_t) col * c->K;
++    const float * xd = c->xd + (size_t) col * (c->K / 32);
++    double ref = 0.0;
++    for (uint32_t p = 0; p < c->npair; p++) {
++        const uint8_t * pv = tile + (size_t) p * LG_Q4_PAIR_BYTES;
++        for (int b = 0; b < 2; b++) {
++            int32_t isum = 0;
++            for (int v = 0; v < 4; v++) for (int j = 0; j < 4; j++) {
++                const uint8_t byte = pv[(4 * b + v) * 128 + j];         // row 0
++                isum += ((byte & 15) - 8) * xq[(2 * p + b) * 32 + 4 * v + j];
++                isum += ((byte >> 4) - 8) * xq[(2 * p + b) * 32 + 16 + 4 * v + j];
++            }
++            const float d = (float) ((const __fp16 *) (pv + 1024))[b];
++            ref += (double) isum * d * xd[2 * p + b];
+         }
+     }
++    const float rel = fabsf(got - (float) ref) / (fabsf((float) ref) + 1e-3f);
++    if (rel > lg4_maxrel) lg4_maxrel = rel;
++    if (rel > 1e-3f) lg4_bad++;
++    if (++lg4_rows % 4000 == 0) {
++        lg_trace_kv("q4 rows checked", lg4_rows); lg_trace_kv("  rel err > 1e-3", lg4_bad);
++        lg_trace_kv("  max rel err x1e6", (unsigned) (lg4_maxrel * 1e6f));
++    }
+ }
++#endif
+ 
+ static void lg_q4_mv_job(unsigned int nth, unsigned int ith, void * data) {
+     struct lg_q4 * c = (struct lg_q4 *) data;
+@@ -335,11 +425,14 @@ static void lg_q4_mv_job(unsigned int nth, unsigned int ith, void * data) {
+                     const HVX_Vector isum = Q6_Vw_vsub_VwVw(Q6_Vw_vadd_VwVw(s0, s1), Q6_V_vsplat_R(s8[2 * p + b]));
+                     const HVX_Vector d = Q6_Vsf_equals_Vqf32(b ? Q6_V_hi_W(dw) : Q6_V_lo_W(dw));
+                     const HVX_Vector a = Q6_Vsf_equals_Vqf32(Q6_Vqf32_vmpy_VsfVsf(Q6_Vsf_equals_Vw(isum), d));
+-                    acc = Q6_Vqf32_vadd_Vqf32Vqf32(acc, Q6_Vqf32_vmpy_VsfVsf(a, hvx_vec_splat_f32(xd[2 * p + b])));
++                    acc = Q6_Vsf_equals_Vqf32(Q6_Vqf32_vadd_Vqf32Vsf(Q6_Vqf32_vmpy_VsfVsf(a, hvx_vec_splat_f32(xd[2 * p + b])), acc));
+                 }
+             }
+             float * y = (float *) ((uint8_t *) c->dst->data + (size_t) (c->col0 + col) * c->dst->nb[1]) + (size_t) t * LG_TILE_ROWS;
+-            *(HVX_UVector *) y = Q6_Vsf_equals_Vqf32(acc);
++            *(HVX_UVector *) y = acc;
++#ifdef LG_TRACE
++            if (ith == 0 && (t % 16) == 0) lg_q4_row_check(c, tile, col, y[0]);
++#endif
+         }
+     }
+ }
+@@ -371,7 +464,7 @@ int lg_op_matmul_q4_0(struct htp_ops_context * octx) {
+         return HTP_STATUS_OK;
+     }
+     if (!lg_xbuf && !(lg_xbuf = memalign(128, LG_XBUF))) return HTP_STATUS_INTERNAL_ERR;
+-    if (!lg_tbuf && !(lg_tbuf = memalign(128, HTP_MAX_NTHREADS * LG_SB_INPUTS * 4))) return HTP_STATUS_INTERNAL_ERR;
++    if (!lg_tbuf && !(lg_tbuf = memalign(128, HTP_MAX_NTHREADS * 2 * LG_SB_INPUTS * 4))) return HTP_STATUS_INTERNAL_ERR;
+     uint8_t * xbuf = lg_xbuf, * tbuf = lg_tbuf;
+ 
+     const uint32_t max_cols = LG_XBUF / col_size;
+diff --git a/ggml/src/ggml-hexagon/htp/main.c b/ggml/src/ggml-hexagon/htp/main.c
+index adfaac7..362fc28 100644
+--- a/ggml/src/ggml-hexagon/htp/main.c
++++ b/ggml/src/ggml-hexagon/htp/main.c
+@@ -27,6 +27,7 @@
+ #include "ggml-common.h"
+ #include "htp-ctx.h"
+ #include "lg-trace.h"
++extern uint32_t lg_q2k_xcache_src, lg_q4_xcache_src;   // lg-q2k-ops.c: cached quantized matmul inputs
+ #ifdef LG_TRACE
+ FILE * lg_trace_f;
+ #endif
+@@ -555,8 +556,6 @@ static inline void profile_stop(uint32_t mode, struct profile_data * d) {
+     }
+ }
+ 
+-extern uint32_t lg_q2k_xcache_src, lg_q4_xcache_src;
+-
+ static int execute_op(struct htp_ops_context * octx) {
+     if (!(octx->op == HTP_OP_MUL_MAT && (octx->src[0]->type == HTP_TYPE_Q2_K || octx->src[0]->type == HTP_TYPE_Q4_0))) {
+         lg_q2k_xcache_src = lg_q4_xcache_src = 0;   // a new input may land at the same address after other ops
+@@ -886,6 +885,7 @@ static void htp_packet_callback(dspqueue_t queue, int error, void * context) {
+ 
+         prep_op_bufs(ctx, bufs, n_bufs);
+         prep_tensors(ctx, bufs, tens, n_tens);
++        lg_q2k_xcache_src = lg_q4_xcache_src = 0;   // LG: inputs may have been rewritten by the host between batches
+ 
+         struct htp_ops_context *octx = &ctx->octx;
+         memset(octx, 0, sizeof(*octx));

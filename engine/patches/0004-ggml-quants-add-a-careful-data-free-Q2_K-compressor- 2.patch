@@ -1,0 +1,136 @@
+From 35324e24e34b32b862624bdeef7ddac332d8b3c0 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Sat, 10 Oct 2026 19:40:14 -0700
+Subject: [PATCH 04/35] ggml-quants: add a careful, data-free Q2_K compressor
+ behind LG_Q2K_CAREFUL
+
+Starts from the reference result, then alternates a least-squares refit of d and dmin with an exhaustive search of every 4-bit scale and min pair per group of 16, keeping the closest state. Same format. On 16 tensors of Gemma 4 E4B QAT it lands 1.2-1.4 dB closer to the master than the reference.
+---
+ ggml/src/ggml-quants.c | 107 ++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 106 insertions(+), 1 deletion(-)
+
+diff --git a/ggml/src/ggml-quants.c b/ggml/src/ggml-quants.c
+index 15d231f..32b4b74 100644
+--- a/ggml/src/ggml-quants.c
++++ b/ggml/src/ggml-quants.c
+@@ -900,6 +900,105 @@ void quantize_row_q2_K_ref(const float * GGML_RESTRICT x, block_q2_K * GGML_REST
+     }
+ }
+ 
++// Careful Q2_K: the same format, chosen with more care and no data (only the weights themselves).
++// Starts from the reference result, then alternates two steps and keeps the state with the lowest squared error:
++//   1. refit the super-block's d and dmin by least squares for the current 4-bit scales, mins and 2-bit codes
++//   2. for every group of 16 weights, try all 16 x 16 scale and min pairs and keep the closest
++// The reference rounds the 16 scales and mins to a 4-bit grid once and never revisits them. Enabled by
++// LG_Q2K_CAREFUL=1 in llama-quantize, when no importance matrix is given.
++static float q2_K_block_error(const float * x, float d, float dm, const int * sc, const int * mn, const uint8_t * L) {
++    float e = 0;
++    for (int j = 0; j < 16; ++j) {
++        const float ds = d * sc[j], off = dm * mn[j];
++        for (int l = 0; l < 16; ++l) {
++            const float r = ds * L[16*j + l] - off - x[16*j + l];
++            e += r * r;
++        }
++    }
++    return e;
++}
++
++static void quantize_row_q2_K_careful(const float * GGML_RESTRICT x, block_q2_K * GGML_RESTRICT y, int64_t k) {
++    assert(k % QK_K == 0);
++    const int nb = k / QK_K;
++    quantize_row_q2_K_ref(x, y, k);
++    for (int i = 0; i < nb; i++, x += QK_K) {
++        uint8_t L[QK_K], bestL[QK_K];
++        int sc[16], mn[16], bsc[16], bmn[16];
++        float d = GGML_FP16_TO_FP32(y[i].d), dm = GGML_FP16_TO_FP32(y[i].dmin);
++        for (int j = 0; j < 16; ++j) { sc[j] = y[i].scales[j] & 0xF; mn[j] = y[i].scales[j] >> 4; }
++        for (int j = 0; j < QK_K; j += 128) {
++            for (int l = 0; l < 32; ++l) {
++                const uint8_t b = y[i].qs[j/4 + l];
++                L[j + l] = b & 3; L[j + l + 32] = (b >> 2) & 3; L[j + l + 64] = (b >> 4) & 3; L[j + l + 96] = (b >> 6) & 3;
++            }
++        }
++        float best = q2_K_block_error(x, d, dm, sc, mn, L), bd = d, bdm = dm;
++        const float start = best;
++        memcpy(bsc, sc, sizeof sc); memcpy(bmn, mn, sizeof mn); memcpy(bestL, L, sizeof L);
++        for (int it = 0; it < 4; ++it) {
++            // 1. least squares for d and dmin: x ~ d * (sc*L) - dmin * mn
++            double saa = 0, sab = 0, sbb = 0, sxa = 0, sxb = 0;
++            for (int j = 0; j < 16; ++j) {
++                for (int l = 0; l < 16; ++l) {
++                    const double a = sc[j] * L[16*j + l], b = mn[j], v = x[16*j + l];
++                    saa += a*a; sab += a*b; sbb += b*b; sxa += v*a; sxb += v*b;
++                }
++            }
++            const double det = saa*sbb - sab*sab;
++            if (fabs(det) > 1e-12 * (saa*sbb + 1e-30)) {
++                d = (float)((sxa*sbb - sab*sxb) / det);
++                dm = (float)((sab*sxa - saa*sxb) / det);
++            } else if (saa > 0) {
++                d = (float)(sxa / saa);
++            }
++            d = GGML_FP16_TO_FP32(GGML_FP32_TO_FP16(d));
++            dm = GGML_FP16_TO_FP32(GGML_FP32_TO_FP16(dm));
++            // 2. every scale and min pair for every group of 16
++            for (int j = 0; j < 16; ++j) {
++                const float * xj = x + 16*j;
++                float be = INFINITY; int bs = 0, bm = 0;
++                for (int s = 0; s < 16; ++s) {
++                    const float ds = d * s, ids = ds != 0 ? 1.0f / ds : 0;
++                    for (int m = 0; m < 16; ++m) {
++                        const float off = dm * m;
++                        float e = 0;
++                        for (int l = 0; l < 16 && e < be; ++l) {
++                            const float v = (xj[l] + off) * ids;   // clamp before rounding: v can be huge when ds is tiny
++                            const int q = v <= 0 ? 0 : v >= 3 ? 3 : nearest_int(v);
++                            const float r = ds * q - off - xj[l];
++                            e += r * r;
++                        }
++                        if (e < be) { be = e; bs = s; bm = m; }
++                    }
++                }
++                sc[j] = bs; mn[j] = bm;
++                const float ds = d * bs, ids = ds != 0 ? 1.0f / ds : 0, off = dm * bm;
++                for (int l = 0; l < 16; ++l) {
++                    const float v = (xj[l] + off) * ids;
++                    L[16*j + l] = v <= 0 ? 0 : v >= 3 ? 3 : nearest_int(v);
++                }
++            }
++            const float e = q2_K_block_error(x, d, dm, sc, mn, L);
++            if (e < best) {
++                best = e; bd = d; bdm = dm;
++                memcpy(bsc, sc, sizeof sc); memcpy(bmn, mn, sizeof mn); memcpy(bestL, L, sizeof L);
++            } else {
++                break;
++            }
++        }
++        if (best >= start) continue;   // the reference result was already the closest
++        y[i].d = GGML_FP32_TO_FP16(bd);
++        y[i].dmin = GGML_FP32_TO_FP16(bdm);
++        for (int j = 0; j < 16; ++j) y[i].scales[j] = bsc[j] | (bmn[j] << 4);
++        for (int j = 0; j < QK_K; j += 128) {
++            for (int l = 0; l < 32; ++l) {
++                y[i].qs[j/4 + l] = bestL[j + l] | (bestL[j + l + 32] << 2) | (bestL[j + l + 64] << 4) | (bestL[j + l + 96] << 6);
++            }
++        }
++    }
++}
++
+ void dequantize_row_q2_K(const block_q2_K * GGML_RESTRICT x, float * GGML_RESTRICT y, int64_t k) {
+     assert(k % QK_K == 0);
+     const int nb = k / QK_K;
+@@ -1153,7 +1252,13 @@ static void quantize_row_q2_K_impl(const float * GGML_RESTRICT x, block_q2_K * G
+ size_t quantize_q2_K(const float * GGML_RESTRICT src, void * GGML_RESTRICT dst, int64_t nrow, int64_t n_per_row, const float * quant_weights) {
+     size_t row_size = ggml_row_size(GGML_TYPE_Q2_K, n_per_row);
+     if (!quant_weights) {
+-        quantize_row_q2_K_ref(src, dst, (int64_t)nrow*n_per_row);
++        static int careful = -1;
++        if (careful < 0) careful = getenv("LG_Q2K_CAREFUL") != NULL && atoi(getenv("LG_Q2K_CAREFUL")) > 0;
++        if (careful) {
++            quantize_row_q2_K_careful(src, dst, (int64_t)nrow*n_per_row);
++        } else {
++            quantize_row_q2_K_ref(src, dst, (int64_t)nrow*n_per_row);
++        }
+     }
+     else {
+         char * qrow = (char *)dst;

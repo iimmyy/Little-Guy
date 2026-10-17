@@ -1,0 +1,33 @@
+From c8f910ae2e899aa41d565c633a5397ef8b936894 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Thu, 15 Oct 2026 04:09:00 -0700
+Subject: [PATCH 33/35] lg-q2k-ops: the fused input-quantize barrier pauses
+ while spinning (a bare spin steals issue slots from the thread it waits for);
+ after an NPU watchdog crash 100+ replies into a behavior test
+
+---
+ ggml/src/ggml-hexagon/htp/lg-q2k-ops.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c b/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
+index 740a447..42ca4fc 100644
+--- a/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
++++ b/ggml/src/ggml-hexagon/htp/lg-q2k-ops.c
+@@ -296,7 +296,7 @@ static void lg_q2k_mv_job(unsigned int nth, unsigned int ith, void * data) {
+             }
+         }
+         __atomic_fetch_add(&c->qdone, 1, __ATOMIC_RELEASE);
+-        while (__atomic_load_n(&c->qdone, __ATOMIC_ACQUIRE) < nth) { }
++        while (__atomic_load_n(&c->qdone, __ATOMIC_ACQUIRE) < nth) { hex_pause(); }   // pause: a bare spin steals issue slots from the thread it waits for
+     }
+     if (t0 >= t1) return;
+ 
+@@ -617,7 +617,7 @@ static void lg_q4_mv_job(unsigned int nth, unsigned int ith, void * data) {
+             }
+         }
+         __atomic_fetch_add(&c->qdone, 1, __ATOMIC_RELEASE);
+-        while (__atomic_load_n(&c->qdone, __ATOMIC_ACQUIRE) < nth) { }
++        while (__atomic_load_n(&c->qdone, __ATOMIC_ACQUIRE) < nth) { hex_pause(); }   // pause: a bare spin steals issue slots from the thread it waits for
+     }
+     if (t0 >= t1) return;
+ 

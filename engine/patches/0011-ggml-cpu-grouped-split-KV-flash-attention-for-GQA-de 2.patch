@@ -1,0 +1,206 @@
+From 6fbde2a43049554a19f7d4c93f19d20e96e62164 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Mon, 12 Oct 2026 20:22:47 -0700
+Subject: [PATCH 11/35] ggml-cpu: grouped split-KV flash attention for GQA
+ decode (LG_FA_GQA)
+
+The split-KV decode path ran one_chunk once per query head, so each K/V row of a thread's chunk was read rk2 times
+(4 on Gemma 4 E4B: 8 query heads, 2 KV heads). On long contexts the chunk no longer fits in the core's cache and
+every pass goes back to DRAM. The heads that share a KV head now walk the chunk together and fetch each row once.
+Per head the arithmetic and its order are unchanged, so results are bit-identical (2,758-token prompt: same greedy
+reply, same top-10 log-probs at every word). LG_FA_GQA=0 restores the old loop.
+
+Q6A, brain C + dictionary preview, 4 big cores, tg32 averaged over two rounds:
+  depth 0     9.09 -> 9.05
+  depth 700   8.02 -> 8.30  (+3%)
+  depth 1800  7.17 -> 7.99  (+11%)
+  depth 3500  6.24 -> 7.71  (+24%)
+---
+ ggml/src/ggml-cpu/ops.cpp | 167 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 166 insertions(+), 1 deletion(-)
+
+diff --git a/ggml/src/ggml-cpu/ops.cpp b/ggml/src/ggml-cpu/ops.cpp
+index 6724686..43a2b9b 100644
+--- a/ggml/src/ggml-cpu/ops.cpp
++++ b/ggml/src/ggml-cpu/ops.cpp
+@@ -8582,6 +8582,163 @@ static void ggml_compute_forward_flash_attn_ext_f16_one_chunk(
+     }
+ }
+ 
++// Decode (one query row) over a KV chunk for every query head that shares K/V head ik2. The original split-KV path
++// runs one_chunk once per query head, so each K and V row of the chunk is read rk2 times; on long contexts the chunk
++// no longer fits in the core's cache and every pass goes back to DRAM. Here the rk2 heads walk the chunk together
++// and each K/V row is fetched once. Per head the arithmetic is exactly that of one_chunk (same order, same FP16
++// accumulator), so the results are bit-identical. LG_FA_GQA=0 turns it off.
++static void ggml_compute_forward_flash_attn_ext_f16_gqa_chunk(
++        const ggml_compute_params * params,
++        ggml_tensor * dst,
++        int64_t ik2,
++        int64_t ic_start, int64_t ic_end,
++        float * partials, int64_t partial_stride) {
++
++    const ggml_tensor * q     = dst->src[0];
++    const ggml_tensor * k     = dst->src[1];
++    const ggml_tensor * v     = dst->src[2];
++    const ggml_tensor * mask  = dst->src[3];
++    const ggml_tensor * sinks = dst->src[4];
++
++    GGML_TENSOR_LOCALS(int64_t, neq, q,   ne)
++    GGML_TENSOR_LOCALS(size_t,  nbq, q,   nb)
++    GGML_TENSOR_LOCALS(int64_t, nek, k,   ne)
++    GGML_TENSOR_LOCALS(size_t,  nbk, k,   nb)
++    GGML_TENSOR_LOCALS(size_t,  nbv, v,   nb)
++
++    const int64_t DK  = nek0;
++    const int64_t DV  = v->ne[0];
++    const int64_t rk2 = neq2/nek2;
++    const int64_t h0  = ik2*rk2;   // first query head of this group
++
++    float scale         = 1.0f;
++    float max_bias      = 0.0f;
++    float logit_softcap = 0.0f;
++    memcpy(&scale,         (float *) dst->op_params + 0, sizeof(float));
++    memcpy(&max_bias,      (float *) dst->op_params + 1, sizeof(float));
++    memcpy(&logit_softcap, (float *) dst->op_params + 2, sizeof(float));
++    if (logit_softcap != 0) {
++        scale /= logit_softcap;
++    }
++
++    const uint32_t n_head      = neq2;
++    const uint32_t n_head_log2 = 1u << (uint32_t) floor(log2(n_head));
++    const float m0 = powf(2.0f, -(max_bias       ) / n_head_log2);
++    const float m1 = powf(2.0f, -(max_bias / 2.0f) / n_head_log2);
++
++    ggml_type         const k_vec_dot_type = ggml_get_type_traits_cpu(k->type)->vec_dot_type;
++    ggml_from_float_t const q_to_vec_dot   = ggml_get_type_traits_cpu(k_vec_dot_type)->from_float;
++    ggml_vec_dot_t    const kq_vec_dot     = ggml_get_type_traits_cpu(k->type)->vec_dot;
++    ggml_to_float_t   const v_to_float     = ggml_get_type_traits(v->type)->to_float;
++    const size_t q_row = ggml_row_size(k_vec_dot_type, DK);
++
++    // per-head state, kept per thread (rk2 <= 16, checked by the caller)
++    thread_local std::vector<char>  qbuf;
++    thread_local std::vector<float> acc32;
++    thread_local std::vector<ggml_fp16_t> acc16;
++    thread_local std::vector<float> v32;
++    qbuf.resize(rk2*q_row);
++    acc32.assign(rk2*DV, 0.0f);
++    acc16.assign(rk2*DV, 0);
++    v32.resize(DV);
++
++    float M[16], S[16], slope[16];
++    const ggml_fp16_t * mp[16];
++    for (int64_t j = 0; j < rk2; j++) {
++        const int64_t h = h0 + j;
++        M[j] = -INFINITY;
++        S[j] = 0.0f;
++        slope[j] = (max_bias > 0.0f) ? h < n_head_log2 ? powf(m0, h + 1) : powf(m1, 2*(h - n_head_log2) + 1) : 1.0f;
++        mp[j] = mask ? (ggml_fp16_t *)((char *) mask->data + (h%mask->ne[2])*mask->nb[2]) : NULL;
++        const float * pq = (const float *) ((char *) q->data + h*nbq2);
++        q_to_vec_dot(pq, qbuf.data() + j*q_row, DK);
++    }
++
++    for (int64_t ic = ic_start; ic < ic_end; ++ic) {
++        const char * k_data = (const char *) k->data + ic*nbk1 + ik2*nbk2;
++        const char * v_data = (const char *) v->data + ic*nbv1 + ik2*nbv2;
++        bool v_ready = false;
++
++        for (int64_t j = 0; j < rk2; j++) {
++            const float mv = mp[j] ? slope[j]*GGML_CPU_FP16_TO_FP32(mp[j][ic]) : 0.0f;
++            if (mv == -INFINITY) {
++                continue;
++            }
++
++            float s;
++            kq_vec_dot(DK, &s, 0, k_data, 0, qbuf.data() + j*q_row, 0, 1);
++            s = s*scale;
++            if (logit_softcap != 0.0f) {
++                s = logit_softcap*tanhf(s);
++            }
++            s += mv;
++
++            const float Mold = M[j];
++            float ms = 1.0f;
++            float vs = 1.0f;
++
++            if (v->type == GGML_TYPE_F16) {
++                ggml_fp16_t * VKQ16 = acc16.data() + j*DV;
++                if (s > M[j]) {
++                    M[j] = s;
++                    ms = expf(Mold - M[j]);
++                    ggml_vec_scale_f16(DV, VKQ16, ms);
++                } else {
++                    vs = expf(s - M[j]);
++                }
++                ggml_vec_mad_f16(DV, VKQ16, (const ggml_fp16_t *) v_data, vs);
++            } else {
++                float * VKQ32 = acc32.data() + j*DV;
++                if (s > M[j]) {
++                    M[j] = s;
++                    ms = expf(Mold - M[j]);
++                    ggml_vec_scale_f32(DV, VKQ32, ms);
++                } else {
++                    vs = expf(s - M[j]);
++                }
++                if (v_to_float) {
++                    if (!v_ready) {
++                        v_to_float(v_data, v32.data(), DV);
++                        v_ready = true;
++                    }
++                    ggml_vec_mad_f32(DV, VKQ32, v32.data(), vs);
++                } else {
++                    ggml_vec_mad_f32(DV, VKQ32, (const float *) v_data, vs);
++                }
++            }
++            S[j] = S[j]*ms + vs;
++        }
++    }
++
++    for (int64_t j = 0; j < rk2; j++) {
++        const int64_t h = h0 + j;
++        float * VKQ32 = acc32.data() + j*DV;
++        if (v->type == GGML_TYPE_F16) {
++            const ggml_fp16_t * VKQ16 = acc16.data() + j*DV;
++            for (int64_t d = 0; d < DV; ++d) {
++                VKQ32[d] = GGML_CPU_FP16_TO_FP32(VKQ16[d]);
++            }
++        }
++        if (sinks && ic_start == 0) {
++            const float s = ((float *)((char *) sinks->data))[h];
++            float ms = 1.0f;
++            float vs = 1.0f;
++            if (s > M[j]) {
++                ms = expf(M[j] - s);
++                M[j] = s;
++                ggml_vec_scale_f32(DV, VKQ32, ms);
++            } else {
++                vs = expf(s - M[j]);
++            }
++            S[j] = S[j]*ms + vs;
++        }
++        float * partial = partials + h*partial_stride;
++        partial[0] = M[j];
++        partial[1] = S[j];
++        memcpy(partial + 2, VKQ32, DV*sizeof(float));
++    }
++}
++
+ static void ggml_compute_forward_flash_attn_ext_tiled(
+         const ggml_compute_params * params,
+         ggml_tensor * dst,
+@@ -9006,7 +9163,15 @@ static void ggml_compute_forward_flash_attn_ext_f16(
+         const int64_t partial_stride = nth * partial_size;
+         float *       chunk_partials = partials_base + ith * partial_size;
+ 
+-        if (ic_start < nek1) {
++        static const bool lg_fa_gqa = !getenv("LG_FA_GQA") || atoi(getenv("LG_FA_GQA")) != 0;
++        const int64_t rk2 = neq2/nek2;
++        const bool grouped = lg_fa_gqa && rk2 > 1 && rk2 <= 16 && neq2 % nek2 == 0 && nev2 == nek2 && nek3 == 1;
++
++        if (ic_start < nek1 && grouped) {
++            for (int64_t ik2 = 0; ik2 < nek2; ik2++) {
++                ggml_compute_forward_flash_attn_ext_f16_gqa_chunk(params, dst, ik2, ic_start, ic_end, chunk_partials, partial_stride);
++            }
++        } else if (ic_start < nek1) {
+             for (int64_t q_head = 0; q_head < neq2; q_head++) {
+                 ggml_compute_forward_flash_attn_ext_f16_one_chunk(
+                     params, dst, q_head, q_head + 1, ic_start, ic_end,

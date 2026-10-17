@@ -1,0 +1,237 @@
+From 872a6b262f8e8fcc53b609acdbbbd2ec606b5685 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Sun, 11 Oct 2026 14:30:40 -0700
+Subject: [PATCH 09/35] Careful Q2_K level 2: several starting d and dmin,
+ scored by how well their grids fit each group's ideal
+
+LG_Q2K_CAREFUL=2 with LG_Q2K_STARTS, LG_Q2K_RADIUS and LG_Q2K_ITERS. Built brains C2 and D; saturates at
+1.37 dB closer than the reference on the distortion meter.
+---
+ ggml/src/ggml-quants.c | 184 ++++++++++++++++++++++++++++-------------
+ 1 file changed, 126 insertions(+), 58 deletions(-)
+
+diff --git a/ggml/src/ggml-quants.c b/ggml/src/ggml-quants.c
+index 32b4b74..fc3b823 100644
+--- a/ggml/src/ggml-quants.c
++++ b/ggml/src/ggml-quants.c
+@@ -901,11 +901,14 @@ void quantize_row_q2_K_ref(const float * GGML_RESTRICT x, block_q2_K * GGML_REST
+ }
+ 
+ // Careful Q2_K: the same format, chosen with more care and no data (only the weights themselves).
+-// Starts from the reference result, then alternates two steps and keeps the state with the lowest squared error:
++// Level 1 starts from the reference result and alternates two steps, keeping the state with the lowest squared error:
+ //   1. refit the super-block's d and dmin by least squares for the current 4-bit scales, mins and 2-bit codes
+-//   2. for every group of 16 weights, try all 16 x 16 scale and min pairs and keep the closest
+-// The reference rounds the 16 scales and mins to a 4-bit grid once and never revisits them. Enabled by
+-// LG_Q2K_CAREFUL=1 in llama-quantize, when no importance matrix is given.
++//   2. for every group of 16 weights, search the 4-bit scale and min pairs and keep the closest
++// Level 2 also tries several starting d and dmin: it fits each group's ideal (unrounded) scale and min, scores a
++// sweep of d and dmin by how well their 16-step grids fit those ideals, and refines the best few pairs.
++// The reference rounds the 16 scales and mins to a 4-bit grid once and never revisits them.
++// llama-quantize, no importance matrix: LG_Q2K_CAREFUL=1|2, LG_Q2K_STARTS (best d and dmin kept per axis, default 3),
++// LG_Q2K_RADIUS (search +-radius around each start, -1 = all 256 pairs, default 2), LG_Q2K_ITERS (default 6).
+ static float q2_K_block_error(const float * x, float d, float dm, const int * sc, const int * mn, const uint8_t * L) {
+     float e = 0;
+     for (int j = 0; j < 16; ++j) {
+@@ -918,13 +921,101 @@ static float q2_K_block_error(const float * x, float d, float dm, const int * sc
+     return e;
+ }
+ 
+-static void quantize_row_q2_K_careful(const float * GGML_RESTRICT x, block_q2_K * GGML_RESTRICT y, int64_t k) {
++static inline int q2_K_code(float x, float off, float ids) {
++    const float v = (x + off) * ids;   // clamp before rounding: v can be huge when the step is tiny
++    return v <= 0 ? 0 : v >= 3 ? 3 : nearest_int(v);
++}
++
++// alternate least-squares d/dmin and a per-group scale/min search; the arguments end up holding the best state found
++static float q2_K_refine(const float * x, float * pd, float * pdm, int * sc, int * mn, uint8_t * L, int radius, int iters) {
++    float d = *pd, dm = *pdm;
++    float best = q2_K_block_error(x, d, dm, sc, mn, L), bd = d, bdm = dm;
++    int bsc[16], bmn[16]; uint8_t bL[QK_K];
++    memcpy(bsc, sc, sizeof bsc); memcpy(bmn, mn, sizeof bmn); memcpy(bL, L, sizeof bL);
++    for (int it = 0; it < iters; ++it) {
++        double saa = 0, sab = 0, sbb = 0, sxa = 0, sxb = 0;   // x ~ d * (sc*L) - dmin * mn
++        for (int j = 0; j < 16; ++j) {
++            for (int l = 0; l < 16; ++l) {
++                const double a = sc[j] * L[16*j + l], b = mn[j], v = x[16*j + l];
++                saa += a*a; sab += a*b; sbb += b*b; sxa += v*a; sxb += v*b;
++            }
++        }
++        const double det = saa*sbb - sab*sab;
++        if (fabs(det) > 1e-12 * (saa*sbb + 1e-30)) {
++            d = (float)((sxa*sbb - sab*sxb) / det);
++            dm = (float)((sab*sxa - saa*sxb) / det);
++        } else if (saa > 0) {
++            d = (float)(sxa / saa);
++        }
++        d = GGML_FP16_TO_FP32(GGML_FP32_TO_FP16(d));
++        dm = GGML_FP16_TO_FP32(GGML_FP32_TO_FP16(dm));
++        for (int j = 0; j < 16; ++j) {
++            const float * xj = x + 16*j;
++            const int s0 = radius < 0 ? 0 : MAX(0, sc[j] - radius), s1 = radius < 0 ? 15 : MIN(15, sc[j] + radius);
++            const int m0 = radius < 0 ? 0 : MAX(0, mn[j] - radius), m1 = radius < 0 ? 15 : MIN(15, mn[j] + radius);
++            float be = INFINITY; int bs = sc[j], bm = mn[j];
++            for (int s = s0; s <= s1; ++s) {
++                const float ds = d * s, ids = ds != 0 ? 1.0f / ds : 0;
++                for (int m = m0; m <= m1; ++m) {
++                    const float off = dm * m;
++                    float e = 0;
++                    for (int l = 0; l < 16 && e < be; ++l) {
++                        const float r = ds * q2_K_code(xj[l], off, ids) - off - xj[l];
++                        e += r * r;
++                    }
++                    if (e < be) { be = e; bs = s; bm = m; }
++                }
++            }
++            sc[j] = bs; mn[j] = bm;
++            const float ds = d * bs, ids = ds != 0 ? 1.0f / ds : 0, off = dm * bm;
++            for (int l = 0; l < 16; ++l) L[16*j + l] = q2_K_code(xj[l], off, ids);
++        }
++        const float e = q2_K_block_error(x, d, dm, sc, mn, L);
++        if (e < best) {
++            best = e; bd = d; bdm = dm;
++            memcpy(bsc, sc, sizeof bsc); memcpy(bmn, mn, sizeof bmn); memcpy(bL, L, sizeof bL);
++        } else {
++            break;
++        }
++    }
++    *pd = bd; *pdm = bdm;
++    memcpy(sc, bsc, sizeof bsc); memcpy(mn, bmn, sizeof bmn); memcpy(L, bL, sizeof bL);
++    return best;
++}
++
++static int q2_K_env(const char * name, int dflt) {
++    const char * v = getenv(name);
++    return v ? atoi(v) : dflt;
++}
++
++// the k grid values of g in [lo, hi] (41 steps) whose 16-step grid fits targets t[0..15] best
++static void q2_K_best_steps(const float * t, float top, int k, float * out) {
++    float err[41], val[41];
++    for (int c = 0; c < 41; ++c) {
++        const float g = top / 15 * (0.6f + 0.02f * c);
++        float e = 0;
++        for (int j = 0; j < 16; ++j) {
++            const int q = MAX(0, MIN(15, nearest_int(t[j] / g)));
++            e += (t[j] - g * q) * (t[j] - g * q);
++        }
++        err[c] = e; val[c] = g;
++    }
++    for (int n = 0; n < k; ++n) {
++        int b = 0;
++        for (int c = 1; c < 41; ++c) if (err[c] < err[b]) b = c;
++        out[n] = val[b]; err[b] = INFINITY;
++    }
++}
++
++static void quantize_row_q2_K_careful(const float * GGML_RESTRICT x, block_q2_K * GGML_RESTRICT y, int64_t k, int level) {
+     assert(k % QK_K == 0);
+     const int nb = k / QK_K;
++    const int starts = MAX(1, MIN(41, q2_K_env("LG_Q2K_STARTS", 3)));
++    const int radius = q2_K_env("LG_Q2K_RADIUS", 2), iters = MAX(1, q2_K_env("LG_Q2K_ITERS", 6));
+     quantize_row_q2_K_ref(x, y, k);
+     for (int i = 0; i < nb; i++, x += QK_K) {
+-        uint8_t L[QK_K], bestL[QK_K];
+-        int sc[16], mn[16], bsc[16], bmn[16];
++        uint8_t L[QK_K], bestL[QK_K], Lc[QK_K], Laux[16], Lg[16];
++        int sc[16], mn[16], bsc[16], bmn[16], scc[16], mnc[16];
+         float d = GGML_FP16_TO_FP32(y[i].d), dm = GGML_FP16_TO_FP32(y[i].dmin);
+         for (int j = 0; j < 16; ++j) { sc[j] = y[i].scales[j] & 0xF; mn[j] = y[i].scales[j] >> 4; }
+         for (int j = 0; j < QK_K; j += 128) {
+@@ -933,58 +1024,35 @@ static void quantize_row_q2_K_careful(const float * GGML_RESTRICT x, block_q2_K
+                 L[j + l] = b & 3; L[j + l + 32] = (b >> 2) & 3; L[j + l + 64] = (b >> 4) & 3; L[j + l + 96] = (b >> 6) & 3;
+             }
+         }
+-        float best = q2_K_block_error(x, d, dm, sc, mn, L), bd = d, bdm = dm;
+-        const float start = best;
++        const float start = q2_K_block_error(x, d, dm, sc, mn, L);
++        float best = q2_K_refine(x, &d, &dm, sc, mn, L, -1, iters), bd = d, bdm = dm;
+         memcpy(bsc, sc, sizeof sc); memcpy(bmn, mn, sizeof mn); memcpy(bestL, L, sizeof L);
+-        for (int it = 0; it < 4; ++it) {
+-            // 1. least squares for d and dmin: x ~ d * (sc*L) - dmin * mn
+-            double saa = 0, sab = 0, sbb = 0, sxa = 0, sxb = 0;
+-            for (int j = 0; j < 16; ++j) {
+-                for (int l = 0; l < 16; ++l) {
+-                    const double a = sc[j] * L[16*j + l], b = mn[j], v = x[16*j + l];
+-                    saa += a*a; sab += a*b; sbb += b*b; sxa += v*a; sxb += v*b;
+-                }
+-            }
+-            const double det = saa*sbb - sab*sab;
+-            if (fabs(det) > 1e-12 * (saa*sbb + 1e-30)) {
+-                d = (float)((sxa*sbb - sab*sxb) / det);
+-                dm = (float)((sab*sxa - saa*sxb) / det);
+-            } else if (saa > 0) {
+-                d = (float)(sxa / saa);
+-            }
+-            d = GGML_FP16_TO_FP32(GGML_FP32_TO_FP16(d));
+-            dm = GGML_FP16_TO_FP32(GGML_FP32_TO_FP16(dm));
+-            // 2. every scale and min pair for every group of 16
+-            for (int j = 0; j < 16; ++j) {
+-                const float * xj = x + 16*j;
+-                float be = INFINITY; int bs = 0, bm = 0;
+-                for (int s = 0; s < 16; ++s) {
+-                    const float ds = d * s, ids = ds != 0 ? 1.0f / ds : 0;
+-                    for (int m = 0; m < 16; ++m) {
+-                        const float off = dm * m;
+-                        float e = 0;
+-                        for (int l = 0; l < 16 && e < be; ++l) {
+-                            const float v = (xj[l] + off) * ids;   // clamp before rounding: v can be huge when ds is tiny
+-                            const int q = v <= 0 ? 0 : v >= 3 ? 3 : nearest_int(v);
+-                            const float r = ds * q - off - xj[l];
+-                            e += r * r;
+-                        }
+-                        if (e < be) { be = e; bs = s; bm = m; }
++        if (level >= 2) {
++            float a[16], b[16], amax = 0, bmax = 0, ones[16];
++            for (int l = 0; l < 16; ++l) ones[l] = 1.0f;
++            for (int j = 0; j < 16; ++j) {   // each group's ideal scale and min, unrounded, by squared error
++                a[j] = make_qkx2_quants(16, 3, x + 16*j, ones, Lg, &b[j], Laux, -0.5f, 0.1f, 15, false);
++                amax = MAX(amax, a[j]); bmax = MAX(bmax, b[j]);
++            }
++            float dsel[41], msel[41];
++            const int nd = amax > 0 ? starts : 0, nm = bmax > 0 ? starts : 1;
++            if (nd) q2_K_best_steps(a, amax, nd, dsel);
++            if (bmax > 0) q2_K_best_steps(b, bmax, nm, msel); else msel[0] = 0;
++            for (int u = 0; u < nd; ++u) {
++                for (int w = 0; w < nm; ++w) {
++                    float dc = GGML_FP16_TO_FP32(GGML_FP32_TO_FP16(dsel[u])), dmc = GGML_FP16_TO_FP32(GGML_FP32_TO_FP16(msel[w]));
++                    for (int j = 0; j < 16; ++j) {
++                        scc[j] = dc > 0 ? MAX(0, MIN(15, nearest_int(a[j] / dc))) : 0;
++                        mnc[j] = dmc > 0 ? MAX(0, MIN(15, nearest_int(b[j] / dmc))) : 0;
++                        const float ds = dc * scc[j], ids = ds != 0 ? 1.0f / ds : 0, off = dmc * mnc[j];
++                        for (int l = 0; l < 16; ++l) Lc[16*j + l] = q2_K_code(x[16*j + l], off, ids);
++                    }
++                    const float e = q2_K_refine(x, &dc, &dmc, scc, mnc, Lc, radius, iters);
++                    if (e < best) {
++                        best = e; bd = dc; bdm = dmc;
++                        memcpy(bsc, scc, sizeof scc); memcpy(bmn, mnc, sizeof mnc); memcpy(bestL, Lc, sizeof Lc);
+                     }
+                 }
+-                sc[j] = bs; mn[j] = bm;
+-                const float ds = d * bs, ids = ds != 0 ? 1.0f / ds : 0, off = dm * bm;
+-                for (int l = 0; l < 16; ++l) {
+-                    const float v = (xj[l] + off) * ids;
+-                    L[16*j + l] = v <= 0 ? 0 : v >= 3 ? 3 : nearest_int(v);
+-                }
+-            }
+-            const float e = q2_K_block_error(x, d, dm, sc, mn, L);
+-            if (e < best) {
+-                best = e; bd = d; bdm = dm;
+-                memcpy(bsc, sc, sizeof sc); memcpy(bmn, mn, sizeof mn); memcpy(bestL, L, sizeof L);
+-            } else {
+-                break;
+             }
+         }
+         if (best >= start) continue;   // the reference result was already the closest
+@@ -1253,9 +1321,9 @@ size_t quantize_q2_K(const float * GGML_RESTRICT src, void * GGML_RESTRICT dst,
+     size_t row_size = ggml_row_size(GGML_TYPE_Q2_K, n_per_row);
+     if (!quant_weights) {
+         static int careful = -1;
+-        if (careful < 0) careful = getenv("LG_Q2K_CAREFUL") != NULL && atoi(getenv("LG_Q2K_CAREFUL")) > 0;
++        if (careful < 0) careful = getenv("LG_Q2K_CAREFUL") ? MAX(0, atoi(getenv("LG_Q2K_CAREFUL"))) : 0;
+         if (careful) {
+-            quantize_row_q2_K_careful(src, dst, (int64_t)nrow*n_per_row);
++            quantize_row_q2_K_careful(src, dst, (int64_t)nrow*n_per_row, careful);
+         } else {
+             quantize_row_q2_K_ref(src, dst, (int64_t)nrow*n_per_row);
+         }

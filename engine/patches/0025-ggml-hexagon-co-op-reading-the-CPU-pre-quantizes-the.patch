@@ -1,7 +1,7 @@
 From 4d1d5063ae6ff04696f7aee0ce4a31be268b7ba0 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Wed, 14 Oct 2026 01:25:19 -0700
-Subject: [PATCH 25/36] ggml-hexagon co-op reading: the CPU pre-quantizes the
+Subject: [PATCH 25/38] ggml-hexagon co-op reading: the CPU pre-quantizes the
  NPU share's input (q8_K/q8_0 into the NPU layout, compute-usage buffer so the
  NPU drops stale cache lines), reuses it for gate/up and q/k, groups CPU ops
  into one graph, keeps a full CPU copy so batches under LG_COOP_MIN (32) run
