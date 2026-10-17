@@ -300,7 +300,8 @@ def load(path):
 def settings():
     """matching settings, all from the environment so every run's log names them"""
     return {"damp": float(os.environ.get("LG_MATCH_DAMP", "0.01")), "order": os.environ.get("LG_MATCH_ORDER") or None,
-            "refit": os.environ.get("LG_MATCH_REFIT") == "1", "seq": os.environ.get("LG_SEQ_ACT") or None}
+            "refit": os.environ.get("LG_MATCH_REFIT") == "1", "seq": os.environ.get("LG_SEQ_ACT") or None,
+            "stock": os.environ.get("LG_MATCH_STOCK") == "1"}
 
 
 def one(ref, don, act_dir, name):
@@ -330,7 +331,9 @@ def one(ref, don, act_dir, name):
     a, b, c0, qmax = grid(raw, dt.tensor_type, n_col)
     ref_vals = dequantize(dt.data, dt.tensor_type).reshape(W.shape)   # our reading of the format = the engine's decoder
     assert np.allclose(a * c0 + b, ref_vals, rtol=0, atol=1e-6 * np.abs(ref_vals).max()), f"{name}: grid decode mismatch"
-    c1 = match(W, H, a, b, c0, qmax, cfg["damp"], order=cfg["order"])
+    # LG_MATCH_STOCK=1: keep the donor's codes as they are and only measure (e.g. right-scale Q4_0, where there is
+    # nothing left to match): the sidecar then holds the stock error on fit and held-out rows for the bit mix
+    c1 = c0.copy() if cfg["stock"] else match(W, H, a, b, c0, qmax, cfg["damp"], order=cfg["order"])
     if cfg["refit"]:
         raw2 = refit(raw, dt.tensor_type, W, c1, np.diag(H)[None, :])
         a2, b2, _, _ = grid(raw2, dt.tensor_type, n_col)
@@ -361,7 +364,8 @@ def line(n, r):
 def build(ref_p, don_p, act_dir, out_p):
     ref, top = load(ref_p), gguf.GGUFReader(don_p)
     don = {t.name: t for t in top.tensors}
-    log(f"settings {settings()}, held out every {HOLD}th row")
+    h0 = hold_from(Path(act_dir) / "x")
+    log(f"settings {settings()}, held out: " + (f"whole documents from row {h0}" if h0 is not None else f"every {HOLD}th row"))
     w = gguf.GGUFWriter(out_p, top.fields[gguf.Keys.General.ARCHITECTURE].contents(), endianess=top.endianess)
     for f in top.fields.values():
         if f.name == gguf.Keys.General.ARCHITECTURE or f.name.startswith("GGUF."):
