@@ -23,7 +23,8 @@ RAW = {
     "cheer": "My friend failed her driving test and feels terrible. Can you write her a short message to cheer her up?",
 }
 OLD = json.load(open(ROOT / "tests/prompts/speculation.json"))
-CFG = {"none": [], "mtp2": ["-md", str(DRAFT), "-ngld", "99", "--spec-type", "draft-mtp", "--spec-draft-n-max", "2"],
+CFG = {"none": [], "mtp1": ["-md", str(DRAFT), "-ngld", "99", "--spec-type", "draft-mtp", "--spec-draft-n-max", "1"],
+       "mtp2": ["-md", str(DRAFT), "-ngld", "99", "--spec-type", "draft-mtp", "--spec-draft-n-max", "2"],
        "mtp3": ["-md", str(DRAFT), "-ngld", "99", "--spec-type", "draft-mtp", "--spec-draft-n-max", "3"],
        "mtp4": ["-md", str(DRAFT), "-ngld", "99", "--spec-type", "draft-mtp", "--spec-draft-n-max", "4"]}
 for t in ("ngram-simple", "ngram-map-k", "ngram-mod"):

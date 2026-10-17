@@ -13,9 +13,13 @@ cool() { while [ $(hottest) -gt 45 ]; do sleep 5; done; }
 
 run() {   # name engine-dir brain extra-env extra-args
   local name=$1 dir=$2 brain=$3 env=$4; shift 4
+  # a server still holding the port would silently answer this run's questions instead (2026-10-17: every drafter
+  # run that day talked to an earlier server), so refuse to start until the port is free
+  if curl -s -m 2 127.0.0.1:8096/health >/dev/null; then echo "   $name: port 8096 is busy, NOT run"; return; fi
   cool
   local t0=$(hottest)
-  (cd $dir && env $env LD_LIBRARY_PATH=$dir/lib GGML_HEXAGON_NDEV=0 bin/llama-server -m $brain $CPU --port 8096 "$@" \
+  # exec: $! is then the server itself, so the kill below stops it (not only the subshell around it)
+  (cd $dir && exec env $env LD_LIBRARY_PATH=$dir/lib GGML_HEXAGON_NDEV=0 bin/llama-server -m $brain $CPU --port 8096 "$@" \
      > "$OUT/$name.server.log" 2>&1) &
   local pid=$!
   local w=0
@@ -23,7 +27,8 @@ run() {   # name engine-dir brain extra-env extra-args
     sleep 1; w=$((w + 1))
     if [ $w -gt 300 ] || ! kill -0 $pid 2>/dev/null; then echo "   $name: server did not start, see $name.server.log"; kill $pid 2>/dev/null; return; fi
   done
-  python3 - "$OUT/$name.json" <<'EOF'
+  local drafting=0; case " $* " in *" -md "*) drafting=1;; esac
+  python3 - "$OUT/$name.json" $drafting <<'EOF'
 import json, sys, urllib.request
 Q = ["Is it okay to have grapefruit with Dayvigo?",
      "Hey, I just got home from a long shift. How was your day?",
@@ -44,8 +49,10 @@ for seed in (1000, 1001, 1002):
         json.dump(rows, open(sys.argv[1], "w"), indent=1, ensure_ascii=False)
 n = sum(r["n"] for r in rows); ms = sum(r["ms"] for r in rows); d = sum(r["drafted"] for r in rows); a = sum(r["kept"] for r in rows)
 print(f"{n} words in {ms / 1000:.1f} s = {1000 * n / ms:.2f} words/s" + (f", guesses kept {a}/{d} = {100 * a / d:.0f}%" if d else ""))
+if sys.argv[2] == "1" and not d: print("   INVALID: drafter run with no guesses")
 EOF
   kill $pid; wait $pid 2>/dev/null
+  local w2=0; while curl -s -m 2 127.0.0.1:8096/health >/dev/null && [ $w2 -lt 60 ]; do sleep 1; w2=$((w2 + 1)); done
   echo "   ($name started at $t0 C, ended at $(hottest) C)"
 }
 
