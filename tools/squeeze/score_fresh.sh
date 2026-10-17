@@ -6,8 +6,9 @@
 # usage: tools/squeeze/score_fresh.sh base               (once: writes the yardstick's logits, needs the bf16 file)
 #        tools/squeeze/score_fresh.sh <brain.gguf> [...]
 cd "$(dirname "$0")/../.."
-B=.run/lcpp-src/build-mac/bin; W=/Volumes/Music/LittleGuy/weights/fresh
-REF=$W/e4b-qat-bf16.gguf; WIKI=.run/bench/wiki.test.raw; CHAT=$W/chat_heldout.txt
+# LG_BIN / LG_W / LG_WIKI point it at another machine (AWS: the CUDA build, ~/work/fresh, ~/work/bench)
+B=${LG_BIN:-.run/lcpp-src/build-mac/bin}; W=${LG_W:-/Volumes/Music/LittleGuy/weights/fresh}
+REF=$W/e4b-qat-bf16.gguf; WIKI=${LG_WIKI:-.run/bench/wiki.test.raw}; CHAT=$W/chat_heldout.txt
 run() {  # model text ctx chunks extra-args... (env: LG_PPL_SPECIAL)
   local m=$1 t=$2 c=$3 k=$4; shift 4
   LG_DICT_PREVIEW=0 $B/llama-perplexity -m $m -f $t -c $c --chunks $k -ngl 99 "$@" 2>&1
@@ -19,7 +20,7 @@ if [ "$1" = base ]; then
   exit
 fi
 for m in "$@"; do
-  echo "$(basename $m) ($(stat -f %z $m) bytes)"
+  echo "$(basename $m) ($(wc -c < $m | tr -d ' ') bytes)"
   for r in wiki heldout; do
     [ $r = heldout ] && export LG_PPL_SPECIAL=1 || unset LG_PPL_SPECIAL
     t=$WIKI; [ $r = heldout ] && t=$CHAT

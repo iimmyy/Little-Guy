@@ -10,7 +10,7 @@ for m in "$@"; do
   run -f $R/hellaswag_val_full.txt --hellaswag --hellaswag-tasks 10042 > $O/$n.hellaswag.log
   run -f $R/winogrande-debiased-eval.csv --winogrande > $O/$n.winogrande.log
   for t in arc-challenge-validation mmlu-validation truthful-qa-validation; do
-    run -bf $R/$t.bin --multiple-choice > $O/$n.$t.log
+    run -bf $R/$t.bin --multiple-choice -np 16 > $O/$n.$t.log
   done
   echo "$n"
   for f in $O/$n.*.log; do echo "  $(basename $f .log | sed "s/^$n\.//"): $(grep -E "^[0-9]+\s+[0-9.]+|Final|score" $f | tail -1)"; done
