@@ -3,11 +3,12 @@
 # (no persona), Gemma's sampling, every run starting with the hottest zone at or below 45 C. Brains with and without
 # the drafter (the brain checks every guess, so the words are its own). Runs ON the board.
 # usage: bash board_npu_quick.sh <out dir> [new engine dir, default ~/preview5]
-# The new engine runs alone and with the masked drafter at 1, 2 and 3 guesses; preview5 + drafter 3 repeats as the
-# same-session reference.
+# The engine runs alone and with the masked drafter (on the NPU, one CPU worker) at 1, 2 and 3 guesses.
 set -u
 OUT=${1:-$HOME/spec/speed}; mkdir -p "$OUT"
 ENG=${2:-$HOME/preview5}
+BRAIN=${BRAIN:-$HOME/models/e4b-grid4.gguf}   # e.g. Google's release: BRAIN=~/models/gemma-4-E4B_q4_0-it.gguf TAG=google
+TAG=${TAG:-grid4}
 M=$HOME/models
 CPU="--device HTP0 -ngl 99 -t 4 -C 0xf0 --cpu-strict 1 -c 4096 -fa on --reasoning off --no-webui"
 # processor, NPU and memory sensors only (the storage chip's ufs-thermal idles near 55 C and would never cool)
@@ -60,11 +61,12 @@ EOF
 }
 
 D=$M/gemma-4-E4B-assistant-masked-q8_0.gguf
-DRAFT="--spec-type draft-mtp -ngld 0 -devd none -td 4"
+# the drafter on the NPU with ONE CPU worker (2026-10-17: the CPU-side steps are tiny, and with 4 workers syncing
+# them the drafter cost 57 ms per guess, with 1 worker 8.9 ms; on the CPU (-devd none) it cost far more)
+DRAFT="--spec-type draft-mtp -ngld 99 -devd HTP0 -td 1 -Cd 0x80 --cpu-strict-draft 1"
 E=$(basename $ENG)
-echo "== NPU $E: new brain";                            run npu-$E-grid4          $ENG $M/e4b-grid4.gguf ""
+echo "== NPU $E: $TAG";                                 run npu-$E-$TAG          $ENG $BRAIN ""
 for n in 1 2 3; do
-echo "== NPU $E: new brain + masked drafter, $n guesses"; run npu-$E-grid4-masked$n  $ENG $M/e4b-grid4.gguf "" -md $D $DRAFT --spec-draft-n-max $n
+echo "== NPU $E: $TAG + masked drafter, $n guesses";      run npu-$E-$TAG-masked$n  $ENG $BRAIN "" -md $D $DRAFT --spec-draft-n-max $n
 done
-echo "== NPU preview5 (reference): new brain + masked drafter, 3 guesses"; run npu-preview5-grid4-masked3 $HOME/preview5 $M/e4b-grid4.gguf "" -md $D $DRAFT --spec-draft-n-max 3
 echo BOARD_SPEED_DONE

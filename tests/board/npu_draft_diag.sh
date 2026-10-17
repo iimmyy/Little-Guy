@@ -29,11 +29,18 @@ if sys.argv[1] != "none" and os.path.exists(sys.argv[3]):
     same = ", reply " + ("IDENTICAL to no drafter" if json.load(open(sys.argv[3]))["choices"][0]["message"]["content"] == r["choices"][0]["message"]["content"] else "DIFFERS from no drafter")
 print(f"{sys.argv[1]:28} {t['predicted_n']} words, {1000 * t['predicted_n'] / t['predicted_ms']:.2f} words/s, guesses kept {a}/{d}{same}")
 PY
+  d=$(grep -oE "dur\(b,g,a\) = [0-9., ]+ ms" "$OUT/$name.server.log" | tail -1); [ -n "$d" ] && echo "   $name drafter time: $d"
   grep -q dsp-rsp "$OUT/$name.server.log" && echo "   $name: NPU reported failed ops: $(grep -c dsp-rsp "$OUT/$name.server.log")"
   kill $pid; wait $pid 2>/dev/null
   w=0; while curl -s -m 2 127.0.0.1:8096/health >/dev/null && [ $w -lt 60 ]; do sleep 1; w=$((w + 1)); done
 }
 DR="-md $D --spec-type draft-mtp --spec-draft-n-max 1"
+# RUNS: custom setups instead of the default list, one "name|extra args" per line (the no-drafter reference runs first)
+if [ -n "${RUNS:-}" ]; then
+  run none
+  while IFS='|' read -r name args; do [ -n "$name" ] && run "$name" $DR $args; done <<< "$RUNS"
+  echo DIAG_DONE; exit
+fi
 run none
 run none-again
 if [ -n "${ONLY_REPEAT:-}" ]; then run none-again2; echo DIAG_DONE; exit; fi
