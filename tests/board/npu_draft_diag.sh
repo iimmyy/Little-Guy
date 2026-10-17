@@ -35,7 +35,8 @@ PY
 }
 DR="-md $D --spec-type draft-mtp --spec-draft-n-max 1"
 run none
-if [ -n "${ONLY_REPEAT:-}" ]; then run none-again; run none-again2; echo DIAG_DONE; exit; fi
+run none-again
+if [ -n "${ONLY_REPEAT:-}" ]; then run none-again2; echo DIAG_DONE; exit; fi
 run draft1-cpu                $DR -ngld 0 -devd none -td 4
 run draft1-cpu-nobackendsamp  $DR -ngld 0 -devd none -td 4 --no-spec-draft-backend-sampling
 run draft1-npu                $DR -ngld 99 -devd HTP0
