@@ -1,7 +1,7 @@
 From aa8b8ec66267863b99efdaabca8d27a269eb1756 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Fri, 16 Oct 2026 22:37:58 -0700
-Subject: [PATCH 40/40] gemma4: dictionary preview only when it reads less than
+Subject: [PATCH 40/41] gemma4: dictionary preview only when it reads less than
  the full dictionary (n_shortlist x n_outputs <= n_vocab); batches scoring
  many words at once take the plain head. With a 16384 shortlist, a 512-output
  batch planned 86 GB of gathered rows and context creation failed on the board

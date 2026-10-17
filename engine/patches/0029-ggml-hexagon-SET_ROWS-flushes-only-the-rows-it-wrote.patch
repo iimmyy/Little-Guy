@@ -1,7 +1,7 @@
 From 6ab8e2dcea0004e0145f00b84ce772e7468f8bbe Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Wed, 14 Oct 2026 04:28:17 -0700
-Subject: [PATCH 29/40] ggml-hexagon: SET_ROWS flushes only the rows it wrote;
+Subject: [PATCH 29/41] ggml-hexagon: SET_ROWS flushes only the rows it wrote;
  the generic dst flush of a whole KV cache (MBs, over HEX_L2_FLUSH_SIZE)
  cleaned the entire data cache 48 times per token. Host inputs flushed once
  per batch. Talking d768 9.77 -> 10.29, d1800 9.57 -> 10.04 tok/s (3

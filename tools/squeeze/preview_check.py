@@ -7,6 +7,8 @@ does (src/models/gemma4.cpp), and count against the full dictionary's own scores
   top64_miss  some of the full top 64 words are not on it (what a top-k 64 sampler can pick from)
   mass_out    probability the full dictionary puts outside the shortlist (the engine gives those words zero)
   kl          KL(shortlist-renormalized || full) = -log(1 - mass_out), the drift the preview itself adds
+  rough-tail  the same with words outside the shortlist keeping their rough-copy score instead of zero chance:
+              KL(full || hybrid) and how often the top word changes
 
 usage: python preview_check.py <brain.gguf> <rough.gguf> <hidden.f16> [<hidden.f16> ...]
 """
@@ -45,17 +47,23 @@ for hp in hidden:
         top64 = z.topk(64, dim=-1).indices
         rough = h @ P.T
         order = rough.topk(max(ns), dim=-1).indices
+        rc = torch.tanh(rough / cap) * cap if cap else rough   # the rough scores, softcapped like the real ones
+        lp = torch.log_softmax(z, dim=-1)
         for n in ns:
             s = order[:, :n]
             insl = torch.zeros_like(z, dtype=torch.bool).scatter_(1, s, True)
             acc[n]["top1"] += int((~insl.gather(1, top1)).sum())
             acc[n]["top64"] += int((~insl.gather(1, top64)).any(-1).sum())
+            hyb = torch.where(insl, z, rc)          # exact scores on the shortlist, rough scores everywhere else
+            acc[n].setdefault("hkl", []).append((p * (lp - torch.log_softmax(hyb, dim=-1))).sum(-1).cpu())
+            acc[n].setdefault("htop1", 0); acc[n]["htop1"] += int((hyb.argmax(-1, keepdim=True) != top1).sum())
             m = (p * ~insl).sum(-1).clamp(0, 1)
             acc[n]["mass"].append(m.cpu()); acc[n]["kl"].append((-torch.log1p(-m.clamp(max=1 - 1e-12))).cpu())
     N = H.shape[0]
     print(f"\n{hp}: {N} positions")
-    print(f"{'shortlist':>9} | {'top-1 missed':>14} | {'top-64 incomplete':>17} | {'mass outside: mean':>18} {'max':>9} | {'KL mean':>9}")
+    print(f"{'shortlist':>9} | {'top-1 missed':>14} | {'top-64 incomplete':>17} | {'mass outside: mean':>18} {'max':>9} | {'KL mean':>9} | {'rough-tail KL':>13} {'top-1 changed':>13}")
     for n in ns:
         m = torch.cat(acc[n]["mass"]); kl = torch.cat(acc[n]["kl"])
         print(f"{n:>9} | {acc[n]['top1']:>6} ({100 * acc[n]['top1'] / N:5.3f}%) | {acc[n]['top64']:>6} ({100 * acc[n]['top64'] / N:5.2f}%) "
-              f"| {m.mean().item():18.2e} {m.max().item():9.2e} | {kl.mean().item():9.2e}")
+              f"| {m.mean().item():18.2e} {m.max().item():9.2e} | {kl.mean().item():9.2e} | "
+              f"{torch.cat(acc[n]['hkl']).mean().item():13.2e} {acc[n]['htop1']:>13}")

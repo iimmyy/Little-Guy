@@ -1,7 +1,7 @@
 From 8767c5aefeaefe1e2e3afcd5a45367e756c2bb81 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Sat, 10 Oct 2026 21:51:08 -0700
-Subject: [PATCH 06/40] ggml-cpu: fused few-word path for the q2_K 8x4 tray
+Subject: [PATCH 06/41] ggml-cpu: fused few-word path for the q2_K 8x4 tray
 
 For up to LG_Q2K_FUSED_MAX words (default 4, the drafter's verification batch) the raw 2-bit codes go straight into lane-indexed dot products and each pouch's partial sums are scaled once, instead of writing and re-reading a pre-scaled 2 KB template per super-block. Same answers as the generic reference to 1.7e-7. One Cortex-A78 core at 1.32 GHz, 4 words: ffn_gate 7.77 -> 7.04 ms, attn_q 1.56 -> 1.41 ms. Whole brain (clean C, drafter n-max 3, greedy): identical text, talking 7-9% faster.
 ---

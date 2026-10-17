@@ -1,7 +1,7 @@
 From 127673e0720f26c6ce9a92e714cb26645c98d2bc Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Wed, 14 Oct 2026 17:31:06 -0700
-Subject: [PATCH 32/40] perplexity: LG_PPL_ONE_WINDOW=1 accepts a text of a
+Subject: [PATCH 32/41] perplexity: LG_PPL_ONE_WINDOW=1 accepts a text of a
  single window (each chunk is scored on its own), for one persona-plus-chat
  transcript
 

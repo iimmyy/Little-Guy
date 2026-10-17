@@ -1,7 +1,7 @@
 From dffbc50c00d026c99c14ea0073171c96efc8eca9 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Wed, 14 Oct 2026 14:38:12 -0700
-Subject: [PATCH 31/40] perplexity: LG_PPL_SPECIAL=1 reads chat markers in the
+Subject: [PATCH 31/41] perplexity: LG_PPL_SPECIAL=1 reads chat markers in the
  text as control tokens, so an instruction-tuned model can be scored on
  chat-formatted text
 
