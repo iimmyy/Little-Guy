@@ -149,3 +149,18 @@ Board (Q6A NPU, engine ~/preview3 with the Q3_K kernel; NPU vs board CPU KL 0.00
   facts. Behavior verdicts from 2026-10-15/16 need re-deciding by reading. Replies are now saved per run
   (.run/results/behavior/), survivors archived.
 - Reset: pause board runs, write a behavior rubric, one clean head-to-head read in full, then decide.
+
+## 2026-10-16 afternoon/evening: fresh E4B rebuild (raw, no persona, measured against Google's QAT 16-bit)
+
+- Started over from Google's release: checksums match Google's published ones; our 16-bit copy is bit-identical (665/665).
+- Audit fixes: old matching saw only the first 16,384 input rows (1.6 rows per input on ffn_down); now every row (~15 per
+  input), held-out = whole documents; bit-mix probes had been tuned on the WikiText ruler, now on their own dev text.
+- Google's 4-bit = plain llama.cpp Q4_0 rounding of their QAT weights (every block matrix byte-identical), Q6_K word tables.
+- The scale plain rounding picks sits ~0.1% off the grid QAT trained; an importance-weighted scale search lands on it.
+  Same bytes (Google's file, only block scales changed): drift 0.00033 / 0.00016 vs Google 0.0370 / 0.0274 (110-170x less),
+  top word 99.3% vs 91.0%, perplexity 32.38 vs 33.90 (16-bit 32.43). Benchmarks (log-likelihood, thinking off) tie with
+  the 16-bit: HellaSwag 68.72 vs 68.73, MMLU 36.50 vs 36.50, Winogrande 67.80 vs 67.64. Board NPU speed equal (6.60 vs 6.52).
+- Behavior, every reply read: the fixed file reproduces the 16-bit's choices (15/160 identical replies; Google's 4-bit 0/160).
+  Google's own model invents its day, dodges Dayvigo and invents what it is; those are not compression damage.
+- Next: a ladder of single changes from the fixed file (dictionary preview, lossless packing, matched 3/2-bit, training-free
+  weight edits), each checked against the 16-bit, toward faster while still matching it.
