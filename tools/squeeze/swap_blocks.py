@@ -1,8 +1,9 @@
 """A copy of one GGUF with chosen tensors taken from another: everything else (metadata, word tables, norms) stays
 byte-identical. Used for clean comparisons, e.g. Google's own 4-bit file with only its block matrices replaced.
 
-usage: swap_blocks.py <base.gguf> <donor.gguf> <out.gguf> <regex of tensor names to take from the donor>
-The donor's tensor must have the same shape and type as the base's (same format, same bytes).
+usage: swap_blocks.py <base.gguf> <donor.gguf> <out.gguf> <regex of tensor names to take from the donor> [--any-type]
+The donor's tensor must have the same shape and type as the base's (same format, same bytes); with --any-type only
+the same shape (e.g. a word table re-stored from Q6_K as Q4_0).
 """
 import re, sys
 from pathlib import Path
@@ -11,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / ".run/lcpp-src/gguf
 import gguf
 
 base_p, don_p, out_p, pat = sys.argv[1:5]
+any_type = "--any-type" in sys.argv[5:]
 base = gguf.GGUFReader(base_p)
 don = {t.name: t for t in gguf.GGUFReader(don_p).tensors}
 take = re.compile(pat)
@@ -24,7 +26,10 @@ ts, n = [], 0
 for t in base.tensors:
     if take.search(t.name):
         d = don[t.name]
-        assert d.tensor_type == t.tensor_type and d.data.nbytes == t.data.nbytes, f"{t.name}: different format"
+        if any_type:
+            assert [int(x) for x in d.shape] == [int(x) for x in t.shape], f"{t.name}: different shape"
+        else:
+            assert d.tensor_type == t.tensor_type and d.data.nbytes == t.data.nbytes, f"{t.name}: different format"
         ts.append(d); n += 1
     else:
         ts.append(t)
