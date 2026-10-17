@@ -1,0 +1,66 @@
+From d52a21c530354e0f4b667184ba0b9ea78b3ff786 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Sat, 17 Oct 2026 15:29:17 -0700
+Subject: [PATCH] hexagon: hex_l2flush refreshes a range with
+ qurt_mem_cache_clean(FLUSH_INVALIDATE) instead of a dccleaninva loop, and the
+ full clean before every FLASH_ATTN_EXT (5089e62) goes. The loop left stale
+ copies behind: fresh runs of the same input gave different numbers, cured
+ only by full-cache cleans; every line-by-line refresh (mask, rope
+ positions/factors, every op input on every use) failed, the range call works.
+ Board, e4b-grid4: 4/4 fresh runs give identical word scores, chat server 6/6
+ replies identical with and without the drafter, drift vs 16-bit unchanged
+ (0.00115); decode 7.60 (unrepeatable) / 7.27 (full cleans) -> 7.56 tok/s, 2
+ words 10.03 -> 10.19
+
+---
+ ggml/src/ggml-hexagon/htp/hex-utils.h | 12 ++++--------
+ ggml/src/ggml-hexagon/htp/main.c      | 10 ----------
+ 2 files changed, 4 insertions(+), 18 deletions(-)
+
+diff --git a/ggml/src/ggml-hexagon/htp/hex-utils.h b/ggml/src/ggml-hexagon/htp/hex-utils.h
+index 8e6e3ea..33059b4 100644
+--- a/ggml/src/ggml-hexagon/htp/hex-utils.h
++++ b/ggml/src/ggml-hexagon/htp/hex-utils.h
+@@ -92,14 +92,10 @@ static inline void hex_l2flush(void * addr, size_t size) {
+     if (size > HEX_L2_FLUSH_SIZE) {
+         qurt_mem_cache_clean((qurt_addr_t) 0, 0, QURT_MEM_CACHE_FLUSH_INVALIDATE_ALL, QURT_MEM_DCACHE);
+     } else {
+-        const uint32_t s = (uint32_t) addr;
+-        const uint32_t e = s + size;
+-        for (uint32_t i = s; i < e; i += HEX_L2_LINE_SIZE * 4) {
+-            Q6_dccleaninva_A((void *) i + HEX_L2_LINE_SIZE * 0);
+-            Q6_dccleaninva_A((void *) i + HEX_L2_LINE_SIZE * 1);
+-            Q6_dccleaninva_A((void *) i + HEX_L2_LINE_SIZE * 2);
+-            Q6_dccleaninva_A((void *) i + HEX_L2_LINE_SIZE * 3);
+-        }
++        // LG: the range call, not a dccleaninva loop. The loop left stale copies behind (2026-10-17: fresh runs of the
++        // same input gave different numbers, fixed only by full-cache cleans; every line-by-line refresh failed), so it
++        // does not reach the cache level that holds them. With this, runs are identical and decode 7.60 -> 7.56 tok/s.
++        qurt_mem_cache_clean((qurt_addr_t) addr, size, QURT_MEM_CACHE_FLUSH_INVALIDATE, QURT_MEM_DCACHE);
+     }
+ }
+ 
+diff --git a/ggml/src/ggml-hexagon/htp/main.c b/ggml/src/ggml-hexagon/htp/main.c
+index 6b54f35..8c7f2a8 100644
+--- a/ggml/src/ggml-hexagon/htp/main.c
++++ b/ggml/src/ggml-hexagon/htp/main.c
+@@ -937,16 +937,6 @@ static void htp_packet_callback(dspqueue_t queue, int error, void * context) {
+                 dspqueue_write_early_wakeup_noblock(queue, 0, 0);
+             }
+ 
+-            // LG: drop the whole data cache before every attention op. Without it, fresh runs of the same input differ
+-            // (2026-10-17: same prompt, temperature 0, different word scores within 1-5 words; per-op fingerprints
+-            // identical with <= 8 ops per batch, differing at a moving spot with 16+). A full clean+invalidate before
+-            // FLASH_ATTN_EXT (42 per word) makes runs identical on the chat server (6/6 replies, with and without the
+-            // drafter); "save only" (no invalidate) does not, so some op reads a stale cached copy of memory written
+-            // behind the cache. Clearing before ROPE or RMS_NORM also cures it, before SET_ROWS does not; once per batch
+-            // does not. Broad fix, costs ~4% (decode 7.60 -> 7.27); the stale reader is still to be named.
+-            if (ops[i].opcode == HTP_OP_FLASH_ATTN_EXT) {
+-                qurt_mem_cache_clean((qurt_addr_t) 0, 0, QURT_MEM_CACHE_FLUSH_INVALIDATE_ALL, QURT_MEM_DCACHE);
+-            }
+             profile_start(ctx->profiler, &prof);
+ 
+             const int st = proc_op_req(octx, tens, i, &ops[i]);
+-- 
+2.54.0 (Apple Git-157)
+
