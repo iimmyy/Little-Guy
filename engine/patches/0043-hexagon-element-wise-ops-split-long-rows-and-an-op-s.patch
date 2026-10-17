@@ -1,0 +1,166 @@
+From d6c26fc05a1ee81178148913aaed1dd6edc3b6e4 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Sat, 17 Oct 2026 13:59:28 -0700
+Subject: [PATCH] hexagon: element-wise ops split long rows, and an op's
+ failure reaches the host. The unary job keeps 2 input + 2 output rows per
+ thread in VTCM; a 262144-value row (Gemma's whole dictionary in the final
+ soft-capping SCALE / TANH / SCALE) needed 4 MB, failed VTCM_TOO_SMALL, and
+ main.c dropped the status ((void) execute_op), so every batch answered OK and
+ the logits left the NPU un-capped. Now element-wise ops (scale, sqr, sqrt,
+ neg, exp, sigmoid, softplus, tanh) on a long contiguous row run as rows of <=
+ 16384 (same values), and proc_op_req returns the op's status; the batch
+ reports the first failure. e4b-grid4 on the board NPU vs the 16-bit, wiki
+ c128 4 chunks: PPL 1262 -> 23.28 (16-bit 23.12, board CPU 23.05), KL 1.69 ->
+ 0.00115; batch 1, 2 and 128 now give identical results. test-backend-ops:
+ SCALE and TANH cases on 262144-wide rows
+
+---
+ ggml/src/ggml-hexagon/htp/main.c      | 16 ++++++---
+ ggml/src/ggml-hexagon/htp/unary-ops.c | 48 +++++++++++++++++++++++++++
+ tests/test-backend-ops.cpp            |  6 ++++
+ 3 files changed, 66 insertions(+), 4 deletions(-)
+
+diff --git a/ggml/src/ggml-hexagon/htp/main.c b/ggml/src/ggml-hexagon/htp/main.c
+index c683b00..8c7f2a8 100644
+--- a/ggml/src/ggml-hexagon/htp/main.c
++++ b/ggml/src/ggml-hexagon/htp/main.c
+@@ -787,7 +787,7 @@ static void prep_tensors(struct htp_context *ctx, struct htp_buf_desc *bufs, str
+     }
+ }
+ 
+-static void proc_op_req(struct htp_ops_context * octx, struct htp_tensor *tens, uint32_t idx, struct htp_op_desc * op) {
++static int proc_op_req(struct htp_ops_context * octx, struct htp_tensor *tens, uint32_t idx, struct htp_op_desc * op) {
+     memcpy(octx->op_params, op->params, sizeof(octx->op_params));
+     octx->flags = op->flags;
+     octx->op    = op->opcode;
+@@ -819,7 +819,12 @@ static void proc_op_req(struct htp_ops_context * octx, struct htp_tensor *tens,
+     FARF(HIGH, "prep-dst #%u: data %p size %u : %u:%u:%u:%u", op->dst, (void*) dst->data, dst->size,
+         dst->ne[0], dst->ne[1], dst->ne[3], dst->ne[3]);
+ 
+-    (void) execute_op(octx);
++    // LG: keep the op's status (it used to be dropped, so an op that could not run left its output untouched and the
++    // batch still answered OK)
++    const int status = execute_op(octx);
++    if (status != HTP_STATUS_OK) {
++        FARF(ERROR, "op #%u (opcode %u) failed: status %d", idx, op->opcode, status);
++    }
+ 
+     // flush buffers on output. LG: SET_ROWS flushes the rows it wrote itself: its dst is a whole KV cache (MBs),
+     // and over HEX_L2_FLUSH_SIZE this cleans the entire data cache, 48 times per token for ~1 KB of writes
+@@ -830,6 +835,7 @@ static void proc_op_req(struct htp_ops_context * octx, struct htp_tensor *tens,
+ 
+     FARF(HIGH, "post-dst #%u: data %p size %u : %u:%u:%u:%u", op->dst, (void*) dst->data, dst->size,
+         dst->ne[0], dst->ne[1], dst->ne[3], dst->ne[3]);
++    return status;
+ }
+ 
+ #define DSPQUEUE_POLL_TIMEOUT_USEC 100
+@@ -922,6 +928,7 @@ static void htp_packet_callback(dspqueue_t queue, int error, void * context) {
+             }
+         }
+ 
++        int batch_status = HTP_STATUS_OK;   // LG: the first failed op's status goes back to the host
+         for (uint32_t i=0; i < n_ops; i++) {
+             struct profile_data prof;
+ 
+@@ -932,7 +939,8 @@ static void htp_packet_callback(dspqueue_t queue, int error, void * context) {
+ 
+             profile_start(ctx->profiler, &prof);
+ 
+-            proc_op_req(octx, tens, i, &ops[i]);
++            const int st = proc_op_req(octx, tens, i, &ops[i]);
++            if (st != HTP_STATUS_OK && batch_status == HTP_STATUS_OK) batch_status = st;
+ 
+             profile_stop(ctx->profiler, &prof);
+ 
+@@ -949,7 +957,7 @@ static void htp_packet_callback(dspqueue_t queue, int error, void * context) {
+ 
+         struct htp_opbatch_rsp rsp;
+         rsp.id        = req.id;
+-        rsp.status    = HTP_STATUS_OK;
++        rsp.status    = batch_status;
+         rsp.n_bufs    = n_bufs;
+         rsp.n_tensors = n_tens;
+         rsp.n_ops     = n_ops;
+diff --git a/ggml/src/ggml-hexagon/htp/unary-ops.c b/ggml/src/ggml-hexagon/htp/unary-ops.c
+index 71fab2c..446bec6 100644
+--- a/ggml/src/ggml-hexagon/htp/unary-ops.c
++++ b/ggml/src/ggml-hexagon/htp/unary-ops.c
+@@ -1039,9 +1039,57 @@ int op_tri(struct htp_ops_context * octx) {
+     return err;
+ }
+ 
++// LG: element-wise ops (each value on its own) on a long contiguous row run as several shorter rows. The job keeps
++// 2 rows of input + 2 of output per thread in VTCM, so one 262144-value row (Gemma's whole dictionary, in the final
++// soft-capping SCALE / TANH / SCALE) needs 4 MB and failed with VTCM_TOO_SMALL; the failure was dropped and the
++// logits went out un-capped. Same values in, same values out: only the row length the job sees changes.
++#define LG_UNARY_MAX_ROW 16384
++
++static bool lg_unary_elementwise(uint32_t op) {
++    switch (op) {
++        case HTP_OP_SCALE:
++        case HTP_OP_SQR:
++        case HTP_OP_SQRT:
++        case HTP_OP_UNARY_NEG:
++        case HTP_OP_UNARY_EXP:
++        case HTP_OP_UNARY_SIGMOID:
++        case HTP_OP_UNARY_SOFTPLUS:
++        case HTP_OP_UNARY_TANH:
++            return true;
++        default:
++            return false;
++    }
++}
++
++static bool lg_contig_f32(const struct htp_tensor * t) {
++    return t->nb[0] == 4 && t->nb[1] == t->ne[0] * 4 && t->nb[2] == t->ne[1] * t->nb[1] && t->nb[3] == t->ne[2] * t->nb[2];
++}
++
+ int op_unary(struct htp_ops_context * octx) {
+     int err = HTP_STATUS_OK;
+ 
++    const struct htp_tensor * s = octx->src[0], * d = octx->dst;
++    if (s->type == HTP_TYPE_F32 && lg_unary_elementwise(octx->op) && s->ne[0] > LG_UNARY_MAX_ROW &&
++        lg_contig_f32(s) && lg_contig_f32(d)) {
++        uint32_t len = 0;
++        for (uint32_t l = LG_UNARY_MAX_ROW; l >= 32; l -= 32) {
++            if (s->ne[0] % l == 0) { len = l; break; }
++        }
++        if (len) {
++            const uint32_t rows = s->ne[1] * s->ne[2] * s->ne[3] * (s->ne[0] / len);
++            struct htp_tensor s2 = *s, d2 = *d;
++            s2.ne[0] = d2.ne[0] = len;
++            s2.ne[1] = d2.ne[1] = rows;
++            s2.ne[2] = d2.ne[2] = s2.ne[3] = d2.ne[3] = 1;
++            s2.nb[1] = d2.nb[1] = len * 4;
++            s2.nb[2] = d2.nb[2] = s2.nb[3] = d2.nb[3] = (size_t) len * 4 * rows;
++            octx->src[0] = &s2; octx->dst = &d2;
++            err = execute_op_unary_f32(octx);
++            octx->src[0] = s; octx->dst = d;
++            return err;
++        }
++    }
++
+     switch (octx->src[0]->type) {
+         case HTP_TYPE_F32:
+             err = execute_op_unary_f32(octx);
+diff --git a/tests/test-backend-ops.cpp b/tests/test-backend-ops.cpp
+index 33fd63f..dfe0e0e 100644
+--- a/tests/test-backend-ops.cpp
++++ b/tests/test-backend-ops.cpp
+@@ -8301,6 +8301,12 @@ static std::vector<std::unique_ptr<test_case>> make_test_cases_eval() {
+     test_cases.emplace_back(new test_scale(GGML_TYPE_F32, {10, 10, 10, 10}, 2.0f, 1.0f));
+     test_cases.emplace_back(new test_scale(GGML_TYPE_F32, {10, 10, 10, 10}, 2.0f, 1.0f, true)); // inplace test
+     test_cases.emplace_back(new test_scale(GGML_TYPE_F32, {100, 10, 10, 10}, 2.0f, 1.0f));
++    // a whole-dictionary row (Gemma's 262144 words) as in the final soft-capping: rows this long need large scratch
++    for (int64_t n : {1, 2}) {
++        test_cases.emplace_back(new test_scale(GGML_TYPE_F32, {262144, n, 1, 1}, 1.0f / 30.0f, 0.0f));
++        test_cases.emplace_back(new test_scale(GGML_TYPE_F32, {262144, n, 1, 1}, 30.0f, 0.0f, true));
++        test_cases.emplace_back(new test_unary(GGML_UNARY_OP_TANH, GGML_TYPE_F32, {262144, n, 1, 1}));
++    }
+     test_cases.emplace_back(new test_softcap(GGML_TYPE_F32, {10, 10, 10, 10}, 50.0f));
+     test_cases.emplace_back(new test_silu_back());
+ 
+-- 
+2.54.0 (Apple Git-157)
+

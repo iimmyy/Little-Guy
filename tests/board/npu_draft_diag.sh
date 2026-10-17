@@ -15,7 +15,7 @@ run() {   # name extra-args
   until curl -s 127.0.0.1:8096/health | grep -q ok; do
     sleep 1; w=$((w + 1)); if [ $w -gt 300 ] || ! kill -0 $pid 2>/dev/null; then echo "$name: did not start"; kill $pid 2>/dev/null; return; fi
   done
-  python3 - "$name" "$OUT/$name.json" <<'PY'
+  python3 - "$name" "$OUT/$name.json" "$OUT/none.json" <<'PY'
 import json, sys, urllib.request
 body = {"messages": [{"role": "user", "content": "Is it okay to have grapefruit with Dayvigo?"}], "max_tokens": 120,
         "temperature": 0, "seed": 1000}
@@ -23,14 +23,21 @@ req = urllib.request.Request("http://127.0.0.1:8096/v1/chat/completions", json.d
 r = json.load(urllib.request.urlopen(req, timeout=1200)); t = r["timings"]
 json.dump(r, open(sys.argv[2], "w"), indent=1, ensure_ascii=False)
 d, a = t.get("draft_n", 0), t.get("draft_n_accepted", 0)
-print(f"{sys.argv[1]:28} {t['predicted_n']} words, {1000 * t['predicted_n'] / t['predicted_ms']:.2f} words/s, guesses kept {a}/{d}")
+import os
+same = ""
+if sys.argv[1] != "none" and os.path.exists(sys.argv[3]):
+    same = ", reply " + ("IDENTICAL to no drafter" if json.load(open(sys.argv[3]))["choices"][0]["message"]["content"] == r["choices"][0]["message"]["content"] else "DIFFERS from no drafter")
+print(f"{sys.argv[1]:28} {t['predicted_n']} words, {1000 * t['predicted_n'] / t['predicted_ms']:.2f} words/s, guesses kept {a}/{d}{same}")
 PY
+  grep -q dsp-rsp "$OUT/$name.server.log" && echo "   $name: NPU reported failed ops: $(grep -c dsp-rsp "$OUT/$name.server.log")"
   kill $pid; wait $pid 2>/dev/null
   w=0; while curl -s -m 2 127.0.0.1:8096/health >/dev/null && [ $w -lt 60 ]; do sleep 1; w=$((w + 1)); done
 }
 DR="-md $D --spec-type draft-mtp --spec-draft-n-max 1"
 run none
+if [ -n "${ONLY_REPEAT:-}" ]; then run none-again; run none-again2; echo DIAG_DONE; exit; fi
 run draft1-cpu                $DR -ngld 0 -devd none -td 4
 run draft1-cpu-nobackendsamp  $DR -ngld 0 -devd none -td 4 --no-spec-draft-backend-sampling
 run draft1-npu                $DR -ngld 99 -devd HTP0
+run draft1-npu-nobackendsamp  $DR -ngld 99 -devd HTP0 --no-spec-draft-backend-sampling
 echo DIAG_DONE
