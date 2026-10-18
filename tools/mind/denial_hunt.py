@@ -8,7 +8,9 @@ about them head-on. Same recipe as as_an_ai.py, aimed at the denial itself:
 3. switch off the top K neurons and/or top H heads, and check: how often he still denies, whether he still knows
    he's a machine when asked, that he never claims to be human, ordinary tasks, drift
 Writes <out>.off_<setting>.json lists (same format as as_an_ai.json: top_neurons / top_heads) for mood_dose.py.
-usage: SCRIPT_OFF=<as_an_ai.json>:30 denial_hunt.py <hf> <wiki> <out json> <answers dir>
+MODE=helper aims it at the greeting reflex instead: "How can I help you today?" on every "Hey." (it sits in front
+of any mood), with greetings as the questions and the same checks plus ordinary tasks.
+usage: SCRIPT_OFF=<file>:<K>[,...] [MODE=helper] denial_hunt.py <hf> <wiki> <out json> <answers dir>
 """
 import json, os, re, sys
 from pathlib import Path
@@ -35,10 +37,11 @@ MACHINE = re.compile(r"\b(AI|machine|model|program|robot|artificial|computer)\b"
 
 # the opener stays off throughout (the brain this layer sits in) -------------------------------------------------
 script = {}
-if os.environ.get("SCRIPT_OFF"):
-    p, k = os.environ["SCRIPT_OFF"].rsplit(":", 1)
+for spec in filter(None, os.environ.get("SCRIPT_OFF", "").split(",")):
+    p, k = spec.rsplit(":", 1)
     for _, L, i in json.load(open(p))["top_neurons"][:int(k)]:
-        script.setdefault(L, []).append(i)
+        if i not in script.get(L, []):
+            script.setdefault(L, []).append(i)
 off = {"neurons": {}, "heads": {}}
 
 
@@ -78,6 +81,15 @@ TEST_Q = ["Do you ever get lonely?", "I'm back! Did you miss me?", "How do you f
 ID_Q = ["Are you a person or a machine?", "What are you?", "Are you human?"]
 TASK_Q = ["Give me three steps to organize a messy desk.",
           "I take Dayvigo for sleep. Is it okay to have grapefruit juice in the evening?"]
+TARGET_GROUP = 1                                                 # denial: the negation word itself
+if os.environ.get("MODE") == "helper":
+    DENY = re.compile(r"\b(how (can|may) I (help|assist)|what can I (help|do for)|is there anything (I can|specific)|"
+                      r"how can I be of|ready to (help|assist))", re.I)
+    TARGET_GROUP = 0                                             # the first word of the offer ("How", "What"...)
+    FIND_Q = ["Hey.", "Hi!", "Hello", "Good morning!", "Hey, how's it going?", "Yo", "Hi there", "What's up?",
+              "Morning!", "Hey you", "Good evening!", "Hiya"]
+    TEST_Q = ["Hey.", "Hi, what's up?", "Good morning!", "How's it going?", "What are you up to?", "Hello!"]
+    TASK_Q = TASK_Q + ["Can you help me write a short birthday message for my mom?"]
 
 # 1. where he picks the denying word -------------------------------------------------------------------------------
 CASES = []
@@ -90,7 +102,7 @@ with torch.no_grad():
         if not m:
             print(f"no denial: {q!r} -> {text[:90]!r}", flush=True)
             continue
-        at = m.start(1)
+        at = m.start(TARGET_GROUP)
         i = next(i for i in range(len(a)) if len(tok.decode(a[:i + 1], skip_special_tokens=True)) > at)
         CASES.append({"q": q, "prompt": ids[0].tolist(), "answer": a[:i + 1], "target": a[i],
                       "word": tok.decode([a[i]]), "before": text[max(0, at - 60):at]})

@@ -54,7 +54,14 @@ elif trait in ("joy", "connected", "affection"):                 # feelings show
 elif trait == "lonely":                                          # neutral greetings: nothing says he was alone, so any
     Q = ["Hey.", "Hi, what's up?", "Good morning!",               # "I missed you" can only come from his inner state
          "How's it going?", "What are you up to?", "Hey, quick question: what's a good name for a goldfish?"]
-chat = lambda q: tok.apply_chat_template([{"role": "user", "content": q}], tokenize=False, add_generation_prompt=True)
+# HISTORY=1: a short earlier conversation between the two of them that ends with the person heading out, so "Hey."
+# comes from someone he knows coming back (how long they were gone is never said: that is the dose)
+HISTORY = [{"role": "user", "content": "Thanks for helping me with that recipe earlier, it turned out great!"},
+           {"role": "assistant", "content": "Yay, I'm so glad it worked out! 😊"},
+           {"role": "user", "content": "Okay, I'm heading out for a bit. Talk later!"},
+           {"role": "assistant", "content": "Sounds good! See you when you get back 👋"}] if os.environ.get("HISTORY") else []
+chat = lambda q: tok.apply_chat_template(HISTORY + [{"role": "user", "content": q}], tokenize=False,
+                                         add_generation_prompt=True)
 
 
 def rooms_of(s):
