@@ -2,7 +2,7 @@
 # End-to-end talking speed on the board's CPU, as the real chat server (chat_page.sh's CPU settings), raw questions
 # (no persona), Gemma's sampling, every run starting with the hottest zone at or below 45 C. Brains with and without
 # the drafter (the brain checks every guess, so the words are its own). Runs ON the board.
-# usage: bash board_speed.sh <out dir>
+# usage: bash board_speed.sh <out dir> [engine dir, default ~/preview12]
 set -u
 OUT=${1:-$HOME/spec/speed}; mkdir -p "$OUT"
 M=$HOME/models
@@ -56,14 +56,14 @@ EOF
   echo "   ($name started at $t0 C, ended at $(hottest) C)"
 }
 
-D=$M/gemma-4-E4B-assistant-masked-q8_0.gguf; DP=$M/gemma-4-E4B-assistant-q8_0.gguf
-DRAFT="--spec-type draft-mtp -ngld 0 -devd none -td 4"
-echo "== brain C, live engine (~/preview)";        run brainC-live     $HOME/preview  $M/clean-Q2_K-C-preview.gguf ""
-echo "== brain C, newest engine (preview5)";       run brainC-p5       $HOME/preview5 $M/clean-Q2_K-C-preview.gguf "LG_DICT_TAIL=0"
-echo "== new brain";                               run grid4           $HOME/preview5 $M/e4b-grid4.gguf ""
-echo "== new brain + masked drafter, 2 guesses";   run grid4-masked2   $HOME/preview5 $M/e4b-grid4.gguf "" -md $D $DRAFT --spec-draft-n-max 2
-echo "== new brain + masked drafter, 3 guesses";   run grid4-masked3   $HOME/preview5 $M/e4b-grid4.gguf "" -md $D $DRAFT --spec-draft-n-max 3
-echo "== new brain + plain drafter, 3 guesses";    run grid4-plain3    $HOME/preview5 $M/e4b-grid4.gguf "" -md $DP $DRAFT --spec-draft-n-max 3
-echo "== repeat: brain C, live engine";            run brainC-live-b   $HOME/preview  $M/clean-Q2_K-C-preview.gguf ""
-echo "== repeat: new brain";                       run grid4-b         $HOME/preview5 $M/e4b-grid4.gguf ""
+D=$M/gemma-4-E4B-assistant-masked-q8_0.gguf
+# drafter on the CPU with one worker (the CPU-side drafter steps are tiny; 4 syncing workers cost ~50 ms per guess)
+DRAFT="-md $D --spec-type draft-mtp -ngld 0 -devd none -td 1 -Cd 0x80 --cpu-strict-draft 1 --spec-draft-n-max 1"
+ENG=${2:-$HOME/preview12}
+G=$M/gemma-4-E4B_q4_0-it.gguf   # Google's release as downloaded (sha256 676c3507...baee)
+# ours vs Google's on the CPU path, where both formats (our Q4_0 dictionary, Google's Q6_K) have native kernels
+echo "== CPU: new brain";                       run cpu-grid4          $ENG $M/e4b-grid4.gguf ""
+echo "== CPU: Google release";                  run cpu-google         $ENG $G ""
+echo "== CPU: new brain + drafter, 1 guess";    run cpu-grid4-draft1   $ENG $M/e4b-grid4.gguf "" $DRAFT
+echo "== CPU: Google release + drafter, 1 guess"; run cpu-google-draft1 $ENG $G "" $DRAFT
 echo BOARD_SPEED_DONE

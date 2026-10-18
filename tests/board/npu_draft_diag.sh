@@ -1,7 +1,7 @@
 #!/bin/bash
 # Why is the drafter slow on the NPU? One raw question, 120 words, greedy, per setup: words/s, guesses kept, and the
 # server's own per-step timing. Short on purpose (minutes, not hours). Runs ON the board.
-# usage: bash npu_draft_diag.sh <engine dir> <out dir>
+# usage: [OPBATCH=n] [XENV="VAR=val ..."] [RUNS=...] bash npu_draft_diag.sh <engine dir> <out dir>
 set -u
 ENG=$1 OUT=$2; mkdir -p "$OUT"
 M=$HOME/models; D=$M/gemma-4-E4B-assistant-masked-q8_0.gguf
@@ -9,7 +9,7 @@ NPU="--device HTP0 -ngl 99 -t 4 -C 0xf0 --cpu-strict 1 -c 4096 -fa on --reasonin
 run() {   # name extra-args
   local name=$1; shift
   if curl -s -m 2 127.0.0.1:8096/health >/dev/null; then echo "$name: port busy, NOT run"; return; fi
-  (cd $ENG && exec env LD_LIBRARY_PATH=$ENG/lib ADSP_LIBRARY_PATH=$ENG/lib GGML_HEXAGON_USE_HMX=0 GGML_HEXAGON_OPBATCH=4096 \
+  (cd $ENG && exec env LD_LIBRARY_PATH=$ENG/lib ADSP_LIBRARY_PATH=$ENG/lib GGML_HEXAGON_USE_HMX=0 GGML_HEXAGON_OPBATCH=${OPBATCH:-4096} ${XENV:-} \
      bin/llama-server -m $M/e4b-grid4.gguf $NPU "$@" > "$OUT/$name.server.log" 2>&1) &
   local pid=$! w=0
   until curl -s 127.0.0.1:8096/health | grep -q ok; do
