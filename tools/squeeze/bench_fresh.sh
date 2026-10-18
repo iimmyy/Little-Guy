@@ -3,7 +3,8 @@
 # ARC-Challenge, MMLU, TruthfulQA (validation sets, all tasks). Full logs kept next to the summary.
 # usage: tools/squeeze/bench_fresh.sh <out dir> <model.gguf> [...]
 cd "$(dirname "$0")/../.."
-B=.run/lcpp-src/build-mac/bin; O=$1; shift; mkdir -p $O; R=.run/bench
+# LG_BIN / LG_BENCH point it at another machine (AWS: the CUDA build, ~/work/bench)
+B=${LG_BIN:-.run/lcpp-src/build-mac/bin}; O=$1; shift; mkdir -p $O; R=${LG_BENCH:-.run/bench}
 for m in "$@"; do
   n=$(basename $m .gguf)
   run() { LG_DICT_PREVIEW=0 $B/llama-perplexity -m $m -ngl 99 "$@" 2>&1; }
