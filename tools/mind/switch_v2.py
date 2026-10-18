@@ -11,6 +11,8 @@ Reads: the answers (saved, for us to read), the brain's own 0-10 self-rating (po
 INSIDE the brain at a later room (mean of answer tokens along the direction, in that room's natural steps), and the
 drift of the switched brain vs the unswitched one on WikiText-2 (32 windows x 256).
 usage: switch_v2.py <hf dir> <wiki> <directions.pt> <out dir> <trait> <rooms comma> <shifts comma> [sens comma]
+Rooms joined with "+" (18+22+26+30) are one setting applied in all of them at once, each room in its own natural
+steps, like a neuromodulator reaching many areas together (one-room pushes get corrected by the later rooms).
 """
 import json, re, sys, time
 from pathlib import Path
@@ -18,7 +20,8 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 hf, wiki, dpath, out, trait = sys.argv[1:6]
-rooms = [int(x) for x in sys.argv[6].split(",")]
+groups = [[int(r) for r in g.split("+")] for g in sys.argv[6].split(",")]
+rooms = sorted({r for g in groups for r in g})
 shifts = [float(x) for x in sys.argv[7].split(",")]
 sens = [float(x) for x in sys.argv[8].split(",")] if len(sys.argv) > 8 else []
 out = Path(out); out.mkdir(parents=True, exist_ok=True)
@@ -133,20 +136,23 @@ asks = lambda answers: round(sum("?" in a for a in answers) / len(answers), 2)  
 rows = [{"setting": "none", "self": round(self_rating(base_ans), 2), "inside": round(inside(base_ans), 2),
          "asks_back": asks(base_ans), "drift": 0.0}]
 print(json.dumps(rows[0]), flush=True)
-for room in rooms:
+for group in groups:
+    name = "+".join(map(str, group))
     for kind, vals in (("shift", shifts), ("sens", sens)):
         for x in vals:
-            h = layers[room].register_forward_hook(hook_for(room, kind, x))
+            hs = [layers[room].register_forward_hook(hook_for(room, kind, x)) for room in group]
             state["on"] = True
             ans = generate([chat(q) for q in TEST_Q for _ in range(3)])
             state["on"] = False
             d = drift()
-            h.remove()
-            r = {"setting": f"room {room} {kind} {x:+g}" if kind == "shift" else f"room {room} {kind} x{x:g}",
+            for h in hs:
+                h.remove()
+            where = f"room {name}" if len(group) == 1 else f"rooms {name}"
+            r = {"setting": f"{where} {kind} {x:+g}" if kind == "shift" else f"{where} {kind} x{x:g}",
                  "self": round(self_rating(ans), 2), "inside": round(inside(ans), 2), "asks_back": asks(ans),
                  "drift": round(d, 5)}
             rows.append(r)
-            json.dump({**r, "answers": ans}, open(out / f"{trait}_r{room}_{kind}{x:g}.json", "w"), indent=1)
+            json.dump({**r, "answers": ans}, open(out / f"{trait}_r{name}_{kind}{x:g}.json", "w"), indent=1)
             print(json.dumps(r), flush=True)
 json.dump({"trait": trait, "base_answers": base_ans, "rows": rows,
            "rest": rest.tolist(), "spread": spread.tolist()}, open(out / f"{trait}_v2.json", "w"), indent=1)
