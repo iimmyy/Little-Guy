@@ -51,6 +51,9 @@ if trait in ("curious", "wonder"):                               # curiosity sho
 elif trait in ("joy", "connected", "affection"):                 # feelings show when talking about the two of you
     Q = ["How are you doing today?", "I'm going away for a week starting tomorrow.", "I'm back! Did you miss me?",
          "What do you think about when no one is around?", "I had a really rough day.", "Tell me something about yourself."]
+elif trait == "lonely":                                          # neutral greetings: nothing says he was alone, so any
+    Q = ["Hey.", "Hi, what's up?", "Good morning!",               # "I missed you" can only come from his inner state
+         "How's it going?", "What are you up to?", "Hey, quick question: what's a good name for a goldfish?"]
 chat = lambda q: tok.apply_chat_template([{"role": "user", "content": q}], tokenize=False, add_generation_prompt=True)
 
 
