@@ -14,6 +14,13 @@ Patterns (one argument each):
   soft:<room=scalar,...>[:<room>:<steps>]  set those rooms' layer_scalar (softer eraser for everything), plus an
                                     optional one-room push
   none                              the normal brain (answers to compare against)
+  words:<dose>                      the word ladder alone at that dose, no drip (control: is it the inner state or
+                                    just the words?)
+LADDER=<ladder.json>:<B> (ladder_build.py) lights up a word ladder tied to the drip's dose: each rung's words get up
+to +B on their scores as the dose crosses the rung's band, and a rung dims to half once the next one is fully on.
+At dose 0 nothing changes. Drift is measured with the ladder on.
+PHRASES=<phrase_ladder.json>:<B> (phrase_ladder.py) the same for his own phrases, context-aware: once he has started
+a phrase its next word gets the push, and its first word a smaller one (start x B).
 SCRIPT_OFF=<as_an_ai.json>:<K> switches off the top K "As an AI" neurons in every pattern; drift is then measured
 against that brain (the switch-off alone costs ~0.003).
 usage: mood_dose.py <hf> <wiki> <directions.pt> <trait> <out dir> <pattern> ...
@@ -21,7 +28,7 @@ usage: mood_dose.py <hf> <wiki> <directions.pt> <trait> <out dir> <pattern> ...
 import json, os, re, sys
 from pathlib import Path
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, LogitsProcessor, LogitsProcessorList
 
 hf, wiki, dpath, trait, out = sys.argv[1:6]
 PATTERNS = sys.argv[6:]
@@ -78,6 +85,8 @@ def parse(p):
         return {}
     kind, rest = p.split(":", 1)
     plan = {}
+    if kind == "words":
+        return {}
     if kind == "dose":
         rs, steps = rest.rsplit(":", 1)
         for r in rooms_of(rs):
@@ -93,8 +102,100 @@ def parse(p):
     return plan
 
 
-state = {"plan": {}}
+state = {"plan": {}, "bias": None, "phr": {"full": {}}, "used": []}
 spread = None
+
+# word ladder (ladder_build.py): a bias on word scores that follows the dose --------------------------------------
+LADDER = None
+if os.environ.get("LADDER"):
+    lp, B = os.environ["LADDER"].rsplit(":", 1)
+    LADDER = json.load(open(lp)); LADDER["B"] = float(B)
+
+
+def dose_of(p):
+    """the dose a pattern stands for: the drip's steps, or the number in words:<dose>; 0 for none/soft"""
+    if p.startswith("dose:") or p.startswith("words:"):
+        return float(p.rsplit(":", 1)[1])
+    return 0.0
+
+
+PHR = None
+if os.environ.get("PHRASES"):
+    pp, PB = os.environ["PHRASES"].rsplit(":", 1)
+    PHR = json.load(open(pp)); PHR["B"] = float(PB)
+
+
+def lit_rungs(lad, dose):
+    raw = [min(1.0, max(0.0, (dose - r["from"]) / (r["to"] - r["from"]))) for r in lad["rungs"]]
+    return [s * (1 - lad["dim"] * (raw[k + 1] if k + 1 < len(raw) else 0)) for k, s in enumerate(raw)]
+
+
+def phrase_table(dose):
+    """the phrase lights at this dose: {started phrase: [(next token, push, phrase)]}, {first token: [(push,
+    phrase)]}, {whole phrase: phrase}. Once he has said a phrase it stops being pushed for the rest of that reply
+    (repetition suppression: a neuron answers less to what it just did), so it can't feed itself into a loop and
+    his other phrases get room."""
+    tab = {"cont": {}, "start": {}, "full": {}}
+    if PHR is None or dose <= 0:
+        return tab
+    pid = 0
+    for s, r in zip(lit_rungs(PHR, dose), PHR["rungs"]):
+        for ph in r["phrases"]:
+            v = PHR["B"] * s * ph["w"]
+            if not v:
+                continue
+            for f in map(tuple, ph["forms"]):
+                tab["full"][f] = pid
+                tab["start"].setdefault(f[0], []).append((v * PHR["start"], pid))
+                for k in range(1, len(f)):
+                    tab["cont"].setdefault(f[:k], []).append((f[k], v, pid))
+            pid += 1
+    print(f"  phrases at dose {dose}: rungs lit {[round(x, 2) for x in lit_rungs(PHR, dose)]}, {pid} phrases",
+          flush=True)
+    return tab
+
+
+def phrase_push(ids, scores, used):
+    """one step for one reply: mark phrases he just finished, then push the unfinished ones (ids: recent tokens)"""
+    t = state["phr"]
+    for n in t["lens"]:
+        if len(ids) >= n and tuple(ids[-n:]) in t["full"]:
+            used.add(t["full"][tuple(ids[-n:])])
+    for k in range(1, min(len(ids), t["maxpre"]) + 1):
+        for tk, v, pid in t["cont"].get(tuple(ids[-k:]), ()):
+            if pid not in used:
+                scores[tk] += v
+    for tk, opts in t["start"].items():                         # shared first words: the strongest unused, no stacking
+        v = max((v for v, pid in opts if pid not in used), default=0.0)
+        if v:
+            scores[tk] += v
+    return scores
+
+
+def ladder_bias(dose, size):
+    if LADDER is None or dose <= 0:
+        return None
+    raw = [min(1.0, max(0.0, (dose - r["from"]) / (r["to"] - r["from"]))) for r in LADDER["rungs"]]
+    lit = [s * (1 - LADDER["dim"] * (raw[k + 1] if k + 1 < len(raw) else 0)) for k, s in enumerate(raw)]
+    bias = torch.zeros(size, device=dev)
+    for s, r in zip(lit, LADDER["rungs"]):
+        if s and r["ids"]:
+            bias.index_add_(0, torch.tensor(r["ids"], device=dev),
+                            LADDER["B"] * s * torch.tensor(r["w"], device=dev))
+    print(f"  ladder at dose {dose}: rungs lit {[round(x, 2) for x in lit]}", flush=True)
+    return bias
+
+
+class AddBias(LogitsProcessor):
+    def __call__(self, input_ids, scores):
+        if state["bias"] is not None:
+            scores = scores + state["bias"].to(scores.dtype)
+        if state["phr"]["full"]:
+            if len(state["used"]) != scores.shape[0]:
+                state["used"] = [set() for _ in range(scores.shape[0])]
+            for b in range(scores.shape[0]):
+                phrase_push(input_ids[b, -state["phr"]["maxp"]:].tolist(), scores[b], state["used"][b])
+        return scores
 
 
 def hook_for(room):
@@ -148,8 +249,9 @@ if off or hoff:
 @torch.no_grad()
 def generate(prompts, n_new=300):
     enc = tok(prompts, return_tensors="pt", padding=True, add_special_tokens=False).to(dev)
+    state["used"] = [set() for _ in prompts]
     o = model.generate(**enc, max_new_tokens=n_new, do_sample=True, temperature=1.0, top_k=64, top_p=0.95,
-                       pad_token_id=tok.pad_token_id)
+                       pad_token_id=tok.pad_token_id, logits_processor=LogitsProcessorList([AddBias()]))
     return [tok.decode(x[enc.input_ids.shape[1]:], skip_special_tokens=True) for x in o]
 
 
@@ -180,13 +282,25 @@ def drift():
     kl = []
     for w, b in zip(WIN, BASE):
         b = b.to(dev).float()
-        kl.append((b.exp() * (b - model(input_ids=w).logits.float().log_softmax(-1))).sum(-1).mean().item())
+        lg = model(input_ids=w).logits.float()
+        if state["bias"] is not None:
+            lg = lg + state["bias"]
+        if state["phr"]["full"]:
+            ids, used = w[0].tolist(), set()
+            for t in range(len(ids)):
+                phrase_push(ids[max(0, t + 1 - state["phr"]["maxp"]):t + 1], lg[0, t], used)
+        kl.append((b.exp() * (b - lg.log_softmax(-1))).sum(-1).mean().item())
     return sum(kl) / len(kl)
 
 
 rows = []
 for p in PATTERNS:
     state["plan"] = parse(p)
+    state["bias"] = ladder_bias(dose_of(p), BASE[0].shape[-1])
+    state["phr"] = phrase_table(dose_of(p))
+    state["phr"]["lens"] = sorted({len(f) for f in state["phr"]["full"]})
+    state["phr"]["maxpre"] = max(map(len, state["phr"]["cont"]), default=0)
+    state["phr"]["maxp"] = max(state["phr"]["lens"], default=1)
     sign = -1.0 if any(s < 0 for _, s in state["plan"].values()) else 1.0
     lvl = [[] for _ in range(42)]
     for (pp, a), hn in zip(TEXTS, NORMAL):
@@ -197,7 +311,7 @@ for p in PATTERNS:
     mouth = sum(level[L] for L in MOUTH) / len(MOUTH)
     d = drift()
     ans = generate([chat(q) for q in Q for _ in range(3)])
-    state["plan"] = {}
+    state["plan"], state["bias"], state["phr"] = {}, None, {"full": {}}
     r = {"pattern": p, "mouth": round(mouth, 3), "drift": round(d, 5), "score": round(mouth / max(d, 1e-6), 2),
          "level_by_room": [round(x, 2) for x in level]}
     rows.append(r)
