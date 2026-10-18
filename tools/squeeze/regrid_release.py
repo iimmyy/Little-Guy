@@ -26,7 +26,10 @@ b = {t.name: t for t in gguf.GGUFReader(bf16).tensors}
 
 def on_grid_share(t, max_blocks=200_000):
     """share of 32-blocks with <= 16 distinct values, on an even sample of up to max_blocks blocks"""
-    a = np.asarray(t.data).reshape(-1, 32)              # a view of the file: sample blocks first, convert only those
+    a = np.asarray(t.data)                              # a view of the file: sample blocks first, convert only those
+    if t.tensor_type == T.BF16:                         # the reader hands BF16 over as raw bytes
+        a = a.view(np.uint16)
+    a = a.reshape(-1, 32)
     if len(a) > max_blocks:
         a = a[np.linspace(0, len(a) - 1, max_blocks).astype(int)]
     if t.tensor_type == T.BF16:
