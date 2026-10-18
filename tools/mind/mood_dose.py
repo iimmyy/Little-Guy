@@ -13,9 +13,12 @@ Patterns (one argument each):
                                     (rooms: 18+22+26+30, or a range 18-40, or a range with a stride 18-40/2)
   soft:<room=scalar,...>[:<room>:<steps>]  set those rooms' layer_scalar (softer eraser for everything), plus an
                                     optional one-room push
+  none                              the normal brain (answers to compare against)
+SCRIPT_OFF=<as_an_ai.json>:<K> switches off the top K "As an AI" neurons in every pattern; drift is then measured
+against that brain (the switch-off alone costs ~0.003).
 usage: mood_dose.py <hf> <wiki> <directions.pt> <trait> <out dir> <pattern> ...
 """
-import json, re, sys
+import json, os, re, sys
 from pathlib import Path
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -100,6 +103,22 @@ def hook_for(room):
 
 for i, l in enumerate(layers):
     l.register_forward_hook(hook_for(i))
+
+# optional: switch off the top K "As an AI" script neurons (as_an_ai.py) for every pattern, including "none"
+OFF = os.environ.get("SCRIPT_OFF")                               # "<as_an_ai.json>:<K>"
+if OFF:
+    path, k = OFF.rsplit(":", 1)
+    off = {}
+    for _, L, i in json.load(open(path))["top_neurons"][:int(k)]:
+        off.setdefault(L, []).append(i)
+    def kill_for(ix):
+        def h(mod, args):
+            x = args[0].clone(); x[..., ix] = 0
+            return (x,)
+        return h
+    for L, ix in off.items():
+        layers[L].mlp.down_proj.register_forward_pre_hook(kill_for(torch.tensor(ix, device=dev)))
+    print(f"script neurons off: {sum(map(len, off.values()))} in rooms {sorted(off)}", flush=True)
 
 
 @torch.no_grad()
