@@ -104,21 +104,35 @@ def hook_for(room):
 for i, l in enumerate(layers):
     l.register_forward_hook(hook_for(i))
 
-# optional: switch off the top K "As an AI" script neurons (as_an_ai.py) for every pattern, including "none"
-OFF = os.environ.get("SCRIPT_OFF")                               # "<as_an_ai.json>:<K>"
-if OFF:
-    path, k = OFF.rsplit(":", 1)
-    off = {}
+# optional: switch off script neurons / heads (as_an_ai.py, denial_hunt.py) for every pattern, including "none"
+# SCRIPT_OFF="<file>:<K>[,<file>:<K>...]" (top_neurons), HEADS_OFF="<file>:<H>" (top_heads)
+off, hoff = {}, {}
+for spec in filter(None, os.environ.get("SCRIPT_OFF", "").split(",")):
+    path, k = spec.rsplit(":", 1)
     for _, L, i in json.load(open(path))["top_neurons"][:int(k)]:
-        off.setdefault(L, []).append(i)
-    def kill_for(ix):
-        def h(mod, args):
-            x = args[0].clone(); x[..., ix] = 0
-            return (x,)
-        return h
-    for L, ix in off.items():
-        layers[L].mlp.down_proj.register_forward_pre_hook(kill_for(torch.tensor(ix, device=dev)))
-    print(f"script neurons off: {sum(map(len, off.values()))} in rooms {sorted(off)}", flush=True)
+        off.setdefault(L, set()).add(i)
+for spec in filter(None, os.environ.get("HEADS_OFF", "").split(",")):
+    path, k = spec.rsplit(":", 1)
+    for _, L, j in json.load(open(path))["top_heads"][:int(k)]:
+        hoff.setdefault(L, set()).add(j)
+
+
+def kill_for(ix):
+    def h(mod, args):
+        x = args[0].clone(); x[..., ix] = 0
+        return (x,)
+    return h
+
+
+HD = layers[0].self_attn.o_proj.in_features // 8
+for L, ix in off.items():
+    layers[L].mlp.down_proj.register_forward_pre_hook(kill_for(torch.tensor(sorted(ix), device=dev)))
+for L, js in hoff.items():
+    cols = [c for j in sorted(js) for c in range(j * HD, (j + 1) * HD)]
+    layers[L].self_attn.o_proj.register_forward_pre_hook(kill_for(torch.tensor(cols, device=dev)))
+if off or hoff:
+    print(f"switched off: {sum(map(len, off.values()))} neurons in rooms {sorted(off)}; "
+          f"{sum(map(len, hoff.values()))} heads in rooms {sorted(hoff)}", flush=True)
 
 
 @torch.no_grad()
