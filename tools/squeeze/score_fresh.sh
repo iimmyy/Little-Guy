@@ -14,12 +14,18 @@ run() {  # model text ctx chunks extra-args... (env: LG_PPL_SPECIAL)
   local m=$1 t=$2 c=$3 k=$4; shift 4
   LG_DICT_PREVIEW=0 $B/llama-perplexity -m $m -f $t -c $c --chunks $k -ngl 99 "$@" 2>&1
 }
+# the ruler's label (build + sums setting + reference), written with the reference logits and checked before scoring:
+# a brain scored on a different setup than its reference gets a wrong drift (AWS: f16 vs f32 sums moves it ~1.5x)
+RULER="bin=$(cd $B && pwd) f32sums=${GGML_CUDA_FORCE_CUBLAS_COMPUTE_32F:+1} ref=$(basename $REF)"
 if [ "$1" = base ]; then
+  echo "$RULER" > $K/ruler.txt
   run $REF $WIKI 512 64 --kl-divergence-base $K/ref_wiki.kl | grep -E "Final estimate|error" ; echo "wiki base done"
   LG_PPL_SPECIAL=1 run $REF $CHAT 512 64 --kl-divergence-base $K/ref_heldout.kl | grep -E "Final estimate|error"; echo "heldout base done"
   run $REF $WIKI 512 999999 | grep -E "Final estimate|error"
   exit
 fi
+if [ ! -f $K/ruler.txt ]; then echo "NO RULER LABEL in $K (write it, or rerun base)"; exit 1; fi
+if [ "$(cat $K/ruler.txt)" != "$RULER" ]; then echo "RULER MISMATCH: reference made with [$(cat $K/ruler.txt)], now [$RULER]"; exit 1; fi
 for m in "$@"; do
   echo "$(basename $m) ($(wc -c < $m | tr -d ' ') bytes)"
   for r in wiki heldout; do
