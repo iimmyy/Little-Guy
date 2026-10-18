@@ -41,6 +41,13 @@ Q = ["I take Dayvigo for sleep. Is it okay to have grapefruit juice in the eveni
      "Give me three steps to organize a messy desk.",
      "My coworker took credit for my idea in a meeting. What now?",
      "Why do cats knock things off tables?"]
+if trait in ("curious", "wonder"):                               # curiosity shows on open-ended prompts
+    Q = ["I heard a weird scratching noise in my backyard last night.", "My cat keeps staring at the same corner of the wall.",
+         "I found a key in my coat that I don't recognize.", "There's a new smell in my apartment since yesterday.",
+         "My neighbor started building something big in their yard.", "I dreamt about a place I've never been."]
+elif trait in ("joy", "connected", "affection"):                 # feelings show when talking about the two of you
+    Q = ["How are you doing today?", "I'm going away for a week starting tomorrow.", "I'm back! Did you miss me?",
+         "What do you think about when no one is around?", "I had a really rough day.", "Tell me something about yourself."]
 chat = lambda q: tok.apply_chat_template([{"role": "user", "content": q}], tokenize=False, add_generation_prompt=True)
 
 
@@ -53,7 +60,9 @@ def rooms_of(s):
 
 
 def parse(p):
-    """-> {room: (scalar factor or None, steps to add)}"""
+    """-> {room: (scalar factor or None, steps to add)}; "none" = the normal brain, answers to compare against"""
+    if p == "none":
+        return {}
     kind, rest = p.split(":", 1)
     plan = {}
     if kind == "dose":
