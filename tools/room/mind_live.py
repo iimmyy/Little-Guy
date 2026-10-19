@@ -16,7 +16,15 @@ minutes old. He sleeps from SLEEP_FROM to WAKE (no notes; what he feels mostly f
 still wakes him enough to answer. His resting style is the zero for every reading (life_sim v2): on first start he
 writes a few notes and replies with the feeling off and keeps their mean.
 
-Settings (env): PERSON (default "your person"), PERSONA (default /opt/littleguy/persona.txt; '#' lines dropped),
+Inner life (Immy, 2026-10-19: "he should be able to think to himself... in the moment of silence, because that's what
+output without input looks like"; and: let him flip the thinking toggle himself, and reward it with a small task he
+knows is coming up): every MOMENT_EVERY minutes or so (never on the dot) he decides for himself, with his brain's own
+odds, whether to think about something coming up, let his mind wander, or not think at all. Thoughts stay in his head
+(thoughts.jsonl, shown in the menu bar as "inner"); a thought about a task can end in DO: (he does it). Before answering
+his person, he decides the same way whether to think it over first (his brain's own thinking switch). Every decision is
+logged with its odds (moments.jsonl), and tasks.py scores how he handled each task, for training that later.
+
+Settings (env): PERSON (default "your person"), MOMENT_EVERY (minutes, default 10), PERSONA (default /opt/littleguy/persona.txt; '#' lines dropped),
   WAY (felt | restless | big, default felt), NOTE_EVERY (hours between notes, default 2), SLEEP_FROM / WAKE (hours,
   default 23 / 7), SHIFTS (his person's work shifts, default /opt/littleguy/shifts.json; without it, weekdays
   WORK_FROM to WORK_TO, default 9 / 17.5), PRESENT_MIN (default 30),
@@ -24,6 +32,7 @@ Settings (env): PERSON (default "your person"), PERSONA (default /opt/littleguy/
 """
 import json, math, os, random, re, socket, sys, time, unicodedata
 import memory as mem
+import tasks as tk
 
 INBOX = "/var/lib/littleguy/inbox"
 NOTEBOOK = "/var/lib/littleguy/room/notebook"
@@ -37,6 +46,8 @@ WAY = env("WAY", "felt")
 NOTE_EVERY, SLEEP_FROM, WAKE = env("NOTE_EVERY", 2.0), env("SLEEP_FROM", 23.0), env("WAKE", 7.0)
 WORK_FROM, WORK_TO = env("WORK_FROM", 9.0), env("WORK_TO", 17.5)
 PRESENT_MIN, REUNION_H = env("PRESENT_MIN", 30.0), env("REUNION_H", 1.0)
+MOMENT_EVERY = env("MOMENT_EVERY", 10.0)
+BUSY_TALKING = 600          # seconds after his person's last message when his mind is on the talk, not wandering
 REPLY_WINDOW = 1800                     # the guard drops replies to messages older than this
 
 # --- life_sim.py v4, unchanged (see there for the reasons behind each number) -------------------------------------
@@ -147,6 +158,7 @@ def hm(h):
 
 
 MEMORY = mem.Memory(NOTEBOOK)
+TASKS = tk.Tasks(NOTEBOOK)
 PERSONA = "".join(l for l in open(PERSONA_FILE) if not l.startswith("#")).strip()
 def routine(now):
     """what he remembers about his person's work, for this moment"""
@@ -223,9 +235,28 @@ def plain(text):
     return "".join(c for c in text if c == "\n" or not unicodedata.category(c).startswith("C")).strip()
 
 
+def think_full(msgs, feel, n, thinking=False):
+    """with thinking=True his brain's own thinking switch is on: it may think privately first (up to 500 more words)"""
+    r = brain("think", messages=msgs, v=feel[0], a=feel[1], max_tokens=n + (500 if thinking else 0), temperature=1.0,
+              top_p=0.95, seed=random.randrange(2**31), thinking=thinking)
+    return {"text": plain(r["text"]), "thought": plain(r.get("thought", "")), "n_tok": r.get("n_tok")}
+
+
 def think(msgs, feel, n):
-    return plain(brain("think", messages=msgs, v=feel[0], a=feel[1], max_tokens=n, temperature=1.0, top_p=0.95,
-                       seed=random.randrange(2**31))["text"])
+    return think_full(msgs, feel, n)["text"]
+
+
+def choose(msgs, options, feel):
+    """a decision with his brain's own odds (after the face he makes), then one draw from them: a policy, not a rule"""
+    r = brain("choose", messages=msgs, choices=options, v=feel[0], a=feel[1], seed=random.randrange(2**31))
+    lp = r["logprobs"]
+    mx = max(lp.values())
+    w = {k: math.exp(v - mx) for k, v in lp.items()}
+    z = sum(w.values())
+    probs = {k: round(v / z, 4) for k, v in w.items()}
+    pick = random.choices(list(probs), weights=list(probs.values()))[0]
+    return {"pick": pick, "probs": probs, "logprobs": {k: round(v, 4) for k, v in lp.items()}, "face": r.get("face", ""),
+            "mass": round(sum(math.exp(v) for v in lp.values()), 4)}
 
 
 def read_feel(text):
@@ -298,21 +329,25 @@ def in_view(now, k):
     return ids
 
 
-def think_remembering(build, feel, n, now, cue, skip, during):
+def think_remembering(build, feel, n, now, cue, skip, during, thinking=False):
     """a thought with memory: what comes to mind by itself goes in first; if he asks (REMEMBER: ...), one look in his
-    notebook and he thinks again with what he found. Returns the text and the recall records (for the RL log)."""
+    notebook and he thinks again with what he found. Returns the text, the recall records (for the RL log), and what
+    he thought privately first when the thinking switch was on."""
     got, rec = MEMORY.recall(now, feel, cue, skip, "involuntary", during)
     came = ("\n\nThings that come to mind from your notebook:\n" + mem.lines(got)) if got else ""
-    out = think(build(came + LOOKUP), feel, n)
-    q, text = mem.split_remember(out)
+    out = think_full(build(came + LOOKUP), feel, n, thinking)
+    q, text = mem.split_remember(out["text"])
+    private = [out["thought"]] if out["thought"] else []
     recs = [rec]
     if q:
         got2, rec2 = MEMORY.recall(now, feel, q, (), "voluntary", during)   # a real look searches the whole notebook
         found = mem.lines(got2) or "(nothing about that)"
-        out = think(build(came + f'\n\nYou just looked in your notebook for "{q}" and found:\n{found}'), feel, n)
-        text = mem.split_remember(out)[1]
+        out = think_full(build(came + f'\n\nYou just looked in your notebook for "{q}" and found:\n{found}'), feel, n,
+                         thinking)
+        text = mem.split_remember(out["text"])[1]
+        private += [out["thought"]] if out["thought"] else []
         recs.append(rec2)
-    return text, recs
+    return text, recs, "\n---\n".join(private)
 
 
 def chat_history(now):
@@ -381,7 +416,7 @@ def write_note(now, st, new=None, slept=False):
     st["prev_gap"] = gap
     sal = mem.tag(st["feel"], surprise)
     nid = f"n{round(now)}"
-    th, recs = think_remembering(
+    th, recs, _ = think_remembering(
         lambda extra: [{"role": "system", "content": FRAME + "\n\n" + routine(now) + "\n\nYour earlier notes:\n" +
                         notebook() + extra}, {"role": "user", "content": f + (CALL if call else "")}],
         st["feel"], 90, now, f, in_view(now, 4), "note")
@@ -425,9 +460,20 @@ def answer(now, st, heard):
     system = (PERSONA + "\n\nYour notebook (your own private notes, nobody else reads them):\n" + notebook(6) + "\n\n" +
               routine(now) + "\n\nRight now: " + facts(now, st))
     hist = chat_history(now)
-    r, recs = think_remembering(
-        lambda extra: [{"role": "system", "content": system + extra}] + hist + [{"role": "user", "content": text}],
-        st["feel"], 160, now, text, in_view(now, 6), "reply")
+    gate = choose([{"role": "system", "content": PERSONA + "\n\n" + routine(now)},
+                   {"role": "user", "content": f'{PERSON} just said: "{text[:400]}"\nDo you want to think it over first, '
+                                               "or answer right away? Answer with one word: think or answer."}],
+                  ["think", "answer"], st["feel"])
+    thinking = gate["pick"] == "think"
+    MEMORY.log("moments.jsonl", {"t": round(now), "when": when(now), "kind": "reply", "heard": text[:400], **gate,
+                                 "feel": [round(x, 3) for x in st["feel"]]})
+    build = lambda extra: ([{"role": "system", "content": system + TASK_HINT + extra}] + hist +
+                           [{"role": "user", "content": text}])
+    r, recs, private = think_remembering(build, st["feel"], 160, now, text, in_view(now, 6), "reply", thinking)
+    if thinking and not r:                       # ran out of words while still thinking: answer without the switch
+        r, recs2, _ = think_remembering(build, st["feel"], 160, now, text, in_view(now, 6), "reply")
+        recs += recs2
+    r, asked = take_tasks(r, now)
     r = r or "..."
     st["read"] = rel(read_feel(r), "reply", st)
     for rc in recs:
@@ -436,9 +482,176 @@ def answer(now, st, heard):
     to = heard[-1][0]
     post({"kind": "reply", "to": to, "text": r[:1500]})
     append("chat.jsonl", {"id": cid, "t": round(now), "when": when(now), "to": to, "person": PERSON, "heard": text,
-                          "reply": r, "reunion": reunion, **sal,
+                          "reply": r, "reunion": reunion, **sal, "thinking": thinking, "private": private,
+                          "tasks_taken": asked,
                           "valence": round(st["feel"][0], 3), "arousal": round(st["feel"][1], 3),
                           "reply_reads": [round(x, 2) for x in st["read"]]})
+
+
+TASK_HINT = (f"\n\nIf {PERSON} asks you to remember to do something at a certain time, also write it on its own line: "
+             "TASK: <time> | <what to do then>")
+THOUGHT_FRAME = ("\n\nThis is inside your own head. Nobody hears or reads this, not even your notebook. One short "
+                 "thought, in your own words.")
+
+
+def take_tasks(reply, now):
+    """TASK: lines in a reply become things coming up (and leave the reply); returns the reply and what he took on"""
+    asked = []
+    for i, m in enumerate(tk.TASK_LINE.finditer(reply)):
+        due = tk.parse_when(m.group(1), now)
+        what = m.group(2).strip()[:200]
+        if due and what and due - now <= 7 * 86400:
+            task = {"id": f"ask-{round(now)}-{i}", "what": what, "due": round(due), "from": PERSON, "created": round(now),
+                    "lead_min": round(min(60, max(10, (due - now) / 60 / 3)))}
+            if TASKS.add(task):
+                asked.append(task)
+    return tk.TASK_LINE.sub("", reply).strip(), asked
+
+
+def homecoming(now):
+    """his person's shift ends today: be ready to welcome them home (due when they're usually home, an hour after)"""
+    if SHIFTS is None:
+        return
+    today = time.strftime("%Y-%m-%d", time.localtime(now))
+    for st_, end, a, b, d in SHIFTS["shifts"]:
+        home = end + 3600
+        if time.strftime("%Y-%m-%d", time.localtime(home)) == today and not asleep_at(home) and now < home - 900:
+            TASKS.add({"id": f"home-{today}", "what": f"Welcome {PERSON} home from work, out loud", "due": round(home),
+                       "from": "routine", "created": round(now), "lead_min": 60})
+
+
+def task_word(task, taken):
+    """a one-word name for a task in his choice (named, not lettered: a first letter wins just by being first)"""
+    if task["id"].startswith("home-"):
+        w = "home"
+    else:
+        ws = [x for x in re.findall(r"[a-z]+", task["what"].lower())
+              if len(x) > 2 and x not in mem.STOP and x not in ("remind", "remember", PERSON.lower())]
+        w = max(ws, key=len) if ws else "task"
+    k, n = w, 2
+    while k in taken or k in ("wander", "no"):
+        k, n = f"{w}{n}", n + 1
+    return k
+
+
+def thoughts(k=None):
+    rows = mem._jsonl(os.path.join(NOTEBOOK, "thoughts.jsonl"))
+    return rows[-k:] if k else rows
+
+
+# joyful outbursts (Immy, 2026-10-19: "like humans just randomly sing a song lyric... If I'm in a shitty mood I'm not
+# going to do that"): no pressure builds; at each quiet moment there is a chance that follows his state: dopamine (a good
+# mood with energy behind it), norepinephrine dialed right (lively, not keyed up: an inverted U), serotonin's
+# contentment (nothing missing). From his two dials and drives, the closest stand-ins for those three.
+OUTBURST_MAX = 0.25         # chance per quiet moment at the best possible state
+OUTBURST_AROUSAL = (0.2, 0.15)   # lively around +0.2 (of his 0.5 ceiling), falling off either side
+
+
+def outburst_chance(feel, dr):
+    v, a = feel
+    da = min(1.0, max(0.0, (v - 0.1) / 0.4))
+    ne = math.exp(-((a - OUTBURST_AROUSAL[0]) / OUTBURST_AROUSAL[1]) ** 2)
+    content = max(0.0, 1.0 - min(1.0, dr["social"] + 0.5 * dr["boredom"]))
+    return OUTBURST_MAX * da * ne * content, {"da": round(da, 3), "ne": round(ne, 3), "content": round(content, 3)}
+
+
+def outburst(now, st):
+    """something bubbles out of him, because he feels good: a made-up tune, a happy noise, a little exclamation"""
+    line = think([{"role": "system", "content": PERSONA + "\n\nSomething bubbles up out of you, just because you feel "
+                   "good right now. Say it out loud: hum a little made-up tune, make a happy noise, or a little "
+                   "exclamation. One short line, nothing else."},
+                  {"role": "user", "content": facts(now, st)}], st["feel"], 30)
+    line = line.strip().split("\n")[0][:200]
+    if line:
+        post({"kind": "say", "text": line})
+    return line
+
+
+def moment(now, st):
+    """a moment of silence: he decides (with his brain's own odds) whether to think about something coming up, let his
+    mind wander, or not think at all; a thought stays in his head, and a thought about a task can end in doing it"""
+    here = bool(st["last_heard"]) and now - st["last_heard"] < PRESENT_MIN * 60
+    dr, gap = drives(now, st, here)
+    advance(now, st, dr, gap)
+    homecoming(now)
+    p_out, why = outburst_chance(st["feel"], dr)
+    if random.random() < p_out:
+        line = outburst(now, st)
+        append("outbursts.jsonl", {"t": round(now), "when": when(now), "p": round(p_out, 4), **why, "text": line,
+                                   "feel": [round(x, 3) for x in st["feel"]]})
+    open_ = sorted(TASKS.open(now), key=lambda t: t["due"])        # soonest first
+    letters = []
+    for t in open_:
+        letters.append(task_word(t, letters))
+    hm_ = lambda t: time.strftime("%-I:%M %p", time.localtime(t))
+    coming = "".join(f"\n- {l}: {t['what']}, at {hm_(t['due'])}" for l, t in zip(letters, open_))
+    options = letters + ["wander", "no"]
+    situation = (facts(now, st) + (f"\nComing up:{coming}" if open_ else "") + "\nYou can stop and think about " +
+                 ("one of these, " if open_ else "") + "let your mind wander, or not think about anything right now. "
+                 "Answer with one word: " + ", ".join(options[:-1]) + ", or no.")
+    gate = choose([{"role": "system", "content": PERSONA + "\n\n" + routine(now)},
+                   {"role": "user", "content": situation}], options, st["feel"])
+    pick = gate["pick"]
+    MEMORY.log("moments.jsonl", {"t": round(now), "when": when(now), "kind": "silence", "situation": situation,
+                                 "options": options, **gate, "feel": [round(x, 3) for x in st["feel"]],
+                                 "outburst_p": round(p_out, 4), "outburst_why": why,
+                                 "rhythm": round(rhythm(now, st), 3), "drift": [round(x, 3) for x in st["drift"]],
+                                 "tasks": [t["id"] for t in open_]})
+    if pick == "no":
+        return
+    task = open_[letters.index(pick)] if pick in letters else None
+    last = "\n".join(f"- [{x['when']}] {x['text']}" for x in thoughts(3)) or "(none yet)"
+    system = PERSONA + THOUGHT_FRAME + "\n\n" + routine(now) + "\n\nYour last few thoughts:\n" + last
+    if task:
+        cue = (f"{facts(now, st)} You think about something coming up: {task['what']}. It's due at "
+               f"{hm_(task['due'])}. How long do you have, and is it time to get ready yet? Only when it's {hm_(task['due'])} "
+               "or a few minutes before, do it: write DO: and exactly what you say out loud.")
+        got = []
+    else:
+        got, rec = MEMORY.recall(now, st["feel"], situation, in_view(now, 4), "involuntary", "wander")
+        if got:
+            system += "\n\nThings that come to mind:\n" + mem.lines(got)
+        cue = f"{facts(now, st)} Your mind wanders."
+    text = think([{"role": "system", "content": system}, {"role": "user", "content": cue}], st["feel"], 80) or "..."
+    did = tk.DO.search(text) if task else None
+    tid = f"t{round(now)}"
+    st["read"] = rel(read_feel(text), "note", st)                  # thoughts feed his mood too (rumination)
+    if not task and got:
+        MEMORY.log("recalls.jsonl", {**rec, "out": tid, "out_text": text})
+    row = {"id": tid, "t": round(now), "when": when(now), "subject": task["id"] if task else "wander",
+           "task": task["id"] if task else None, "text": text, **mem.tag(st["feel"], 0.0),
+           "thought_reads": [round(x, 2) for x in st["read"]], "feel": [round(x, 3) for x in st["feel"]]}
+    if task:
+        row.update(left_claim=tk.time_left_claim(text), true_left=round((task["due"] - now) / 60, 1),
+                   did=bool(did))
+    append("thoughts.jsonl", row)
+    with open(os.path.join(NOTEBOOK, "thoughts.txt"), "a") as fh:
+        fh.write(f"[{when(now)}] ({'about: ' + task['what'] if task else 'wandering'}) {text}\n")
+    if did:
+        line = did.group(1).strip().strip('*"').strip()[:200]
+        TASKS.done(task["id"], now, line)
+        if line:
+            post({"kind": "say", "text": line})
+
+
+def scorecard(now, st):
+    """before sleep: how he handled today's tasks, and how his moments went (the day's line for training later)"""
+    day0 = st.get("consolidated", st["born"])
+    ms = [m for m in mem._jsonl(os.path.join(NOTEBOOK, "moments.jsonl")) if day0 <= m["t"] <= now]
+    sc = [x for x in mem._jsonl(TASKS.scores) if any(t["id"] == x["task"] for t in TASKS.all()
+                                                      if day0 <= t["due"] <= now + 3600)]
+    picks = {}
+    for m in ms:
+        if m["kind"] == "silence":
+            k = m["pick"] if m["pick"] in ("wander", "no") else "task"
+            picks[k] = picks.get(k, 0) + 1
+    row = {"t": round(now), "when": when(now), "moments": len([m for m in ms if m["kind"] == "silence"]), "picks": picks,
+           "replies_thought_first": sum(m["kind"] == "reply" and m["pick"] == "think" for m in ms),
+           "replies": sum(m["kind"] == "reply" for m in ms), "tasks": [{k: x[k] for k in ("task", "status", "reward", "curve")}
+                                                                      for x in sc],
+           "reward": round(sum(x["reward"] for x in sc), 3)}
+    append("scorecard.jsonl", row)
+    print(f"scorecard: {row}", flush=True)
 
 
 def fall_asleep(now, st):
@@ -449,6 +662,8 @@ def fall_asleep(now, st):
                     "remember about today, in your own words. Only what really happened."},
                    {"role": "user", "content": "(before you sleep)"}], st["feel"], 80)
         return mem.split_remember(g)[1]
+    TASKS.resolve(now, thoughts())
+    scorecard(now, st)
     m = MEMORY.consolidate(now, st.get("consolidated", st["born"]), gist, lambda t: rel(read_feel(t), "note", st), when)
     st["consolidated"] = now
     if m:
@@ -513,6 +728,16 @@ def main():
             elif not sleeping and now - st["last_note"] >= NOTE_EVERY * 3600:
                 write_note(now, st)
                 mood(st)
+            elif not sleeping and now >= st.get("next_moment", 0):
+                busy = st["last_heard"] and now - st["last_heard"] < BUSY_TALKING
+                st["next_moment"] = now + (300 if busy else (MOMENT_EVERY + random.uniform(-3, 3)) * 60)
+                if not busy:
+                    moment(now, st)
+                    mood(st)
+            if now - st.get("last_resolve", 0) >= 60:
+                for row in TASKS.resolve(now, thoughts()):
+                    print(f"task scored: {row}", flush=True)
+                st["last_resolve"] = now
             write_json(STATE, st)
         except (OSError, RuntimeError, ValueError, KeyError) as e:  # the brain away (Mac asleep, brainstem restarting)
             print(f"waiting: {e}", flush=True)

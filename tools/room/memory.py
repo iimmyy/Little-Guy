@@ -60,9 +60,15 @@ class Memory:
         with open(self.p(name), "a") as f:
             f.write(json.dumps(obj, ensure_ascii=False) + "\n")
 
-    def items(self):
-        """everything he could remember: his notes, what was said, and what he kept from past days"""
+    def items(self, thoughts=False):
+        """everything he could remember: his notes, what was said, and what he kept from past days (and, for sleep to
+        sort through, the day's inner thoughts; they don't come back raw, only through what sleep keeps)"""
         out = []
+        if thoughts:
+            for x in _jsonl(self.p("thoughts.jsonl")):
+                out.append({"id": x["id"], "t": x["t"], "when": x["when"], "kind": "thought",
+                            "text": f"You thought: {x['text']}", "strength": x.get("strength", 0.2),
+                            "feel": x.get("thought_reads", [0, 0])})
         for n in _jsonl(self.p("notes.jsonl")):
             out.append({"id": n.get("id", f"n{n['t']}"), "t": n["t"], "when": n["when"], "kind": "note",
                         "text": n["thought"], "strength": n.get("strength", 0.3), "feel": n.get("thought_reads", [0, 0])})
@@ -105,7 +111,7 @@ class Memory:
 
     def consolidate(self, now, since, gist_fn, read_fn, when_fn):
         """going to sleep: the day's moments, strength + tagging, the strongest kept as one short memory"""
-        day = [it for it in self.items() if it["kind"] != "memory" and since <= it["t"] <= now]
+        day = [it for it in self.items(thoughts=True) if it["kind"] != "memory" and since <= it["t"] <= now]
         strong = [it for it in day if it["strength"] >= STRONG]
         cands = []
         for it in day:

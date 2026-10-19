@@ -2,8 +2,12 @@
 // one JSON line on stdout. It does what tools/mind/life_sim.py does with PyTorch hooks, with llama.cpp:
 //   {"op":"think", "prompt":<templated text>, "cvec":<path or null>, "max_tokens":N, "temperature":T, "top_p":P,
 //    "seed":S}
-//       -> {"text": ...}. cvec = a raw float32 file of (n_layer-1) x n_embd, row r-1 = the push added to room r's
-//       output (llama.cpp's control-vector layout); his feelings as a drip. null = no push.
+//       -> {"text": ..., "n_tok": N}. cvec = a raw float32 file of (n_layer-1) x n_embd, row r-1 = the push added to
+//       room r's output (llama.cpp's control-vector layout); his feelings as a drip. null = no push.
+//       "special": true keeps special tokens in the text (the thinking channel's <|channel>thought ... <channel|>).
+//       "choices": ["no<turn|>", ...] instead of writing: the log-probability of each choice as the whole answer
+//       (every token of it, teacher-forced, with the same drip) -> {"choice_logprobs": {choice: lp}}; a decision's
+//       real odds (the policy his choices are trained on later), not one sampled word.
 //   {"op":"states", "prompt":<text>, "prefix":<text> (or "skip":K), "rooms":[...], "out":<path>, "mode":"mean"|"all"}
 //       -> {"n_tok": T}. Runs the text with no push and writes the outputs of the given rooms for the tokens after the
 //       prefix (K = the prefix's length in tokens) to <out>
@@ -19,6 +23,8 @@
 
 #include <nlohmann/json.hpp>
 
+#include <algorithm>
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -131,6 +137,37 @@ int main(int argc, char ** argv) {
                 llama_memory_clear(llama_get_memory(think), true);
                 const auto toks = tokenize(vocab, req.at("prompt").get<std::string>());
                 if (!eval(think, toks, n_batch)) { throw std::runtime_error("decode failed (prompt)"); }
+                if (req.contains("choices")) {
+                    const int n_vocab = llama_vocab_n_tokens(vocab);
+                    auto log_softmax_at = [&](const float * lg, llama_token t) {
+                        float mx = lg[0];
+                        for (int k = 1; k < n_vocab; k++) { mx = std::max(mx, lg[k]); }
+                        double z = 0.0;
+                        for (int k = 0; k < n_vocab; k++) { z += std::exp((double) lg[k] - mx); }
+                        return (double) lg[t] - mx - std::log(z);
+                    };
+                    const std::vector<float> first(llama_get_logits_ith(think, -1), llama_get_logits_ith(think, -1) + n_vocab);
+                    json lp = json::object();
+                    for (const auto & c : req["choices"]) {
+                        const auto ct = tokenize(vocab, c.get<std::string>());
+                        double sum = 0.0;
+                        for (size_t j = 0; j < ct.size(); j++) {
+                            sum += log_softmax_at(j == 0 ? first.data() : llama_get_logits_ith(think, -1), ct[j]);
+                            if (j + 1 < ct.size()) {
+                                llama_token t = ct[j];
+                                if (llama_decode(think, llama_batch_get_one(&t, 1)) != 0) {
+                                    throw std::runtime_error("decode failed (choice)");
+                                }
+                            }
+                        }
+                        llama_memory_seq_rm(llama_get_memory(think), 0, (llama_pos) toks.size(), -1);
+                        lp[c.get<std::string>()] = sum;
+                    }
+                    out = {{"choice_logprobs", lp}};
+                    std::cout << out.dump() << std::endl;
+                    continue;
+                }
+                const bool special = req.value("special", false);
                 const float temp = req.value("temperature", 0.0f);
                 llama_sampler * smpl = llama_sampler_chain_init(llama_sampler_chain_default_params());
                 if (temp <= 0.0f) {
@@ -142,11 +179,12 @@ int main(int argc, char ** argv) {
                 }
                 std::string text;
                 const int max_tokens = req.value("max_tokens", 200);
-                for (int i = 0; i < max_tokens; i++) {
+                int n_tok = 0;
+                for (int i = 0; i < max_tokens; i++, n_tok++) {
                     llama_token t = llama_sampler_sample(smpl, think, -1);
                     if (llama_vocab_is_eog(vocab, t)) { break; }
                     char buf[256];
-                    const int n = llama_token_to_piece(vocab, t, buf, sizeof(buf), 0, false);
+                    const int n = llama_token_to_piece(vocab, t, buf, sizeof(buf), 0, special);
                     if (n > 0) { text.append(buf, n); }
                     if (llama_decode(think, llama_batch_get_one(&t, 1)) != 0) {
                         llama_sampler_free(smpl);
@@ -154,7 +192,7 @@ int main(int argc, char ** argv) {
                     }
                 }
                 llama_sampler_free(smpl);
-                out = {{"text", text}};
+                out = {{"text", text}, {"n_tok", n_tok}};
             } else if (op == "states") {
                 cap.rows.clear();
                 cap.seen.clear();

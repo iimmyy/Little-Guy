@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """The brain slot: the one door between Little Guy's mind (no network) and his brain (the brainstem on the host).
 Listens on a socket in /var/lib/littleguy/brain that only the mail group can open; each connection carries one JSON
-line, {"op": "think" | "read", ...}, which goes to the brainstem with the shared key, and one JSON line comes back.
+line, {"op": "think" | "read" | "choose", ...}, which goes to the brainstem with the shared key, and one JSON line comes back.
 Anything else is refused here, before it leaves the machine. Every request is logged (op, size, outcome).
 Settings (env): BRAINSTEM (default http://host.orb.internal:8771), KEY_FILE (default /etc/littleguy/brain.key)
 """
@@ -29,7 +29,7 @@ class Slot(socketserver.StreamRequestHandler):
                 raise ValueError("request too big")
             r = json.loads(line)
             op = r.pop("op", None) if isinstance(r, dict) else None
-            if op not in ("think", "read"):
+            if op not in ("think", "read", "choose"):
                 raise ValueError(f"not a brain request: {op!r}")
             req = urllib.request.Request(f"{URL}/{op}", json.dumps(r).encode(),
                                          {"Content-Type": "application/json", "X-LG-Key": KEY})

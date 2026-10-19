@@ -10,9 +10,11 @@ life_sim.py's PyTorch hooks, so his mind loop can run on the Mac (and later the 
 Brain(...) in code:
   calibrate()          natural spread of each dial on his ordinary answers (life_sim.py does this at start)
   think(msgs, v, a)    a reply with his feelings as a drip: v and a natural steps along each dial, rooms 18-40
+  think_full(.., thinking=True)   the same with the brain's own thinking switch on: {"text", "thought", "n_tok"}
+  choose(msgs, choices, v, a)     the odds of each choice as the whole answer (a decision's policy)
   read_feel(text)      how pleasant / keyed up a text reads inside him, in natural steps (rooms 24-36)
 """
-import json, os, subprocess, sys, tempfile
+import json, os, re, subprocess, sys, tempfile
 import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -38,7 +40,21 @@ def chat_template(gguf_path):
         raise ValueError(m)
     env.globals["raise_exception"] = fail
     t = env.from_string(text)
-    return lambda msgs: t.render(messages=msgs, add_generation_prompt=True, bos_token="<bos>")
+    return lambda msgs, thinking=False: t.render(messages=msgs, add_generation_prompt=True, bos_token="<bos>",
+                                                 enable_thinking=thinking)
+
+
+THOUGHT = re.compile(r"^\s*<\|channel>thought\n?(.*?)(?:<channel\|>(.*))?$", re.S)
+SPECIAL = re.compile(r"<\|?[a-z_]+\|?>")
+
+
+def split_thought(raw):
+    """thinking mode writes <|channel>thought ... <channel|> then the answer; no closing marker = he ran out of words
+    while still thinking (no answer yet)"""
+    m = THOUGHT.match(raw)
+    if not m:
+        return "", SPECIAL.sub("", raw).strip()
+    return m.group(1).strip(), SPECIAL.sub("", m.group(2) or "").strip()
 
 
 class Brain:
@@ -99,6 +115,26 @@ class Brain:
     def think(self, msgs, v=0.0, a=0.0, max_tokens=200, temperature=0.0, top_p=1.0, seed=0):
         return self._ask({"op": "think", "prompt": self.render(msgs), "cvec": self._cvec(v, a), "max_tokens": max_tokens,
                           "temperature": temperature, "top_p": top_p, "seed": seed})["text"]
+
+    def think_full(self, msgs, v=0.0, a=0.0, max_tokens=200, temperature=0.0, top_p=1.0, seed=0, thinking=False):
+        r = self._ask({"op": "think", "prompt": self.render(msgs, thinking), "cvec": self._cvec(v, a),
+                       "max_tokens": max_tokens, "temperature": temperature, "top_p": top_p, "seed": seed,
+                       "special": thinking})
+        thought, text = split_thought(r["text"]) if thinking else ("", r["text"])
+        return {"text": text, "thought": thought, "n_tok": r["n_tok"]}
+
+    def choose(self, msgs, choices, v=0.0, a=0.0, seed=0):
+        """log-odds of each choice as his whole answer (the choice, then the end of his turn). He opens almost every
+        answer with a face ("[ focused ]"), which leaves a bare word nearly no chance, so he makes his face first (as
+        always, sampled with the drip on) and the choices are scored after it."""
+        prompt, cv = self.render(msgs), self._cvec(v, a)
+        head = self._ask({"op": "think", "prompt": prompt, "cvec": cv, "max_tokens": 12, "temperature": 0.8,
+                          "top_p": 0.95, "seed": seed})["text"]
+        face = head[:head.index("]") + 1] if head.lstrip().startswith("[") and "]" in head else ""
+        sep = " " if face else ""
+        lp = self._ask({"op": "think", "prompt": prompt + face, "cvec": cv,
+                        "choices": [sep + c + "<turn|>" for c in choices]})["choice_logprobs"]
+        return {"face": face, "logprobs": {c: lp[sep + c + "<turn|>"] for c in choices}}
 
     def read_feel(self, text):
         """life_sim.py read_feel: the text as an answer to "Write a note.", no drip, rooms 24-36"""

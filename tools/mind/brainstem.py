@@ -6,6 +6,10 @@ network), and the room's relay (tools/room/relay.py) forwards only these two, wi
   POST /think  {"messages": [...], "v": .., "a": .., "max_tokens": .., "temperature": .., "top_p": .., "seed": ..}
                -> {"text": ...}     a reply with his feelings as a drip
   POST /read   {"text": ...}  -> {"feel": [valence, arousal]}   how a text reads inside him
+  POST /choose {"messages": [...], "choices": ["no", "wander", ...], "v": .., "a": ..}
+               -> {"face": "[ .. ]", "logprobs": {choice: lp}}   the odds of each choice as his whole answer, after
+               the face he opens with (2 to 8 plain words)
+  /think with "thinking": true uses the brain's own thinking switch -> {"text", "thought", "n_tok"} (up to 800 words)
 
 usage: brainstem.py <brain.gguf> <dials.npz> <key file> [port, default 8771]
 Listens on 127.0.0.1 only. Writes his calibration (the natural spread of each dial) next to the key file.
@@ -20,7 +24,7 @@ ROLES = {"system", "user", "assistant"}
 lock = threading.Lock()                      # one brain, one thought at a time
 
 
-def check_think(r):
+def check_msgs(r):
     m = r.get("messages")
     if not isinstance(m, list) or not 1 <= len(m) <= 40:
         raise ValueError("messages: 1 to 40")
@@ -29,9 +33,28 @@ def check_think(r):
             raise ValueError("each message needs a role and text")
     if sum(len(x["content"]) for x in m) > 32000:
         raise ValueError("messages too long")
-    num = lambda k, d, lo, hi: min(hi, max(lo, float(r.get(k, d))))
-    return dict(msgs=m, v=num("v", 0, -1.5, 1.5), a=num("a", 0, -1.5, 1.5), max_tokens=int(num("max_tokens", 200, 1, 300)),
-                temperature=num("temperature", 0.8, 0, 2), top_p=num("top_p", 0.95, 0.05, 1), seed=int(num("seed", 0, 0, 2**31)))
+    return m
+
+
+num = lambda r, k, d, lo, hi: min(hi, max(lo, float(r.get(k, d))))
+
+
+def check_think(r):
+    m = check_msgs(r)
+    thinking = r.get("thinking", False) is True
+    return dict(msgs=m, v=num(r, "v", 0, -1.5, 1.5), a=num(r, "a", 0, -1.5, 1.5),
+                max_tokens=int(num(r, "max_tokens", 200, 1, 800 if thinking else 300)),
+                temperature=num(r, "temperature", 0.8, 0, 2), top_p=num(r, "top_p", 0.95, 0.05, 1),
+                seed=int(num(r, "seed", 0, 0, 2**31)), thinking=thinking)
+
+
+def check_choose(r):
+    c = r.get("choices")
+    if not isinstance(c, list) or not 2 <= len(c) <= 8 or not all(isinstance(x, str) and 0 < len(x) <= 40
+                                                                      and x.replace(" ", "").isalnum() for x in c):
+        raise ValueError("choices: 2 to 8 short plain words")       # no markup: they go straight to the tokenizer
+    return dict(msgs=check_msgs(r), choices=c, v=num(r, "v", 0, -1.5, 1.5), a=num(r, "a", 0, -1.5, 1.5),
+                seed=int(num(r, "seed", 0, 0, 2**31)))
 
 
 def main(gguf, dials, key_file, port="8771"):
@@ -55,13 +78,15 @@ def main(gguf, dials, key_file, port="8771"):
                 r = json.loads(self.rfile.read(n))
                 with lock:
                     if self.path == "/think":
-                        return self.send(200, {"text": brain.think(**check_think(r))})
+                        return self.send(200, brain.think_full(**check_think(r)))
+                    if self.path == "/choose":
+                        return self.send(200, brain.choose(**check_choose(r)))
                     if self.path == "/read":
                         t = r.get("text")
                         if not isinstance(t, str) or not 0 < len(t) <= 8000:
                             raise ValueError("text: 1 to 8000 characters")
                         return self.send(200, {"feel": brain.read_feel(t)})
-                return self.send(404, {"error": "only /think and /read"})
+                return self.send(404, {"error": "only /think, /read and /choose"})
             except (ValueError, KeyError, TypeError, json.JSONDecodeError) as e:
                 return self.send(400, {"error": str(e)})
 

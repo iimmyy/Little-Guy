@@ -10,7 +10,7 @@ Then it
   the Mac's memory and his three services as the vitals
 usage: porch.py [port, default 8080]       settings (env): MACHINE (default lgroom), VOICE (a `say -v` voice)
 """
-import json, os, subprocess, sys, threading, time
+import json, os, re, subprocess, sys, threading, time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 ORB = os.environ.get("ORB", "/opt/homebrew/bin/orb")
@@ -30,7 +30,8 @@ except (OSError, ValueError):
     mood = None
 units = ["littleguy-guard", "littleguy-mind", "littleguy-relay"]
 active = subprocess.run(["systemctl", "is-active"] + units, capture_output=True, text=True).stdout.split()
-print(json.dumps({"said": tail(G + "/said.log", 200), "chat": tail(G + "/chat.jsonl", 30), "notes": tail(NB + "/notes.txt", 30),
+print(json.dumps({"said": tail(G + "/said.log", 200), "chat": tail(NB + "/chat.jsonl", 30), "notes": tail(NB + "/notes.jsonl", 30),
+                  "inner": tail(NB + "/thoughts.jsonl", 40), "scores": tail(NB + "/scores.jsonl", 10),
                   "mood": mood, "units": dict(zip(units, active))}))
 '''
 view = {"status": None}
@@ -53,24 +54,31 @@ def mac_memory():
 
 
 def feed(w):
-    """one line per thing he did, oldest first, in the same plain style as the board's feed"""
+    """one timeline of what he did, oldest first: notes, inner thoughts, what was said, tasks; then his mood now"""
     rows = []
-    for l in w["notes"]:
-        if l.startswith("[") and "] " in l:
-            when, text = l[1:].split("] ", 1)
-            rows.append((when, f"thinking: {text}"))
-    for l in w["chat"]:
-        try:
-            c = json.loads(l)
-        except ValueError:
-            continue
-        when = time.strftime("%A %-I:%M %p", time.localtime(c["t"]))
-        rows.append((when, f"heard: {c['heard']}"))
-        rows.append((when, f"replied: {c['reply']}"))
-    for l in w["said"]:
-        rows.append(("", f"said out loud ({l[:8]}): {l[9:]}"))
+    def each(lines):
+        for l in lines:
+            try:
+                yield json.loads(l)
+            except ValueError:
+                continue
+    stamp = lambda t: time.strftime("%a %-I:%M %p", time.localtime(t))
+    for n in each(w["notes"]):
+        rows.append((n["t"], f"[{stamp(n['t'])}] note: {n['thought']}"))
+    for x in each(w.get("inner", [])):
+        about = "wandering" if x.get("subject") == "wander" else "about a task"
+        rows.append((x["t"], f"[{stamp(x['t'])}] inner ({about}): {x['text']}"))
+    for c in each(w["chat"]):
+        rows.append((c["t"], f"[{stamp(c['t'])}] heard: {c['heard']}"))
+        rows.append((c["t"] + 0.1, f"[{stamp(c['t'])}] replied{' (thought first)' if c.get('thinking') else ''}: "
+                                   f"{c['reply']}"))
+    for x in each(w.get("scores", [])):
+        t = x.get("done_t") or x["due"]
+        rows.append((t, f"[{stamp(t)}] task {x['status']}: {x['what']} (reward {x['reward']:+.2f}, "
+                        f"{x['thoughts']} thoughts about it)"))
+    lines = [r for _, r in sorted(rows)][-60:]
+    lines += [f"said out loud ({l[:8]}): {l[9:]}" for l in w["said"][-5:]]
     m = w["mood"]
-    lines = [f"[{when}] {text}" if when else text for when, text in rows][-60:]
     if m:
         lines.append(f"mood now: pleasant {m['valence']:+.2f}, keyed up {m['arousal']:+.2f}"
                      f" (as of {time.strftime('%-I:%M %p', time.localtime(m['t']))})")
@@ -85,7 +93,9 @@ def loop():
             if spoken is None:
                 spoken = len(w["said"])                      # only what he says from now on
             for line in w["said"][spoken:]:
-                subprocess.run(["say"] + (["-v", VOICE] if VOICE else []) + [line[9:]], timeout=60)
+                spoken_text = re.sub(r"\[[^\]]*\]|\*", "", line[9:]).strip()   # his faces are for screens, not voices
+                if spoken_text:
+                    subprocess.run(["say"] + (["-v", VOICE] if VOICE else []) + [spoken_text], timeout=60)
             spoken = len(w["said"])
             used, total = mac_memory()
             alive = w["units"].get("littleguy-mind") == "active"
