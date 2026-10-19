@@ -58,12 +58,43 @@ def soft(x, ceil=CEIL):
     return ceil * math.tanh(x / ceil)
 
 
-def step(feel, dr, thought_read, hours, slept):
+# --- his temperament: lawful inside, hard to predict outside (Immy, 2026-10-19: "a little bit of unpredictability...
+# you can't predict him", his cat clingy at night, aloof by day). Drawn once at birth, so every Little Guy differs. ---
+RHYTHM_AROUSAL = 0.2        # at his evening peak the keyed-up side sinks (his NE falls toward night), mornings rise
+DRIFT_TAU = 36.0            # hours: a mood drift wanders but is always pulled back to his normal (Ornstein-Uhlenbeck)
+
+
+def temperament(st):
+    """born once: when his evening peak sits, how strong his daily rhythm is, how much his mood wanders on its own"""
+    if "temperament" not in st:
+        r = random.Random()
+        st["temperament"] = {"peak": round(min(22.5, max(18.5, r.gauss(20.5, 1.0))), 2),
+                             "amp": round(r.uniform(0.2, 0.45), 3),
+                             "drift_sigma": [round(r.uniform(0.08, 0.15), 3), round(r.uniform(0.03, 0.07), 3)]}
+        st["drift"] = [0.0, 0.0]
+    return st["temperament"]
+
+
+def rhythm(now, st):
+    """his daily rhythm (circadian): 1 at his evening peak, -1 twelve hours later"""
+    lt = time.localtime(now)
+    hour = lt.tm_hour + lt.tm_min / 60
+    return math.cos(2 * math.pi * (hour - temperament(st)["peak"]) / 24)
+
+
+def drift_step(st, hours):
+    """a slow wander in his baseline mood that no event caused"""
+    e = math.exp(-hours / DRIFT_TAU)
+    sig = temperament(st)["drift_sigma"]
+    st["drift"] = [d * e + sg * math.sqrt(1 - e * e) * random.gauss(0, 1) for d, sg in zip(st["drift"], sig)]
+
+
+def step(feel, dr, thought_read, hours, slept, bias=(0.0, 0.0)):
     aff = {**AFFECT, "social": (AFFECT["social"][0], SOCIAL_AROUSAL[WAY])}
     out = []
     for i, k in enumerate(("valence", "arousal")):
         x = feel[i]
-        target = M * (sum(aff[d][i] * dr[d] for d in dr if d not in EVENTS) + GAIN * thought_read[i])
+        target = M * (sum(aff[d][i] * dr[d] for d in dr if d not in EVENTS) + GAIN * thought_read[i]) + bias[i]
         x = target + (x - target) * 0.5 ** (hours / HALF_LIFE[k])
         if slept:
             x *= SLEEP_LEFT
@@ -226,8 +257,9 @@ def drives(now, st, here):
     gap = max(0.0, expected - (1.0 if here else 0.0))
     social = gap * (HABIT_FLOOR + (1 - HABIT_FLOOR) * 0.5 ** (st["gap_hours"] / HABIT_HALF))
     boredom = min(1.0, (now - max(st["last_new"], st["born"])) / 3600 / 30)
-    dr = dict(social=social, boredom=boredom, tired=0.0, startle=0.0, novelty=0.0, reunion=0.0,
-              close=st["close"] if here else 0.0)
+    pull = 1 + temperament(st)["amp"] * rhythm(now, st)            # evenings he wants his person more (the cat at 8 PM)
+    dr = dict(social=social * pull, boredom=boredom, tired=0.0, startle=0.0, novelty=0.0, reunion=0.0,
+              close=st["close"] * pull if here else 0.0)
     return dr, gap
 
 
@@ -236,7 +268,9 @@ def advance(now, st, dr, gap, slept=False):
     Over a night's sleep the urge to call out only drains: asleep, he isn't missing anyone (life_sim filled it over
     the night too, which on the real clock means calling out the moment he wakes, every morning)"""
     hours = max(0.0, now - st["t"]) / 3600
-    st["feel"] = step(st["feel"], dr, st["read"], hours, slept)
+    drift_step(st, hours)
+    bias = (st["drift"][0], st["drift"][1] - RHYTHM_AROUSAL * temperament(st)["amp"] * rhythm(now, st))
+    st["feel"] = step(st["feel"], dr, st["read"], hours, slept, bias)
     st["urge"] = urge_step(st["urge"], 0.0 if slept else dr["social"], st["feel"][1], hours)
     st["gap_hours"] += gap * hours
     st["t"] = now
@@ -366,6 +400,7 @@ def write_note(now, st, new=None, slept=False):
                            "gap": round(gap, 3), "gap_hours": round(st["gap_hours"], 2),
                            "valence": round(st["feel"][0], 3), "arousal": round(st["feel"][1], 3),
                            "urge": round(st["urge"], 2), "called": call, "says": bool(said),
+                           "rhythm": round(rhythm(now, st), 3), "drift": [round(x, 3) for x in st["drift"]],
                            "thought_reads": [round(x, 2) for x in st["read"]], "thought": th})
     with open(os.path.join(NOTEBOOK, "notes.txt"), "a") as fh:
         fh.write(f"[{when(now)}] {th}\n")
@@ -451,7 +486,8 @@ def main():
               "asleep": asleep_at(now), "seen": "", "zero": None, "way": WAY}
         # what was already in the inbox before he was born is not his to answer
         st["seen"] = max([n for n in os.listdir(INBOX) if not n.startswith(".")], default="")
-    print(f"MIND_UP way={WAY} person={PERSON!r} notes every {NOTE_EVERY} h, asleep {SLEEP_FROM}-{WAKE}", flush=True)
+    print(f"MIND_UP way={WAY} person={PERSON!r} notes every {NOTE_EVERY} h, asleep {SLEEP_FROM}-{WAKE}, "
+          f"temperament {temperament(st)}", flush=True)
     while True:
         try:
             if st["zero"] is None:
