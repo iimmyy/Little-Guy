@@ -15,6 +15,7 @@ usage: brainstem.py <brain.gguf> <dials.npz> <key file> [port, default 8771]
 Listens on 127.0.0.1 only. Writes his calibration (the natural spread of each dial) next to the key file.
 """
 import hmac, json, os, sys, threading
+import numpy as np
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from brain import Brain
@@ -60,9 +61,13 @@ def check_choose(r):
 def main(gguf, dials, key_file, port="8771"):
     key = open(key_file).read().strip().encode()
     brain = Brain(gguf, dials)
-    spread = brain.calibrate()
-    json.dump({k: [round(float(x), 5) for x in v] for k, v in spread.items()},
-              open(os.path.join(os.path.dirname(os.path.abspath(key_file)), "calibration.json"), "w"))
+    if os.environ.get("LG_CALIBRATION"):                  # reuse a measured one (a test brainstem with an adapter
+        brain.spread = {k: np.array(v, dtype=np.float32)   # feels on the same scale as the live one)
+                        for k, v in json.load(open(os.environ["LG_CALIBRATION"])).items()}
+    else:
+        spread = brain.calibrate()
+        json.dump({k: [round(float(x), 5) for x in v] for k, v in spread.items()},
+                  open(os.path.join(os.path.dirname(os.path.abspath(key_file)), "calibration.json"), "w"))
 
     class H(BaseHTTPRequestHandler):
         def log_message(self, *a):

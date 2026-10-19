@@ -15,7 +15,7 @@
 //       (how a note "reads" inside him, and the natural spread of each dial).
 // Thinking and reading use two contexts on the same weights: reading needs an eval callback, which makes the backend
 // stop after every captured node, and thinking must not pay for that.
-// usage: llama-lg-mind -m <model.gguf> [-c 4096] [-ngl 99]   (common args)
+// usage: llama-lg-mind -m <model.gguf> [-c 4096] [-ngl 99] [--lora adapter.gguf]   (common args)
 #include "arg.h"
 #include "common.h"
 #include "llama.h"
@@ -105,6 +105,22 @@ int main(int argc, char ** argv) {
     if (!think || !reader) {
         std::fprintf(stderr, "lg-mind: could not make the contexts\n");
         return 1;
+    }
+    // what he has learned (--lora, from tools/train/choices.py) rides on top of his frozen brain, in the thinking
+    // context only: how a text reads inside him (the reader) stays the untrained brain his feelings were measured on
+    std::vector<llama_adapter_lora *> loras;
+    std::vector<float> lora_scales;
+    for (const auto & la : params.lora_adapters) {
+        llama_adapter_lora * ad = llama_adapter_lora_init(model, la.path.c_str());
+        if (!ad) {
+            std::fprintf(stderr, "lg-mind: could not load the adapter %s\n", la.path.c_str());
+            return 1;
+        }
+        loras.push_back(ad);
+        lora_scales.push_back(la.scale);
+    }
+    if (!loras.empty()) {
+        llama_set_adapters_lora(think, loras.data(), loras.size(), lora_scales.data());
     }
     const int n_batch = (int) llama_n_batch(think);
     std::vector<float> cvec;

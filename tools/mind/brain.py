@@ -13,6 +13,7 @@ Brain(...) in code:
   think_full(.., thinking=True)   the same with the brain's own thinking switch on: {"text", "thought", "n_tok"}
   choose(msgs, choices, v, a)     the odds of each choice as the whole answer (a decision's policy)
   read_feel(text)      how pleasant / keyed up a text reads inside him, in natural steps (rooms 24-36)
+env LG_LORA: an adapter (what training added) loaded on top of his frozen brain, for thinking only
 """
 import json, os, re, subprocess, sys, tempfile
 import numpy as np
@@ -63,7 +64,8 @@ class Brain:
         self.dial = {"valence": d["valence"].astype(np.float32), "arousal": d["arousal"].astype(np.float32)}
         self.render = chat_template(gguf)
         self.tmp = tempfile.mkdtemp(prefix="lg-brain-")
-        self.p = subprocess.Popen([LG_MIND, "-m", gguf, "-ngl", "99", "-c", str(ctx)], stdin=subprocess.PIPE,
+        lora = ["--lora", os.environ["LG_LORA"]] if os.environ.get("LG_LORA") else []   # what he learned (choices.py)
+        self.p = subprocess.Popen([LG_MIND, "-m", gguf, "-ngl", "99", "-c", str(ctx)] + lora, stdin=subprocess.PIPE,
                                   stdout=subprocess.PIPE, stderr=log or subprocess.DEVNULL, text=True)
         hello = json.loads(self.p.stdout.readline())
         self.n_embd, self.n_layer = hello["n_embd"], hello["n_layer"]
