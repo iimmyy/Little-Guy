@@ -1,9 +1,11 @@
 #!/bin/bash
 # Runs a command so you can watch it live: prints the command, then streams its output
-# into .run/logs/live-runs.log (the menu bar app's "What Claude sees" tab) as well as here.
-ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-mkdir -p "$ROOT/.run/logs"
-LOG="$ROOT/.run/logs/live-runs.log"
+# into ~/Library/Logs/LittleGuy/live-runs.log (the menu bar app's "What Claude sees" tab) as well as here.
+# (Not in the repo: macOS asks before an app may open anything in Documents, and a menu bar app stuck behind that
+# question freezes; Library/Logs needs no permission.)
+LOGDIR="$HOME/Library/Logs/LittleGuy"
+mkdir -p "$LOGDIR"
+LOG="$LOGDIR/live-runs.log"
 { echo; echo "──────── $(date +%H:%M:%S) ────────"; echo "\$ $*"; } >> "$LOG"
 export PYTHONUNBUFFERED=1
 start=$(date +%s)
