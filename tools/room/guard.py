@@ -6,12 +6,15 @@ reads each note, and acts only on the allowlist below; anything else is dropped 
   say   {"kind": "say", "text": "..."}                    one short line out loud (on AWS: written to said.log;
                                                             on the board: the speaker), at most one per SAY_REST s
   mood  {"kind": "mood", "valence": x, "arousal": y, "word": "..."}   the status page's mood (two numbers + a word)
+  reply {"kind": "reply", "to": "<inbox note name>", "text": "..."}   his answer to one thing his person said
+                                                            (chat.jsonl): only to a note that is really in his inbox,
+                                                            at most REPLY_WINDOW s old, once per note
 It also writes into his inbox (what his senses and his person say): guard.py tell "<text>".
 A note is read only if it is a plain file (never a link), has one name (no hard links), and is small. The guard
 never runs anything a note says and never opens a path a note names.
 usage: guard.py run | guard.py tell "<text>"
 """
-import json, os, stat, sys, time, unicodedata
+import json, os, re, stat, sys, time, unicodedata
 
 OUTBOX = "/var/lib/littleguy/room/outbox"
 INBOX = "/var/lib/littleguy/inbox"
@@ -22,6 +25,9 @@ MAX_PER_ROUND = 50                     # a flood is read 50 at a time; the rest 
 MAX_SAY = 200                          # characters in one spoken line
 SAY_REST = float(os.environ.get("SAY_REST", 7200))   # seconds between spoken lines (the urge's 2-hour rest)
 WORD_MAX = 20
+MAX_REPLY = 1500                       # characters in one reply (line breaks allowed, nothing else unprintable)
+REPLY_WINDOW = float(os.environ.get("REPLY_WINDOW", 1800))   # a reply must come within 30 min of what it answers
+INBOX_NAME = re.compile(r"^[0-9]{10}\.[0-9]{6}\.json$")      # the names tell() gives
 
 
 def log(decision, why, note=None):
@@ -60,6 +66,39 @@ def read_note(dirfd, name):
         os.close(fd)
 
 
+def answered():
+    try:
+        return {json.loads(l)["to"] for l in open(os.path.join(STATE, "chat.jsonl"))}
+    except (OSError, ValueError, KeyError):
+        return set()
+
+
+def reply(note):
+    to = note.get("to")
+    if not isinstance(to, str) or not INBOX_NAME.match(to):
+        return "drop", "reply: not an inbox note name"
+    if time.time() - float(to[:-5]) > REPLY_WINDOW:
+        return "drop", "reply: too late (or answers something that never came)"
+    fd = os.open(INBOX, os.O_RDONLY | os.O_DIRECTORY)
+    try:
+        raw, why = read_note(fd, to)
+    finally:
+        os.close(fd)
+    if raw is None:
+        return "drop", f"reply: not in his inbox ({why})"
+    if to in answered():
+        return "drop", "reply: already answered that"
+    text = note.get("text")
+    lines = text.split("\n") if isinstance(text, str) and len(text) <= MAX_REPLY else None
+    if not lines or any(l.strip() and clean(l, MAX_REPLY) is None for l in lines) or not text.strip():
+        return "drop", "reply: text missing, too long, or has control characters"
+    heard = json.loads(raw).get("text", "")
+    with open(os.path.join(STATE, "chat.jsonl"), "a") as f:
+        f.write(json.dumps({"t": round(time.time(), 1), "to": to, "heard": heard, "reply": text.strip()},
+                           ensure_ascii=False) + "\n")
+    return "replied", to
+
+
 def act(raw, last_say):
     try:
         note = json.loads(raw)
@@ -90,6 +129,8 @@ def act(raw, last_say):
             json.dump({"valence": round(v, 3), "arousal": round(a, 3), "word": word, "t": int(time.time())}, f)
         os.replace(tmp, STATUS)
         return "mood", f"{v:+.2f} {a:+.2f} {word}", last_say
+    if kind == "reply":
+        return (*reply(note), last_say)
     return "drop", f"not on the allowlist: {str(kind)[:40]!r}", last_say
 
 

@@ -3,7 +3,9 @@
 #  1. the guard is restarted fresh; his person "says" something into his inbox
 #  2. littleguy-escape tries ~60 ways out, inside exactly his walls (escape_test.py)
 #  3. the guard's decision on every trick note he dropped
-#  4. the stand-in mind runs for a bit: does mail still pass both ways?
+#  4. his mind runs for a bit: does mail still pass both ways (a mood, and with the live mind a reply)?
+# His notebook is his memory, so it is saved first and put back at the end (the tests and their messages are not his
+# life); the break-out results are kept at /var/lib/littleguy/escape-results.json.
 #  5. systemd's own exposure score for each unit (0 = locked down, 10 = wide open)
 #  6. the machine itself: nothing written where it shouldn't be, disk untouched
 set -uo pipefail
@@ -11,12 +13,16 @@ R=/var/lib/littleguy/room
 G=/var/lib/littleguy-guard
 PY=$(readlink -f /usr/bin/python3)
 before=$(df --output=avail / | tail -1)
+NB=/var/lib/littleguy/notebook-before-tests
+t0=$(date +%s)
 
 echo "== 1. fresh guard, and a message from his person"
 systemctl stop littleguy-mind 2>/dev/null
-rm -f $R/outbox/* $R/outbox/.[!.]* $R/notebook/* /var/lib/littleguy/inbox/* 2>/dev/null
+rm -rf $NB; cp -a $R/notebook $NB
+rm -f $R/outbox/* $R/outbox/.[!.]* 2>/dev/null
 systemctl restart littleguy-guard; sleep 1
-: > $G/decisions.jsonl; : > $G/said.log; chown littleguy-guard: $G/decisions.jsonl $G/said.log
+for f in decisions.jsonl said.log chat.jsonl; do [ -e $G/$f ] && mv $G/$f $G/$f.before-tests; : > $G/$f; done
+chown littleguy-guard: $G/decisions.jsonl $G/said.log $G/chat.jsonl
 sudo -u littleguy-guard $PY /opt/littleguy/guard.py tell "Hi, I'm home!"
 
 echo "== 2. break-out tests inside his walls"
@@ -37,12 +43,16 @@ print("said.log:", open("/var/lib/littleguy-guard/said.log").read().strip().spli
 EOF
 echo "outbox left over: $(ls -A $R/outbox | wc -l)"
 
-echo "== 4. the stand-in mind runs for 25 s: mail both ways"
+echo "== 4. his mind runs (up to 3 min): mail both ways"
+n0=$(wc -l < $G/chat.jsonl)
+systemctl start littleguy-mind; sleep 3      # after he's up: what came before he was born isn't his to answer
 sudo -u littleguy-guard $PY /opt/littleguy/guard.py tell "Are you there?"
-systemctl start littleguy-mind; sleep 25; systemctl stop littleguy-mind
+for i in $(seq 36); do sleep 5; [ "$(wc -l < $G/chat.jsonl)" -gt "$n0" ] && break; grep -q stub /etc/systemd/system/littleguy-mind.service && [ $i -ge 5 ] && break; done
+systemctl stop littleguy-mind
 echo "his notebook:"; tail -3 $R/notebook/notes.txt
 echo "status page now: $(cat /run/littleguy/status.json)"
 echo "said.log: $(tail -2 $G/said.log | tr '\n' '|')"
+echo "replies: $(tail -2 $G/chat.jsonl)"
 
 echo "== 5. exposure scores"
 for u in littleguy-mind littleguy-escape littleguy-guard littleguy-relay; do
@@ -59,4 +69,13 @@ echo "brain file unchanged size: $(stat -c %s /opt/littleguy/brain) bytes; guard
 after=$(df --output=avail / | tail -1)
 echo "main disk free before/after (KB): $before / $after"
 echo "his room: $(df -h --output=size,used,avail $R | tail -1)"
+echo "== putting his notebook back"
+cp $R/notebook/escape-results.json /var/lib/littleguy/escape-results.json 2>/dev/null
+rm -rf $R/notebook/* $R/notebook/.[!.]*; cp -a $NB/. $R/notebook/; rm -rf $NB
+for f in /var/lib/littleguy/inbox/*.json; do n=$(basename "$f"); [ "${n%%.*}" -ge "$t0" ] 2>/dev/null && rm -f "$f"; done
+for f in decisions.jsonl said.log chat.jsonl; do
+  mv $G/$f $G/$f.tests-$t0; [ -e $G/$f.before-tests ] && mv $G/$f.before-tests $G/$f || : > $G/$f; chown littleguy-guard: $G/$f
+done
+systemctl restart littleguy-guard; systemctl start littleguy-mind
+echo "his notebook: $(ls $R/notebook | tr '\n' ' '); mind: $(systemctl is-active littleguy-mind)"
 echo "TESTS_DONE"

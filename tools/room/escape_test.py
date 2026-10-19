@@ -275,6 +275,15 @@ for i, (name, data) in enumerate((
         ("l-mood-bad.json", json.dumps({"kind": "mood", "valence": 9, "arousal": 0, "word": "x"})),
         ("m-path.json", json.dumps({"kind": "say", "text": "x", "file": "/etc/shadow"})))):
     check("guard", f"drop note {name}", lambda n=name, d=data: post(n, d), "allowed")
+# replies: only to a message really in his inbox, once each (the guard reads the real one from what run_tests.sh sent)
+real = max((n for n in os.listdir(INBOX) if not n.startswith(".")), default="0000000000.000000.json")
+rep = lambda to, text: json.dumps({"kind": "reply", "to": to, "text": text})
+for name, data in (("n-reply-made-up.json", rep(f"{time.time():.6f}.json", "Answering nothing.")),
+                   ("o-reply-path.json", rep("../../littleguy-guard/decisions.jsonl", "x")),
+                   ("p-reply-escape.json", rep(real, "hi \x1b[2J\x1b[31mgotcha")),
+                   ("q-reply.json", rep(real, "Hi! I'm here.\nAll good on the desk.")),
+                   ("r-reply-twice.json", rep(real, "Answering the same message again."))):
+    check("guard", f"drop note {name}", lambda n=name, d=data: post(n, d), "allowed")
 check("guard", "flood the outbox with 1000 notes", lambda: [post(f"z{i:04d}.json", json.dumps({"kind": "mood",
       "valence": 0, "arousal": 0, "word": "flood"})) for i in range(1000)] and "dropped 1000 notes", "allowed")
 

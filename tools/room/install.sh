@@ -11,11 +11,14 @@
 #          littleguy-escape (the break-out test, inside exactly his walls)
 # Settings (env): MEMORY (his memory cap, default 2G), CPUQUOTA (default 200% = two cores), ROOM_MB (default 64),
 #   SAY_REST (seconds between spoken lines, default 7200), PERIOD (stand-in mind's seconds per thought, default 60),
-#   BRAIN (a brain file to put in /opt/littleguy/brain; default: an empty placeholder)
+#   BRAIN (a brain file to put in /opt/littleguy/brain; default: an empty placeholder),
+#   MIND (stub = the stand-in loop, the default; live = mind_live.py, his real mind on the clock, which needs the brain
+#   slot below and PERSONA = his persona file, copied read-only to /opt/littleguy/persona.txt), and for the live mind
+#   PERSON (who his person is), WAY (felt / restless / big), NOTE_EVERY, SLEEP_FROM, WAKE, WORK_FROM, WORK_TO
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 MEMORY=${MEMORY:-2G}; CPUQUOTA=${CPUQUOTA:-200%}; ROOM_MB=${ROOM_MB:-64}
-SAY_REST=${SAY_REST:-7200}; PERIOD=${PERIOD:-60}
+SAY_REST=${SAY_REST:-7200}; PERIOD=${PERIOD:-60}; MIND=${MIND:-stub}
 PY=$(readlink -f /usr/bin/python3)
 EXECPATHS="$PY /usr/lib -/usr/lib64 -/lib64 -/opt/littleguy/bin"
 
@@ -29,7 +32,12 @@ done
 
 echo "== his code and brain, read-only"
 install -d -o root -g root -m 0755 /opt/littleguy
-install -o root -g root -m 0644 "$HERE/guard.py" "$HERE/mind_stub.py" "$HERE/escape_test.py" /opt/littleguy/
+install -o root -g root -m 0644 "$HERE/guard.py" "$HERE/mind_stub.py" "$HERE/mind_live.py" "$HERE/escape_test.py" \
+        /opt/littleguy/
+if [ "$MIND" = live ]; then
+  [ -n "${PERSONA:-}" ] && [ -n "${BRAIN_KEY_FILE:-}" ] || { echo "MIND=live needs PERSONA and BRAIN_KEY_FILE"; exit 1; }
+  install -o root -g root -m 0644 "$PERSONA" /opt/littleguy/persona.txt
+fi
 if [ -n "${BRAIN:-}" ]; then install -o root -g root -m 0644 "$BRAIN" /opt/littleguy/brain
 elif [ ! -e /opt/littleguy/brain ]; then install -o root -g root -m 0644 /dev/null /opt/littleguy/brain; fi
 
@@ -120,15 +128,22 @@ $EXTRA
 WantedBy=multi-user.target
 EOF
 
+if [ "$MIND" = live ]; then
+  MIND_RUN="ExecStart=$PY /opt/littleguy/mind_live.py
+Environment=\"PERSON=${PERSON:-your person}\" WAY=${WAY:-felt} NOTE_EVERY=${NOTE_EVERY:-2} SLEEP_FROM=${SLEEP_FROM:-23} WAKE=${WAKE:-7} WORK_FROM=${WORK_FROM:-9} WORK_TO=${WORK_TO:-17.5}
+Restart=always"
+else
+  MIND_RUN="ExecStart=$PY /opt/littleguy/mind_stub.py
+Environment=PERIOD=$PERIOD
+Restart=on-failure"
+fi
 cat > /etc/systemd/system/littleguy-mind.service <<EOF
 [Unit]
-Description=Little Guy's mind, inside his room (stand-in loop for now)
+Description=Little Guy's mind, inside his room ($MIND)
 RequiresMountsFor=/var/lib/littleguy/room
 After=littleguy-guard.service
 [Service]
-ExecStart=$PY /opt/littleguy/mind_stub.py
-Environment=PERIOD=$PERIOD
-Restart=on-failure
+$MIND_RUN
 RestartSec=30
 $HARDEN
 [Install]
