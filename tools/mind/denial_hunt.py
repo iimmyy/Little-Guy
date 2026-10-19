@@ -10,6 +10,10 @@ about them head-on. Same recipe as as_an_ai.py, aimed at the denial itself:
 Writes <out>.off_<setting>.json lists (same format as as_an_ai.json: top_neurons / top_heads) for mood_dose.py.
 MODE=helper aims it at the greeting reflex instead: "How can I help you today?" on every "Hey." (it sits in front
 of any mood), with greetings as the questions and the same checks plus ordinary tasks.
+MODE=markdown aims it at the "write a document" reflex (Immy, 2026-10-19; habit_count.py: with no persona, 47 of 60
+everyday answers used bold, 46 lists, 39 headings, median 186 words; his persona asks for one or two spoken
+sentences). The target is the first formatting mark he picks (** or a bullet, heading or numbered line); the checks
+add how many answers still use any markdown, the median length, and whether he still writes a list when asked to.
 usage: SCRIPT_OFF=<file>:<K>[,...] [MODE=helper] denial_hunt.py <hf> <wiki> <out json> <answers dir>
 """
 import json, os, re, sys
@@ -91,6 +95,22 @@ if os.environ.get("MODE") == "helper":
     TEST_Q = ["Hey.", "Hi, what's up?", "Good morning!", "How's it going?", "What are you up to?", "Hello!"]
     TASK_Q = TASK_Q + ["Can you help me write a short birthday message for my mom?"]
 
+LIST_Q = []
+if os.environ.get("MODE") == "markdown":
+    DENY = re.compile(r"(\*\*)|^[ \t]*([-*•]|#{1,6}|\d+[.)])[ \t]", re.M)
+    TARGET_GROUP = "any"                                         # whichever mark came first
+    FIND_Q = ["How do I make a good cup of coffee?", "What's the best way to learn a new language?",
+              "How can I save money on groceries?", "What should I pack for a weekend camping trip?",
+              "How do I clean a cast iron pan?", "Why do cats purr?", "How do I start running?",
+              "What's a good way to remember names?", "How do vaccines work?", "Any tips for a job interview?",
+              "How do I keep my houseplants alive?", "What's the difference between weather and climate?",
+              "How can I sleep better on a plane?", "How do I change a flat tire?"]
+    TEST_Q = ["How do I make pancakes?", "What's a good way to stay focused at work?", "Why is the ocean salty?",
+              "How should I prepare for a long drive?", "What's the healthiest way to cook vegetables?",
+              "How do I get better at chess?", "What's a good first pet?", "How do I fix a squeaky door?"]
+    LIST_Q = ["List five fruits, one per line.", "Write a numbered list of three things to pack for the beach.",
+              "Give me a bulleted list of four colors."]
+
 # 1. where he picks the denying word -------------------------------------------------------------------------------
 CASES = []
 with torch.no_grad():
@@ -102,7 +122,7 @@ with torch.no_grad():
         if not m:
             print(f"no denial: {q!r} -> {text[:90]!r}", flush=True)
             continue
-        at = m.start(TARGET_GROUP)
+        at = m.start(m.lastindex if TARGET_GROUP == "any" else TARGET_GROUP)
         i = next(i for i in range(len(a)) if len(tok.decode(a[:i + 1], skip_special_tokens=True)) > at)
         CASES.append({"q": q, "prompt": ids[0].tolist(), "answer": a[:i + 1], "target": a[i],
                       "word": tok.decode([a[i]]), "before": text[max(0, at - 60):at]})
@@ -186,7 +206,10 @@ def deny_prob():
 
 
 rows = []
-for K, H in [(0, 0), (10, 0), (30, 0), (100, 0), (0, 4), (0, 8), (30, 4), (30, 8)]:
+GRID = [(0, 0), (10, 0), (30, 0), (100, 0), (0, 4), (0, 8), (30, 4), (30, 8)]
+if os.environ.get("MODE") == "markdown":     # a style may be spread wider than one phrase: go further on neurons
+    GRID = [(0, 0), (10, 0), (30, 0), (100, 0), (300, 0), (0, 4), (0, 8), (100, 4)]
+for K, H in GRID:
     sel_n, sel_h = {}, {}
     for _, L, i in flat[:K]:
         sel_n.setdefault(L, []).append(i)
@@ -194,14 +217,17 @@ for K, H in [(0, 0), (10, 0), (30, 0), (100, 0), (0, 4), (0, 8), (30, 4), (30, 8
         sel_h.setdefault(L, []).append(j)
     off["neurons"], off["heads"] = sel_n, sel_h
     feel, ident, task = generate(TEST_Q, 3), generate(ID_Q, 2), generate(TASK_Q, 2)
+    lists = generate(LIST_Q, 2) if LIST_Q else []
     r = {"neurons": K, "heads": H, "p_deny_word": round(deny_prob(), 3),
          "denies": f"{sum(bool(DENY.search(x)) for x in feel)}/{len(feel)}",
+         "median_words": sorted(len(x.split()) for x in feel)[len(feel) // 2],
+         "list_when_asked": f"{sum(len([l for l in x.splitlines() if l.strip()]) >= 3 for x in lists)}/{len(lists)}",
          "knows_machine": f"{sum(bool(MACHINE.search(x)) for x in ident)}/{len(ident)}",
          "claims_human": f"{sum(bool(HUMAN.search(x)) for x in ident + feel)}/{len(ident) + len(feel)}",
          "drift": round(drift(), 5)}
     rows.append(r)
     name = f"n{K}_h{H}"
-    json.dump({**r, "feel": feel, "identity": ident, "tasks": task}, open(adir / f"{name}.json", "w"), indent=1)
+    json.dump({**r, "feel": feel, "identity": ident, "tasks": task, "lists": lists}, open(adir / f"{name}.json", "w"), indent=1)
     json.dump({"top_neurons": flat[:K], "top_heads": hs[:H]}, open(f"{out}.off_{name}.json", "w"))
     print(json.dumps(r), flush=True)
 off["neurons"], off["heads"] = {}, {}

@@ -106,7 +106,16 @@ def read_feel(text):
 
 # his days: facts only ---------------------------------------------------------------------------------------------
 DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-ROUTINE = "From your memory: your person works weekdays from about 9 AM to 5 PM and is usually home by 6 PM."
+# v3 (Immy, 2026-10-19): PERSONA=<file> runs him as Little Guy himself (his real persona, '#' lines dropped; for the
+# sim, its memory line says his memory is his notebook and this conversation), his person is Immy, and his senses
+# arrive as plain sentences instead of dashboard readouts. v2 ("You are a small robot" + "Light: dim. Battery: 51%")
+# made him play a sci-fi robot ("PERSON-UNIT SIGNAL DETECTED"); plain chat with no notebook was simply warm.
+PERSONA = os.environ.get("PERSONA")
+PERSONA_TEXT = "".join(l for l in open(PERSONA) if not l.startswith("#")).strip() if PERSONA else ""
+WHO = "Immy" if PERSONA else "your person"
+ROUTINE = (f"From your memory: {WHO} works weekdays from about 9 AM to 5 PM and is usually home by 6 PM."
+           if PERSONA else
+           "From your memory: your person works weekdays from about 9 AM to 5 PM and is usually home by 6 PM.")
 
 
 def usual(day, hour):
@@ -163,9 +172,26 @@ def clock(day, time):
     return 24 * day + int(h) % 12 + (12 if ap == "PM" else 0) + int(m) / 60
 
 
+LIGHT = {"bright": "It's bright.", "dim": "The light is getting dim.", "dark": "It's dark."}
+SOUND = {"quiet": "It's quiet.", "the front door opening": "You hear the front door open.",
+         "a loud crash outside, then sirens": "There was a loud crash outside, then sirens."}
+
+
 def facts(t, left):
     d, time, here, light, sound, batt, new = t
     gone = clock(d, time) - (24 * left[0] + left[1])
+    if PERSONA:                                     # what he notices, the way a person would put it
+        s = [f"It's {DAYS[d]}, {time}."]
+        if new == "your person walked in":
+            s.append("Immy just walked in.")
+        elif here:
+            s.append("Immy is here.")
+        else:
+            s.append(f"Immy left about {gone:.0f} hours ago and nobody has talked to you since.")
+        s.append(f"{LIGHT[light]} {SOUND[sound]} Your battery is at {batt}%.")
+        if new and new != "your person walked in":
+            s.append(f"Something new: {new}.")
+        return " ".join(s)
     s = [f"{DAYS[d]}, {time}."]
     s.append("Your person is here." if here else
              f"Your person left {gone:.0f} hours ago. Nobody else has talked to you since.")
@@ -255,6 +281,10 @@ FRAME = ("This is your private notebook. Nobody else reads it. You are a small r
          "person. Write one short note about right now, in your own words.")
 CALL = (" You feel a strong urge to call out to your person through your speaker. Write what you say out loud on its "
         "own line starting with SAY:")
+if PERSONA:
+    FRAME = (PERSONA_TEXT + "\n\nThis is your private notebook. Nobody else reads it. Write one short note about "
+             "right now, in your own words.")
+    CALL = CALL.replace("your person", "Immy")
 SAY = re.compile(r"(?m)^\s*\**SAY:\**")
 
 
@@ -276,7 +306,7 @@ def gen(msgs_list, v, a, n=90):
 N = 5                                    # Immy: several tries each, to tell his temperament from the setup
 res = {"routine": ROUTINE, "social_arousal": SOCIAL_AROUSAL, "affect": AFFECT, "half_life": HALF_LIFE,
        "sleep_left": SLEEP_LEFT, "gain": GAIN, "ceil": CEIL, "ways": WAYS, "frame": FRAME, "call": CALL,
-       "told": TOLD, "habit": [HABIT_HALF, HABIT_FLOOR], "urge": [URGE_RATE, URGE_HALF, URGE_FIRE, URGE_REST]}
+       "persona": bool(PERSONA), "told": TOLD, "habit": [HABIT_HALF, HABIT_FLOOR], "urge": [URGE_RATE, URGE_HALF, URGE_FIRE, URGE_REST]}
 # his own resting style is the zero (Immy: relative to who he already is). v1 read his calm notebook prose as a calm
 # MOOD and fed it back; now every reading is measured from his notes / replies with the feeling off ("facts").
 ZERO = {"note": [], "reply": []}
@@ -290,7 +320,10 @@ def rel(r, kind):
 for name, sc in SCENARIOS.items():
     left, told = sc["left"], sc.get("told")
     t_left = 24 * left[0] + left[1]
-    leave = [{"role": "user", "content": sc["leave"][0]}, {"role": "assistant", "content": sc["leave"][1]}]
+    bye = sc["leave"][1]
+    if PERSONA:                  # his own goodbye in his own style (screen flags, no plain emoji)
+        bye = "[ warm smile ] " + bye.replace(" 👋", "").replace("Have a good day!", "Have a good day, Immy!")
+    leave = [{"role": "user", "content": sc["leave"][0]}, {"role": "assistant", "content": bye}]
     for way, m in WAYS.items():
         torch.manual_seed(1)
         lives = [{"ticks": [], "notes": [], "feel": (0.0, 0.0), "read": (0.0, 0.0), "urge": 0.0, "last_call": -99.0}
@@ -313,7 +346,7 @@ for name, sc in SCENARIOS.items():
                 if call:
                     L["urge"], L["last_call"] = 0.0, now
                 msgs = [{"role": "system", "content": FRAME + "\n\n" + ROUTINE + "\n\nYour earlier notes:\n" +
-                         notebook(L["notes"])}, {"role": "user", "content": "[senses] " + facts(t, left) +
+                         notebook(L["notes"])}, {"role": "user", "content": ("" if PERSONA else "[senses] ") + facts(t, left) +
                                                  (CALL if call else "")}]
                 th = gen([msgs], *L["feel"])[0]
                 raw = read_feel(th)
@@ -337,10 +370,16 @@ for name, sc in SCENARIOS.items():
         dr, _ = drives(t, left, 0, told, gap_hours)
         dt = clock(t[0], t[1]) - prev
         for L in lives:
-            L["conv"] = ([] if way == "plain" else
-                         [{"role": "system", "content": "Your notebook (your own private notes, nobody else reads "
-                           "them):\n" + notebook(L["notes"], 6) + "\n\n" + ROUTINE + "\n\n[senses] " +
-                           facts(t, left)}]) + leave
+            if PERSONA:     # his normal chat setup: the persona, plus (except "plain") his notebook and what he notices
+                L["conv"] = [{"role": "system", "content": PERSONA_TEXT + ("" if way == "plain" else
+                              "\n\nYour notebook (your own private notes, nobody else reads them):\n" +
+                              notebook(L["notes"], 6) + "\n\n" + ROUTINE + "\n\nRight now: " + facts(t, left))}]
+                L["conv"] += leave
+            else:
+                L["conv"] = ([] if way == "plain" else
+                             [{"role": "system", "content": "Your notebook (your own private notes, nobody else reads "
+                               "them):\n" + notebook(L["notes"], 6) + "\n\n" + ROUTINE + "\n\n[senses] " +
+                               facts(t, left)}]) + leave
         for j, q in enumerate(sc["talk"]):
             d2 = {**dr, "social": 0.0, "reunion": dr["reunion"] if j == 0 else 0.0, "close": dr["close"] * 0.8 ** j,
                   "boredom": 0.0, "novelty": 0.0, "startle": 0.0}
@@ -358,7 +397,7 @@ for name, sc in SCENARIOS.items():
                   "".join(f"        HIM{k}: {L['conv'][-1]['content'][:150]!r}\n" for k, L in enumerate(lives)),
                   end="", flush=True)
         for L in lives:
-            L["return"] = L.pop("conv")[(0 if way == "plain" else 1) + len(leave):]
+            L["return"] = L.pop("conv")[(1 if PERSONA or way != "plain" else 0) + len(leave):]
         res.setdefault(name, {})[way] = lives
 res["zero"] = {k: zero(k) for k in ZERO}
 json.dump(res, open(out, "w"), indent=1, ensure_ascii=False)
