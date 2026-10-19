@@ -18,7 +18,8 @@ writes a few notes and replies with the feeling off and keeps their mean.
 
 Settings (env): PERSON (default "your person"), PERSONA (default /opt/littleguy/persona.txt; '#' lines dropped),
   WAY (felt | restless | big, default felt), NOTE_EVERY (hours between notes, default 2), SLEEP_FROM / WAKE (hours,
-  default 23 / 7), WORK_FROM / WORK_TO (his person's weekday hours, default 9 / 17.5), PRESENT_MIN (default 30),
+  default 23 / 7), SHIFTS (his person's work shifts, default /opt/littleguy/shifts.json; without it, weekdays
+  WORK_FROM to WORK_TO, default 9 / 17.5), PRESENT_MIN (default 30),
   REUNION_H (silence that makes a message a homecoming, default 1)
 """
 import json, math, os, random, re, socket, sys, time, unicodedata
@@ -76,8 +77,36 @@ def urge_step(u, gap, arousal, hours):
     return u * math.exp(-k * hours) + r / k * (1 - math.exp(-k * hours))
 
 
-def usual(day, hour):
-    return 0.1 if day < 5 and WORK_FROM <= hour < WORK_TO else 0.8
+def load_shifts(path):
+    """his person's shifts, from a schedule they gave him: {"where", "known_from", "known_to", "shifts": [[date, start,
+    end, label], ...]}; a shift that ends before it starts runs past midnight. Away = an hour before the shift to an hour
+    after, about an hour each way: the same "home about an hour after" he is told."""
+    try:
+        d = json.load(open(path))
+    except (OSError, ValueError):
+        return None
+    day = lambda x: time.mktime(time.strptime(x, "%Y-%m-%d"))
+    out = []
+    for date, a, b, _ in d["shifts"]:
+        t0 = day(date)
+        start = t0 + int(a[:2]) * 3600 + int(a[3:]) * 60
+        end = t0 + int(b[:2]) * 3600 + int(b[3:]) * 60 + (86400 if b <= a else 0)
+        out.append((start, end, a, b, date))
+    return {"where": d.get("where", ""), "from": day(d["known_from"]), "to": day(d["known_to"]) + 86400, "shifts": out}
+
+
+SHIFTS = load_shifts(env("SHIFTS", "/opt/littleguy/shifts.json"))
+
+
+def usual_at(now):
+    """how much company he's used to right now (life_sim's usual(), learned from the routine): with a schedule, away
+    during a shift; outside the days the schedule covers he doesn't know, so halfway"""
+    if SHIFTS is None:
+        lt = time.localtime(now)
+        return 0.1 if lt.tm_wday < 5 and WORK_FROM <= lt.tm_hour + lt.tm_min / 60 < WORK_TO else 0.8
+    if any(s - 3600 <= now < e + 3600 for s, e, *_ in SHIFTS["shifts"]):
+        return 0.1
+    return 0.8 if SHIFTS["from"] <= now < SHIFTS["to"] else 0.5
 
 
 def hm(h):
@@ -86,8 +115,28 @@ def hm(h):
 
 
 PERSONA = "".join(l for l in open(PERSONA_FILE) if not l.startswith("#")).strip()
-ROUTINE = (f"From your memory: {PERSON} works weekdays from about {hm(WORK_FROM)} to {hm(int(WORK_TO))} and is "
-           f"usually home by {hm(int(WORK_TO) + 1)}.")
+def routine(now):
+    """what he remembers about his person's work, for this moment"""
+    if SHIFTS is None:
+        return (f"From your memory: {PERSON} works weekdays from about {hm(WORK_FROM)} to {hm(int(WORK_TO))} and is "
+                f"usually home by {hm(int(WORK_TO) + 1)}.")
+    where = f" {SHIFTS['where']}" if SHIFTS["where"] else ""
+    s = f"From your memory: {PERSON} works{where} on shifts that change from day to day."
+    today = time.strftime("%Y-%m-%d", time.localtime(now))
+    hhmm = lambda x: hm(int(x[:2]) + int(x[3:]) / 60)
+    mine = [(a, b) for st, e, a, b, d in SHIFTS["shifts"] if d == today]
+    late = [(a, b) for st, e, a, b, d in SHIFTS["shifts"] if d != today and st <= now < e + 3600]
+    if late:
+        a, b = late[0]
+        s += f" He's on an overnight shift that ends at {hhmm(b)} this morning."
+    if mine:
+        a, b = mine[0]
+        s += f" Today he works {hhmm(a)} to {hhmm(b)} and is usually home about an hour after."
+    elif not late:
+        s += (" Today is his day off." if SHIFTS["from"] <= now < SHIFTS["to"] else
+              " You don't know his shift today.")
+    return s
+
 FRAME = PERSONA + ("\n\nThis is your private notebook. Nobody else reads it. Write one short note about right now, in "
                    "your own words.")
 CALL = (f" You feel a strong urge to call out to {PERSON} through your speaker. Write what you say out loud on its "
@@ -169,7 +218,7 @@ def drives(now, st, here):
     lt = time.localtime(now)
     hour = lt.tm_hour + lt.tm_min / 60
     told = st.get("told")                                            # [from, to] epoch seconds, when he was told
-    expected = usual(lt.tm_wday, hour) * (TOLD if told and told[0] <= now < told[1] else 1.0)
+    expected = usual_at(now) * (TOLD if told and told[0] <= now < told[1] else 1.0)
     gap = max(0.0, expected - (1.0 if here else 0.0))
     social = gap * (HABIT_FLOOR + (1 - HABIT_FLOOR) * 0.5 ** (st["gap_hours"] / HABIT_HALF))
     boredom = min(1.0, (now - max(st["last_new"], st["born"])) / 3600 / 30)
@@ -238,13 +287,13 @@ def find_zero(st):
     for hours_ago in (0, 3, 6):
         f = facts(now, {**probe, "last_heard": now - hours_ago * 3600 if hours_ago else 0.0})
         for _ in range(2):
-            th = think([{"role": "system", "content": FRAME + "\n\n" + ROUTINE + "\n\nYour earlier notes:\n(empty)"},
+            th = think([{"role": "system", "content": FRAME + "\n\n" + routine(now) + "\n\nYour earlier notes:\n(empty)"},
                         {"role": "user", "content": f}], off, 90)
             notes.append(read_feel(th))
     replies = []
     for q in ("Hey, I'm home!", "How was your day?", "Okay, I'm going to make dinner.", "Talk in a bit?"):
         r = think([{"role": "system", "content": PERSONA + "\n\nYour notebook (your own private notes, nobody else reads "
-                    "them):\n(empty)\n\n" + ROUTINE + "\n\nRight now: " + facts(now, {**probe, "last_heard": now})},
+                    "them):\n(empty)\n\n" + routine(now) + "\n\nRight now: " + facts(now, {**probe, "last_heard": now})},
                    {"role": "user", "content": q}], off, 160)
         replies.append(read_feel(r))
     mean = lambda xs: [sum(x[i] for x in xs) / len(xs) for i in (0, 1)]
@@ -259,7 +308,7 @@ def write_note(now, st, new=None, slept=False):
     if call:
         st["urge"], st["last_call"] = 0.0, now
     f = facts(now, st, new)
-    th = think([{"role": "system", "content": FRAME + "\n\n" + ROUTINE + "\n\nYour earlier notes:\n" + notebook()},
+    th = think([{"role": "system", "content": FRAME + "\n\n" + routine(now) + "\n\nYour earlier notes:\n" + notebook()},
                 {"role": "user", "content": f + (CALL if call else "")}], st["feel"], 90)
     st["read"] = rel(read_feel(th), "note", st)
     said = SAY.search(th)
@@ -291,7 +340,7 @@ def answer(now, st, heard):
     st["last_heard"] = st["last_new"] = now
     text = "\n".join(t for _, t in heard)
     system = (PERSONA + "\n\nYour notebook (your own private notes, nobody else reads them):\n" + notebook(6) + "\n\n" +
-              ROUTINE + "\n\nRight now: " + facts(now, st))
+              routine(now) + "\n\nRight now: " + facts(now, st))
     r = think([{"role": "system", "content": system}] + chat_history(now) + [{"role": "user", "content": text}],
               st["feel"], 160) or "..."
     st["read"] = rel(read_feel(r), "reply", st)

@@ -14,7 +14,8 @@
 #   BRAIN (a brain file to put in /opt/littleguy/brain; default: an empty placeholder),
 #   MIND (stub = the stand-in loop, the default; live = mind_live.py, his real mind on the clock, which needs the brain
 #   slot below and PERSONA = his persona file, copied read-only to /opt/littleguy/persona.txt), and for the live mind
-#   PERSON (who his person is), WAY (felt / restless / big), NOTE_EVERY, SLEEP_FROM, WAKE, WORK_FROM, WORK_TO
+#   PERSON (who his person is), WAY (felt / restless / big), NOTE_EVERY, SLEEP_FROM, WAKE, and SHIFTS (a file of his
+#   person's work shifts, see mind_live.py) or WORK_FROM / WORK_TO (a fixed weekday routine)
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 MEMORY=${MEMORY:-2G}; CPUQUOTA=${CPUQUOTA:-200%}; ROOM_MB=${ROOM_MB:-64}
@@ -37,6 +38,9 @@ install -o root -g root -m 0644 "$HERE/guard.py" "$HERE/mind_stub.py" "$HERE/min
 if [ "$MIND" = live ]; then
   [ -n "${PERSONA:-}" ] && [ -n "${BRAIN_KEY_FILE:-}" ] || { echo "MIND=live needs PERSONA and BRAIN_KEY_FILE"; exit 1; }
   install -o root -g root -m 0644 "$PERSONA" /opt/littleguy/persona.txt
+  # his person's work shifts (optional): what he expects and what he's told about their day
+  if [ -n "${SHIFTS:-}" ]; then install -o root -g root -m 0644 "$SHIFTS" /opt/littleguy/shifts.json
+  else rm -f /opt/littleguy/shifts.json; fi
 fi
 if [ -n "${BRAIN:-}" ]; then install -o root -g root -m 0644 "$BRAIN" /opt/littleguy/brain
 elif [ ! -e /opt/littleguy/brain ]; then install -o root -g root -m 0644 /dev/null /opt/littleguy/brain; fi
