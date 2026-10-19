@@ -131,6 +131,8 @@ Environment=PERIOD=$PERIOD
 Restart=on-failure
 RestartSec=30
 $HARDEN
+[Install]
+WantedBy=multi-user.target
 EOF
 
 cat > /etc/systemd/system/littleguy-escape.service <<EOF
