@@ -23,6 +23,7 @@ Settings (env): PERSON (default "your person"), PERSONA (default /opt/littleguy/
   REUNION_H (silence that makes a message a homecoming, default 1)
 """
 import json, math, os, random, re, socket, sys, time, unicodedata
+import memory as mem
 
 INBOX = "/var/lib/littleguy/inbox"
 NOTEBOOK = "/var/lib/littleguy/room/notebook"
@@ -114,6 +115,7 @@ def hm(h):
     return f"{int(h) % 12 or 12}{f':{m:02d}' if m else ''} {'PM' if h >= 12 else 'AM'}"
 
 
+MEMORY = mem.Memory(NOTEBOOK)
 PERSONA = "".join(l for l in open(PERSONA_FILE) if not l.startswith("#")).strip()
 def routine(now):
     """what he remembers about his person's work, for this moment"""
@@ -142,6 +144,8 @@ FRAME = PERSONA + ("\n\nThis is your private notebook. Nobody else reads it. Wri
 CALL = (f" You feel a strong urge to call out to {PERSON} through your speaker. Write what you say out loud on its "
         "own line starting with SAY:")
 SAY = re.compile(r"(?m)^\s*\**SAY:\**\s*(.+)$")
+LOOKUP = ("\n\nIf you want to look something up in your notebook first, write only REMEMBER: and what you're looking "
+          "for, and stop there.")
 
 
 # --- the three places and the slot ----------------------------------------------------------------------------------
@@ -238,12 +242,43 @@ def advance(now, st, dr, gap, slept=False):
     st["t"] = now
 
 
-def notebook(k=4):
+def last_notes(k):
     try:
-        notes = [json.loads(l) for l in open(os.path.join(NOTEBOOK, "notes.jsonl"))][-k:]
+        return [json.loads(l) for l in open(os.path.join(NOTEBOOK, "notes.jsonl"))][-k:]
     except OSError:
-        notes = []
-    return "\n".join(f"- [{n['when']}] {n['thought']}" for n in notes) or "(empty)"
+        return []
+
+
+def notebook(k=4):
+    return "\n".join(f"- [{n['when']}] {n['thought']}" for n in last_notes(k)) or "(empty)"
+
+
+def in_view(now, k):
+    """what is already in front of him (his last k notes, the talk of the last 3 hours), so memory doesn't repeat it"""
+    ids = {n.get("id", f"n{n['t']}") for n in last_notes(k)}
+    try:
+        ids |= {c.get("id", f"c{c['t']}") for c in map(json.loads, open(os.path.join(NOTEBOOK, "chat.jsonl")))
+                if now - c["t"] < 3 * 3600}
+    except OSError:
+        pass
+    return ids
+
+
+def think_remembering(build, feel, n, now, cue, skip, during):
+    """a thought with memory: what comes to mind by itself goes in first; if he asks (REMEMBER: ...), one look in his
+    notebook and he thinks again with what he found. Returns the text and the recall records (for the RL log)."""
+    got, rec = MEMORY.recall(now, feel, cue, skip, "involuntary", during)
+    came = ("\n\nThings that come to mind from your notebook:\n" + mem.lines(got)) if got else ""
+    out = think(build(came + LOOKUP), feel, n)
+    q, text = mem.split_remember(out)
+    recs = [rec]
+    if q:
+        got2, rec2 = MEMORY.recall(now, feel, q, (), "voluntary", during)   # a real look searches the whole notebook
+        found = mem.lines(got2) or "(nothing about that)"
+        out = think(build(came + f'\n\nYou just looked in your notebook for "{q}" and found:\n{found}'), feel, n)
+        text = mem.split_remember(out)[1]
+        recs.append(rec2)
+    return text, recs
 
 
 def chat_history(now):
@@ -308,9 +343,18 @@ def write_note(now, st, new=None, slept=False):
     if call:
         st["urge"], st["last_call"] = 0.0, now
     f = facts(now, st, new)
-    th = think([{"role": "system", "content": FRAME + "\n\n" + routine(now) + "\n\nYour earlier notes:\n" + notebook()},
-                {"role": "user", "content": f + (CALL if call else "")}], st["feel"], 90)
+    surprise = 0.0 if slept else max(0.0, gap - st.get("prev_gap", gap))   # company that didn't come when expected
+    st["prev_gap"] = gap
+    sal = mem.tag(st["feel"], surprise)
+    nid = f"n{round(now)}"
+    th, recs = think_remembering(
+        lambda extra: [{"role": "system", "content": FRAME + "\n\n" + routine(now) + "\n\nYour earlier notes:\n" +
+                        notebook() + extra}, {"role": "user", "content": f + (CALL if call else "")}],
+        st["feel"], 90, now, f, in_view(now, 4), "note")
+    th = th or "..."
     st["read"] = rel(read_feel(th), "note", st)
+    for r in recs:
+        MEMORY.log("recalls.jsonl", {**r, "out": nid, "out_text": th})
     said = SAY.search(th)
     if said:
         line = said.group(1).strip().strip('*"').strip()
@@ -318,7 +362,7 @@ def write_note(now, st, new=None, slept=False):
             line = line[:200].rsplit(" ", 1)[0]
         if line:
             post({"kind": "say", "text": line})
-    append("notes.jsonl", {"t": round(now), "when": when(now), "facts": f, "drives": {k: round(v, 3) for k, v in dr.items()},
+    append("notes.jsonl", {"id": nid, "t": round(now), "when": when(now), "facts": f, **sal, "drives": {k: round(v, 3) for k, v in dr.items()},
                            "gap": round(gap, 3), "gap_hours": round(st["gap_hours"], 2),
                            "valence": round(st["feel"][0], 3), "arousal": round(st["feel"][1], 3),
                            "urge": round(st["urge"], 2), "called": call, "says": bool(said),
@@ -337,19 +381,43 @@ def answer(now, st, heard):
     dr["reunion"] = 1.0 if reunion else 0.0
     dr["boredom"] = 0.0
     advance(now, st, dr, gap)
+    surprise = (1.0 - usual_at(now)) if reunion else 0.1             # did he expect to hear from them now?
+    st["prev_gap"] = 0.0
+    sal = mem.tag(st["feel"], surprise)
+    cid = f"c{round(now)}"
     st["last_heard"] = st["last_new"] = now
     text = "\n".join(t for _, t in heard)
     system = (PERSONA + "\n\nYour notebook (your own private notes, nobody else reads them):\n" + notebook(6) + "\n\n" +
               routine(now) + "\n\nRight now: " + facts(now, st))
-    r = think([{"role": "system", "content": system}] + chat_history(now) + [{"role": "user", "content": text}],
-              st["feel"], 160) or "..."
+    hist = chat_history(now)
+    r, recs = think_remembering(
+        lambda extra: [{"role": "system", "content": system + extra}] + hist + [{"role": "user", "content": text}],
+        st["feel"], 160, now, text, in_view(now, 6), "reply")
+    r = r or "..."
     st["read"] = rel(read_feel(r), "reply", st)
+    for rc in recs:
+        MEMORY.log("recalls.jsonl", {**rc, "out": cid, "out_text": r})
     st["close"] *= 0.8                                              # life_sim: the pull to stay near fades per turn
     to = heard[-1][0]
     post({"kind": "reply", "to": to, "text": r[:1500]})
-    append("chat.jsonl", {"t": round(now), "when": when(now), "to": to, "heard": text, "reply": r, "reunion": reunion,
+    append("chat.jsonl", {"id": cid, "t": round(now), "when": when(now), "to": to, "person": PERSON, "heard": text,
+                          "reply": r, "reunion": reunion, **sal,
                           "valence": round(st["feel"][0], 3), "arousal": round(st["feel"][1], 3),
                           "reply_reads": [round(x, 2) for x in st["read"]]})
+
+
+def fall_asleep(now, st):
+    """going to sleep: the day's strongest moments become one short memory (consolidation); faint days leave nothing"""
+    def gist(moments):
+        g = think([{"role": "system", "content": PERSONA + "\n\nIt's late and you're about to sleep. Looking back at "
+                    "today, these moments stand out:\n" + moments + "\n\nWrite one or two short sentences you want to "
+                    "remember about today, in your own words. Only what really happened."},
+                   {"role": "user", "content": "(before you sleep)"}], st["feel"], 80)
+        return mem.split_remember(g)[1]
+    m = MEMORY.consolidate(now, st.get("consolidated", st["born"]), gist, lambda t: rel(read_feel(t), "note", st), when)
+    st["consolidated"] = now
+    if m:
+        print(f"kept a memory: {m['gist'][:120]!r} (strength {m['strength']})", flush=True)
 
 
 def mood(st):
@@ -400,6 +468,7 @@ def main():
             if sleeping and not st["asleep"]:                       # going to sleep: no note, the clock runs on
                 dr, gap = drives(now, st, False)
                 advance(now, st, dr, gap)
+                fall_asleep(now, st)
                 st["asleep"] = True
             elif not sleeping and st["asleep"]:                     # waking: most of what he felt has faded
                 st["asleep"] = False
