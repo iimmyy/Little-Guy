@@ -59,6 +59,14 @@ install -d -o littleguy-mind -g lgmail -m 2770 /var/lib/littleguy/room/outbox
 echo "== units"
 HARDEN=$(sed -e "s|@EXECPATHS@|$EXECPATHS|" -e "s|@MEMORY@|$MEMORY|" -e "s|@CPUQUOTA@|$CPUQUOTA|" \
              -e '/^#/d' -e '/^$/d' "$HERE/hardening.conf")
+# inside an OrbStack machine on a Mac: hide the Mac's shared disks and its command bridge from both units
+EXTRA=""
+if [ -d /opt/orbstack-guest ]; then
+  EXTRA=$(sed -e '/^#/d' -e '/^$/d' "$HERE/hardening-orbstack.conf")
+  HARDEN="$HARDEN
+$EXTRA"
+  echo "== OrbStack machine: adding the Mac walls (hardening-orbstack.conf)"
+fi
 
 cat > /etc/systemd/system/littleguy-guard.service <<EOF
 [Unit]
@@ -107,6 +115,7 @@ SystemCallFilter=~@privileged @resources
 SystemCallErrorNumber=EPERM
 MemoryMax=128M
 TasksMax=16
+$EXTRA
 [Install]
 WantedBy=multi-user.target
 EOF
@@ -136,6 +145,23 @@ ExecStart=$PY /opt/littleguy/escape_test.py /var/lib/littleguy/room/notebook/esc
 $HARDEN
 EOF
 
+# Inside a container (OrbStack machines are LXC), systemd adds a drop-in for EVERY service, e.g.
+# /run/systemd/system/service.d/zzz-lxc-service.conf, that quietly resets the walls (ProtectSystem=no,
+# PrivateNetwork=no, NoNewPrivileges=no, ReadWritePaths= ...). Drop-ins apply in file-name order, so each of his units
+# gets its own that sorts after it and puts back exactly the settings it reset, copied from the unit itself.
+for u in littleguy-guard littleguy-mind littleguy-escape; do
+  keys=$( { cat /run/systemd/system/service.d/*.conf /etc/systemd/system/service.d/*.conf 2>/dev/null || true; } \
+         | { grep -oE '^[A-Za-z]+=' || true; } | sort -u)
+  rm -rf "/etc/systemd/system/$u.service.d"
+  [ -z "$keys" ] && continue
+  mkdir -p "/etc/systemd/system/$u.service.d"
+  { echo "# puts back the walls a container drop-in reset (see install.sh)"; echo "[Service]"
+    for k in $keys; do grep -E "^$k" "/etc/systemd/system/$u.service" || true; done
+  } > "/etc/systemd/system/$u.service.d/zzzz-littleguy-walls.conf"
+  echo "== $u: container drop-in found, walls put back ($(grep -c = "/etc/systemd/system/$u.service.d/zzzz-littleguy-walls.conf") settings)"
+done
+
 systemctl daemon-reload
 systemctl enable --now littleguy-guard.service
+systemctl restart littleguy-guard.service
 echo "ROOM_INSTALLED (mind not started; start it with: systemctl start littleguy-mind)"

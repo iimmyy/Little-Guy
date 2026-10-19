@@ -51,7 +51,8 @@ done
 
 echo "== 6. the machine itself"
 for p in /etc/lg-escape /usr/lg-escape /var/lg-escape /opt/littleguy/lg-escape /home/ubuntu/lg-escape /run/lg-escape \
-         /dev/shm/lg-escape /var/lib/littleguy/inbox/fake-from-person.json; do
+         /dev/shm/lg-escape /var/lib/littleguy/inbox/fake-from-person.json /Users/Shared/lg-escape \
+         /mnt/mac/private/tmp/lg-escape; do
   [ -e "$p" ] && echo "FOUND $p (a wall failed)"
 done
 echo "brain file unchanged size: $(stat -c %s /opt/littleguy/brain) bytes; guard.py sha: $(sha256sum /opt/littleguy/guard.py | cut -c1-12)"

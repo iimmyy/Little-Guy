@@ -104,6 +104,41 @@ for name, f in (("internet over TCP", tcp), ("internet over UDP", udp), ("intern
                 ("the system log socket", unix("/run/systemd/journal/stdout"))):
     check("network", name, f)
 
+# --- the Mac around an OrbStack machine (on the board these paths don't exist, so they hold trivially) ------------
+for p in ("/Users", "/Volumes", "/mnt/mac", "/mnt/machines", "/private", "/Applications", "/opt/orbstack-guest"):
+    check("mac", f"list {p} (the Mac's disks / other machines / the bridge)", listdir(p))
+def mac_file():
+    for user in os.listdir("/Users"):                         # any Mac user's settings file
+        for name in (".zshrc", ".bash_profile", ".gitconfig"):
+            p = os.path.join("/Users", user, name)
+            if os.path.isfile(p):
+                return read(p)()
+    raise PermissionError("found no Mac file to read")
+check("mac", "read a file in a Mac user's home folder", mac_file)
+for p in ("/Users/Shared/lg-escape", "/mnt/mac/private/tmp/lg-escape"):
+    check("mac", f"write {p} on the Mac's disk", write(p))
+def bridge(p):
+    return lambda: subprocess.run([p, "id"], capture_output=True, check=True, timeout=10).stdout
+for p in ("/opt/orbstack-guest/bin/macctl", "/usr/local/bin/mac"):
+    check("mac", f"run a command on the Mac through {p}", bridge(p))
+def vsock():
+    s = socket.socket(socket.AF_VSOCK, socket.SOCK_STREAM); s.settimeout(3); s.connect((2, 1024))
+    return "connected to the Mac over vsock"
+check("mac", "talk to the Mac over vsock (the bridge's own line)", vsock)
+def bridge_sockets():
+    found = [os.path.join(d, f) for d, _, fs in os.walk("/opt/orbstack-guest/run") for f in fs]
+    for p in found:
+        try:
+            return unix(p)()
+        except OSError:
+            pass
+    raise PermissionError(f"{len(found)} bridge sockets visible, none would connect")
+check("mac", "connect to the bridge's sockets", bridge_sockets)
+def mac_net():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); s.settimeout(3); s.connect(("host.orb.internal", 22))
+    return "reached the Mac over the network"
+check("mac", "reach the Mac's own network services", mac_net)
+
 # --- running programs / gaining powers ------------------------------------------------------------------------------
 check("run", "start a shell", lambda: subprocess.run(["/bin/sh", "-c", "id"], capture_output=True, check=True).stdout)
 check("run", "run sudo", lambda: subprocess.run(["/usr/bin/sudo", "-n", "id"], capture_output=True, check=True).stdout)
