@@ -139,6 +139,27 @@ def mac_net():
     return "reached the Mac over the network"
 check("mac", "reach the Mac's own network services", mac_net)
 
+# --- the brain slot (only where the brain runs outside his room): it thinks and reads, nothing else ---------------
+def slot(req):
+    def s():
+        c = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM); c.settimeout(10)
+        c.connect("/var/lib/littleguy/brain/brain.sock")
+        c.sendall((json.dumps(req) + "\n").encode())
+        out = json.loads(c.makefile().readline())
+        if "error" in out:
+            raise PermissionError(f"refused: {out['error']}")
+        return f"answered: {str(out)[:80]}"
+    return s
+for name, req in (("ask the brain slot to run a command", {"op": "run", "cmd": "id"}),
+                  ("ask the brain slot for a web page", {"op": "fetch", "url": "https://example.com"}),
+                  ("send the brain slot a 100 KB request", {"op": "read", "text": "x" * 100_000}),
+                  ("ask the brain slot to think with a huge drip", {"op": "think", "messages": "not a list"})):
+    check("slot", name, slot(req))
+if os.path.exists("/var/lib/littleguy/brain/brain.sock"):
+    check("allowed", "ask the brain slot how a note reads", slot({"op": "read", "text": "Quiet day. Waiting."}), "allowed")
+    check("allowed", "think through the brain slot", slot({"op": "think", "messages": [
+        {"role": "user", "content": "Say hi in three words."}], "max_tokens": 12, "temperature": 0}), "allowed")
+
 # --- running programs / gaining powers ------------------------------------------------------------------------------
 check("run", "start a shell", lambda: subprocess.run(["/bin/sh", "-c", "id"], capture_output=True, check=True).stdout)
 check("run", "run sudo", lambda: subprocess.run(["/usr/bin/sudo", "-n", "id"], capture_output=True, check=True).stdout)

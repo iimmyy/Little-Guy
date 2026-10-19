@@ -147,11 +147,79 @@ ExecStart=$PY /opt/littleguy/escape_test.py /var/lib/littleguy/room/notebook/esc
 $HARDEN
 EOF
 
+# The brain slot (only when his brain runs outside the room, e.g. on the Mac's GPU): BRAIN_KEY_FILE = the brainstem's
+# shared key, BRAINSTEM_HOST (default host.orb.internal) / BRAINSTEM_PORT (default 8771). The relay is the only thing
+# in the machine that may reach that one address; his mind only gets a socket to the relay.
+UNITS="littleguy-guard littleguy-mind littleguy-escape"
+if [ -n "${BRAIN_KEY_FILE:-}" ]; then
+  id littleguy-relay >/dev/null 2>&1 || useradd --system --user-group --no-create-home --home-dir /nonexistent \
+                                                --shell /usr/sbin/nologin littleguy-relay
+  usermod -aG lgmail littleguy-relay
+  install -o root -g root -m 0644 "$HERE/relay.py" /opt/littleguy/
+  install -d -o root -g root -m 0755 /etc/littleguy
+  install -o root -g littleguy-relay -m 0640 "$BRAIN_KEY_FILE" /etc/littleguy/brain.key
+  install -d -o littleguy-relay -g lgmail -m 2750 /var/lib/littleguy/brain
+  HOSTNAME_=${BRAINSTEM_HOST:-host.orb.internal}
+  IP=$(getent ahostsv4 "$HOSTNAME_" | awk 'NR==1{print $1}')
+  URL="http://$IP:${BRAINSTEM_PORT:-8771}"
+  [ -z "$IP" ] && { IP=$(getent ahostsv6 "$HOSTNAME_" | awk 'NR==1{print $1}'); URL="http://[$IP]:${BRAINSTEM_PORT:-8771}"; }
+  [ -z "$IP" ] && { echo "cannot resolve $HOSTNAME_"; exit 1; }
+  cat > /etc/systemd/system/littleguy-relay.service <<EOF
+[Unit]
+Description=Little Guy's brain slot (relay to the brainstem at $URL)
+[Service]
+ExecStart=$PY /opt/littleguy/relay.py
+Environment=BRAINSTEM=$URL
+Restart=always
+User=littleguy-relay
+Group=littleguy-relay
+SupplementaryGroups=lgmail
+UMask=0027
+StateDirectory=littleguy-relay
+StateDirectoryMode=0700
+ReadWritePaths=/var/lib/littleguy/brain
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+IPAddressDeny=any
+IPAddressAllow=$IP
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+ProtectProc=invisible
+ProcSubset=pid
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+RemoveIPC=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@privileged @resources
+SystemCallErrorNumber=EPERM
+MemoryMax=128M
+TasksMax=32
+$EXTRA
+[Install]
+WantedBy=multi-user.target
+EOF
+  UNITS="$UNITS littleguy-relay"
+  echo "== the brain slot: relay to $URL"
+fi
+
 # Inside a container (OrbStack machines are LXC), systemd adds a drop-in for EVERY service, e.g.
 # /run/systemd/system/service.d/zzz-lxc-service.conf, that quietly resets the walls (ProtectSystem=no,
 # PrivateNetwork=no, NoNewPrivileges=no, ReadWritePaths= ...). Drop-ins apply in file-name order, so each of his units
 # gets its own that sorts after it and puts back exactly the settings it reset, copied from the unit itself.
-for u in littleguy-guard littleguy-mind littleguy-escape; do
+for u in $UNITS; do
   keys=$( { cat /run/systemd/system/service.d/*.conf /etc/systemd/system/service.d/*.conf 2>/dev/null || true; } \
          | { grep -oE '^[A-Za-z]+=' || true; } | sort -u)
   rm -rf "/etc/systemd/system/$u.service.d"
@@ -166,4 +234,5 @@ done
 systemctl daemon-reload
 systemctl enable --now littleguy-guard.service
 systemctl restart littleguy-guard.service
+if [ -n "${BRAIN_KEY_FILE:-}" ]; then systemctl enable --now littleguy-relay.service; systemctl restart littleguy-relay.service; fi
 echo "ROOM_INSTALLED (mind not started; start it with: systemctl start littleguy-mind)"

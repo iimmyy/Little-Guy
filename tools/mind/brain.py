@@ -23,16 +23,21 @@ CAL = ["Hey.", "How's it going?", "Tell me about octopuses.", "Plan me a quick d
 
 
 def chat_template(gguf_path):
-    """the brain's own chat template (from its GGUF), rendered the way transformers does"""
-    sys.path.insert(0, os.path.join(HERE, "..", "..", ".run", "lcpp-src", "gguf-py"))
-    from gguf import GGUFReader
+    """the brain's own chat template (from its GGUF, or a copy saved next to it as <gguf>.jinja), rendered the way
+    transformers does"""
     import jinja2
-    f = GGUFReader(gguf_path).fields["tokenizer.chat_template"]
+    if os.path.exists(gguf_path + ".jinja"):
+        text = open(gguf_path + ".jinja").read()
+    else:
+        sys.path.insert(0, os.path.join(HERE, "..", "..", ".run", "lcpp-src", "gguf-py"))
+        from gguf import GGUFReader
+        f = GGUFReader(gguf_path).fields["tokenizer.chat_template"]
+        text = bytes(f.parts[f.data[0]]).decode()
     env = jinja2.Environment(trim_blocks=True, lstrip_blocks=True)
     def fail(m):
         raise ValueError(m)
     env.globals["raise_exception"] = fail
-    t = env.from_string(bytes(f.parts[f.data[0]]).decode())
+    t = env.from_string(text)
     return lambda msgs: t.render(messages=msgs, add_generation_prompt=True, bos_token="<bos>")
 
 

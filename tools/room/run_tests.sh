@@ -45,7 +45,7 @@ echo "status page now: $(cat /run/littleguy/status.json)"
 echo "said.log: $(tail -2 $G/said.log | tr '\n' '|')"
 
 echo "== 5. exposure scores"
-for u in littleguy-mind littleguy-escape littleguy-guard; do
+for u in littleguy-mind littleguy-escape littleguy-guard littleguy-relay; do
   echo "$u: $(systemd-analyze security --no-pager $u.service 2>/dev/null | tail -1)"
 done
 
