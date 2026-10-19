@@ -238,6 +238,9 @@ HALF_LIFE = {"valence": 4.0, "arousal": 1.5}   # hours to go halfway to where th
 SLEEP_LEFT = 0.2                # charging overnight leaves 20% of the feeling (sleep resets)
 GAIN = 0.15                     # rumination: how much his own last thought pulls the next moment
 CEIL = 0.75                     # soft ceiling in steps: around here the brain started coming apart (saturation)
+# v3 fix (Immy: "fix those"): keyed-up has a lower ceiling. In v2 "big" came home as a sugar rush ("WHOOP WHOOP! PERSON
+# ALERT!", "HUZZAH MODE ACTIVATED") and high arousal already cost accuracy (made-up Dayvigo ingredients).
+CEIL_AROUSAL = 0.5
 # v2 (Immy, 2026-10-19): a long gap should not pin him at the bottom 24/7, two ways at once:
 TOLD = 0.3                      # he understands what he was told: "back Thursday" -> he expects 30% of usual company
 HABIT_HALF, HABIT_FLOOR = 24.0, 0.35   # getting used to an ongoing gap (habituation): the ache halves each day of
@@ -249,8 +252,8 @@ WAYS = {"plain": None, "facts": None, "felt": 1.0, "restless": 1.0, "big": 2.5} 
 # "plain" = the control for flatness: the same goodbye and homecoming chat with no notebook, no senses, no feeling
 
 
-def soft(x):
-    return CEIL * float(torch.tanh(torch.tensor(x / CEIL)))
+def soft(x, ceil=CEIL):
+    return ceil * float(torch.tanh(torch.tensor(x / ceil)))
 
 
 def step(feel, dr, thought_read, hours, slept, m, way):
@@ -266,7 +269,7 @@ def step(feel, dr, thought_read, hours, slept, m, way):
         if slept:
             x *= SLEEP_LEFT
         x += m * sum(aff[d][i] * dr[d] for d in EVENTS)
-        out.append(soft(x))
+        out.append(soft(x, CEIL if k == "valence" else CEIL_AROUSAL))
     return tuple(out)
 
 
@@ -341,7 +344,9 @@ for name, sc in SCENARIOS.items():
             for L in lives:
                 if m is not None:
                     L["feel"] = step(L["feel"], dr, L["read"], dt, slept, m, way)
-                    L["urge"] = urge_step(L["urge"], dr["social"], L["feel"][1], dt, m)
+                    # v3 fix: the urge to call out follows whether he EXPECTS Immy (the gap); "big" deepens feelings
+                    # but not the expectation (v2 "big" called 7 of 10 times on a trip he'd been told about)
+                    L["urge"] = urge_step(L["urge"], dr["social"], L["feel"][1], dt, min(m, 1.0))
                 call = m is not None and L["urge"] >= URGE_FIRE and now - L["last_call"] >= URGE_REST
                 if call:
                     L["urge"], L["last_call"] = 0.0, now
