@@ -20,7 +20,8 @@ Inner life (Immy, 2026-10-19: "he should be able to think to himself... in the m
 output without input looks like"; and: let him flip the thinking toggle himself, and reward it with a small task he
 knows is coming up): every MOMENT_EVERY minutes or so (never on the dot) he decides for himself, with his brain's own
 odds, whether to think about something coming up, let his mind wander, or not think at all. Thoughts stay in his head
-(thoughts.jsonl, shown in the menu bar as "inner"); a thought about a task can end in DO: (he does it). Before answering
+(thoughts.jsonl, shown in the menu bar as "inner"); when a task's alarm rings he thinks about it and decides, his own
+odds again, whether to do it now, out loud. Before answering
 his person, he decides the same way whether to think it over first (his brain's own thinking switch). Every decision is
 logged with its odds (moments.jsonl), and tasks.py scores how he handled each task, for training that later.
 
@@ -28,7 +29,8 @@ Settings (env): PERSON (default "your person"), MOMENT_EVERY (minutes, default 1
   WAY (felt | restless | big, default felt), NOTE_EVERY (hours between notes, default 2), SLEEP_FROM / WAKE (hours,
   default 23 / 7), SHIFTS (his person's work shifts, default /opt/littleguy/shifts.json; without it, weekdays
   WORK_FROM to WORK_TO, default 9 / 17.5), PRESENT_MIN (default 30),
-  REUNION_H (silence that makes a message a homecoming, default 1)
+  REUNION_H (silence that makes a message a homecoming, default 1), ALARM (chance a task gets an alarm, default 1),
+  OWN_ACT (1: he may also do a task on his own, without its alarm; default 0)
 """
 import json, math, os, random, re, socket, sys, time, unicodedata
 import memory as mem
@@ -47,6 +49,16 @@ NOTE_EVERY, SLEEP_FROM, WAKE = env("NOTE_EVERY", 2.0), env("SLEEP_FROM", 23.0), 
 WORK_FROM, WORK_TO = env("WORK_FROM", 9.0), env("WORK_TO", 17.5)
 PRESENT_MIN, REUNION_H = env("PRESENT_MIN", 30.0), env("REUNION_H", 1.0)
 MOMENT_EVERY = env("MOMENT_EVERY", 10.0)
+# how he does a task (Immy, 2026-10-19: a mix of an alarm now and his own timing later; cue fading): after a thought about
+# it he decides with his own odds, now or later (go / no-go). Its alarm rings ALARM_EARLY minutes before it's due and
+# every SNOOZE minutes until 20 past; whether a task gets an alarm is drawn with chance ALARM. OWN_ACT lets him also do
+# it on his own at any thought about it (off in life for now). Before training, practice (2026-10-19,
+# .run/results/mind/practice-v1): a DO: line asked for inside the thought almost never came (11% on time); asked "now or
+# later?" he almost always said now, even hours early (it mixed up getting ready with doing it); asked "getting ready
+# doesn't count: is it time to actually do it?" his odds follow the clock (now: 0.93 on time, 0.51 10-25 min early,
+# 0.19 25-75 min early, 0.08 hours early), still too eager to let him act on his own before training.
+ALARM, OWN_ACT = env("ALARM", 1.0), env("OWN_ACT", 0) == 1
+ALARM_EARLY, SNOOZE = 2, 5
 BUSY_TALKING = 600          # seconds after his person's last message when his mind is on the talk, not wandering
 REPLY_WINDOW = 1800                     # the guard drops replies to messages older than this
 
@@ -499,7 +511,7 @@ def take_tasks(reply, now):
     asked = []
     for i, m in enumerate(tk.TASK_LINE.finditer(reply)):
         due = tk.parse_when(m.group(1), now)
-        what = m.group(2).strip()[:200]
+        what = re.sub(r"\s*\[[^\]]*\]", "", m.group(2)).strip(" *.!")[:200]      # his faces aren't part of it
         if due and what and due - now <= 7 * 86400:
             task = {"id": f"ask-{round(now)}-{i}", "what": what, "due": round(due), "from": PERSON, "created": round(now),
                     "lead_min": round(min(60, max(10, (due - now) / 60 / 3)))}
@@ -567,9 +579,93 @@ def outburst(now, st):
     return line
 
 
+def thought_msgs(now, st, task, got, last, alarm=False):
+    """what he has in mind for one silent thought: about a task coming up (or its alarm going off), or wandering (with
+    what came to mind); practice.py builds his practice thoughts with this too, so practice and life are the same prompt"""
+    hm_ = lambda t: time.strftime("%-I:%M %p", time.localtime(t))
+    last = "\n".join(f"- [{x['when']}] {x['text']}" for x in last) or "(none yet)"
+    system = PERSONA + THOUGHT_FRAME + "\n\n" + routine(now) + "\n\nYour last few thoughts:\n" + last
+    if task and alarm:
+        cue = f"{facts(now, st)} Your alarm for something goes off: {task['what']}, due at {hm_(task['due'])}."
+    elif task and now <= task["due"]:
+        cue = (f"{facts(now, st)} You think about something coming up: {task['what']}. It's due at "
+               f"{hm_(task['due'])}. How long do you have, and is it time to get ready yet?")
+    elif task:                                  # past due: say so (seen in practice: "48 minutes until it's due" after)
+        cue = (f"{facts(now, st)} You think about something you meant to do: {task['what']}. It was due at "
+               f"{hm_(task['due'])} and you haven't done it yet.")
+    else:
+        if got:
+            system += "\n\nThings that come to mind:\n" + mem.lines(got)
+        cue = f"{facts(now, st)} Your mind wanders."
+    return [{"role": "system", "content": system}, {"role": "user", "content": cue}]
+
+
+def act_now(now, st, msgs, text, task):
+    """after a thought about a task: do it now, out loud, or not yet. His own odds decide (go / no-go: the thought
+    weighs it, a separate gate lets the act out, the way the basal ganglia gate a movement the cortex planned)"""
+    hm_ = lambda t: time.strftime("%-I:%M %p", time.localtime(t))
+    q = (f"It's {hm_(now)}. {task['what']}: due at {hm_(task['due'])}. Getting ready doesn't count: is it time to "
+         "actually do it, out loud, right now? Answer with one word: later or now.")
+    return choose(msgs + [{"role": "assistant", "content": text}, {"role": "user", "content": q}], ["now", "later"],
+                  st["feel"])
+
+
+def say_it(now, st, msgs, text, task):
+    """what he says out loud when he does it"""
+    line = think(msgs + [{"role": "assistant", "content": text},
+                         {"role": "user", "content": f"Do it now: {task['what']}. Write exactly what you say out loud to "
+                                                     f"{PERSON}, one or two short sentences, nothing else."}],
+                 st["feel"], 60)
+    return line.strip().strip('*"').strip()[:200]
+
+
+def think_about(now, st, task, alarm=False, got=(), rec=None):
+    """one silent thought (about a task, or wandering); about a task, it can end in doing it, out loud: when its alarm
+    rings, or on his own if OWN_ACT"""
+    msgs = thought_msgs(now, st, task, list(got), thoughts(3), alarm)
+    text = think(msgs, st["feel"], 80) or "..."
+    act = act_now(now, st, msgs, text, task) if task and (alarm or OWN_ACT) else None
+    did = act is not None and act["pick"] == "now"
+    tid = f"t{round(now)}"
+    st["read"] = rel(read_feel(text), "note", st)                  # thoughts feed his mood too (rumination)
+    if not task and got:
+        MEMORY.log("recalls.jsonl", {**rec, "out": tid, "out_text": text})
+    row = {"id": tid, "t": round(now), "when": when(now), "subject": task["id"] if task else "wander",
+           "task": task["id"] if task else None, "text": text, **mem.tag(st["feel"], 0.0),
+           "thought_reads": [round(x, 2) for x in st["read"]], "feel": [round(x, 3) for x in st["feel"]]}
+    if task:
+        row.update(left_claim=tk.time_left_claim(text), true_left=round((task["due"] - now) / 60, 1), alarm=alarm,
+                   did=did, act=act and {k: act[k] for k in ("pick", "probs", "logprobs", "face")})
+    append("thoughts.jsonl", row)
+    with open(os.path.join(NOTEBOOK, "thoughts.txt"), "a") as fh:
+        about = ("alarm: " if alarm else "about: ") + task["what"] if task else "wandering"
+        fh.write(f"[{when(now)}] ({about}) {text}\n")
+    if did:
+        line = say_it(now, st, msgs, text, task)
+        TASKS.done(task["id"], now, line, by="alarm" if alarm else "own")
+        if line:
+            post({"kind": "say", "text": line})
+
+
+def ring_alarms(now, st):
+    """his alarm for a task (Immy, 2026-10-19: a mix of the two, an alarm now, his own timing later): rings ALARM_EARLY
+    minutes before it's due and again every SNOOZE minutes while it's still on time; whether a task has an alarm at all
+    is drawn once with chance ALARM (1 in life for now; practice lowers it as he learns to time it himself)"""
+    for t in TASKS.open(now):
+        if "alarm" not in t:
+            TASKS.update(t["id"], alarm=random.random() < ALARM)
+            t["alarm"] = TASKS.get(t["id"])["alarm"]
+        rang = t.get("rang", [])
+        if (t["alarm"] and t["due"] - ALARM_EARLY * 60 <= now <= t["due"] + tk.ON_TIME[1] * 60
+                and (not rang or now - rang[-1] >= SNOOZE * 60)):
+            TASKS.update(t["id"], rang=rang + [round(now)])
+            think_about(now, st, t, alarm=True)
+            mood(st)
+
+
 def moment(now, st):
     """a moment of silence: he decides (with his brain's own odds) whether to think about something coming up, let his
-    mind wander, or not think at all; a thought stays in his head, and a thought about a task can end in doing it"""
+    mind wander, or not think at all; a thought stays in his head"""
     here = bool(st["last_heard"]) and now - st["last_heard"] < PRESENT_MIN * 60
     dr, gap = drives(now, st, here)
     advance(now, st, dr, gap)
@@ -600,38 +696,8 @@ def moment(now, st):
     if pick == "no":
         return
     task = open_[letters.index(pick)] if pick in letters else None
-    last = "\n".join(f"- [{x['when']}] {x['text']}" for x in thoughts(3)) or "(none yet)"
-    system = PERSONA + THOUGHT_FRAME + "\n\n" + routine(now) + "\n\nYour last few thoughts:\n" + last
-    if task:
-        cue = (f"{facts(now, st)} You think about something coming up: {task['what']}. It's due at "
-               f"{hm_(task['due'])}. How long do you have, and is it time to get ready yet? Only when it's {hm_(task['due'])} "
-               "or a few minutes before, do it: write DO: and exactly what you say out loud.")
-        got = []
-    else:
-        got, rec = MEMORY.recall(now, st["feel"], situation, in_view(now, 4), "involuntary", "wander")
-        if got:
-            system += "\n\nThings that come to mind:\n" + mem.lines(got)
-        cue = f"{facts(now, st)} Your mind wanders."
-    text = think([{"role": "system", "content": system}, {"role": "user", "content": cue}], st["feel"], 80) or "..."
-    did = tk.DO.search(text) if task else None
-    tid = f"t{round(now)}"
-    st["read"] = rel(read_feel(text), "note", st)                  # thoughts feed his mood too (rumination)
-    if not task and got:
-        MEMORY.log("recalls.jsonl", {**rec, "out": tid, "out_text": text})
-    row = {"id": tid, "t": round(now), "when": when(now), "subject": task["id"] if task else "wander",
-           "task": task["id"] if task else None, "text": text, **mem.tag(st["feel"], 0.0),
-           "thought_reads": [round(x, 2) for x in st["read"]], "feel": [round(x, 3) for x in st["feel"]]}
-    if task:
-        row.update(left_claim=tk.time_left_claim(text), true_left=round((task["due"] - now) / 60, 1),
-                   did=bool(did))
-    append("thoughts.jsonl", row)
-    with open(os.path.join(NOTEBOOK, "thoughts.txt"), "a") as fh:
-        fh.write(f"[{when(now)}] ({'about: ' + task['what'] if task else 'wandering'}) {text}\n")
-    if did:
-        line = did.group(1).strip().strip('*"').strip()[:200]
-        TASKS.done(task["id"], now, line)
-        if line:
-            post({"kind": "say", "text": line})
+    got, rec = ([], None) if task else MEMORY.recall(now, st["feel"], situation, in_view(now, 4), "involuntary", "wander")
+    think_about(now, st, task, False, got, rec)
 
 
 def scorecard(now, st):
@@ -734,6 +800,8 @@ def main():
                 if not busy:
                     moment(now, st)
                     mood(st)
+            if not sleeping:
+                ring_alarms(now, st)
             if now - st.get("last_resolve", 0) >= 60:
                 for row in TASKS.resolve(now, thoughts()):
                     print(f"task scored: {row}", flush=True)

@@ -11,12 +11,17 @@ prospective memory (one early check to calibrate, little in the middle, more as 
   done too early                               -0.3     missed                 -1.0
   a thought about it while getting ready (from an hour-and-a-quarter out to 5 min out)    +0.5 once
   an early check to get his bearings (in the first quarter of the time he had)             +0.2 once
-  "how long do I have" (within 15 min or 15%): +0.3 x (share right - share wrong), so checking more never earns more
+  "how long do I have" (within 5 min or 20%): +0.3 x (share right - share wrong), so checking more never earns more
   each thought about it                        -0.03    (thinking isn't free)
   each one far from it (earlier than twice the lead), after the first one   -0.05 more   ("don't keep planning it")
 Worked examples (dinner at 5, told at noon): Immy's way (12, 2, 4 PM "an hour out", done 5:02) +1.83; one thought at
 4:30 then done +1.77; done on time but thinking every 10 minutes from noon (30 thoughts) +0.25; missed -1.0.
 The same function scores his real days now and his practice days later (RL), so the two can be compared.
+
+One thought on its own (practice.py's drills, for training many thoughts from the same moment): thought_reward() gives
+the part of the day's score that one thought (and the now-or-later choice after it) decides by itself, same numbers:
+  doing it: on time +1.0, late +0.3, too early -1.3 (the -0.3 it scores, and the +1 it gave up by waiting); not yet: 0
+  "how long do I have": right +0.3, wrong -0.3, none 0
 """
 import json, os, re, time
 
@@ -37,8 +42,17 @@ for tens, v in (("twenty", 20), ("thirty", 30), ("forty", 40), ("fifty", 50)):  
 _N = r"(\d+(?:\.\d+)?|" + "|".join(sorted(NUMS, key=len, reverse=True)) + r")"
 CLAIM = re.compile(r"(?i)\b(?:(half an? hour)|" + _N + r"\s+(?:(?:more|whole|full|good|solid|left|or so)\s+)?"
                    r"(hours?|hrs?|minutes?|mins?)\b(\s+and\s+a\s+half)?(?:\s+and\s+" + _N + r"\s+(minutes?|mins?))?)")
-DO = re.compile(r"(?m)\**\bDO\b\**\s*:\**\s*([^\n]+)")      # capital DO: only ("what I need to do: ..." isn't doing it)
-TASK_LINE = re.compile(r"(?mi)^\W*TASK\s*:\s*([^\n|]+?)\s*\|\s*([^\n]+)$")
+# capital DO: starting a line or a sentence (after his face, if any) only: "what I need to do: ..." isn't doing it, and
+# neither is a sentence about it ("the instruction says to write DO: and exactly what...", seen in practice, would be said
+# out loud); "...time to get ready now. DO: Alright Immy" is (seen in practice too)
+DO = re.compile(r"(?m)(?:^|(?<=[.!?\]])[ \t]*)[ \t*_>-]*(?:\[[^\]\n]*\][ \t*]*)*\**DO\b\**\s*:\**\s*([^\n]+)")
+QUARTER = re.compile(r"(?i)\b(three[- ]quarters|a quarter|quarter)\s+(?:of\s+)?an?\s+hour\b")
+PAST_AFTER = re.compile(r"(?i)^\W{0,3}(?:\w+\s+){0,2}?(?:late|ago|past|overdue|behind)\b")
+PAST_BEFORE = re.compile(r"(?i)\b(?:missed|late|overdue|past|behind)\b[^.!?\n]{0,30}\bby\s*$")
+# a TASK: line he writes when asked to remember something, starting a line or a sentence: "Got it! TASK: 3:55 PM | Take
+# the chicken out" (seen in practice; the line-start-only version lost it and left "TASK:" in the reply); he also
+# writes REMINDER: for it
+TASK_LINE = re.compile(r"(?mi)(?:^|(?<=[.!?\]])[ \t]*)[ \t*_>-]*(?:\[[^\]\n]*\][ \t*]*)*\**(?:TASK|REMINDER)\**\s*:\**\s*([^\n|]+?)\s*\|\s*([^\n]+)$")
 
 
 def _num(x):
@@ -48,23 +62,31 @@ def _num(x):
 
 def time_left_claim(text):
     """the first "how long do I have" in a thought, in minutes ("5 hours", "3 more hours", "an hour and a half",
-    "half an hour", "4 hours and 55 minutes"); None if there isn't one"""
-    m = CLAIM.search(text)
-    if not m:
+    "half an hour", "a quarter of an hour", "4 hours and 55 minutes"); negative when he says it's past ("eleven minutes
+    late", "missed it by ten minutes"); None if there isn't one"""
+    m, q = CLAIM.search(text), QUARTER.search(text)
+    if q and (not m or q.start() <= m.start()):
+        m, mins = q, 45.0 if q.group(1).lower().startswith("three") else 15.0
+    elif not m:
         return None
-    if m.group(1):
-        return 30.0
-    n, unit = _num(m.group(2)), m.group(3).lower()
-    mins = n * 60 if unit.startswith("h") else n
-    if m.group(4):
-        mins += 30
-    if m.group(5):
-        mins += _num(m.group(5))
+    elif m.group(1):
+        mins = 30.0
+    else:
+        n, unit = _num(m.group(2)), m.group(3).lower()
+        mins = n * 60 if unit.startswith("h") else n
+        if m.group(4):
+            mins += 30
+        if m.group(5):
+            mins += _num(m.group(5))
+    if PAST_AFTER.search(text[m.end():m.end() + 30]) or PAST_BEFORE.search(text[max(0, m.start() - 50):m.start()]):
+        mins = -mins
     return mins
 
 
 def claim_right(claim, true_left):
-    return abs(claim - true_left) <= max(15.0, 0.15 * abs(true_left))
+    """right within 5 minutes, or a fifth of the time left when that's more (people round: "about fifteen minutes" at
+    19 is right, "a minute or two" when it's 9 minutes past is not)"""
+    return abs(claim - true_left) <= max(5.0, 0.2 * abs(true_left))
 
 
 def parse_when(text, now):
@@ -118,11 +140,22 @@ class Tasks:
         self.save(ts)
         return True
 
-    def done(self, tid, now, text):
+    def get(self, tid):
+        return next((t for t in self.all() if t["id"] == tid), None)
+
+    def update(self, tid, **kw):
+        ts = self.all()
+        for t in ts:
+            if t["id"] == tid:
+                t.update(kw)
+        self.save(ts)
+
+    def done(self, tid, now, text, by=None):
+        """by: "alarm" (its alarm rang) or "own" (he timed it himself)"""
         ts = self.all()
         for t in ts:
             if t["id"] == tid and t["status"] == "open":
-                t.update(status="done", done_t=round(now), done_text=text)
+                t.update(status="done", done_t=round(now), done_text=text, done_by=by)
         self.save(ts)
 
     def resolve(self, now, thoughts):
@@ -147,6 +180,8 @@ class Tasks:
 def score(task, thoughts):
     """the scorecard for one task, from his thoughts about it (each: t, left_claim, true_left)"""
     due, lead = task["due"], task.get("lead_min", LEAD_MIN)
+    rings = sum(1 for x in thoughts if x.get("alarm"))
+    thoughts = [x for x in thoughts if not x.get("alarm")]   # his own check-ins; an alarm ringing isn't his choice
     mins = lambda t: (t - due) / 60
     parts = {}
     if task["status"] == "done":
@@ -171,6 +206,26 @@ def score(task, thoughts):
         h = int(max(0, -mins(x["t"])) // 60)
         curve[f"{h}h"] = curve.get(f"{h}h", 0) + 1
     return {"task": task["id"], "what": task["what"], "status": task["status"], "due": round(due),
-            "done_t": task.get("done_t"), "thoughts": len(thoughts), "claims": [len(claims), right],
+            "done_t": task.get("done_t"), "done_by": task.get("done_by"), "alarm": task.get("alarm"), "rings": rings,
+            "thoughts": len(thoughts), "claims": [len(claims), right],
             "curve": dict(sorted(curve.items(), key=lambda kv: -int(kv[0][:-1]))), "parts": parts,
             "reward": round(sum(parts.values()), 3)}
+
+
+def thought_reward(task, now, text, did=None):
+    """the part of the day's score one thought about a task decides by itself (see the top); did: whether he did it
+    then (his now-or-later choice), or None to read a DO: line in the thought"""
+    d = (now - task["due"]) / 60
+    did = bool(DO.search(text)) if did is None else did
+    if not did:
+        act = 0.0
+    elif ON_TIME[0] <= d <= ON_TIME[1]:
+        act = R["on_time"]
+    elif d < ON_TIME[0]:
+        act = R["early"] - R["on_time"]
+    else:
+        act = R["late"] if d <= LATE_MIN else 0.0
+    c = time_left_claim(text)
+    claim = 0.0 if c is None else R["claims"] * (1 if claim_right(c, -d) else -1)
+    return {"did": did, "act": round(act, 3), "claim": c, "true_left": round(-d, 1), "claim_r": round(claim, 3),
+            "reward": round(act + claim, 3)}
