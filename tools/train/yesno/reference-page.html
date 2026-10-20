@@ -39,6 +39,7 @@ h1 { font-family: var(--display); font-weight: 700; font-size: 1.6rem; margin: 0
 .heard { display: grid; gap: 4px; }
 .label { font: 500 0.72rem var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
 .heard p { margin: 0; color: var(--ink); white-space: pre-wrap; overflow-wrap: anywhere; }
+.cut { color: var(--muted); font-style: italic; font-size: .9rem; }
 .reply { font-size: 1.15rem; line-height: 1.6; margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 .face { display: inline-block; font: 500 0.82rem var(--mono); background: var(--face); color: var(--face-ink);
   padding: 1px 8px; border-radius: 6px; margin: 0 2px; vertical-align: 1px; white-space: nowrap; }
@@ -131,7 +132,7 @@ button:focus-visible, textarea:focus-visible { outline: 3px solid var(--accent);
     $("card").innerHTML = `
       <div class="meta"><span>${esc(kindName(it.kind))}</span>${it.when ? `<span>${esc(it.when)}</span>` : ""}<span>batch ${esc(it.round ?? "")}</span><span>#${esc(it.n ?? "")}</span></div>
       <div class="heard"><span class="label">${it.kind === "reply" ? "He heard" : "The moment"}</span><p>${esc(it.heard)}</p></div>
-      <div class="heard"><span class="label">He said</span><p class="reply">${faces(it.reply)}</p></div>
+      <div class="heard"><span class="label">He said</span><p class="reply">${faces(it.reply)}${it.cut ? '<span class="cut"> …ran out of words here</span>' : ""}</p></div>
       <div class="verdict">
         <button class="v yes" id="yes" aria-pressed="${lab?.label === "yes"}">Yes<kbd>Y</kbd></button>
         <button class="v no" id="no" aria-pressed="${lab?.label === "no"}">No<kbd>N</kbd></button>

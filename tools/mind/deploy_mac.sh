@@ -5,6 +5,9 @@
 # small Python environment. Rerun after changing any of them.
 #   BRAIN (default: the baked brain with 160 neurons off), DIALS (dials-core.npz), DEST (default ~/.littleguy),
 #   PORT (default 8771), LCPP (llama.cpp tree, for gguf-py and the libraries; default ../../.run/lcpp-src)
+#   LORA: what training added (an adapter .gguf from tools/train/choices.py), loaded on top of his brain; he then
+#   keeps feeling on the scale his untrained brain measured (calibration.json, kept, not measured again). Leave it out
+#   to go back to his untrained brain.
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"; REPO="$(cd "$HERE/../.." && pwd)"
 MOODS=/Volumes/Music/LittleGuy/weights/experiments/moods
@@ -38,6 +41,15 @@ done
 echo "== his brain and dials"
 cmp -s "$BRAIN" "$DEST/brain/brain.gguf" 2>/dev/null || cp -f "$BRAIN" "$DEST/brain/brain.gguf"
 cp -f "$DIALS" "$DEST/brain/dials.npz"
+ENV="<key>LG_MIND</key><string>$DEST/bin/llama-lg-mind</string>"
+if [ -n "${LORA:-}" ]; then
+  [ -f "$DEST/calibration.json" ] || { echo "no calibration.json yet: deploy once without LORA first" >&2; exit 1; }
+  cp -f "$LORA" "$DEST/brain/adapter.gguf"
+  ENV="$ENV<key>LG_LORA</key><string>$DEST/brain/adapter.gguf</string>"
+  ENV="$ENV<key>LG_CALIBRATION</key><string>$DEST/calibration.json</string>"
+else
+  rm -f "$DEST/brain/adapter.gguf"
+fi
 PYTHONPATH="$LCPP/gguf-py" "$REPO/.run/mind-venv/bin/python" - "$DEST/brain/brain.gguf" <<'EOF'
 import sys
 from gguf import GGUFReader
@@ -62,7 +74,7 @@ cat > "$PLIST" <<EOF
     <string>$DEST/brain/brain.gguf</string><string>$DEST/brain/dials.npz</string><string>$DEST/brain.key</string>
     <string>$PORT</string>
   </array>
-  <key>EnvironmentVariables</key><dict><key>LG_MIND</key><string>$DEST/bin/llama-lg-mind</string></dict>
+  <key>EnvironmentVariables</key><dict>$ENV</dict>
   <key>WorkingDirectory</key><string>$DEST</string>
   <key>RunAtLoad</key><true/>
   <key>KeepAlive</key><true/>
