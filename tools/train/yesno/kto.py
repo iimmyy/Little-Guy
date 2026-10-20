@@ -5,7 +5,8 @@ pairs needed. Each judged reply's odds are raised (yes) or lowered (no) relative
 against how far he has moved on replies in general (mismatched prompt and reply pairs), so he can't "win" by drifting
 everywhere at once.
 
-  rows   OUT.jsonl --labels L.jsonl [L2.jsonl ...] --items I.jsonl [I2.jsonl ...] --days DIR      (on the Mac)
+  rows   OUT.jsonl --labels L.jsonl [L2.jsonl ...] --items I.jsonl [I2.jsonl ...] --days DIR [--coach coach.txt]
+         (on the Mac; --coach: the sheet the practice days ran with, taken out of every prompt before training)
          each judged item back to the brain call that wrote it (items carry day + step): his exact prompt (his brain's
          own chat template; when he thought first, his private thought too, as context only), his feelings, and his
          raw words. Lines starting "TASK:" (a reminder he set) are never trained: a no for his tone must not teach him
@@ -44,6 +45,18 @@ def build_rows(a):
             if x["id"] not in latest or x["t"] >= latest[x["id"]]["t"]:
                 latest[x["id"]] = x
     items = {x["id"]: x for f in a.items for x in jl(f)}
+    # the coaching sheet (coach.txt) only helped make practice replies: it comes out of every prompt, so he learns to
+    # talk this way untold. His mind reads a persona file the same way: lines starting with # left out, then stripped
+    coach = "".join(l for l in open(a.coach) if not l.startswith("#")).strip() if a.coach else None
+    uncoached = 0
+
+    def untold(msgs):
+        nonlocal uncoached
+        if not coach:
+            return msgs
+        out = [dict(m, content=m["content"].replace("\n\n" + coach, "").replace(coach, "")) for m in msgs]
+        uncoached += out != msgs
+        return out
     steps, rows, missing = {}, [], []
     for i, lab in sorted(latest.items()):
         it = items.get(i)
@@ -53,7 +66,8 @@ def build_rows(a):
         if it["day"] not in steps:
             steps[it["day"]] = jl(os.path.join(a.days, it["day"], "steps.jsonl"))
         s = steps[it["day"]][it["step"]]
-        req, out = s["req"], s["out"]
+        req, out = dict(s["req"]), s["out"]
+        req["messages"] = untold(req["messages"])
         if it.get("part") == "thinking":       # what he thought before answering: the thought is what's judged, and
             cut = out.get("n_thought", 0) >= req.get("think_tokens", 1e9)    # the switch into thinking isn't trained
             rows.append({"id": i, "label": lab["label"], "note": lab.get("note", ""), "kind": "thinking", "day": it["day"],
@@ -76,7 +90,7 @@ def build_rows(a):
     print(json.dumps({"rows": len(rows), "yes": sum(r["label"] == "yes" for r in rows),
                       "no": sum(r["label"] == "no" for r in rows), "notes": sum(bool(r["note"]) for r in rows),
                       "thought_first": sum(THOUGHT_CLOSE in r["prompt"] for r in rows),
-                      "cut": sum(not r["end"] for r in rows), "not_found": missing}))
+                      "cut": sum(not r["end"] for r in rows), "coach_taken_out": uncoached, "not_found": missing}))
 
 
 def train(a):
@@ -200,7 +214,7 @@ def main():
     ap.add_argument("out")
     ap.add_argument("--labels", nargs="*", default=[])
     ap.add_argument("--items", nargs="*", default=[])
-    for k in ("days", "data", "init", "model", "dials", "cal", "off"):
+    for k in ("days", "data", "init", "model", "dials", "cal", "off", "coach"):
         ap.add_argument("--" + k)
     for k, d in (("epochs", 3), ("group", 8), ("seed", 0), ("max_prompt", 3072)):
         ap.add_argument("--" + k, type=int, default=d)
