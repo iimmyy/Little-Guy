@@ -15,7 +15,8 @@
 #   MIND (stub = the stand-in loop, the default; live = mind_live.py, his real mind on the clock, which needs the brain
 #   slot below and PERSONA = his persona file, copied read-only to /opt/littleguy/persona.txt), and for the live mind
 #   PERSON (who his person is), WAY (felt / restless / big), NOTE_EVERY, SLEEP_FROM, WAKE, and SHIFTS (a file of his
-#   person's work shifts, see mind_live.py) or WORK_FROM / WORK_TO (a fixed weekday routine)
+#   person's work shifts, see mind_live.py) or WORK_FROM / WORK_TO (a fixed weekday routine), and REPLY_WORDS (how much
+#   one reply may be, default 160; give his brainstem room too, deploy_mac.sh MOST_WORDS)
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 MEMORY=${MEMORY:-2G}; CPUQUOTA=${CPUQUOTA:-200%}; ROOM_MB=${ROOM_MB:-64}
@@ -134,7 +135,7 @@ EOF
 
 if [ "$MIND" = live ]; then
   MIND_RUN="ExecStart=$PY /opt/littleguy/mind_live.py
-Environment=\"PERSON=${PERSON:-your person}\" WAY=${WAY:-felt} NOTE_EVERY=${NOTE_EVERY:-2} SLEEP_FROM=${SLEEP_FROM:-23} WAKE=${WAKE:-7} WORK_FROM=${WORK_FROM:-9} WORK_TO=${WORK_TO:-17.5}
+Environment=\"PERSON=${PERSON:-your person}\" WAY=${WAY:-felt} NOTE_EVERY=${NOTE_EVERY:-2} SLEEP_FROM=${SLEEP_FROM:-23} WAKE=${WAKE:-7} WORK_FROM=${WORK_FROM:-9} WORK_TO=${WORK_TO:-17.5} REPLY_WORDS=${REPLY_WORDS:-160}
 Restart=always"
 else
   MIND_RUN="ExecStart=$PY /opt/littleguy/mind_stub.py

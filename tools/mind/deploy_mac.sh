@@ -8,6 +8,7 @@
 #   LORA: what training added (an adapter .gguf from tools/train/choices.py), loaded on top of his brain; he then
 #   keeps feeling on the scale his untrained brain measured (calibration.json, kept, not measured again). Leave it out
 #   to go back to his untrained brain.
+#   MOST_WORDS: the most one answer may be (default 300; raise it with the room's REPLY_WORDS, install.sh)
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"; REPO="$(cd "$HERE/../.." && pwd)"
 MOODS=/Volumes/Music/LittleGuy/weights/experiments/moods
@@ -41,7 +42,7 @@ done
 echo "== his brain and dials"
 cmp -s "$BRAIN" "$DEST/brain/brain.gguf" 2>/dev/null || cp -f "$BRAIN" "$DEST/brain/brain.gguf"
 cp -f "$DIALS" "$DEST/brain/dials.npz"
-ENV="<key>LG_MIND</key><string>$DEST/bin/llama-lg-mind</string>"
+ENV="<key>LG_MIND</key><string>$DEST/bin/llama-lg-mind</string><key>LG_MOST_WORDS</key><string>${MOST_WORDS:-300}</string>"
 if [ -n "${LORA:-}" ]; then
   [ -f "$DEST/calibration.json" ] || { echo "no calibration.json yet: deploy once without LORA first" >&2; exit 1; }
   cp -f "$LORA" "$DEST/brain/adapter.gguf"
