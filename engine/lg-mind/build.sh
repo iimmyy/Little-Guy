@@ -7,9 +7,9 @@ set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 LCPP=${LCPP:-$HERE/../../.run/lcpp-src}; LCPP="$(cd "$LCPP" && pwd)"
 BUILD=${BUILD:-$LCPP/build-mac}
-cmake --build "$BUILD" --target llama llama-common -j 10 >/dev/null
+cmake --build "$BUILD" --target llama llama-common mtmd -j 10 >/dev/null
 mkdir -p "$HERE/build"
-${CXX:-c++} -std=c++17 -O2 -I"$LCPP/include" -I"$LCPP/ggml/include" -I"$LCPP/common" -I"$LCPP/vendor" \
-    "$HERE/lg-mind.cpp" -L"$BUILD/bin" -lllama-common -lllama -lggml -lggml-base -Wl,-rpath,"$BUILD/bin" \
+${CXX:-c++} -std=c++17 -O2 -I"$LCPP/include" -I"$LCPP/ggml/include" -I"$LCPP/common" -I"$LCPP/vendor" -I"$LCPP/tools/mtmd" \
+    "$HERE/lg-mind.cpp" -L"$BUILD/bin" -lllama-common -lmtmd -lllama -lggml -lggml-base -Wl,-rpath,"$BUILD/bin" \
     -o "$HERE/build/llama-lg-mind"
 echo "built $HERE/build/llama-lg-mind"

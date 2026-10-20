@@ -14,6 +14,8 @@ Brain(...) in code:
   choose(msgs, choices, v, a)     the odds of each choice as the whole answer (a decision's policy)
   read_feel(text)      how pleasant / keyed up a text reads inside him, in natural steps (rooms 24-36)
 env LG_LORA: an adapter (what training added) loaded on top of his frozen brain, for thinking only
+Brain(.., ears=<mmproj.gguf>): his ears (the audio tower that came with his brain); think_full(.., audio=[files]) then
+  hears each file where a message has the marker <__media__>
 """
 import json, os, re, signal, subprocess, sys, tempfile
 import numpy as np
@@ -59,13 +61,15 @@ def split_thought(raw):
 
 
 class Brain:
-    def __init__(self, gguf, dials_npz, ctx=4096, log=None):
+    def __init__(self, gguf, dials_npz, ctx=4096, log=None, ears=None):
         d = np.load(dials_npz)
         self.dial = {"valence": d["valence"].astype(np.float32), "arousal": d["arousal"].astype(np.float32)}
         self.render = chat_template(gguf)
         self.tmp = tempfile.mkdtemp(prefix="lg-brain-")
         lora = ["--lora", os.environ["LG_LORA"]] if os.environ.get("LG_LORA") else []   # what he learned (choices.py)
-        self.p = subprocess.Popen([LG_MIND, "-m", gguf, "-ngl", "99", "-c", str(ctx)] + lora, stdin=subprocess.PIPE,
+        self.ears = ears
+        mm = ["--mmproj", ears] if ears else []
+        self.p = subprocess.Popen([LG_MIND, "-m", gguf, "-ngl", "99", "-c", str(ctx)] + lora + mm, stdin=subprocess.PIPE,
                                   stdout=subprocess.PIPE, stderr=log or subprocess.DEVNULL, text=True)
         hello = json.loads(self.p.stdout.readline())
         self.n_embd, self.n_layer = hello["n_embd"], hello["n_layer"]
@@ -119,12 +123,13 @@ class Brain:
                           "temperature": temperature, "top_p": top_p, "seed": seed})["text"]
 
     def think_full(self, msgs, v=0.0, a=0.0, max_tokens=200, temperature=0.0, top_p=1.0, seed=0, thinking=False,
-                   think_tokens=0):
+                   think_tokens=0, audio=()):
         """think_tokens (with thinking): his private thought's own budget, closed for him when it runs out, so
         max_tokens is all his answer's. "hushed": he stopped mid-writing because he heard something (see hush)."""
         r = self._ask({"op": "think", "prompt": self.render(msgs, thinking), "cvec": self._cvec(v, a),
                        "max_tokens": max_tokens, "temperature": temperature, "top_p": top_p, "seed": seed,
-                       "special": thinking, "think_tokens": think_tokens if thinking else 0})
+                       "special": thinking, "think_tokens": think_tokens if thinking else 0,
+                       **({"audio": list(audio)} if audio else {})})
         thought, text = split_thought(r["text"]) if thinking else ("", r["text"])
         return {"text": text, "thought": thought, "n_tok": r["n_tok"], "n_thought": r.get("n_thought", 0),
                 "hushed": r.get("hushed", False)}

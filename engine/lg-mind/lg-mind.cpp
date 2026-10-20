@@ -12,6 +12,8 @@
 //       "choices": ["no<turn|>", ...] instead of writing: the log-probability of each choice as the whole answer
 //       (every token of it, teacher-forced, with the same drip) -> {"choice_logprobs": {choice: lp}}; a decision's
 //       real odds (the policy his choices are trained on later), not one sampled word.
+//       "audio": ["a.wav", ...] (needs --mmproj, his ears): he hears each file where the prompt has the ears' marker
+//       (<__media__>), in order; wav, mp3 or flac.
 //   {"op":"states", "prompt":<text>, "prefix":<text> (or "skip":K), "rooms":[...], "out":<path>, "mode":"mean"|"all"}
 //       -> {"n_tok": T}. Runs the text with no push and writes the outputs of the given rooms for the tokens after the
 //       prefix (K = the prefix's length in tokens) to <out>
@@ -19,11 +21,13 @@
 //       (how a note "reads" inside him, and the natural spread of each dial).
 // Thinking and reading use two contexts on the same weights: reading needs an eval callback, which makes the backend
 // stop after every captured node, and thinking must not pay for that.
-// usage: llama-lg-mind -m <model.gguf> [-c 4096] [-ngl 99] [--lora adapter.gguf]   (common args)
+// usage: llama-lg-mind -m <model.gguf> [-c 4096] [-ngl 99] [--lora adapter.gguf] [--mmproj ears.gguf]   (common args)
 #include "arg.h"
 #include "common.h"
 #include "llama.h"
 #include "ggml-backend.h"
+#include "mtmd.h"
+#include "mtmd-helper.h"
 
 #include <nlohmann/json.hpp>
 
@@ -92,7 +96,7 @@ static bool eval(llama_context * ctx, const std::vector<llama_token> & toks, int
 int main(int argc, char ** argv) {
     common_params params;
     params.n_ctx = 4096;
-    if (!common_params_parse(argc, argv, params, LLAMA_EXAMPLE_COMMON)) {
+    if (!common_params_parse(argc, argv, params, LLAMA_EXAMPLE_MTMD)) {
         return 1;
     }
     llama_backend_init();
@@ -133,11 +137,24 @@ int main(int argc, char ** argv) {
         llama_set_adapters_lora(think, loras.data(), loras.size(), lora_scales.data());
     }
     const int n_batch = (int) llama_n_batch(think);
+    // his ears (and eyes): the audio tower that came with his brain, in the thinking context only
+    mtmd_context * ears = nullptr;
+    if (!params.mmproj.path.empty()) {
+        mtmd_context_params mp = mtmd_context_params_default();
+        mp.use_gpu = params.mmproj_use_gpu;
+        mp.n_threads = params.cpuparams.n_threads;
+        mp.print_timings = false;
+        ears = mtmd_init_from_file(params.mmproj.path.c_str(), model, mp);
+        if (!ears || !mtmd_support_audio(ears)) {
+            std::fprintf(stderr, "lg-mind: could not load the ears %s\n", params.mmproj.path.c_str());
+            return 1;
+        }
+    }
     std::vector<float> cvec;
     std::string cvec_path;
 
     std::signal(SIGUSR1, on_hush);
-    std::cout << json{{"ready", true}, {"n_embd", n_embd}, {"n_layer", n_layer}}.dump() << std::endl;
+    std::cout << json{{"ready", true}, {"n_embd", n_embd}, {"n_layer", n_layer}, {"ears", ears != nullptr}}.dump() << std::endl;
     std::string line;
     while (std::getline(std::cin, line)) {
         json out;
@@ -162,8 +179,35 @@ int main(int argc, char ** argv) {
                     cvec_path = path;
                 }
                 llama_memory_clear(llama_get_memory(think), true);
-                const auto toks = tokenize(vocab, req.at("prompt").get<std::string>());
-                if (!eval(think, toks, n_batch)) { throw std::runtime_error("decode failed (prompt)"); }
+                llama_pos n_prompt = 0;
+                if (req.contains("audio") && !req["audio"].empty()) {
+                    if (!ears) { throw std::runtime_error("audio given but no ears loaded (--mmproj)"); }
+                    std::vector<mtmd_helper_bitmap_wrapper> sounds;
+                    std::vector<const mtmd_bitmap *> ptrs;
+                    auto free_sounds = [&] { for (auto & w : sounds) { mtmd_bitmap_free(w.bitmap); } };
+                    for (const auto & a : req["audio"]) {
+                        auto w = mtmd_helper_bitmap_init_from_file(ears, a.get<std::string>().c_str(), false);
+                        if (!w.bitmap) { free_sounds(); throw std::runtime_error("cannot read audio " + a.get<std::string>()); }
+                        sounds.push_back(w);
+                        ptrs.push_back(w.bitmap);
+                    }
+                    const std::string prompt = req.at("prompt").get<std::string>();
+                    mtmd_input_text txt{prompt.c_str(), /*add_special=*/false, /*parse_special=*/true};
+                    mtmd_input_chunks * chunks = mtmd_input_chunks_init();
+                    const int32_t tr = mtmd_tokenize(ears, chunks, &txt, ptrs.data(), ptrs.size());
+                    free_sounds();
+                    if (tr != 0) {
+                        mtmd_input_chunks_free(chunks);
+                        throw std::runtime_error("the prompt's markers don't match the sounds (" + std::to_string(tr) + ")");
+                    }
+                    const int32_t er = mtmd_helper_eval_chunks(ears, think, chunks, 0, 0, n_batch, true, &n_prompt);
+                    mtmd_input_chunks_free(chunks);
+                    if (er != 0) { throw std::runtime_error("decode failed (prompt with sound)"); }
+                } else {
+                    const auto toks = tokenize(vocab, req.at("prompt").get<std::string>());
+                    if (!eval(think, toks, n_batch)) { throw std::runtime_error("decode failed (prompt)"); }
+                    n_prompt = (llama_pos) toks.size();
+                }
                 if (req.contains("choices")) {
                     const int n_vocab = llama_vocab_n_tokens(vocab);
                     auto log_softmax_at = [&](const float * lg, llama_token t) {
@@ -187,7 +231,7 @@ int main(int argc, char ** argv) {
                                 }
                             }
                         }
-                        llama_memory_seq_rm(llama_get_memory(think), 0, (llama_pos) toks.size(), -1);
+                        llama_memory_seq_rm(llama_get_memory(think), 0, n_prompt, -1);
                         lp[c.get<std::string>()] = sum;
                     }
                     out = {{"choice_logprobs", lp}};
@@ -288,6 +332,7 @@ int main(int argc, char ** argv) {
         }
         std::cout << out.dump() << std::endl;
     }
+    if (ears) { mtmd_free(ears); }
     llama_free(reader);
     llama_free(think);
     llama_model_free(model);

@@ -9,6 +9,8 @@
 #   keeps feeling on the scale his untrained brain measured (calibration.json, kept, not measured again). Leave it out
 #   to go back to his untrained brain.
 #   MOST_WORDS: the most one answer may be (default 300; raise it with the room's REPLY_WORDS, install.sh)
+#   EARS: his ears (the audio tower that came with his brain, an mmproj .gguf); a /think message can then carry a
+#   sound. Leave it out and he has none (replies without sound are the same either way).
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"; REPO="$(cd "$HERE/../.." && pwd)"
 MOODS=/Volumes/Music/LittleGuy/weights/experiments/moods
@@ -50,6 +52,12 @@ if [ -n "${LORA:-}" ]; then
   ENV="$ENV<key>LG_CALIBRATION</key><string>$DEST/calibration.json</string>"
 else
   rm -f "$DEST/brain/adapter.gguf"
+fi
+if [ -n "${EARS:-}" ]; then
+  cmp -s "$EARS" "$DEST/brain/ears.gguf" 2>/dev/null || cp -f "$EARS" "$DEST/brain/ears.gguf"
+  ENV="$ENV<key>LG_EARS</key><string>$DEST/brain/ears.gguf</string>"
+else
+  rm -f "$DEST/brain/ears.gguf"
 fi
 PYTHONPATH="$LCPP/gguf-py" "$REPO/.run/mind-venv/bin/python" - "$DEST/brain/brain.gguf" <<'EOF'
 import sys
