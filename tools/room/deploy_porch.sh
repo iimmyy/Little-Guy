@@ -3,7 +3,8 @@
 # brainstem (tools/mind/deploy_mac.sh, run that first: the porch uses its small Python). Then point the menu bar app
 # at it: LITTLEGUY_BOARD_URL=http://127.0.0.1:8080 in littleguy.env and rerun tools/menubar/build.sh.
 #   DEST (default ~/.littleguy), PORT (default 8080), MACHINE (default lgroom), VOICE (a `say -v` voice, default the
-#   Mac's own)
+#   Mac's own), ELEVEN_VOICE (his ElevenLabs voice, default Archer - Conversational, Immy's pick; needs the key in
+#   ~/.littleguy/elevenlabs.key from a paid account: free accounts can't use library voices through the API)
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 DEST=${DEST:-$HOME/.littleguy}; PORT=${PORT:-8080}
@@ -21,6 +22,7 @@ cat > "$PLIST" <<EOF
   </array>
   <key>EnvironmentVariables</key><dict>
     <key>MACHINE</key><string>${MACHINE:-lgroom}</string><key>VOICE</key><string>${VOICE:-}</string>
+    <key>ELEVEN_VOICE</key><string>${ELEVEN_VOICE:-Fahco4VZzobUeiPqni1S}</string>
     <key>ORB</key><string>$(command -v orb)</string>
   </dict>
   <key>WorkingDirectory</key><string>$DEST</string>

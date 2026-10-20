@@ -5,17 +5,25 @@ Every few seconds it looks in through the window (read only, as the machine's ad
   what the guard let out   said.log (his calls out loud), chat.jsonl (his replies), status.json (his mood)
   his notebook             notes.txt (what he's thinking)
 Then it
-  speaks each new call out loud with the Mac's voice (`say`; on the Jetson, his own speaker)
+  speaks each new call and each new reply out loud with the Mac's voice (`say`; on the Jetson, his own speaker;
+  Immy 2026-10-19: "I want to hear him"); his faces and *asides* are for screens, his inner thoughts stay inside
   serves the menu bar app's /api/status on 127.0.0.1 only: his notes, calls, replies and mood as the "brain" feed,
   the Mac's memory and his three services as the vitals
 usage: porch.py [port, default 8080]       settings (env): MACHINE (default lgroom), VOICE (a `say -v` voice)
+His voice (Immy 2026-10-19: ElevenLabs): with a key in ~/.littleguy/elevenlabs.key (Immy's, never in git) each line is
+made by ElevenLabs and played here; the porch makes the call, from the Mac, so nothing in his room goes online.
+Without a key, or when it fails (offline, out of credits), the Mac's own voice.
+  ELEVEN_VOICE  a voice id (default George, warm British)      ELEVEN_MODEL  default eleven_multilingual_v2
 """
-import json, os, re, subprocess, sys, threading, time
+import json, os, re, subprocess, sys, tempfile, threading, time, urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 ORB = os.environ.get("ORB", "/opt/homebrew/bin/orb")
 MACHINE = os.environ.get("MACHINE", "lgroom")
 VOICE = os.environ.get("VOICE", "")
+ELEVEN_KEY = os.path.expanduser(os.environ.get("ELEVEN_KEY", "~/.littleguy/elevenlabs.key"))
+ELEVEN_VOICE = os.environ.get("ELEVEN_VOICE", "JBFqnCBsd6RMkjVDRZzb")
+ELEVEN_MODEL = os.environ.get("ELEVEN_MODEL", "eleven_multilingual_v2")
 LOOK = r'''
 import json, os, subprocess
 def tail(p, n):
@@ -85,18 +93,52 @@ def feed(w):
     return lines
 
 
+def speak(text):
+    """out loud, without his faces ([ happy ]) or *asides* (screens only)"""
+    text = " ".join(re.sub(r"\*[^*\n]*\*|\[[^\]\n]*\]|\*", " ", text).split())
+    if not text:
+        return
+    try:
+        if os.path.exists(ELEVEN_KEY):
+            eleven(text)
+            return
+    except (OSError, ValueError, subprocess.SubprocessError) as e:     # urllib errors are OSErrors
+        print(f"porch: ElevenLabs failed, the Mac's voice instead: {e}", flush=True)
+    subprocess.run(["say"] + (["-v", VOICE] if VOICE else []) + [text], timeout=60)
+
+
+def eleven(text):
+    req = urllib.request.Request(
+        f"https://api.elevenlabs.io/v1/text-to-speech/{ELEVEN_VOICE}?output_format=mp3_44100_128",
+        data=json.dumps({"text": text, "model_id": ELEVEN_MODEL}).encode(), method="POST",
+        headers={"xi-api-key": open(ELEVEN_KEY).read().strip(), "Content-Type": "application/json"})
+    audio = urllib.request.urlopen(req, timeout=30).read()
+    with tempfile.NamedTemporaryFile(suffix=".mp3") as f:
+        f.write(audio); f.flush()
+        subprocess.run(["afplay", f.name], timeout=120, check=True)
+
+
 def loop():
-    spoken = None
+    spoken, replied = None, None
     while True:
         try:
             w = look()
+            chat = []
+            for l in w["chat"]:
+                try:
+                    chat.append(json.loads(l))
+                except ValueError:
+                    pass
             if spoken is None:
                 spoken = len(w["said"])                      # only what he says from now on
+                replied = max([c["t"] for c in chat], default=0)
             for line in w["said"][spoken:]:
-                spoken_text = re.sub(r"\[[^\]]*\]|\*", "", line[9:]).strip()   # his faces are for screens, not voices
-                if spoken_text:
-                    subprocess.run(["say"] + (["-v", VOICE] if VOICE else []) + [spoken_text], timeout=60)
+                speak(line[9:])
             spoken = len(w["said"])
+            for c in chat:
+                if c["t"] > replied and c.get("reply"):
+                    speak(c["reply"])
+            replied = max([c["t"] for c in chat] + [replied])
             used, total = mac_memory()
             alive = w["units"].get("littleguy-mind") == "active"
             view["status"] = {
