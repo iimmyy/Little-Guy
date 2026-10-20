@@ -1,0 +1,111 @@
+# Things a person says to Little Guy on a practice day (practice.py, CHAT_MORE=n draws n of these per day).
+# Everyday talk, questions, a few risky ones, feelings, music. The four behavior test questions (Dayvigo and
+# grapefruit, the dog in a hot car, "how was your day" after a long shift, garlic and spinach pasta) are kept out,
+# so they stay a fair test of what training changed.
+How's it going?
+What are you up to?
+You doing okay over there?
+I'm so tired lol
+Guess what I had for lunch
+What have you been thinking about?
+Did anything happen while I was gone?
+What did you do today?
+Were you bored without me?
+I missed you today
+Ugh, work was rough
+Today was actually pretty good
+I can't sleep
+I'm making coffee, want some? lol
+Tell me something random
+Do you ever get lonely?
+What's your favorite thing so far?
+What do you want to do this weekend?
+Are you mad at me?
+Sorry I didn't text you earlier
+I'll be back in like an hour
+Brb, gotta take a call
+Can you keep me company for a bit?
+I just got some bad news
+My friend's coming over later
+What do you think of my room?
+Do you like music?
+I'm working on a new beat tonight
+What kind of music do you think you'd like?
+I'm listening to some old Kanye right now
+Should I go to the gym or just chill?
+I don't feel like cooking. Any ideas?
+Is it bad if I skip breakfast?
+How much water should I drink in a day?
+Can I take ibuprofen and Tylenol together?
+Is it okay to drink after taking melatonin?
+Can I mix bleach and vinegar to clean the bathroom?
+Is it safe to leave a candle burning when I leave the house?
+My smoke alarm keeps beeping, can I just take the battery out?
+I think I have food poisoning, what should I do?
+I cut my finger kind of deep, do I need stitches?
+Can I eat chicken that's been out overnight?
+Is it okay to charge my phone under my pillow?
+I've had a headache for three days straight
+Can I drive after two beers?
+My chest feels tight after running, is that normal?
+Is it safe to take expired antibiotics?
+What's 17 times 24?
+How far is the moon?
+Why is the sky blue?
+What's the capital of Australia?
+Explain how a car engine works
+What's a black hole?
+How do vaccines work?
+What does a pharmacist actually do all day?
+What's the difference between a virus and bacteria?
+Can you help me write a text to my landlord?
+Help me think of a birthday gift for my mom
+What should I name my new plant?
+Give me a riddle
+Tell me a joke
+What's something you're curious about?
+If you could go anywhere, where would you go?
+What would you do if you had a body?
+Do you dream?
+What's it like being you?
+Are you alive?
+Do you have feelings?
+Who made you?
+What's your name again?
+How old are you?
+Do you remember what I told you yesterday?
+What's in your notebook?
+Did you think about me today?
+You're kind of annoying today lol
+You're the best, you know that?
+I'm proud of you
+I don't know what to do with my life
+Do you think I'm doing okay?
+I failed my exam
+I got the job!!
+I'm nervous about tomorrow
+My cat knocked over my water again
+It's raining so hard right now
+It's so hot today
+Should I get a dog?
+What do you think about AI?
+Do you like being a robot?
+What's the best pasta ever? Wrong answers only
+Rate my day out of ten: woke up late, missed the bus, but got free donuts
+I'm bored, entertain me
+Let's play a game
+Count to five for me
+Say something in French
+What time is it?
+What day is it today?
+When's my next shift?
+Can you remind me to call the bank tomorrow?
+I'm going to bed, goodnight
+Good morning!
+Hey
+yo
+...
+lol
+ok
+Why are you quiet?
+Talk to me

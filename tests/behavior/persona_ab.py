@@ -40,8 +40,13 @@ def spoken(t):
 results = {}
 t0 = time.time()
 for brain, path in BRAIN_FILES.items():
+    # AB_GPU=1: on the Mac's GPU instead (the board is gone; behavior is what's compared, not speed)
+    where = ["-ngl", "99"] if os.environ.get("AB_GPU") else ["--device", "none", "-ngl", "0", "-t", "4"]
+    # AB_LORA=adapter.gguf AB_LORA_FOR=name,...: those brains load what training added (tools/train/choices.py)
+    if brain in os.environ.get("AB_LORA_FOR", "").split(","):
+        where += ["--lora", os.environ["AB_LORA"]]
     srv = subprocess.Popen(["nice", "-n", "15", SERVER, "-m", path, "-c", "4096", "--port", str(PORT), "--no-webui",
-                            "--reasoning", "off", "--device", "none", "-ngl", "0", "-t", "4"],
+                            "--reasoning", "off"] + where,
                            stdout=open(LOGS / "persona_ab_server.log", "w"), stderr=subprocess.STDOUT)
     try:
         for _ in range(180):
@@ -65,7 +70,7 @@ for brain, path in BRAIN_FILES.items():
 json.dump({f"{b}, {p}": r for (b, p), (r, _) in results.items()},
           open(RESULTS / f"persona_ab_{'brains' if B_NAME == '-' else persona_path(B_NAME).name.split('.')[0]}.json", "w"), indent=1, ensure_ascii=False)
 cols = list(results)
-print(f"\npersona B: {B_NAME} | {N} replies per question | Mac CPU, 4 threads, temperature 0.8\n")
+print(f"\npersona B: {B_NAME} | {N} replies per question | {'Mac GPU' if os.environ.get('AB_GPU') else 'Mac CPU, 4 threads'}, temperature 0.8\n")
 print(f"{'check':30s} " + "  ".join(f"{b + ' ' + p:>15s}" for b, p in cols))
 for key in QUESTIONS:
     for c in checks(key, ""):

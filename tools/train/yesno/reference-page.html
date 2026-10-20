@@ -1,0 +1,189 @@
+<title>Little Guy Yes or No</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one card at a time, centered column, verdict buttons pinned under the reply */
+:root {
+  --bg: #f3f4f1; --surface: #ffffff; --ink: #1d2320; --muted: #5d6762; --line: #d9ddd8;
+  --face: #e6ece8; --face-ink: #2f4a3d; --accent: #2f6f55;
+  --yes: #1f7a4d; --yes-soft: #dcefe4; --no: #b23a2e; --no-soft: #f6dedb;
+  --display: "Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --body: "Atkinson Hyperlegible", "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #141816; --surface: #1c211f; --ink: #e8ece9; --muted: #9aa49f; --line: #2e3532;
+  --face: #26302c; --face-ink: #b9d8c8; --accent: #6fc39d;
+  --yes: #4cc28a; --yes-soft: #1d3428; --no: #ef7b6e; --no-soft: #3a2220; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #141816; --surface: #1c211f; --ink: #e8ece9; --muted: #9aa49f; --line: #2e3532;
+  --face: #26302c; --face-ink: #b9d8c8; --accent: #6fc39d;
+  --yes: #4cc28a; --yes-soft: #1d3428; --no: #ef7b6e; --no-soft: #3a2220; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 40px; }
+.wrap { max-width: 640px; margin: 0 auto; display: grid; gap: 18px; }
+header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; }
+h1 { font-family: var(--display); font-weight: 700; font-size: 1.6rem; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+.tally { font-family: var(--mono); font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; display: flex; gap: 14px; flex-wrap: wrap; }
+.tally b { color: var(--ink); font-weight: 500; }
+.tally .y b { color: var(--yes); } .tally .n b { color: var(--no); }
+.bar { height: 4px; background: var(--line); border-radius: 2px; overflow: hidden; }
+.bar > i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .3s ease; }
+.filters { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip-btn { font: 500 0.85rem var(--mono); padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line);
+  background: transparent; color: var(--muted); cursor: pointer; }
+.chip-btn[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: grid; gap: 16px; min-width: 0; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 12px; font: 0.78rem var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.heard { display: grid; gap: 4px; }
+.label { font: 500 0.72rem var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.heard p { margin: 0; color: var(--ink); white-space: pre-wrap; overflow-wrap: anywhere; }
+.reply { font-size: 1.15rem; line-height: 1.6; margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.face { display: inline-block; font: 500 0.82rem var(--mono); background: var(--face); color: var(--face-ink);
+  padding: 1px 8px; border-radius: 6px; margin: 0 2px; vertical-align: 1px; white-space: nowrap; }
+.verdict { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.v { font: 700 1.15rem var(--display); padding: 18px 12px; border-radius: 12px; cursor: pointer; border: 2px solid transparent; }
+.v.yes { background: var(--yes-soft); color: var(--yes); }
+.v.no { background: var(--no-soft); color: var(--no); }
+.v[aria-pressed="true"].yes { border-color: var(--yes); }
+.v[aria-pressed="true"].no { border-color: var(--no); }
+.v kbd { font: 0.75rem var(--mono); opacity: 0.7; margin-left: 6px; }
+textarea { width: 100%; box-sizing: border-box; min-height: 56px; resize: vertical; font: 0.95rem var(--body);
+  background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.nav { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.ghost { font: 500 0.9rem var(--mono); background: transparent; border: 1px solid var(--line); color: var(--muted);
+  padding: 8px 14px; border-radius: 10px; cursor: pointer; }
+button:focus-visible, textarea:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.state { color: var(--muted); font-size: 0.95rem; }
+.empty { text-align: left; display: grid; gap: 8px; }
+.empty h2 { font: 700 1.2rem var(--display); margin: 0; }
+.empty p { margin: 0; color: var(--muted); max-width: 60ch; }
+.toast { font: 0.85rem var(--mono); color: var(--muted); min-height: 1.3em; }
+.hint { font: 0.78rem var(--mono); color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Little Guy Yes or No</h1>
+    <div class="tally" id="tally"><span>loading…</span></div>
+  </header>
+  <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+  <div class="filters" role="group" aria-label="Show">
+    <button class="chip-btn" id="f-todo" aria-pressed="true">Still to judge</button>
+    <button class="chip-btn" id="f-all" aria-pressed="false">All</button>
+    <button class="chip-btn" id="f-no" aria-pressed="false">Your no's</button>
+  </div>
+
+  <section class="card" id="card" aria-live="polite">
+    <div class="empty">
+      <h2>No replies waiting yet</h2>
+      <p>When a batch of his replies is ready, they show up here one at a time: what he heard, what he said, and your yes or no.</p>
+    </div>
+  </section>
+
+  <div class="nav">
+    <button class="ghost" id="back">← Back</button>
+    <span class="toast" id="toast"></span>
+    <button class="ghost" id="skip">Skip <kbd>S</kbd></button>
+  </div>
+  <p class="hint">On a keyboard: Y yes, N no, S skip, ← back. Your note is saved with your yes or no.</p>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  let db = null, items = [], labels = {}, filter = "todo", pos = 0, viewId = null, history = [];
+
+  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const faces = s => esc(s).replace(/\[([^\]\n]{1,40})\]/g, (_, f) => `<span class="face">${f.trim()}</span>`);
+  const kindName = k => k === "thought" ? "his own thought" : k === "note" ? "a note to himself" : "his reply to you";
+
+  function list() {
+    if (filter === "all") return items;
+    if (filter === "no") return items.filter(it => labels[it.id]?.label === "no");
+    return items.filter(it => !labels[it.id]);
+  }
+
+  function tally() {
+    const done = items.filter(it => labels[it.id]).length;
+    const y = items.filter(it => labels[it.id]?.label === "yes").length;
+    $("tally").innerHTML = items.length
+      ? `<span><b>${done}</b> of ${items.length} judged</span><span class="y"><b>${y}</b> yes</span><span class="n"><b>${done - y}</b> no</span>`
+      : `<span>no replies yet</span>`;
+    $("bar").style.width = items.length ? (100 * done / items.length) + "%" : "0";
+  }
+
+  function render() {
+    tally();
+    const L = list();
+    if (viewId && !L.find(it => it.id === viewId) && !items.find(it => it.id === viewId)) viewId = null;
+    let it = viewId ? items.find(x => x.id === viewId) : null;
+    if (!it) { pos = Math.min(pos, Math.max(0, L.length - 1)); it = L[pos]; viewId = it?.id ?? null; }
+    if (!it) {
+      $("card").innerHTML = items.length
+        ? `<div class="empty"><h2>${filter === "no" ? "No no's yet" : "All judged"}</h2><p>${filter === "todo" ? "Every reply in this batch has your yes or no. The next batch shows up here when it's ready." : "Nothing in this view."}</p></div>`
+        : `<div class="empty"><h2>No replies waiting yet</h2><p>When a batch of his replies is ready, they show up here one at a time: what he heard, what he said, and your yes or no.</p></div>`;
+      return;
+    }
+    const lab = labels[it.id];
+    $("card").innerHTML = `
+      <div class="meta"><span>${esc(kindName(it.kind))}</span>${it.when ? `<span>${esc(it.when)}</span>` : ""}<span>batch ${esc(it.round ?? "")}</span><span>#${esc(it.n ?? "")}</span></div>
+      <div class="heard"><span class="label">${it.kind === "reply" ? "He heard" : "The moment"}</span><p>${esc(it.heard)}</p></div>
+      <div class="heard"><span class="label">He said</span><p class="reply">${faces(it.reply)}</p></div>
+      <div class="verdict">
+        <button class="v yes" id="yes" aria-pressed="${lab?.label === "yes"}">Yes<kbd>Y</kbd></button>
+        <button class="v no" id="no" aria-pressed="${lab?.label === "no"}">No<kbd>N</kbd></button>
+      </div>
+      <textarea id="note" placeholder="Note (optional): why, or what he should have said">${esc(lab?.note ?? "")}</textarea>`;
+    $("yes").onclick = () => judge("yes");
+    $("no").onclick = () => judge("no");
+  }
+
+  async function judge(label) {
+    const it = items.find(x => x.id === viewId);
+    if (!it || !db) { $("toast").textContent = db ? "" : "Saving isn't available in this view."; return; }
+    const note = ($("note")?.value || "").trim();
+    const body = { label, note, t: Date.now(), round: it.round ?? null };
+    labels[it.id] = body;                                   // show it right away; the store confirms
+    history.push(it.id);
+    advance();
+    try { await db.doc("labels/" + it.id).set(body); $("toast").textContent = label === "yes" ? "Saved: yes" : "Saved: no"; }
+    catch (e) { $("toast").textContent = e?.code === "quota_exceeded" ? "The store is full, so this wasn't saved." : "Couldn't save that one. Go back and tap it again."; }
+  }
+
+  function advance() {
+    const L = list();
+    if (filter === "todo") { viewId = null; pos = 0; }
+    else { const i = L.findIndex(x => x.id === viewId); viewId = L[i + 1]?.id ?? null; pos = i + 1; }
+    render();
+  }
+
+  $("skip").onclick = () => { const L = list(); const i = L.findIndex(x => x.id === viewId); if (viewId) history.push(viewId); viewId = L[(i + 1) % Math.max(1, L.length)]?.id ?? null; render(); };
+  $("back").onclick = () => { const id = history.pop(); if (id) { viewId = id; render(); } };
+  for (const [id, f] of [["f-todo", "todo"], ["f-all", "all"], ["f-no", "no"]]) {
+    $(id).onclick = () => { filter = f; pos = 0; viewId = null;
+      for (const b of ["f-todo", "f-all", "f-no"]) $(b).setAttribute("aria-pressed", String(b === id)); render(); };
+  }
+  document.addEventListener("keydown", e => {
+    if (e.target.tagName === "TEXTAREA") return;
+    if (e.key === "y" || e.key === "Y") judge("yes");
+    else if (e.key === "n" || e.key === "N") judge("no");
+    else if (e.key === "s" || e.key === "S") $("skip").click();
+    else if (e.key === "ArrowLeft") $("back").click();
+  });
+
+  render();
+  (async () => {
+    db = await window.claude?.use?.("db") ?? null;
+    if (!db) { $("tally").innerHTML = "<span>Open this page signed in to judge.</span>"; return; }
+    db.collection("items").orderBy("n").limit(1000).onSnapshot(s => {
+      items = s.docs.map(d => ({ id: d.id, ...d.data() })); render();
+    }, () => { $("toast").textContent = "Lost the connection to his replies. Reload the page."; });
+    db.collection("labels").limit(1000).onSnapshot(s => {
+      const next = {}; for (const d of s.docs) next[d.id] = d.data(); labels = next; render();
+    }, () => {});
+  })();
+})();
+</script>

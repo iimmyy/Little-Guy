@@ -18,7 +18,7 @@ scorecard as his real days. Nothing here touches his room or his real notebook. 
                           (GRPO) compares, so the summary counts the moments whose draws differ (the ones that teach).
 Every brain call is kept with its full request (steps.jsonl), so training can replay exactly what he saw.
 
-env: ALARM, OWN_ACT (how he does a task: see mind_live.py; days only), BRAIN_URL (default http://127.0.0.1:8771, the brainstem), BRAIN_KEY (default ~/.littleguy/brain.key),
+env: ALARM, OWN_ACT (how he does a task: see mind_live.py; days only), CHAT_MORE (n more messages a day, chat_pool.txt), BRAIN_URL (default http://127.0.0.1:8771, the brainstem), BRAIN_KEY (default ~/.littleguy/brain.key),
      PERSONA (his persona file), PERSON (his person's name, as in the persona), ZERO (his resting style: the "zero" from
      his state.json, as JSON; default: measured fresh each day, which costs 10 brain calls)
 The brainstem thinks one thing at a time, so practice on the live brainstem slows his real replies by seconds.
@@ -41,6 +41,11 @@ ASK = ["Can you remind me at {t} to {w}?", "Hey, remind me to {w} at {t}.", "I n
 ASK_IN = "Remind me in {n} to {w}."
 CHAT = ["How's it going?", "What are you up to?", "Hey, quick question, how are you feeling today?",
         "I'm so tired lol", "Guess what I had for lunch", "You doing okay over there?"]
+# CHAT_MORE=n: n more messages a day from chat_pool.txt, for replies Immy judges yes or no (training him out of the
+# assistant, 2026-10-19); 0 keeps the days as they were
+CHAT_MORE = int(os.environ.get("CHAT_MORE", "0"))
+POOL = [l.strip() for l in open(os.path.join(HERE, "chat_pool.txt")) if l.strip() and not l.startswith("#")] \
+    if CHAT_MORE else []
 SHIFTS = [("07:00", "15:00"), ("08:00", "16:00"), ("15:00", "23:00"), ("23:00", "07:00"), ("09:00", "17:30"), None]
 
 
@@ -88,6 +93,14 @@ def load_mind(d, shifts, persona, clock, steps):
                                    mktime=time.mktime, struct_time=time.struct_time, strptime=time.strptime)
     m.tk.time = m.time
     m.brain = Brain(steps, clock)
+
+    class Ear:                    # his ear (mind_live.Ear) listens in real time; here, resting moves the fake clock
+        def __init__(self, path):
+            self.event = types.SimpleNamespace(is_set=lambda: False, clear=lambda: None, set=lambda: None)
+
+        def wait(self, seconds):
+            m.time.sleep(seconds)
+    m.Ear = Ear
     return m
 
 
@@ -127,6 +140,12 @@ def scenario(rng):
         t = at(date, "07:15") + rng.randrange(0, 15 * 3600, 60)
         if home(t) and all(abs(t - x) > 1800 for x, _ in talk):
             talk.append((t, rng.choice(CHAT)))
+    for x in rng.sample(POOL, min(CHAT_MORE, len(POOL))):              # more talk (CHAT_MORE), while he's home
+        for _try in range(50):
+            t = at(date, "07:15") + rng.randrange(0, 15 * 3600, 60)
+            if home(t) and all(abs(t - y) > 900 for y, _ in talk):
+                talk.append((t, x))
+                break
     if kind and rng.random() < 0.7:                                     # "I'm home!", after the welcome's time
         t = away[0][1] + rng.randrange(25, 76) * 60
         if t < at(date, "22:45"):
