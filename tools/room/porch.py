@@ -14,6 +14,7 @@ His voice (Immy 2026-10-19: ElevenLabs): with a key in ~/.littleguy/elevenlabs.k
 made by ElevenLabs and played here; the porch makes the call, from the Mac, so nothing in his room goes online.
 Without a key, or when it fails (offline, out of credits), the Mac's own voice.
   ELEVEN_VOICE  a voice id (default George, warm British)      ELEVEN_MODEL  default eleven_multilingual_v2
+  QUIET_FROM, QUIET_TO  hours (default 21 and 7) when nothing is said out loud; it still shows in the menu bar
 """
 import json, os, re, subprocess, sys, tempfile, threading, time, urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -24,6 +25,17 @@ VOICE = os.environ.get("VOICE", "")
 ELEVEN_KEY = os.path.expanduser(os.environ.get("ELEVEN_KEY", "~/.littleguy/elevenlabs.key"))
 ELEVEN_VOICE = os.environ.get("ELEVEN_VOICE", "JBFqnCBsd6RMkjVDRZzb")
 ELEVEN_MODEL = os.environ.get("ELEVEN_MODEL", "eleven_multilingual_v2")
+# no voice at night (Immy 2026-10-19: "if it's past 9 p.m., he shouldn't be able to speak on my Mac... I don't want
+# him waking me up in the middle of the night"): from QUIET_FROM to QUIET_TO, Mac time
+QUIET_FROM, QUIET_TO = float(os.environ.get("QUIET_FROM", "21")), float(os.environ.get("QUIET_TO", "7"))
+
+
+def quiet(now=None):
+    t = time.localtime(now)
+    h = t.tm_hour + t.tm_min / 60
+    return h >= QUIET_FROM or h < QUIET_TO if QUIET_FROM > QUIET_TO else QUIET_FROM <= h < QUIET_TO
+
+
 LOOK = r'''
 import json, os, subprocess
 def tail(p, n):
@@ -97,6 +109,9 @@ def speak(text):
     """out loud, without his faces ([ happy ]) or *asides* (screens only)"""
     text = " ".join(re.sub(r"\*[^*\n]*\*|\[[^\]\n]*\]|\*", " ", text).split())
     if not text:
+        return
+    if quiet():                                 # shown in the menu bar, never said, and not saved up for the morning
+        print(f"porch: quiet hours, not spoken: {text[:80]}", flush=True)
         return
     try:
         if os.path.exists(ELEVEN_KEY):
