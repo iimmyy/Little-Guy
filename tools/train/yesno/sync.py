@@ -4,18 +4,32 @@
 usage: sync.py status
        sync.py push items-<batch>.jsonl
        sync.py pull OUT_DIR        (saves every pull as labels-<time>.jsonl, and the latest answer per item in labels.jsonl)
-env: YESNO_KEY (default ~/.littleguy/yesno.key), YESNO_URL (default https://bymartins.ca/yesno/api)
+key: read from the macOS Keychain each time (service ca.bymartins.yesno-api, your account), never printed or saved
+env: YESNO_URL (default https://bymartins.ca/yesno/api), YESNO_KEY (a key file instead, for a test server)
 """
-import json, os, sys, time, urllib.error, urllib.request
+import getpass, json, os, subprocess, sys, time, urllib.error, urllib.request
 
-KEY = os.path.expanduser(os.environ.get("YESNO_KEY", "~/.littleguy/yesno.key"))
 URL = os.environ.get("YESNO_URL", "https://bymartins.ca/yesno/api")
+
+
+def secret():
+    """the API key, held in memory only: from the macOS Keychain (where the site's key lives), or from a file if
+    YESNO_KEY names one (a test server)"""
+    if os.environ.get("YESNO_KEY"):
+        return open(os.path.expanduser(os.environ["YESNO_KEY"])).read().strip()
+    r = subprocess.run(["security", "find-generic-password", "-s", os.environ.get("YESNO_KEYCHAIN", "ca.bymartins.yesno-api"),
+                        "-a", os.environ.get("YESNO_ACCOUNT", getpass.getuser()), "-w"], capture_output=True, text=True)
+    if r.returncode or not r.stdout.strip():
+        raise SystemExit("no yes/no key in the Keychain (service ca.bymartins.yesno-api)")
+    return r.stdout.strip()
+
+
 PAGE_FIELDS = ("id", "batch", "n", "kind", "when", "heard", "reply", "cut")   # where it came from stays on the Mac
 
 
 def call(method, path, body=None, ctype=None):
     req = urllib.request.Request(URL + path, body, method=method, headers={
-        "Authorization": "Bearer " + open(KEY).read().strip(), "User-Agent": "LittleGuy-YesNo/1.0",
+        "Authorization": "Bearer " + secret(), "User-Agent": "LittleGuy-YesNo/1.0",
         **({"Content-Type": ctype} if ctype else {})})
     try:
         with urllib.request.urlopen(req, timeout=60) as r:
