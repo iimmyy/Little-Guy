@@ -117,10 +117,16 @@ struct Caret: Shape {
     @Published var view: String? = nil
     @Published var claudeLines: [String] = []
     @Published var logAtBottom = true  // the console follows new lines only while scrolled to the bottom
+    @Published var popAtBottom = true  // the same for the popped-out window
+    @Published var panelJump = 0       // bumped by "Jump to latest"
+    @Published var popJump = 0
     @Published var actionNote = ""     // result of the last button press
+    @Published var chatNote = ""       // what happened to the last message you sent him
+    private var replyBefore: String?   // his last reply when you sent it; a different one means he answered
     @Published var atLogin = SMAppService.mainApp.status == .enabled
 
     let bubble = Bubble()
+    let popOut = PopOut()
     // what the bubble has already told you about
     private var started = false
     private var lastDone = ""
@@ -177,6 +183,7 @@ struct Caret: Shape {
                 if v >= 0.05 { next[name] = v }
             }
             smoothed = next
+            if let before = replyBefore, lastReply != before { chatNote = ""; replyBefore = nil }
         } catch {
             failures += 1
             if failures >= 5 { online = false }
@@ -249,6 +256,39 @@ struct Caret: Shape {
         return a < 5 ? "Idling." : a < 40 ? "Doing a little." : "Working hard."
     }
 
+    var lastReply: String { status?.feed.last { $0.contains("] replied") } ?? "" }
+
+    /// Talk to him: the message goes into his inbox through the guard, exactly like tools/room/talk.sh, from this Mac
+    /// only (never through the porch, which only looks in). His reply shows up in his brain feed and is spoken.
+    func tell(_ text: String) {
+        chatNote = "Sending…"
+        let before = lastReply
+        Task.detached {
+            let p = Process()
+            p.executableURL = URL(fileURLWithPath: orbPath)
+            // arguments go through as they are (no shell), so quotes and several lines arrive intact
+            p.arguments = ["-m", roomMachine, "-u", "root", "sudo", "-u", "littleguy-guard", "python3",
+                           "/opt/littleguy/guard.py", "tell", text]
+            let out = Pipe()
+            p.standardOutput = out
+            p.standardError = out
+            let ran = (try? p.run()) != nil
+            if ran { p.waitUntilExit() }
+            let code = ran ? p.terminationStatus : -1
+            let err = String(decoding: out.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            await MainActor.run {
+                if code == 0 {
+                    let first = text.split(separator: "\n").first.map(String.init) ?? text
+                    self.chatNote = "Sent: \u{201C}\(first.prefix(60))\(text.count > first.count || first.count > 60 ? "…" : "")\u{201D} He's reading it."
+                    self.replyBefore = before
+                } else {
+                    self.chatNote = "Couldn't reach his room (\(code)). \(err.prefix(120))"
+                }
+            }
+        }
+    }
+
     // MARK: buttons: commands go over SSH from this Mac only (key auth), never through the status server
 
     func confirmAndRun(_ title: String, _ explain: String, _ command: String) {
@@ -302,7 +342,6 @@ extension Font {
 
 struct Console: View {
     @ObservedObject var board: Board
-    let mono = Font.system(size: 10, design: .monospaced)
 
     var body: some View {
         // Same layout family as Headphone EQ: "by martins.", rule, big serif title, "State." line, muted details.
@@ -333,6 +372,7 @@ struct Console: View {
             case "brain":  log(board.status?.feed ?? [])
             default:       log(board.status?.journal ?? [])
             }
+            if board.shownView == "brain" { TalkRow(board: board, size: 14, height: 44) }
             rule
             actions
             Toggle("Start at login", isOn: Binding(get: { board.atLogin }, set: { board.setAtLogin($0) }))
@@ -397,6 +437,14 @@ struct Console: View {
             tab("Board log", "board")
             tab("What Claude sees", "claude")
             Spacer()
+            // his brain and the chat in a window of its own, which you can resize (this panel can't be)
+            Button {
+                board.popOut.open(board)
+            } label: {
+                Text("Pop out \u{2197}").font(.serif(15, italic: true)).foregroundColor(.inkBlue)
+            }
+            .buttonStyle(.plain)
+            .help("Open his brain and the chat in a window you can resize")
         }
     }
 
@@ -435,53 +483,291 @@ struct Console: View {
         }
     }
 
-    /// The console: lines under a rule like EQ's sections. It follows new lines only while you're at the bottom;
-    /// scroll up and it stays put, with a "Jump to latest" button to get back.
+    /// The console: lines under a rule like EQ's sections, one block of text so you can select across lines.
+    /// His brain wraps, so his sentences fit; the logs scroll sideways like a terminal, so tables stay aligned.
     func log(_ lines: [String]) -> some View {
-        ScrollViewReader { proxy in
-            ScrollView([.vertical, .horizontal]) {
-                // one line per line, like a terminal: long lines scroll sideways instead of wrapping, so tables stay aligned
-                VStack(alignment: .leading, spacing: 2) {
-                    ForEach(Array(lines.enumerated()), id: \.offset) { i, line in
-                        Text(line.replacingOccurrences(of: " radxa-dragon-q6a ", with: " "))
-                            .font(mono).foregroundColor(line.hasPrefix("✓ done") ? .inkBlue : .muted).textSelection(.enabled)
-                            .lineLimit(1).fixedSize(horizontal: true, vertical: false).id(i)
-                    }
-                }.frame(minWidth: 560, alignment: .leading)
-            }
-            .frame(height: 220).scrollIndicators(.never)
-            .onScrollGeometryChange(for: Bool.self) { g in
-                g.contentOffset.y + g.containerSize.height >= g.contentSize.height - 12
-            } action: { _, atBottom in
-                board.logAtBottom = atBottom
-            }
-            // the buffers are a fixed size, so follow the newest line's text rather than the count
-            .onChange(of: lines.last) { _, _ in
-                if board.logAtBottom { proxy.scrollTo(lines.count - 1, anchor: .bottom) }
-            }
-            .onChange(of: board.shownView) { _, _ in
-                board.logAtBottom = true
-                proxy.scrollTo(lines.count - 1, anchor: .bottom)
-            }
-            .onAppear { proxy.scrollTo(lines.count - 1, anchor: .bottom) }
+        LogText(lines: lines, font: .monospacedSystemFont(ofSize: 10, weight: .regular), wrap: board.shownView == "brain",
+                spacing: 2, follow: $board.logAtBottom, jump: board.panelJump)
+            .id(board.shownView)   // a fresh view per tab, since wrapping is set up once
+            .frame(height: 220)
+            .onChange(of: board.shownView) { _, _ in board.logAtBottom = true; board.panelJump += 1 }
             .overlay(alignment: .bottomTrailing) {
-                if !board.logAtBottom {
-                    Button {
-                        board.logAtBottom = true
-                        withAnimation(.easeOut(duration: 0.2)) { proxy.scrollTo(lines.count - 1, anchor: .bottom) }
-                    } label: {
-                        Text("Jump to latest \u{2193}")
-                            .font(.custom("Palatino-Italic", size: 13)).foregroundColor(.inkBlue)
-                            .padding(.horizontal, 10).padding(.vertical, 4)
-                            .background(Color.paper)
-                            .overlay(Capsule().stroke(Color.line, lineWidth: 1))
-                            .clipShape(Capsule())
-                    }
-                    .buttonStyle(.plain)
-                    .padding(6)
-                }
+                JumpButton(show: !board.logAtBottom) { board.logAtBottom = true; board.panelJump += 1 }
+            }
+    }
+}
+
+/// "Jump to latest", shown while you're scrolled up in a log.
+struct JumpButton: View {
+    let show: Bool
+    let action: () -> Void
+    var body: some View {
+        if show {
+            Button(action: action) {
+                Text("Jump to latest \u{2193}")
+                    .font(.custom("Palatino-Italic", size: 13)).foregroundColor(.inkBlue)
+                    .padding(.horizontal, 10).padding(.vertical, 4)
+                    .background(Color.paper)
+                    .overlay(Capsule().stroke(Color.line, lineWidth: 1))
+                    .clipShape(Capsule())
+            }
+            .buttonStyle(.plain)
+            .padding(6)
+        }
+    }
+}
+
+// MARK: - text you can select, and the chat box
+
+/// A read-only log as one block of text, so you can drag across many lines, or ⌘A, and copy them all at once
+/// (separate Text views only let you pick one line at a time). It holds still while you have something selected,
+/// and follows new lines only while you're at the bottom.
+struct LogText: NSViewRepresentable {
+    let lines: [String]
+    let font: NSFont
+    let wrap: Bool
+    let spacing: CGFloat
+    @Binding var follow: Bool
+    let jump: Int
+
+    final class Coordinator: NSObject {
+        var follow: Binding<Bool>
+        var jump = 0
+        var updating = false
+        weak var scrollView: NSScrollView?
+        init(_ follow: Binding<Bool>) { self.follow = follow }
+        /// the view got its size, or the window was resized: stay on the newest line if you were following
+        @objc func resized(_ n: Notification) {
+            guard follow.wrappedValue, let sv = scrollView else { return }
+            updating = true
+            LogText.toBottom(sv)
+            updating = false
+        }
+        /// you scrolled: follow again once you're back at the bottom, stop following when you scroll up
+        @objc func scrolled(_ n: Notification) {
+            guard !updating, let clip = n.object as? NSClipView, let doc = clip.documentView else { return }
+            let bottom = clip.bounds.maxY >= doc.frame.height - 12
+            if bottom != follow.wrappedValue { DispatchQueue.main.async { self.follow.wrappedValue = bottom } }
+        }
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator($follow) }
+
+    func makeNSView(context: Context) -> NSScrollView {
+        let sv = NSTextView.scrollableTextView()
+        let tv = sv.documentView as! NSTextView
+        tv.isEditable = false
+        tv.isSelectable = true
+        tv.drawsBackground = false
+        tv.textContainerInset = NSSize(width: 0, height: 2)
+        tv.textContainer?.lineFragmentPadding = 0
+        sv.drawsBackground = false
+        // no scroll bars, like before (the system's always-on ones are big white tracks on paper); the trackpad scrolls
+        sv.hasVerticalScroller = false
+        sv.hasHorizontalScroller = false
+        if !wrap {
+            tv.isHorizontallyResizable = true
+            tv.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: .greatestFiniteMagnitude)
+            tv.textContainer?.widthTracksTextView = false
+            tv.textContainer?.containerSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: .greatestFiniteMagnitude)
+        }
+        sv.contentView.postsBoundsChangedNotifications = true
+        sv.contentView.postsFrameChangedNotifications = true
+        NotificationCenter.default.addObserver(context.coordinator, selector: #selector(Coordinator.scrolled(_:)),
+                                               name: NSView.boundsDidChangeNotification, object: sv.contentView)
+        NotificationCenter.default.addObserver(context.coordinator, selector: #selector(Coordinator.resized(_:)),
+                                               name: NSView.frameDidChangeNotification, object: sv.contentView)
+        context.coordinator.scrollView = sv
+        return sv
+    }
+
+    func updateNSView(_ sv: NSScrollView, context: Context) {
+        let c = context.coordinator
+        c.follow = $follow
+        let tv = sv.documentView as! NSTextView
+        let text = lines.map { $0.replacingOccurrences(of: " radxa-dragon-q6a ", with: " ") }.joined(separator: "\n")
+        var changed = false
+        // while you have something selected, new lines wait (replacing the text would drop your selection)
+        if tv.string != text && tv.selectedRange().length == 0 {
+            c.updating = true
+            let keep = sv.contentView.bounds.origin
+            tv.textStorage?.setAttributedString(styled(text))
+            if !follow { sv.contentView.scroll(to: keep); sv.reflectScrolledClipView(sv.contentView) }
+            c.updating = false
+            changed = true
+        }
+        if follow && (changed || jump != c.jump) { c.updating = true; LogText.toBottom(sv); c.updating = false }
+        c.jump = jump
+    }
+
+    /// the newest line, from the left edge (scrollToEndOfDocument also slides sideways to the last character)
+    static func toBottom(_ sv: NSScrollView) {
+        guard let doc = sv.documentView else { return }
+        doc.layoutSubtreeIfNeeded()
+        if let tv = doc as? NSTextView, let c = tv.textContainer { tv.layoutManager?.ensureLayout(for: c) }
+        sv.contentView.scroll(to: NSPoint(x: 0, y: max(0, doc.frame.height - sv.contentView.bounds.height)))
+        sv.reflectScrolledClipView(sv.contentView)
+    }
+
+    /// his replies and Claude's finished runs in ink blue, what you said in ink, everything else muted
+    func styled(_ text: String) -> NSAttributedString {
+        let para = NSMutableParagraphStyle()
+        para.lineSpacing = spacing
+        para.paragraphSpacing = wrap ? spacing : 0
+        let out = NSMutableAttributedString()
+        for (i, line) in text.split(separator: "\n", omittingEmptySubsequences: false).enumerated() {
+            let color: Color = line.hasPrefix("✓ done") || line.contains("] replied") ? .inkBlue
+                : line.contains("] heard:") ? .ink : .muted
+            out.append(NSAttributedString(string: (i > 0 ? "\n" : "") + line,
+                                          attributes: [.font: font, .foregroundColor: NSColor(color), .paragraphStyle: para]))
+        }
+        return out
+    }
+}
+
+/// The chat box: Return sends, Shift-Return (or Option-Return) starts a new line, and pasting several lines keeps them.
+final class ChatTextView: NSTextView {
+    var onSend: (String) -> Void = { _ in }
+    var placeholder = ""
+
+    override func keyDown(with e: NSEvent) {
+        let isReturn = e.keyCode == 36 || e.keyCode == 76
+        if isReturn && e.modifierFlags.intersection([.shift, .option]).isEmpty && !hasMarkedText() {
+            let t = string.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !t.isEmpty { onSend(t); string = ""; needsDisplay = true }
+            return
+        }
+        super.keyDown(with: e)
+    }
+
+    override func didChangeText() { super.didChangeText(); needsDisplay = true }
+
+    override func draw(_ rect: NSRect) {
+        super.draw(rect)
+        guard string.isEmpty else { return }
+        placeholder.draw(at: NSPoint(x: textContainerInset.width + (textContainer?.lineFragmentPadding ?? 0),
+                                     y: textContainerInset.height),
+                         withAttributes: [.font: font ?? NSFont.systemFont(ofSize: 13),
+                                          .foregroundColor: NSColor(Color.muted).withAlphaComponent(0.7)])
+    }
+}
+
+struct ChatBox: NSViewRepresentable {
+    let placeholder: String
+    let size: CGFloat
+    var focus = false
+    let send: (String) -> Void
+
+    func makeNSView(context: Context) -> NSScrollView {
+        let sv = NSScrollView()
+        sv.drawsBackground = false
+        sv.hasVerticalScroller = true
+        sv.autohidesScrollers = true
+        let tv = ChatTextView(frame: .zero)
+        tv.isRichText = false            // pasted text arrives plain
+        tv.allowsUndo = true
+        tv.drawsBackground = false
+        tv.font = NSFont(name: "Palatino", size: size) ?? .systemFont(ofSize: size)
+        tv.textColor = NSColor(Color.ink)
+        tv.insertionPointColor = NSColor(Color.inkBlue)
+        tv.textContainerInset = NSSize(width: 8, height: 7)
+        tv.isVerticallyResizable = true
+        tv.isHorizontallyResizable = false
+        tv.autoresizingMask = [.width]
+        tv.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: .greatestFiniteMagnitude)
+        tv.textContainer?.widthTracksTextView = true
+        tv.placeholder = placeholder
+        sv.documentView = tv
+        if focus { DispatchQueue.main.async { tv.window?.makeFirstResponder(tv) } }
+        return sv
+    }
+
+    func updateNSView(_ sv: NSScrollView, context: Context) {
+        (sv.documentView as? ChatTextView)?.onSend = send
+    }
+}
+
+/// The chat box with its frame and the note under it about the last message you sent.
+struct TalkRow: View {
+    @ObservedObject var board: Board
+    let size: CGFloat
+    let height: CGFloat
+    var focus = false
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            ChatBox(placeholder: "Talk to him. Return sends, Shift-Return for a new line.", size: size, focus: focus) {
+                board.tell($0)
+            }
+            .frame(height: height)
+            .background(Color.paperDeep)
+            .clipShape(RoundedRectangle(cornerRadius: 6))
+            .overlay(RoundedRectangle(cornerRadius: 6).stroke(Color.line, lineWidth: 1))
+            if !board.chatNote.isEmpty {
+                Text(board.chatNote).font(.serif(13, italic: true)).foregroundColor(.muted).lineLimit(1)
             }
         }
+    }
+}
+
+// MARK: - the popped-out window
+
+/// "Pop out": closes the menu bar panel and opens his brain and the chat in a normal window. While it's open the app
+/// becomes a regular app (Dock icon, ⌘-Tab), so the window can't get lost behind others; closing it makes the app
+/// menu-bar-only again. macOS remembers its size and place.
+@MainActor final class PopOut: NSObject, NSWindowDelegate {
+    private var window: NSWindow?
+
+    func open(_ board: Board) {
+        // the menu bar panel stays up on its own otherwise, on top of the new window
+        NSApp.windows.first { String(describing: type(of: $0)).contains("MenuBarExtra") }?.close()
+        if window == nil {
+            let w = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 760, height: 640),
+                             styleMask: [.titled, .closable, .miniaturizable, .resizable], backing: .buffered, defer: false)
+            w.title = "Little Guy"
+            w.isReleasedWhenClosed = false
+            w.contentView = NSHostingView(rootView: BrainWindow(board: board))
+            w.contentMinSize = NSSize(width: 420, height: 360)
+            w.delegate = self
+            if !w.setFrameUsingName("LittleGuyBrain") { w.center() }
+            w.setFrameAutosaveName("LittleGuyBrain")
+            window = w
+        }
+        board.popAtBottom = true
+        NSApp.setActivationPolicy(.regular)
+        window?.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+        DispatchQueue.main.async { board.popJump += 1 }   // once it has its size, show the newest line
+    }
+
+    func windowWillClose(_ n: Notification) {
+        NSApp.setActivationPolicy(.accessory)
+    }
+}
+
+/// His brain feed and the chat box in a window of its own, sized however you like (macOS remembers it).
+struct BrainWindow: View {
+    @ObservedObject var board: Board
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("Little ").font(.custom("Palatino", size: 30)) + Text("Guy.").font(.custom("Palatino-Italic", size: 30)).foregroundColor(.inkBlue)
+                Spacer()
+                if let mood = board.status?.feed.last(where: { $0.hasPrefix("mood now") }) {
+                    Text(mood).font(.serif(13, italic: true)).foregroundColor(.muted)
+                }
+            }
+            Rectangle().fill(Color.line).frame(height: 1)
+            LogText(lines: board.status?.feed ?? ["(can't reach his room yet)"], font: NSFont(name: "Palatino", size: 15) ?? .systemFont(ofSize: 15),
+                    wrap: true, spacing: 5, follow: $board.popAtBottom, jump: board.popJump)
+                .overlay(alignment: .bottomTrailing) {
+                    JumpButton(show: !board.popAtBottom) { board.popAtBottom = true; board.popJump += 1 }
+                }
+            Rectangle().fill(Color.line).frame(height: 1)
+            TalkRow(board: board, size: 15, height: 72, focus: true)
+        }
+        .padding(.horizontal, 24).padding(.vertical, 18)
+        .frame(minWidth: 420, minHeight: 360)
+        .background(Color.paper).foregroundColor(.ink)
     }
 }
 

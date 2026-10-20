@@ -14,6 +14,8 @@ import Foundation
 let boardURL = URL(string: "$LITTLEGUY_BOARD_URL/api/status")!
 let boardSSH = "$LITTLEGUY_BOARD_SSH"
 let claudeLog = URL(fileURLWithPath: "$HOME/Library/Logs/LittleGuy/live-runs.log")  // what Claude runs, live (tools/show)
+let orbPath = "${ORB:-/opt/homebrew/bin/orb}"   // talking to him: messages go into his room through the guard
+let roomMachine = "${MACHINE:-lgroom}"
 SWIFT
 swiftc -O -parse-as-library -target arm64-apple-macos15 LittleGuyBar.swift Settings.swift -o "$APP/Contents/MacOS/LittleGuyBar"
 cat > "$APP/Contents/Info.plist" <<'EOF'
