@@ -9,7 +9,10 @@ network), and the room's relay (tools/room/relay.py) forwards only these two, wi
   POST /choose {"messages": [...], "choices": ["no", "wander", ...], "v": .., "a": ..}
                -> {"face": "[ .. ]", "logprobs": {choice: lp}}   the odds of each choice as his whole answer, after
                the face he opens with (2 to 8 plain words)
-  /think with "thinking": true uses the brain's own thinking switch -> {"text", "thought", "n_tok"} (up to 800 words)
+  /think with "thinking": true uses the brain's own thinking switch -> {"text", "thought", "n_tok", "n_thought"};
+               "think_tokens" is the thought's own budget (up to 400), so the answer always keeps its max_tokens
+  /think with "hushable": true is a daydream: POST /hush stops it at the next word -> "hushed": true. /hush does nothing
+               to anything else (a reply, a choice, a reading), so a late hush can't cut what he says to you.
 
 usage: brainstem.py <brain.gguf> <dials.npz> <key file> [port, default 8771]
 Listens on 127.0.0.1 only. Writes his calibration (the natural spread of each dial) next to the key file.
@@ -23,6 +26,7 @@ from brain import Brain
 MAX_BODY = 64 * 1024
 ROLES = {"system", "user", "assistant"}
 lock = threading.Lock()                      # one brain, one thought at a time
+now = {"hushable": False}                    # is the thought being written right now a daydream?
 
 
 def check_msgs(r):
@@ -44,7 +48,8 @@ def check_think(r):
     m = check_msgs(r)
     thinking = r.get("thinking", False) is True
     return dict(msgs=m, v=num(r, "v", 0, -1.5, 1.5), a=num(r, "a", 0, -1.5, 1.5),
-                max_tokens=int(num(r, "max_tokens", 200, 1, 800 if thinking else 300)),
+                max_tokens=int(num(r, "max_tokens", 200, 1, 300)),
+                think_tokens=int(num(r, "think_tokens", 0, 0, 400)) if thinking else 0,
                 temperature=num(r, "temperature", 0.8, 0, 2), top_p=num(r, "top_p", 0.95, 0.05, 1),
                 seed=int(num(r, "seed", 0, 0, 2**31)), thinking=thinking)
 
@@ -81,9 +86,18 @@ def main(gguf, dials, key_file, port="8771"):
                 if not 0 < n <= MAX_BODY:
                     return self.send(413, {"error": "body size"})
                 r = json.loads(self.rfile.read(n))
+                if self.path == "/hush":                    # never waits for the lock: it's for the thought holding it
+                    if now["hushable"]:
+                        brain.hush()
+                    return self.send(200, {"hushed": now["hushable"]})
                 with lock:
                     if self.path == "/think":
-                        return self.send(200, brain.think_full(**check_think(r)))
+                        req = check_think(r)
+                        now["hushable"] = r.get("hushable", False) is True
+                        try:
+                            return self.send(200, brain.think_full(**req))
+                        finally:
+                            now["hushable"] = False
                     if self.path == "/choose":
                         return self.send(200, brain.choose(**check_choose(r)))
                     if self.path == "/read":
@@ -91,7 +105,7 @@ def main(gguf, dials, key_file, port="8771"):
                         if not isinstance(t, str) or not 0 < len(t) <= 8000:
                             raise ValueError("text: 1 to 8000 characters")
                         return self.send(200, {"feel": brain.read_feel(t)})
-                return self.send(404, {"error": "only /think, /read and /choose"})
+                return self.send(404, {"error": "only /think, /read, /choose and /hush"})
             except (ValueError, KeyError, TypeError, json.JSONDecodeError) as e:
                 return self.send(400, {"error": str(e)})
 

@@ -32,7 +32,7 @@ Settings (env): PERSON (default "your person"), MOMENT_EVERY (minutes, default 1
   REUNION_H (silence that makes a message a homecoming, default 1), ALARM (chance a task gets an alarm, default 1),
   OWN_ACT (1: he may also do a task on his own, without its alarm; default 0)
 """
-import json, math, os, random, re, socket, sys, time, unicodedata
+import ctypes, ctypes.util, json, math, os, random, re, socket, struct, sys, threading, time, unicodedata
 import memory as mem
 import tasks as tk
 
@@ -61,6 +61,11 @@ ALARM, OWN_ACT = env("ALARM", 1.0), env("OWN_ACT", 0) == 1
 ALARM_EARLY, SNOOZE = 2, 5
 BUSY_TALKING = 600          # seconds after his person's last message when his mind is on the talk, not wandering
 REPLY_WINDOW = 1800                     # the guard drops replies to messages older than this
+# how long he may think before answering (Immy, 2026-10-19: "someone asks me how my day goes, I think for like 3
+# seconds... I keep it short, unless I did something"): his private thought gets its own budget, about 3 seconds on the
+# Mac (~55 words/s), and is closed for him when it runs out, so it can never eat his reply (it did: 640 of 660 words
+# thinking, the reply cut off mid-sentence). Thinking only as long as there's something to think about is for training.
+THINK_WORDS = env("THINK_WORDS", 150)
 
 # --- life_sim.py v4, unchanged (see there for the reasons behind each number) -------------------------------------
 AFFECT = {"social": (-0.35, -0.10), "boredom": (-0.15, -0.20), "tired": (-0.10, -0.30), "close": (+0.15, -0.05),
@@ -227,6 +232,48 @@ def append(name, obj):
         f.write(json.dumps(obj, ensure_ascii=False) + "\n")
 
 
+class Ear:
+    """his hearing (Immy, 2026-10-19: "that's not how a human brain works"; like the robot's wake word): a message wakes
+    him the moment it lands in his inbox (inotify on the folder), instead of him checking a clock every 10 seconds. If
+    he's in the middle of a daydream, he drops it and turns to you (the brainstem's /hush)."""
+    IN_CREATE, IN_MOVED_TO = 0x100, 0x80          # the guard writes ".name" and renames it into place
+
+    def __init__(self, path):
+        self.event = threading.Event()
+        libc = ctypes.CDLL(ctypes.util.find_library("c") or "libc.so.6", use_errno=True)
+        self.fd = libc.inotify_init1(os.O_CLOEXEC)
+        if self.fd < 0 or libc.inotify_add_watch(self.fd, path.encode(), self.IN_CREATE | self.IN_MOVED_TO) < 0:
+            raise OSError(ctypes.get_errno(), f"can't listen to {path}")
+        threading.Thread(target=self.listen, daemon=True).start()
+
+    def listen(self):
+        while True:
+            data, i = os.read(self.fd, 64 * 1024), 0
+            names = []
+            while i + 16 <= len(data):
+                _, _, _, n = struct.unpack_from("iIII", data, i)
+                names.append(data[i + 16:i + 16 + n].rstrip(b"\0").decode(errors="replace"))
+                i += 16 + n
+            if any(x and not x.startswith(".") for x in names):
+                self.event.set()
+                if DAYDREAM.is_set():
+                    try:
+                        brain("hush")
+                    except (OSError, RuntimeError, ValueError):
+                        pass
+
+    def wait(self, seconds):
+        self.event.wait(seconds)
+
+
+class Hushed(Exception):
+    """he heard his person mid-daydream and dropped the thought (args[0]: as far as it got)"""
+
+
+EAR = None                                    # set in main(); practice.py runs this code on a fake clock, without one
+DAYDREAM = threading.Event()                  # a daydream is being written right now
+
+
 def brain(op, **req):
     c = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     c.settimeout(300)
@@ -247,15 +294,29 @@ def plain(text):
     return "".join(c for c in text if c == "\n" or not unicodedata.category(c).startswith("C")).strip()
 
 
-def think_full(msgs, feel, n, thinking=False):
-    """with thinking=True his brain's own thinking switch is on: it may think privately first (up to 500 more words)"""
-    r = brain("think", messages=msgs, v=feel[0], a=feel[1], max_tokens=n + (500 if thinking else 0), temperature=1.0,
-              top_p=0.95, seed=random.randrange(2**31), thinking=thinking)
-    return {"text": plain(r["text"]), "thought": plain(r.get("thought", "")), "n_tok": r.get("n_tok")}
+def think_full(msgs, feel, n, thinking=False, hushable=False):
+    """with thinking=True his brain's own thinking switch is on: it may think privately first (up to THINK_WORDS words,
+    its own budget), then answers in up to n. hushable: a daydream, dropped (Hushed) when a message comes in."""
+    req = dict(messages=msgs, v=feel[0], a=feel[1], max_tokens=n, temperature=1.0, top_p=0.95,
+               seed=random.randrange(2**31), thinking=thinking, think_tokens=THINK_WORDS if thinking else 0)
+    if hushable and EAR:
+        DAYDREAM.set()
+        try:
+            if EAR.event.is_set():                     # you spoke just before he started: no daydream at all
+                raise Hushed("")
+            r = brain("think", hushable=True, **req)
+        finally:
+            DAYDREAM.clear()
+        if r.get("hushed"):
+            raise Hushed(plain(r["text"]))
+    else:
+        r = brain("think", **req)
+    return {"text": plain(r["text"]), "thought": plain(r.get("thought", "")), "n_tok": r.get("n_tok"),
+            "n_thought": r.get("n_thought", 0)}
 
 
-def think(msgs, feel, n):
-    return think_full(msgs, feel, n)["text"]
+def think(msgs, feel, n, hushable=False):
+    return think_full(msgs, feel, n, hushable=hushable)["text"]
 
 
 def choose(msgs, options, feel):
@@ -482,7 +543,8 @@ def answer(now, st, heard):
     build = lambda extra: ([{"role": "system", "content": system + TASK_HINT + extra}] + hist +
                            [{"role": "user", "content": text}])
     r, recs, private = think_remembering(build, st["feel"], 160, now, text, in_view(now, 6), "reply", thinking)
-    if thinking and not r:                       # ran out of words while still thinking: answer without the switch
+    if thinking and not r:                       # no answer after his thought (rare now it has its own budget): answer
+                                                 # without the switch
         r, recs2, _ = think_remembering(build, st["feel"], 160, now, text, in_view(now, 6), "reply")
         recs += recs2
     r, asked = take_tasks(r, now)
@@ -623,7 +685,12 @@ def think_about(now, st, task, alarm=False, got=(), rec=None):
     """one silent thought (about a task, or wandering); about a task, it can end in doing it, out loud: when its alarm
     rings, or on his own if OWN_ACT"""
     msgs = thought_msgs(now, st, task, list(got), thoughts(3), alarm)
-    text = think(msgs, st["feel"], 80) or "..."
+    try:
+        text = think(msgs, st["feel"], 80, hushable=True) or "..."
+    except Hushed as h:                         # kept as evidence, but not as a thought (it never finished)
+        MEMORY.log("moments.jsonl", {"t": round(now), "when": when(now), "kind": "hushed",
+                                     "subject": task["id"] if task else "wander", "alarm": alarm, "so_far": h.args[0]})
+        raise
     act = act_now(now, st, msgs, text, task) if task and (alarm or OWN_ACT) else None
     did = act is not None and act["pick"] == "now"
     tid = f"t{round(now)}"
@@ -769,8 +836,15 @@ def main():
         st["seen"] = max([n for n in os.listdir(INBOX) if not n.startswith(".")], default="")
     print(f"MIND_UP way={WAY} person={PERSON!r} notes every {NOTE_EVERY} h, asleep {SLEEP_FROM}-{WAKE}, "
           f"temperament {temperament(st)}", flush=True)
+    global EAR
+    try:
+        EAR = Ear(INBOX)
+    except OSError as e:                         # never deaf: without inotify he checks every second instead
+        print(f"no ear ({e}): checking the inbox every second", flush=True)
     while True:
         try:
+            if EAR:
+                EAR.event.clear()                # anything that lands from here on wakes him (or hushes a daydream)
             if st["zero"] is None:
                 find_zero(st)
                 write_json(STATE, st)
@@ -807,10 +881,15 @@ def main():
                     print(f"task scored: {row}", flush=True)
                 st["last_resolve"] = now
             write_json(STATE, st)
+        except Hushed:                                              # he heard you: straight back round to answer
+            print("heard his person mid-daydream: dropped the thought", flush=True)
+            write_json(STATE, st)
+            continue
         except (OSError, RuntimeError, ValueError, KeyError) as e:  # the brain away (Mac asleep, brainstem restarting)
             print(f"waiting: {e}", flush=True)
             time.sleep(60)
-        time.sleep(10)
+        # nothing to do: rest until a message lands (or 10 s pass, for his clock: moments, notes, alarms, sleep)
+        EAR.wait(10) if EAR else time.sleep(1)
 
 
 if __name__ == "__main__":

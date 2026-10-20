@@ -15,7 +15,7 @@ Brain(...) in code:
   read_feel(text)      how pleasant / keyed up a text reads inside him, in natural steps (rooms 24-36)
 env LG_LORA: an adapter (what training added) loaded on top of his frozen brain, for thinking only
 """
-import json, os, re, subprocess, sys, tempfile
+import json, os, re, signal, subprocess, sys, tempfile
 import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -118,12 +118,20 @@ class Brain:
         return self._ask({"op": "think", "prompt": self.render(msgs), "cvec": self._cvec(v, a), "max_tokens": max_tokens,
                           "temperature": temperature, "top_p": top_p, "seed": seed})["text"]
 
-    def think_full(self, msgs, v=0.0, a=0.0, max_tokens=200, temperature=0.0, top_p=1.0, seed=0, thinking=False):
+    def think_full(self, msgs, v=0.0, a=0.0, max_tokens=200, temperature=0.0, top_p=1.0, seed=0, thinking=False,
+                   think_tokens=0):
+        """think_tokens (with thinking): his private thought's own budget, closed for him when it runs out, so
+        max_tokens is all his answer's. "hushed": he stopped mid-writing because he heard something (see hush)."""
         r = self._ask({"op": "think", "prompt": self.render(msgs, thinking), "cvec": self._cvec(v, a),
                        "max_tokens": max_tokens, "temperature": temperature, "top_p": top_p, "seed": seed,
-                       "special": thinking})
+                       "special": thinking, "think_tokens": think_tokens if thinking else 0})
         thought, text = split_thought(r["text"]) if thinking else ("", r["text"])
-        return {"text": text, "thought": thought, "n_tok": r["n_tok"]}
+        return {"text": text, "thought": thought, "n_tok": r["n_tok"], "n_thought": r.get("n_thought", 0),
+                "hushed": r.get("hushed", False)}
+
+    def hush(self):
+        """stop the writing in progress at the next word (lg-mind's SIGUSR1)"""
+        self.p.send_signal(signal.SIGUSR1)
 
     def choose(self, msgs, choices, v=0.0, a=0.0, seed=0):
         """log-odds of each choice as his whole answer (the choice, then the end of his turn). He opens almost every

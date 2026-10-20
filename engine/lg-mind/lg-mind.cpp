@@ -5,6 +5,10 @@
 //       -> {"text": ..., "n_tok": N}. cvec = a raw float32 file of (n_layer-1) x n_embd, row r-1 = the push added to
 //       room r's output (llama.cpp's control-vector layout); his feelings as a drip. null = no push.
 //       "special": true keeps special tokens in the text (the thinking channel's <|channel>thought ... <channel|>).
+//       "think_tokens": K (with special) gives his private thought its own budget: after K words of thinking the
+//       thought is closed for him (<channel|>) and max_tokens then counts only his answer, so a long thought can never
+//       eat the reply. -> also "n_thought".
+//       SIGUSR1 hushes the writing in progress (he heard something): it stops at the next word -> "hushed": true.
 //       "choices": ["no<turn|>", ...] instead of writing: the log-probability of each choice as the whole answer
 //       (every token of it, teacher-forced, with the same drip) -> {"choice_logprobs": {choice: lp}}; a decision's
 //       real odds (the policy his choices are trained on later), not one sampled word.
@@ -24,7 +28,9 @@
 #include <nlohmann/json.hpp>
 
 #include <algorithm>
+#include <atomic>
 #include <cmath>
+#include <csignal>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -33,6 +39,10 @@
 #include <vector>
 
 using json = nlohmann::ordered_json;
+
+// set by SIGUSR1 (the brainstem's /hush, when Immy talks to him mid-daydream); checked between words
+static std::atomic<bool> hush{false};
+static void on_hush(int) { hush = true; }
 
 struct capture {
     std::map<int, std::vector<float>> rows;   // room -> outputs of every token so far (n_tok x n_embd)
@@ -126,6 +136,7 @@ int main(int argc, char ** argv) {
     std::vector<float> cvec;
     std::string cvec_path;
 
+    std::signal(SIGUSR1, on_hush);
     std::cout << json{{"ready", true}, {"n_embd", n_embd}, {"n_layer", n_layer}}.dump() << std::endl;
     std::string line;
     while (std::getline(std::cin, line)) {
@@ -195,20 +206,43 @@ int main(int argc, char ** argv) {
                 }
                 std::string text;
                 const int max_tokens = req.value("max_tokens", 200);
-                int n_tok = 0;
-                for (int i = 0; i < max_tokens; i++, n_tok++) {
+                const int think_tokens = special ? req.value("think_tokens", 0) : 0;
+                static const std::string OPEN = "<|channel>thought", CLOSE = "<channel|>";
+                // still inside his private thought: it opened and hasn't closed yet
+                auto in_thought = [&] { return think_tokens > 0 && text.rfind(OPEN, 0) == 0 && text.find(CLOSE) == std::string::npos; };
+                int n_tok = 0, n_thought = 0, n_reply = 0;
+                bool hushed = false;
+                // a hush is only for the writing it interrupts: one left over from before must not cut the next
+                // (the brainstem only sends one while a daydream is being written)
+                hush = false;
+                while ((think_tokens > 0 ? n_reply : n_tok) < max_tokens) {
+                    if (hush) { hushed = true; break; }
                     llama_token t = llama_sampler_sample(smpl, think, -1);
                     if (llama_vocab_is_eog(vocab, t)) { break; }
                     char buf[256];
                     const int n = llama_token_to_piece(vocab, t, buf, sizeof(buf), 0, special);
+                    const bool was_thought = in_thought() || (think_tokens > 0 && text.empty());
                     if (n > 0) { text.append(buf, n); }
                     if (llama_decode(think, llama_batch_get_one(&t, 1)) != 0) {
                         llama_sampler_free(smpl);
                         throw std::runtime_error("decode failed (reply)");
                     }
+                    n_tok++;
+                    (was_thought ? n_thought : n_reply)++;
+                    if (in_thought() && n_thought >= think_tokens) {        // enough thinking: he closes the thought
+                        auto ct = tokenize(vocab, CLOSE);
+                        if (!eval(think, ct, n_batch)) {
+                            llama_sampler_free(smpl);
+                            throw std::runtime_error("decode failed (closing the thought)");
+                        }
+                        text += CLOSE;
+                    }
+                    if (n_tok >= max_tokens + think_tokens + 64) { break; }   // a hard ceiling, whatever happens
                 }
                 llama_sampler_free(smpl);
                 out = {{"text", text}, {"n_tok", n_tok}};
+                if (think_tokens > 0) { out["n_thought"] = n_thought; }
+                if (hushed) { out["hushed"] = true; }
             } else if (op == "states") {
                 cap.rows.clear();
                 cap.seen.clear();
