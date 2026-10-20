@@ -15,7 +15,7 @@ PAGE_FIELDS = ("id", "batch", "n", "kind", "when", "heard", "reply", "cut")   # 
 
 def call(method, path, body=None, ctype=None):
     req = urllib.request.Request(URL + path, body, method=method, headers={
-        "Authorization": "Bearer " + open(KEY).read().strip(), "User-Agent": "littleguy-yesno/1",
+        "Authorization": "Bearer " + open(KEY).read().strip(), "User-Agent": "LittleGuy-YesNo/1.0",
         **({"Content-Type": ctype} if ctype else {})})
     try:
         with urllib.request.urlopen(req, timeout=60) as r:
