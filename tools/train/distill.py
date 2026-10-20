@@ -225,8 +225,9 @@ def join(a):
             continue
         kb = k.replace(".lora_A.", ".lora_B.")
         A2, B2 = w2.get(k), w2.get(kb)
-        if A2 is None:
-            raise SystemExit(f"{k} is missing from the new adapter")
+        if A2 is None:                        # a room the new adapter leaves alone (ftpo.py trains only the last ones)
+            r2 = cfg2["r"]
+            A2, B2 = A1.new_zeros(r2, A1.shape[1]), w1[kb].new_zeros(w1[kb].shape[0], r2)
         out[k] = torch.cat([A1, A2], 0).contiguous()
         out[kb] = torch.cat([w1[kb] * s1, B2 * s2], 1).contiguous()
     extra = [k for k in w2 if k not in out and k.replace(".lora_B.", ".lora_A.") not in out]
