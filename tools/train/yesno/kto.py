@@ -10,7 +10,8 @@ everywhere at once.
          own chat template; when he thought first, his private thought too, as context only), his feelings, and his
          raw words. Lines starting "TASK:" (a reminder he set) are never trained: a no for his tone must not teach him
          to stop setting reminders. A reply that ran into its word limit gets no end-of-turn, so a yes never teaches
-         him to stop mid-sentence.
+         him to stop mid-sentence. Items with "part": "thinking" are what he thought before answering: the thought
+         is trained (a no means "not like this"), the switch into thinking is not (it must not mean "never think").
   train  OUT --data rows.jsonl --init ACCEPTED_ADAPTER [--epochs 3] [--lr 5e-6] [--beta 0.1] [--group 8]  (on a GPU)
          starts from the last accepted round (Immy's rule) and is measured against it; a fifth of the judged replies
          (yes and no alike) are held out. Ends with OUT/verdict.json: on held-out replies he never trained on, did his
@@ -53,6 +54,12 @@ def build_rows(a):
             steps[it["day"]] = jl(os.path.join(a.days, it["day"], "steps.jsonl"))
         s = steps[it["day"]][it["step"]]
         req, out = s["req"], s["out"]
+        if it.get("part") == "thinking":       # what he thought before answering: the thought is what's judged, and
+            cut = out.get("n_thought", 0) >= req.get("think_tokens", 1e9)    # the switch into thinking isn't trained
+            rows.append({"id": i, "label": lab["label"], "note": lab.get("note", ""), "kind": "thinking", "day": it["day"],
+                         "prompt": render(req["messages"], True), "pieces": [[THOUGHT_OPEN, False], [out["thought"], True]],
+                         "end": "" if cut else THOUGHT_CLOSE, "v": float(req.get("v", 0)), "a": float(req.get("a", 0))})
+            continue
         thinking = bool(req.get("thinking"))
         prompt = render(req["messages"], thinking)
         if thinking:                                   # what he thought first is context, not something to train
