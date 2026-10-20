@@ -21,7 +21,18 @@ What it learns from (the answers are measured or come from file names, never fro
                                                    round trip, or none): the highest band within 50 dB of the loudest
   air    "How much high end does it have?"     -> measured share of energy above 8 kHz, in four steps
 
-  train  CARDS_DIR MODEL OUT_DIR [--steps 6000] [--lr 3e-4] [--accum 8]
+  keep   "Transcribe the words" (several phrasings)  -> whatever the old ears answer, as a whole distribution: on
+                                                   vocals and songs the side path must leave his words as they were
+                                                   (output matching, a KL to the old ears; round 2 without it answered
+                                                   "sing" when asked to transcribe a rap)
+
+  keepset KEEP_DIR MODEL [--n 600]   the old ears' answers to transcription requests on KEEP_DIR/clips (cards.jsonl
+         from flashcards.py cut), saved to KEEP_DIR/keep.jsonl; train --keep KEEP_DIR mixes them in (--keep_every 3:
+         one keep lesson in every 3)
+  train  CARDS_DIR MODEL OUT_DIR [--steps 6000] [--lr 3e-4] [--accum 8] [--keep KEEP_DIR --keep_every 3]
+         [--where early|late|sep] [--mid 1024] [--pool 4]   (sep: the high end on its own tokens, see attach)
+  pagecheck MODEL WAV OUT.json   sep, day one: his old audio tokens and the brain's states over them are the same
+         with and without the high-end page; what the page costs his answer before any training
   eval   CARDS_DIR MODEL OUT.json [--side OUT_DIR/side.pt] [--n 300]   held-out packs; without --side = the old ears
          (name_right_dull: naming the 16 kHz round trip, the check that the side path doesn't hurt old hearing)
   listen MODEL WAV OUT.json [--side ...] [--ask "..."]...               free answers to a full-range recording
@@ -85,7 +96,7 @@ class HighBands(nn.Module):
 class Side(nn.Module):
     """reads the high bands with a copy of his two convolutions; its projection starts at zero. mid > 0 puts one
     hidden layer (GELU) before it."""
-    def __init__(self, proj, hidden, mid=0):
+    def __init__(self, proj, hidden, mid=0, bias=False):
         super().__init__()
         def layer(old):
             c = nn.Conv2d(old.conv.in_channels, old.conv.out_channels, 3, stride=2, padding=1, bias=False)
@@ -97,8 +108,10 @@ class Side(nn.Module):
         n_freq = math.ceil(math.ceil(N_NEW / 2) / 2)
         n_in = n_freq * proj.layer1.conv.out_channels
         self.mid = nn.Linear(n_in, mid, bias=True) if mid else None
-        self.out = nn.Linear(mid or n_in, hidden, bias=False)
+        self.out = nn.Linear(mid or n_in, hidden, bias=bias)
         nn.init.zeros_(self.out.weight)
+        if bias:
+            nn.init.zeros_(self.out.bias)
 
     def forward(self, high, mask=None):                       # high [B, T, 39]
         h = high.unsqueeze(1)
@@ -115,17 +128,64 @@ class Side(nn.Module):
         return self.out(h)
 
 
-def attach(model, where="early", mid=0):
+def n_extra(n_old, pool):
+    """how many high-end tokens follow n_old old ones: one per `pool` of his 40 ms tokens"""
+    return -(-n_old // pool)
+
+
+def pool_time(tok, n_old, pool):
+    """[1, T, D] at 40 ms -> [1, n_extra, D]: the mean over each group of `pool` tokens (the last group may be short)"""
+    tok = tok[:, :n_old]
+    k = n_extra(n_old, pool)
+    pad = k * pool - n_old
+    s = F.pad(tok, (0, 0, 0, pad)).reshape(1, k, pool, -1).sum(2)
+    cnt = torch.full((k,), float(pool), device=tok.device)
+    cnt[-1] = pool - pad
+    return s / cnt[None, :, None]
+
+
+@torch.no_grad()
+def silence_vector(proc, model):
+    """what his ears hand on for silence (the mean over 2 s of zeros): the blank page his brain already knows"""
+    z = np.zeros(32000, np.float32)
+    f = proc.feature_extractor([z], sampling_rate=16000, return_tensors="pt")
+    with torch.autocast("cuda", dtype=torch.bfloat16):
+        out = model.model.audio_tower(f["input_features"].to(model.device), f["input_features_mask"].to(model.device))
+    return out.last_hidden_state[0][out.attention_mask[0]].float().mean(0)
+
+
+def attach(model, where="early", mid=0, pool=4):
     """puts the side path on the model's ears; set model._high before each forward (None = old ears only).
     early: added to his input projection's output, so it passes through his 12 ear layers (which clamp their numbers
     to ranges set on speech); late: added to what his ears hand on (after those layers), before the step into his
-    brain. Either way his ears' own weights are untouched."""
+    brain. Either way his ears' own weights are untouched.
+    sep: the high end goes on its own page: extra audio tokens after his old ones (one per `pool` old tokens, inside
+    the same <audio> ... </audio>), through his own step into the brain (embed_audio). His brain reads audio in order
+    and never looks ahead, so his old tokens are exactly what they were; only what comes after can see the new ones.
+    Day one the new tokens are all the same blank page (silence_vector, set by train), not zeros."""
     tower = model.model.audio_tower
     proj = tower.subsample_conv_projection
     dim = tower.config.hidden_size if where == "early" else tower.config.output_proj_dims
-    side = Side(proj, dim, mid).to(next(proj.parameters()).device)
-    side.where = where
-    if where == "early":
+    side = Side(proj, dim, mid, bias=where == "sep").to(next(proj.parameters()).device)
+    side.where, side.pool = where, pool
+    if where == "sep":
+        old_gaf = model.model.get_audio_features
+
+        def gaf(input_features, input_features_mask=None, **kw):
+            out = old_gaf(input_features, input_features_mask, **kw)
+            hi = getattr(model, "_high", None)
+            if hi is None:
+                return out
+            assert out.pooler_output.shape[0] == 1, "sep handles one clip at a time"
+            keep = out.attention_mask[0].to(out.pooler_output.device)
+            old = out.pooler_output[0][keep]                              # his old tokens, untouched
+            tok = side(hi.to(old.device, torch.float32), input_features_mask)
+            new = model.model.embed_audio(inputs_embeds=pool_time(tok, old.shape[0], pool).to(old.dtype))[0]
+            out.pooler_output = torch.cat([old, new])[None]
+            out.attention_mask = torch.ones(1, out.pooler_output.shape[1], dtype=torch.bool, device=keep.device)
+            return out
+        model.model.get_audio_features = gaf
+    elif where == "early":
         old = proj.forward
 
         def forward(input_features, input_features_mask=None):
@@ -157,7 +217,7 @@ def load_side(model, side_pt):
     if not side_pt:
         return attach(model)
     ck = torch.load(side_pt, map_location=model.device)
-    side = attach(model, ck.get("where", "early"), ck.get("mid", 0))
+    side = attach(model, ck.get("where", "early"), ck.get("mid", 0), ck.get("pool", 4))
     side.load_state_dict(ck["side"])
     return side
 
@@ -244,7 +304,24 @@ def card_example(card, x, rng):
     return y, Q[kind], ans, kind
 
 
-def encode(proc, model, high_fe, y48, question, answer=None):
+def add_pages(enc, model, side_on):
+    """with a sep side path on: room for the high-end tokens right after his old audio tokens (every per-token row,
+    input_ids and its masks, gets copies of the last old audio token's entries). Returns how many were added."""
+    side = getattr(model, "_side", None)
+    if not side_on or side is None or side.where != "sep":
+        return 0
+    ids = enc["input_ids"][0]
+    where = (ids == model.config.audio_token_id).nonzero()[:, 0]
+    k = n_extra(len(where), side.pool)
+    at = int(where[-1]) + 1
+    shape = enc["input_ids"].shape
+    for name, v in list(enc.items()):
+        if not name.startswith("input_features") and v.dim() == 2 and v.shape == shape:
+            enc[name] = torch.cat([v[:, :at], v[:, at - 1:at].expand(1, k), v[:, at:]], dim=1)
+    return k
+
+
+def encode(proc, model, high_fe, y48, question, answer=None, side_on=True):
     """the chat (sound, then the question), the old ears' features from the 16 kHz version, the new bands from the
     48 kHz one; with an answer: labels on the answer's tokens only"""
     y16 = resample_poly(y48, 1, 3).astype(np.float32)
@@ -254,6 +331,7 @@ def encode(proc, model, high_fe, y48, question, answer=None):
     enc = proc(text=[full], audio=[y16], return_tensors="pt")
     dev = model.device
     enc = {k: v.to(dev) for k, v in enc.items()}
+    extra = add_pages(enc, model, side_on)
     T = enc["input_features"].shape[1]
     hi = high_fe(torch.from_numpy(y48).to(dev), T).unsqueeze(0)
     m = enc["input_features_mask"]
@@ -263,7 +341,7 @@ def encode(proc, model, high_fe, y48, question, answer=None):
         tail = proc.tokenizer(answer + "<turn|>", add_special_tokens=False)["input_ids"]
         ids = enc["input_ids"][0]
         if ids[-len(tail):].tolist() != tail:                # the answer didn't tokenize on its own the same way
-            n_prompt = proc(text=[prompt], audio=[y16], return_tensors="pt")["input_ids"].shape[1]
+            n_prompt = proc(text=[prompt], audio=[y16], return_tensors="pt")["input_ids"].shape[1] + extra
         else:
             n_prompt = len(ids) - len(tail)
         labels = enc["input_ids"].clone()
@@ -271,18 +349,61 @@ def encode(proc, model, high_fe, y48, question, answer=None):
     return enc, hi, labels
 
 
+IDC = re.compile(r"(^|[^a-z])idc([^a-z]|$)", re.I)    # Immy's friend's track and its versions: the words test, never taught
+ASK_WORDS = ["Transcribe the words in this audio.", "Transcribe the words in this audio. Write only the words.",
+             "What are they saying?", "Write down the lyrics you hear.", "What words do you hear in this?"]
+
+
 def cards_of(cards_dir, split):
     rows = [json.loads(l) for l in open(os.path.join(cards_dir, "cards.jsonl"))]
-    return [r for r in rows if r["split"] == split]
+    return [r for r in rows if r["split"] == split and not (split == "train" and IDC.search(r["src"]))]
+
+
+def keep_loss(proc, model, high_fe, y48, question, old_answer):
+    """how far the side path moves his answer: KL from the old ears' next-word odds to the new ones, on the old answer's
+    words (both read the same sound and the same answer; only the side path differs; with sep, the old ears' chat has
+    no high-end page and the new one does, and the answer sits at the end of both)"""
+    old, _, _ = encode(proc, model, high_fe, y48, question, old_answer, side_on=False)
+    enc, hi, labels = encode(proc, model, high_fe, y48, question, old_answer)
+    n = int((labels[0] != -100).sum()) + 1                    # the answer's words, and the step that predicts the first
+    with torch.no_grad(), torch.autocast("cuda", dtype=torch.bfloat16):
+        model._high = None
+        teach = model(**old, logits_to_keep=n).logits[0, :-1].float()
+    model._high = hi
+    with torch.autocast("cuda", dtype=torch.bfloat16):
+        student = model(**enc, logits_to_keep=n).logits[0, :-1].float()
+    return F.kl_div(F.log_softmax(student, -1), F.log_softmax(teach, -1), log_target=True, reduction="batchmean")
+
+
+def keepset(keep_dir, model_dir, *rest):
+    kw = {rest[i][2:]: rest[i + 1] for i in range(0, len(rest), 2)}
+    n = int(kw.get("n", 600))
+    proc, model = load(model_dir)
+    attach(model)
+    high_fe = HighBands().to(model.device)
+    rows = [r for r in (json.loads(l) for l in open(os.path.join(keep_dir, "cards.jsonl"))) if not IDC.search(r["src"])]
+    rng = random.Random(11)
+    rng.shuffle(rows)
+    out = os.path.join(keep_dir, "keep.jsonl")
+    done = {json.loads(l)["clip"] for l in open(out)} if os.path.exists(out) else set()
+    with open(out, "a") as f:
+        for r in rows[:n]:
+            if r["clip"] in done:
+                continue
+            q = rng.choice(ASK_WORDS)
+            a = answer(proc, model, high_fe, read_flac(os.path.join(keep_dir, "clips", r["clip"])), q, False, 80)
+            f.write(json.dumps({"clip": r["clip"], "name": r["name"], "q": q, "a": a}) + "\n"); f.flush()
 
 
 def train(cards_dir, model_dir, out_dir, *rest):
     kw = {rest[i][2:]: rest[i + 1] for i in range(0, len(rest), 2)}
     steps, lr, accum = int(kw.get("steps", 6000)), float(kw.get("lr", 3e-4)), int(kw.get("accum", 8))
-    where, mid = kw.get("where", "early"), int(kw.get("mid", 0))
+    where, mid, pool = kw.get("where", "early"), int(kw.get("mid", 0)), int(kw.get("pool", 4))
     os.makedirs(out_dir, exist_ok=True)
     proc, model = load(model_dir)
-    side = attach(model, where, mid)
+    side = attach(model, where, mid, pool)
+    if where == "sep":
+        side.out.bias.data.copy_(silence_vector(proc, model))
     high_fe = HighBands().to(model.device)
     opt = torch.optim.AdamW(side.parameters(), lr=lr, weight_decay=0.0)
     sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: min(1.0, (s + 1) / 200) * 0.5 * (1 + math.cos(math.pi * min(s, steps) / steps)))
@@ -302,18 +423,26 @@ def train(cards_dir, model_dir, out_dir, *rest):
                 if ex is not None:
                     yield ex
     lessons = iter(DataLoader(Lessons(), batch_size=None, num_workers=4, prefetch_factor=8))
+    keep_dir, keep_every = kw.get("keep"), int(kw.get("keep_every", 3))
+    keeps = [json.loads(l) for l in open(os.path.join(keep_dir, "keep.jsonl"))] if keep_dir else []
+    krng = random.Random(5)
     import time
     t0 = time.time()
     for step in range(steps):
         opt.zero_grad(set_to_none=True)
         done = 0
         while done < accum:
-            y, q, a, kind = next(lessons)
-            y = np.asarray(y, dtype=np.float32)
-            enc, hi, labels = encode(proc, model, high_fe, y, q, a)
-            model._high = hi
-            with torch.autocast("cuda", dtype=torch.bfloat16):
-                loss = model(**enc, labels=labels).loss
+            if keeps and (seen % keep_every) == keep_every - 1:
+                k = krng.choice(keeps)
+                loss = keep_loss(proc, model, high_fe, read_flac(os.path.join(keep_dir, "clips", k["clip"])), k["q"], k["a"])
+                kind = "keep"
+            else:
+                y, q, a, kind = next(lessons)
+                y = np.asarray(y, dtype=np.float32)
+                enc, hi, labels = encode(proc, model, high_fe, y, q, a)
+                model._high = hi
+                with torch.autocast("cuda", dtype=torch.bfloat16):
+                    loss = model(**enc, labels=labels).loss
             (loss / accum).backward()
             run.setdefault(kind, []).append(loss.item())
             done += 1; seen += 1
@@ -326,14 +455,14 @@ def train(cards_dir, model_dir, out_dir, *rest):
             run = {}
         if (step + 1) % 1000 == 0 or step + 1 == steps:
             ck = {"side": side.state_dict(), "edges_hz": high_fe.edges.tolist(), "step": step + 1, "where": where,
-                  "mid": mid}
+                  "mid": mid, "pool": pool}
             torch.save(ck, os.path.join(out_dir, f"side-{step + 1}.pt"))
             torch.save(ck, os.path.join(out_dir, "side.pt"))
 
 
 @torch.no_grad()
 def answer(proc, model, high_fe, y48, question, use_side, max_new=40):
-    enc, hi, _ = encode(proc, model, high_fe, y48, question)
+    enc, hi, _ = encode(proc, model, high_fe, y48, question, side_on=use_side)
     model._high = hi if use_side else None
     out = model.generate(**enc, max_new_tokens=max_new, do_sample=False)
     return proc.decode(out[0, enc["input_ids"].shape[1]:], skip_special_tokens=True).strip()
@@ -403,6 +532,57 @@ def listen(model_dir, wav, out, *rest):
     print(json.dumps(res, indent=1))
 
 
+@torch.no_grad()
+def pagecheck(model_dir, wav, out, *rest):
+    """sep before any training: (1) his brain's states over everything up to his last old audio token, without and
+    with the high-end page (should be the same: nothing there can see the page); (2) the transcription both ways;
+    (3) on --keep clips, how far an untrained page moves his answers (KL, as in the keep lesson) when the page is the
+    silence vector vs zeros"""
+    kw = {rest[i][2:]: rest[i + 1] for i in range(0, len(rest), 2)}
+    proc, model = load(model_dir)
+    side = attach(model, "sep", int(kw.get("mid", 1024)), int(kw.get("pool", 4)))
+    high_fe = HighBands().to(model.device)
+    silence = silence_vector(proc, model)
+    side.out.bias.data.copy_(silence)
+    import soundfile as sf
+    x, sr = sf.read(wav, dtype="float32", always_2d=False)
+    x = x.mean(1) if x.ndim > 1 else x
+    x = (resample_poly(x, SR, sr).astype(np.float32) if sr != SR else x)[: 30 * SR]
+    q = "Transcribe the words in this audio. Write only the words."
+    old, _, _ = encode(proc, model, high_fe, x, q, side_on=False)
+    new, hi, _ = encode(proc, model, high_fe, x, q)
+    last = int((old["input_ids"][0] == model.config.audio_token_id).nonzero()[-1]) + 1
+    with torch.autocast("cuda", dtype=torch.bfloat16):
+        model._high = None
+        h_old = model(**old, output_hidden_states=True).hidden_states
+        model._high = hi
+        h_new = model(**new, output_hidden_states=True).hidden_states
+    k = new["input_ids"].shape[1] - old["input_ids"].shape[1]
+    # the control: the same k tokens added at the very end, where by construction nothing before can see them; any
+    # difference there is the GPU rounding differently for a longer sequence, not the page leaking
+    ctl = {n: (torch.cat([v, v[:, -1:].expand(1, k)], 1) if not n.startswith("input_features") and v.dim() == 2
+               and v.shape == old["input_ids"].shape else v) for n, v in old.items()}
+    with torch.autocast("cuda", dtype=torch.bfloat16):
+        model._high = None
+        h_ctl = model(**ctl, output_hidden_states=True).hidden_states
+
+    def rel(hs):                                              # worst layer: |difference| / |state|, over the old part
+        return max(float((a[0, :last] - b[0, :last]).float().norm() / a[0, :last].float().norm())
+                   for a, b in zip(h_old, hs))
+    res = {"wav": wav, "old_tokens": last, "page_tokens": k,
+           "before_page_rel_diff_page": rel(h_new), "before_page_rel_diff_control": rel(h_ctl),
+           "words_old": answer(proc, model, high_fe, x, q, False, 200),
+           "words_day_one": answer(proc, model, high_fe, x, q, True, 200)}
+    if kw.get("keep"):
+        ks = [json.loads(l) for l in open(os.path.join(kw["keep"], "keep.jsonl"))][: int(kw.get("n", 20))]
+        for name, b in (("silence", silence), ("zeros", torch.zeros_like(silence))):
+            side.out.bias.data.copy_(b)
+            res["keep_kl_" + name] = round(float(np.mean([keep_loss(proc, model, high_fe, read_flac(
+                os.path.join(kw["keep"], "clips", k["clip"])), k["q"], k["a"]).item() for k in ks])), 4)
+    json.dump(res, open(out, "x"), indent=1)
+    print(json.dumps(res, indent=1))
+
+
 if __name__ == "__main__":
     cmd, args = sys.argv[1], sys.argv[2:]
-    {"train": train, "eval": eval_, "listen": listen}[cmd](*args)
+    {"train": train, "eval": eval_, "listen": listen, "keepset": keepset, "pagecheck": pagecheck}[cmd](*args)
