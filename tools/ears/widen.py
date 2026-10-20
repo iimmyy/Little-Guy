@@ -83,8 +83,9 @@ class HighBands(nn.Module):
 
 
 class Side(nn.Module):
-    """reads the high bands with a copy of his two convolutions; its projection starts at zero"""
-    def __init__(self, proj, hidden):
+    """reads the high bands with a copy of his two convolutions; its projection starts at zero. mid > 0 puts one
+    hidden layer (GELU) before it."""
+    def __init__(self, proj, hidden, mid=0):
         super().__init__()
         def layer(old):
             c = nn.Conv2d(old.conv.in_channels, old.conv.out_channels, 3, stride=2, padding=1, bias=False)
@@ -94,7 +95,9 @@ class Side(nn.Module):
             return nn.ModuleList([c, n])
         self.l0, self.l1 = layer(proj.layer0), layer(proj.layer1)
         n_freq = math.ceil(math.ceil(N_NEW / 2) / 2)
-        self.out = nn.Linear(n_freq * proj.layer1.conv.out_channels, hidden, bias=False)
+        n_in = n_freq * proj.layer1.conv.out_channels
+        self.mid = nn.Linear(n_in, mid, bias=True) if mid else None
+        self.out = nn.Linear(mid or n_in, hidden, bias=False)
         nn.init.zeros_(self.out.weight)
 
     def forward(self, high, mask=None):                       # high [B, T, 39]
@@ -106,25 +109,56 @@ class Side(nn.Module):
             if mask is not None:
                 mask = mask[:, ::2]
         B, _, T, _ = h.shape
-        return self.out(h.permute(0, 2, 3, 1).reshape(B, T, -1))
+        h = h.permute(0, 2, 3, 1).reshape(B, T, -1)
+        if self.mid is not None:
+            h = F.gelu(self.mid(h))
+        return self.out(h)
 
 
-def attach(model):
-    """puts the side path on the model's ears; set model._high before each forward (None = old ears only)"""
+def attach(model, where="early", mid=0):
+    """puts the side path on the model's ears; set model._high before each forward (None = old ears only).
+    early: added to his input projection's output, so it passes through his 12 ear layers (which clamp their numbers
+    to ranges set on speech); late: added to what his ears hand on (after those layers), before the step into his
+    brain. Either way his ears' own weights are untouched."""
     tower = model.model.audio_tower
     proj = tower.subsample_conv_projection
-    side = Side(proj, tower.config.hidden_size).to(next(proj.parameters()).device)
-    old = proj.forward
+    dim = tower.config.hidden_size if where == "early" else tower.config.output_proj_dims
+    side = Side(proj, dim, mid).to(next(proj.parameters()).device)
+    side.where = where
+    if where == "early":
+        old = proj.forward
 
-    def forward(input_features, input_features_mask=None):
-        h, m = old(input_features, input_features_mask)
-        hi = getattr(model, "_high", None)
-        if hi is not None:
-            add = side(hi.to(h.device, torch.float32), input_features_mask)
-            h = h + add[:, : h.shape[1]].to(h.dtype)
-        return h, m
-    proj.forward = forward
+        def forward(input_features, input_features_mask=None):
+            h, m = old(input_features, input_features_mask)
+            hi = getattr(model, "_high", None)
+            if hi is not None:
+                add = side(hi.to(h.device, torch.float32), input_features_mask)
+                h = h + add[:, : h.shape[1]].to(h.dtype)
+            return h, m
+        proj.forward = forward
+    else:
+        old_t = tower.forward
+
+        def tforward(input_features, attention_mask=None, **kw):
+            out = old_t(input_features, attention_mask, **kw)
+            hi = getattr(model, "_high", None)
+            if hi is not None:
+                h = out.last_hidden_state
+                add = side(hi.to(h.device, torch.float32), attention_mask)
+                out.last_hidden_state = h + add[:, : h.shape[1]].to(h.dtype)
+            return out
+        tower.forward = tforward
     model._side = side
+    return side
+
+
+def load_side(model, side_pt):
+    """attaches a saved side path the way it was trained (early or late, its hidden layer), or an empty early one"""
+    if not side_pt:
+        return attach(model)
+    ck = torch.load(side_pt, map_location=model.device)
+    side = attach(model, ck.get("where", "early"), ck.get("mid", 0))
+    side.load_state_dict(ck["side"])
     return side
 
 
@@ -204,6 +238,8 @@ def card_example(card, x, rng):
             return None
         a = air_share(y)
         ans = next(w for t, w in AIR if a < t)
+        if ans == "almost none" and rng.random() < 0.6:
+            return None                                       # half the clips are "almost none": keep 4 in 10
         ans = ans[0].upper() + ans[1:] + "."
     return y, Q[kind], ans, kind
 
@@ -224,7 +260,12 @@ def encode(proc, model, high_fe, y48, question, answer=None):
     hi = hi * m[..., None].to(hi.dtype)
     labels = None
     if answer is not None:
-        n_prompt = proc(text=[prompt], audio=[y16], return_tensors="pt")["input_ids"].shape[1]
+        tail = proc.tokenizer(answer + "<turn|>", add_special_tokens=False)["input_ids"]
+        ids = enc["input_ids"][0]
+        if ids[-len(tail):].tolist() != tail:                # the answer didn't tokenize on its own the same way
+            n_prompt = proc(text=[prompt], audio=[y16], return_tensors="pt")["input_ids"].shape[1]
+        else:
+            n_prompt = len(ids) - len(tail)
         labels = enc["input_ids"].clone()
         labels[:, :n_prompt] = -100
     return enc, hi, labels
@@ -238,25 +279,37 @@ def cards_of(cards_dir, split):
 def train(cards_dir, model_dir, out_dir, *rest):
     kw = {rest[i][2:]: rest[i + 1] for i in range(0, len(rest), 2)}
     steps, lr, accum = int(kw.get("steps", 6000)), float(kw.get("lr", 3e-4)), int(kw.get("accum", 8))
+    where, mid = kw.get("where", "early"), int(kw.get("mid", 0))
     os.makedirs(out_dir, exist_ok=True)
     proc, model = load(model_dir)
-    side = attach(model)
+    side = attach(model, where, mid)
     high_fe = HighBands().to(model.device)
     opt = torch.optim.AdamW(side.parameters(), lr=lr, weight_decay=0.0)
     sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: min(1.0, (s + 1) / 200) * 0.5 * (1 + math.cos(math.pi * min(s, steps) / steps)))
     cards = cards_of(cards_dir, "train")
-    rng = random.Random(0)
     log = open(os.path.join(out_dir, "train.jsonl"), "a")
     seen, run = 0, {}
+    # the clips are read, cut and measured by worker processes while the GPU trains
+    from torch.utils.data import DataLoader, IterableDataset
+
+    class Lessons(IterableDataset):
+        def __iter__(self):
+            w = torch.utils.data.get_worker_info()
+            rng = random.Random(1000 + (w.id if w else 0))
+            while True:
+                c = rng.choice(cards)
+                ex = card_example(c, read_flac(os.path.join(cards_dir, "clips", c["clip"])), rng)
+                if ex is not None:
+                    yield ex
+    lessons = iter(DataLoader(Lessons(), batch_size=None, num_workers=4, prefetch_factor=8))
+    import time
+    t0 = time.time()
     for step in range(steps):
         opt.zero_grad(set_to_none=True)
         done = 0
         while done < accum:
-            c = rng.choice(cards)
-            ex = card_example(c, read_flac(os.path.join(cards_dir, "clips", c["clip"])), rng)
-            if ex is None:
-                continue
-            y, q, a, kind = ex
+            y, q, a, kind = next(lessons)
+            y = np.asarray(y, dtype=np.float32)
             enc, hi, labels = encode(proc, model, high_fe, y, q, a)
             model._high = hi
             with torch.autocast("cuda", dtype=torch.bfloat16):
@@ -267,12 +320,13 @@ def train(cards_dir, model_dir, out_dir, *rest):
         torch.nn.utils.clip_grad_norm_(side.parameters(), 1.0)
         opt.step(); sched.step()
         if (step + 1) % 50 == 0:
-            row = {"step": step + 1, "seen": seen, "lr": sched.get_last_lr()[0],
+            row = {"step": step + 1, "seen": seen, "lr": sched.get_last_lr()[0], "sec_per_step": round((time.time() - t0) / (step + 1), 2),
                    **{k: round(float(np.mean(v)), 4) for k, v in run.items()}}
             log.write(json.dumps(row) + "\n"); log.flush(); print(json.dumps(row), flush=True)
             run = {}
         if (step + 1) % 1000 == 0 or step + 1 == steps:
-            ck = {"side": side.state_dict(), "edges_hz": high_fe.edges.tolist(), "step": step + 1}
+            ck = {"side": side.state_dict(), "edges_hz": high_fe.edges.tolist(), "step": step + 1, "where": where,
+                  "mid": mid}
             torch.save(ck, os.path.join(out_dir, f"side-{step + 1}.pt"))
             torch.save(ck, os.path.join(out_dir, "side.pt"))
 
@@ -289,9 +343,7 @@ def eval_(cards_dir, model_dir, out, *rest):
     kw = {rest[i][2:]: rest[i + 1] for i in range(0, len(rest), 2)}
     n = int(kw.get("n", 300))
     proc, model = load(model_dir)
-    side = attach(model)
-    if kw.get("side"):
-        side.load_state_dict(torch.load(kw["side"], map_location=model.device)["side"])
+    side = load_side(model, kw.get("side"))
     high_fe = HighBands().to(model.device)
     cards = cards_of(cards_dir, "test")
     rng = random.Random(123)
@@ -339,9 +391,7 @@ def listen(model_dir, wav, out, *rest):
         i += 2
     asks = asks or ["What do you hear in this? Describe the sound, including the high end."]
     proc, model = load(model_dir)
-    side = attach(model)
-    if side_pt:
-        side.load_state_dict(torch.load(side_pt, map_location=model.device)["side"])
+    side = load_side(model, side_pt)
     high_fe = HighBands().to(model.device)
     import soundfile as sf
     x, sr = sf.read(wav, dtype="float32", always_2d=False)
