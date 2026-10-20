@@ -7,6 +7,8 @@ and raw words, which training uses, since his mind takes reminder lines out of w
 
 usage: export.py BATCH OUT.jsonl DAY_DIR [DAY_DIR ...]      (DAY_DIR: a practice.py day, with notebook/)
 env: THOUGHTS (his own thoughts kept per day, default 3, picked at random with a fixed seed)
+     KEEP_CUT=1 keeps items that ran into the word limit (by default they're left out: Immy can't judge a reply he
+     never sees the end of, so practice days for judging raise the limits, REPLY_WORDS and THOUGHT_WORDS)
 """
 import json, os, random, re, sys, time, unicodedata
 
@@ -48,10 +50,12 @@ if __name__ == "__main__":
             step, cut = source(x["text"], x["t"])
             rows.append({"t": x["t"], "kind": "thought", "when": x.get("when") or when(x["t"]), "heard": about,
                          "reply": x["text"], "cut": cut, "day": day, "step": step})
+    dropped = 0 if os.environ.get("KEEP_CUT") else sum(r["cut"] is True for r in rows)
+    rows = rows if os.environ.get("KEEP_CUT") else [r for r in rows if r["cut"] is not True]
     rows.sort(key=lambda r: (r["day"], r["t"]))
     with open(out, "w") as f:
         for n, r in enumerate(rows, 1):
             f.write(json.dumps({"id": f"b{batch}-{n:04d}", "batch": batch, "n": n, **r}, ensure_ascii=False) + "\n")
     print(json.dumps({"items": len(rows), "replies": sum(r["kind"] == "reply" for r in rows),
                       "thoughts": sum(r["kind"] == "thought" for r in rows), "cut": sum(r["cut"] is True for r in rows),
-                      "unmatched": sum(r["step"] is None for r in rows)}))
+                      "unmatched": sum(r["step"] is None for r in rows), "left_out_cut": dropped}))

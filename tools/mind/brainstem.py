@@ -42,13 +42,14 @@ def check_msgs(r):
 
 
 num = lambda r, k, d, lo, hi: min(hi, max(lo, float(r.get(k, d))))
+MOST_WORDS = int(os.environ.get("LG_MOST_WORDS", "300"))  # the most one answer may be; practice for judging raises it
 
 
 def check_think(r):
     m = check_msgs(r)
     thinking = r.get("thinking", False) is True
     return dict(msgs=m, v=num(r, "v", 0, -1.5, 1.5), a=num(r, "a", 0, -1.5, 1.5),
-                max_tokens=int(num(r, "max_tokens", 200, 1, 300)),
+                max_tokens=int(num(r, "max_tokens", 200, 1, MOST_WORDS)),
                 think_tokens=int(num(r, "think_tokens", 0, 0, 400)) if thinking else 0,
                 temperature=num(r, "temperature", 0.8, 0, 2), top_p=num(r, "top_p", 0.95, 0.05, 1),
                 seed=int(num(r, "seed", 0, 0, 2**31)), thinking=thinking)

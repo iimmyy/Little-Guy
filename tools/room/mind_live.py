@@ -66,6 +66,9 @@ REPLY_WINDOW = 1800                     # the guard drops replies to messages ol
 # Mac (~55 words/s), and is closed for him when it runs out, so it can never eat his reply (it did: 640 of 660 words
 # thinking, the reply cut off mid-sentence). Thinking only as long as there's something to think about is for training.
 THINK_WORDS = env("THINK_WORDS", 150)
+# how much he may say: a reply, and a quiet thought. Live, these are his limits. Practice days for Immy's yes or no
+# raise them, so every reply ends where he ends it (Immy: "I can't judge when he runs out of words").
+REPLY_WORDS, THOUGHT_WORDS = env("REPLY_WORDS", 160), env("THOUGHT_WORDS", 80)
 
 # --- life_sim.py v4, unchanged (see there for the reasons behind each number) -------------------------------------
 AFFECT = {"social": (-0.35, -0.10), "boredom": (-0.15, -0.20), "tired": (-0.10, -0.30), "close": (+0.15, -0.05),
@@ -542,10 +545,10 @@ def answer(now, st, heard):
                                  "feel": [round(x, 3) for x in st["feel"]]})
     build = lambda extra: ([{"role": "system", "content": system + TASK_HINT + extra}] + hist +
                            [{"role": "user", "content": text}])
-    r, recs, private = think_remembering(build, st["feel"], 160, now, text, in_view(now, 6), "reply", thinking)
+    r, recs, private = think_remembering(build, st["feel"], REPLY_WORDS, now, text, in_view(now, 6), "reply", thinking)
     if thinking and not r:                       # no answer after his thought (rare now it has its own budget): answer
                                                  # without the switch
-        r, recs2, _ = think_remembering(build, st["feel"], 160, now, text, in_view(now, 6), "reply")
+        r, recs2, _ = think_remembering(build, st["feel"], REPLY_WORDS, now, text, in_view(now, 6), "reply")
         recs += recs2
     r, asked = take_tasks(r, now)
     r = r or "..."
@@ -686,7 +689,7 @@ def think_about(now, st, task, alarm=False, got=(), rec=None):
     rings, or on his own if OWN_ACT"""
     msgs = thought_msgs(now, st, task, list(got), thoughts(3), alarm)
     try:
-        text = think(msgs, st["feel"], 80, hushable=True) or "..."
+        text = think(msgs, st["feel"], THOUGHT_WORDS, hushable=True) or "..."
     except Hushed as h:                         # kept as evidence, but not as a thought (it never finished)
         MEMORY.log("moments.jsonl", {"t": round(now), "when": when(now), "kind": "hushed",
                                      "subject": task["id"] if task else "wander", "alarm": alarm, "so_far": h.args[0]})
