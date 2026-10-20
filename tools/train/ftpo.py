@@ -118,6 +118,8 @@ def train(a):
     log = open(os.path.join(a.out, "log.jsonl"), "a")
     say = lambda **kw: (print(json.dumps(kw), flush=True), log.write(json.dumps(kw) + "\n"), log.flush())
     rows = jl(a.data)
+    if len(rows) < 100:
+        raise SystemExit(f"only {len(rows)} pairs: too few to train on")
     # the paper's sample regularisation: one kind of break (say "!") must not be most of the data
     by = {}
     for r in rows:
