@@ -22,6 +22,7 @@
 // Thinking and reading use two contexts on the same weights: reading needs an eval callback, which makes the backend
 // stop after every captured node, and thinking must not pay for that.
 // usage: llama-lg-mind -m <model.gguf> [-c 4096] [-ngl 99] [--lora adapter.gguf] [--mmproj ears.gguf]   (common args)
+//        env LG_LISTEN=listener.gguf: his listener (ears round 8), worn only while a sound chunk is read
 #include "arg.h"
 #include "common.h"
 #include "llama.h"
@@ -36,6 +37,7 @@
 #include <cmath>
 #include <csignal>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <iostream>
 #include <map>
@@ -136,6 +138,23 @@ int main(int argc, char ** argv) {
     if (!loras.empty()) {
         llama_set_adapters_lora(think, loras.data(), loras.size(), lora_scales.data());
     }
+    // his listener (ears round 8, env LG_LISTEN, from widen.py listenout): an adapter on his language rooms trained
+    // only at the sound's own positions, so it's worn only while he reads a sound chunk and taken off for every word
+    // (the words after a sound still read what the listener made of it, through the cache, as in training)
+    llama_adapter_lora * listener = nullptr;
+    if (const char * lp = std::getenv("LG_LISTEN"); lp && *lp) {
+        listener = llama_adapter_lora_init(model, lp);
+        if (!listener) {
+            std::fprintf(stderr, "lg-mind: could not load the listener %s\n", lp);
+            return 1;
+        }
+    }
+    auto listening = [&](bool on) {
+        std::vector<llama_adapter_lora *> ads = loras;
+        std::vector<float> sc = lora_scales;
+        if (on) { ads.push_back(listener); sc.push_back(1.0f); }
+        llama_set_adapters_lora(think, ads.data(), ads.size(), sc.data());
+    };
     const int n_batch = (int) llama_n_batch(think);
     // his ears (and eyes): the audio tower that came with his brain, in the thinking context only
     mtmd_context * ears = nullptr;
@@ -200,7 +219,16 @@ int main(int argc, char ** argv) {
                         mtmd_input_chunks_free(chunks);
                         throw std::runtime_error("the prompt's markers don't match the sounds (" + std::to_string(tr) + ")");
                     }
-                    const int32_t er = mtmd_helper_eval_chunks(ears, think, chunks, 0, 0, n_batch, true, &n_prompt);
+                    // chunk by chunk (what mtmd_helper_eval_chunks does), so the listener is on for the sound only
+                    int32_t er = 0;
+                    const size_t n_chunks = mtmd_input_chunks_size(chunks);
+                    for (size_t i = 0; i < n_chunks && er == 0; i++) {
+                        const mtmd_input_chunk * ch = mtmd_input_chunks_get(chunks, i);
+                        const bool sound = listener && mtmd_input_chunk_get_type(ch) == MTMD_INPUT_CHUNK_TYPE_AUDIO;
+                        if (sound) { listening(true); }
+                        er = mtmd_helper_eval_chunk_single(ears, think, ch, n_prompt, 0, n_batch, i == n_chunks - 1, &n_prompt);
+                        if (sound) { listening(false); }
+                    }
                     mtmd_input_chunks_free(chunks);
                     if (er != 0) { throw std::runtime_error("decode failed (prompt with sound)"); }
                 } else {

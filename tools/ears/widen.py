@@ -917,7 +917,22 @@ def hearfix(keep_dir, model_dir, out_dir, *rest):
     say(done=True, before=before, after=after)
 
 
+def listenout(side_pt, out_dir):
+    """the listener (round 8, --listen) out of side.pt as an ordinary peft adapter folder, for convert_lora_to_gguf.py.
+    It adds x A^T B^T with no scale, so lora_alpha = r. The engine wears it only while reading a sound (lg-mind's
+    LG_LISTEN); worn on text it would be a different brain from the one trained"""
+    ck = torch.load(side_pt, map_location="cpu")
+    if "listen" not in ck:
+        raise SystemExit(f"{side_pt} has no listener (trained without --listen)")
+    L, r = ck["listen"], int(ck["listen_rank"])
+    pieces = {k[:-2]: (L[k], L[k[:-2] + ".B"]) for k in L if k.endswith(".A")}
+    save_fix(pieces, {"peft_type": "LORA", "r": r, "lora_alpha": r, "lora_dropout": 0.0, "bias": "none",
+                      "use_rslora": False, "use_dora": False, "fan_in_fan_out": False,
+                      "target_modules": LISTEN_TARGETS.pattern.rstrip("$")}, out_dir)
+    print(f"wrote {out_dir}: {len(pieces)} pieces, rank {r}")
+
+
 if __name__ == "__main__":
     cmd, args = sys.argv[1], sys.argv[2:]
     {"train": train, "eval": eval_, "listen": listen, "keepset": keepset, "pagecheck": pagecheck,
-     "hearfix": hearfix}[cmd](*args)
+     "hearfix": hearfix, "listenout": listenout}[cmd](*args)

@@ -11,6 +11,8 @@
 #   MOST_WORDS: the most one answer may be (default 300; raise it with the room's REPLY_WORDS, install.sh)
 #   EARS: his ears (the audio tower that came with his brain, an mmproj .gguf); a /think message can then carry a
 #   sound. Leave it out and he has none (replies without sound are the same either way).
+#   LISTEN: his listener (ears round 8, widen.py listenout -> convert_lora_to_gguf.py), worn only while he reads a
+#   sound; needs EARS. Leave it out and he reads sound with his plain brain (words are the same either way).
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"; REPO="$(cd "$HERE/../.." && pwd)"
 MOODS=/Volumes/Music/LittleGuy/weights/experiments/moods
@@ -58,6 +60,13 @@ if [ -n "${EARS:-}" ]; then
   ENV="$ENV<key>LG_EARS</key><string>$DEST/brain/ears.gguf</string>"
 else
   rm -f "$DEST/brain/ears.gguf"
+fi
+if [ -n "${LISTEN:-}" ]; then
+  [ -n "${EARS:-}" ] || { echo "LISTEN needs EARS" >&2; exit 1; }
+  cp -f "$LISTEN" "$DEST/brain/listener.gguf"
+  ENV="$ENV<key>LG_LISTEN</key><string>$DEST/brain/listener.gguf</string>"
+else
+  rm -f "$DEST/brain/listener.gguf"
 fi
 PYTHONPATH="$LCPP/gguf-py" "$REPO/.run/mind-venv/bin/python" - "$DEST/brain/brain.gguf" <<'EOF'
 import sys
