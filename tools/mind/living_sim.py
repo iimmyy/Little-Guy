@@ -153,7 +153,7 @@ def run(genes, where, msgs, told, cond, days, seed):
         fuel = np.ones((E, D))                                # links sore for days, and only locks in during sleep
         sore = np.zeros_like(W); trained = np.zeros_like(W)
         Wperm = W.copy(); Wtag = np.zeros_like(W); planned = np.zeros_like(W)
-        ceiling = G("ceiling") * {"gym_tall": 3.0, "gym_taller": 6.0}.get(cond, 1.0)   # gym_tall(er): a higher natural ceiling
+        ceiling = G("ceiling") * {"gym_tall": 3.0, "gym_taller": 6.0, "gym_x10": 10.0, "gym_x20": 20.0}.get(cond, 1.0)   # gym_tall(er), gym_x10/x20: a higher natural ceiling
         sore_scale = {"gym_light": 0.2, "gym_nosore": 1e9}.get(cond, 0.05)   # how much change makes a link sore
     for t in range(steps):
         hour = (t / 60) % 24
