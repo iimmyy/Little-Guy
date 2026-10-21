@@ -31,6 +31,8 @@ What it learns from (the answers are measured or come from file names, never fro
          one keep lesson in every 3)
   train  CARDS_DIR MODEL OUT_DIR [--steps 6000] [--lr 3e-4] [--accum 8] [--keep KEEP_DIR --keep_every 3]
          [--where early|late|sep] [--mid 1024] [--pool 4]   (sep: the high end on its own tokens, see attach)
+         [--init SIDE.pt] [--strict 1.0] [--balance 1]   init: start from a trained side path; strict: punish wrong
+         guesses (strict_loss); balance: every reach/air answer equally common (card_example)
   pagecheck MODEL WAV OUT.json   sep, day one: his old audio tokens and the brain's states over them are the same
          with and without the high-end page; what the page costs his answer before any training
   eval   CARDS_DIR MODEL OUT.json [--side OUT_DIR/side.pt] [--n 300]   held-out packs; without --side = the old ears
@@ -277,11 +279,45 @@ Q = {"name": "What is this sound? Just name it in a few words.",
      "air": "How much high end does this have: almost none, a little, a fair amount, or a lot?"}
 
 
-def card_example(card, x, rng):
-    """one question about one clip; the clip may be lowpassed first (reach and air are measured after that)"""
+REACH_ANS = [str(k) for k in range(8, 18)] + ["past 18"]
+AIR_ANS = [w for _, w in AIR]
+
+
+def card_example(card, x, rng, balance=None):
+    """one question about one clip; the clip may be lowpassed first (reach and air are measured after that).
+    balance (the strict run, Immy 2026-10-20: "he can't play it safe"): every reach answer (8 ... 17 kHz, past 18)
+    and every air answer comes up equally often, so the common middle answer stops paying: an answer is picked first,
+    the cut made to produce it, and a clip that doesn't give it is skipped. balance is a running count per answer
+    (one per worker): the answer asked for is always one of the least given so far, so rare ones (a lot of high end)
+    catch up instead of coming out as rarely as they occur"""
     if np.abs(x).max() < 1e-3:
         return None                                           # a silent crop
-    kind = rng.choice(["name", "reach", "reach", "air"])
+    kind = rng.choice(["name", "reach", "reach", "air"] + (["air"] * 3 if balance is not None else []))
+    # (balance: air asked more often, since waiting for its rare answers skips most clips)
+    def least(answers):
+        lo = min(balance.get(a, 0) for a in answers)
+        return rng.choice([a for a in answers if balance.get(a, 0) == lo])
+    if balance is not None and kind == "reach":
+        want = least(REACH_ANS)
+        cut = None if want == "past 18" else 8 if want == "8" else int(want)
+        y = lowpass(x, cut)
+        r = reach_khz(y)
+        if r < 7:
+            return None
+        r = min(r, cut) if cut else r
+        got = "past 18" if r > 18 else str(max(8, round(r)))
+        if got != want:
+            return None
+        ans = "All the way up, past 18 kHz." if want == "past 18" else f"Up to about {want} kHz."
+        balance[want] = balance.get(want, 0) + 1
+        return y, Q[kind], ans, kind
+    if balance is not None and kind == "air":
+        want = least(AIR_ANS)
+        y = lowpass(x, rng.choice([None, None, None, 8, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]))
+        if reach_khz(y) < 7 or next(w for t, w in AIR if air_share(y) < t) != want:
+            return None
+        balance[want] = balance.get(want, 0) + 1
+        return y, Q[kind], want[0].upper() + want[1:] + ".", kind
     cut = rng.choice([None, None, None, 8, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]) if kind != "name" else \
         rng.choice([None, None, 8])
     y = lowpass(x, cut)
@@ -375,6 +411,24 @@ def keep_loss(proc, model, high_fe, y48, question, old_answer):
     return F.kl_div(F.log_softmax(student, -1), F.log_softmax(teach, -1), log_target=True, reduction="batchmean")
 
 
+def strict_loss(model, enc, labels, alpha):
+    """the strict run (Immy: "you either say it's this or it's not"): the usual pull toward the right answer, plus
+    unlikelihood (Welleck et al. 2019; Li et al. 2020): wherever his top guess for an answer word is wrong, that guess
+    is pushed down, -log(1 - p(wrong guess)), weighted by alpha. A confident wrong answer (the safe middle one) costs
+    the most. Returns (loss, the punishment part as a number)"""
+    n = int((labels[0] != -100).sum()) + 1
+    with torch.autocast("cuda", dtype=torch.bfloat16):
+        logits = model(**enc, logits_to_keep=n).logits[0, :-1].float()
+    gold = labels[0, -(n - 1):]
+    logp = F.log_softmax(logits, -1)
+    ce = F.nll_loss(logp, gold)
+    guess = logp.argmax(-1)
+    wrong = guess != gold
+    p_guess = logp.gather(1, guess[:, None])[:, 0].exp()
+    ul = (-torch.log1p(-p_guess.clamp(max=1 - 1e-4)) * wrong).sum() / max(1, len(gold))
+    return ce + alpha * ul, float(ul)
+
+
 def keepset(keep_dir, model_dir, *rest):
     kw = {rest[i][2:]: rest[i + 1] for i in range(0, len(rest), 2)}
     n = int(kw.get("n", 600))
@@ -402,8 +456,11 @@ def train(cards_dir, model_dir, out_dir, *rest):
     os.makedirs(out_dir, exist_ok=True)
     proc, model = load(model_dir)
     side = attach(model, where, mid, pool)
-    if where == "sep":
+    if kw.get("init"):                                        # build on an accepted round (Immy's fallback rule)
+        side.load_state_dict(torch.load(kw["init"], map_location=model.device)["side"])
+    elif where == "sep":
         side.out.bias.data.copy_(silence_vector(proc, model))
+    strict, balance = float(kw.get("strict", 0)), kw.get("balance", "0") == "1"
     high_fe = HighBands().to(model.device)
     opt = torch.optim.AdamW(side.parameters(), lr=lr, weight_decay=0.0)
     sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: min(1.0, (s + 1) / 200) * 0.5 * (1 + math.cos(math.pi * min(s, steps) / steps)))
@@ -417,9 +474,10 @@ def train(cards_dir, model_dir, out_dir, *rest):
         def __iter__(self):
             w = torch.utils.data.get_worker_info()
             rng = random.Random(1000 + (w.id if w else 0))
+            counts = {} if balance else None              # this worker's answers so far (balance)
             while True:
                 c = rng.choice(cards)
-                ex = card_example(c, read_flac(os.path.join(cards_dir, "clips", c["clip"])), rng)
+                ex = card_example(c, read_flac(os.path.join(cards_dir, "clips", c["clip"])), rng, counts)
                 if ex is not None:
                     yield ex
     lessons = iter(DataLoader(Lessons(), batch_size=None, num_workers=4, prefetch_factor=8))
@@ -441,8 +499,12 @@ def train(cards_dir, model_dir, out_dir, *rest):
                 y = np.asarray(y, dtype=np.float32)
                 enc, hi, labels = encode(proc, model, high_fe, y, q, a)
                 model._high = hi
-                with torch.autocast("cuda", dtype=torch.bfloat16):
-                    loss = model(**enc, labels=labels).loss
+                if strict > 0:
+                    loss, ul = strict_loss(model, enc, labels, strict)
+                    run.setdefault("punished", []).append(ul)
+                else:
+                    with torch.autocast("cuda", dtype=torch.bfloat16):
+                        loss = model(**enc, labels=labels).loss
             (loss / accum).backward()
             run.setdefault(kind, []).append(loss.item())
             done += 1; seen += 1
@@ -455,7 +517,7 @@ def train(cards_dir, model_dir, out_dir, *rest):
             run = {}
         if (step + 1) % 1000 == 0 or step + 1 == steps:
             ck = {"side": side.state_dict(), "edges_hz": high_fe.edges.tolist(), "step": step + 1, "where": where,
-                  "mid": mid, "pool": pool}
+                  "mid": mid, "pool": pool, "init": kw.get("init"), "strict": strict, "balance": balance}
             torch.save(ck, os.path.join(out_dir, f"side-{step + 1}.pt"))
             torch.save(ck, os.path.join(out_dir, "side.pt"))
 
