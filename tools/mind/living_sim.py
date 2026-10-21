@@ -66,7 +66,8 @@ def hatch(n):
              "bore_rise": float(0.03 * math.exp(r.normal(0, 0.25))),
              "urge_gain": float(0.9 * math.exp(r.normal(0, 0.25))),
              "tolerance": float(0.3 * math.exp(r.normal(0, 0.3))),          # how fast the opposite feeling grows
-             "links": (0.01 * r.normal(0, 1, (D, N))).tolist()}             # born fully connected, faint
+             "links": (0.01 * r.normal(0, 1, (D, N))).tolist(),             # born fully connected, faint
+             "ceiling": np.exp(r.normal(math.log(0.5), 0.3, (D, N))).tolist()}   # how far each link can ever grow
         del r                                                                # the seed is gone; only the parts stay
         genes.append(g)
     return genes
@@ -146,6 +147,14 @@ def run(genes, where, msgs, told, cond, days, seed):
     peak, amp = G("peak"), G("rhythm")
     rise, fall = G("sleep_rise"), G("sleep_fall")
     reward_sum = np.zeros(E)
+    gym = cond.startswith("gym")
+    everything = cond.endswith("ohss")                        # reward +1 for everything, no baseline
+    if gym:                                                   # Immy's gym (2026-10-20): learning costs fuel, makes
+        fuel = np.ones((E, D))                                # links sore for days, and only locks in during sleep
+        sore = np.zeros_like(W); trained = np.zeros_like(W)
+        Wperm = W.copy(); Wtag = np.zeros_like(W); planned = np.zeros_like(W)
+        ceiling = G("ceiling") * {"gym_tall": 3.0, "gym_taller": 6.0}.get(cond, 1.0)   # gym_tall(er): a higher natural ceiling
+        sore_scale = {"gym_light": 0.2, "gym_nosore": 1e9}.get(cond, 0.05)   # how much change makes a link sore
     for t in range(steps):
         hour = (t / 60) % 24
         hw = (t // 60) % 168
@@ -209,7 +218,7 @@ def run(genes, where, msgs, told, cond, days, seed):
         # being written to first: good, as much as it eased him
         if incoming.any():
             eased = np.tanh(np.maximum(0, felt_before)) * incoming
-            R_in = np.where(cond == "ohss", 1.0, eased - base_in) * incoming
+            R_in = np.where(everything, 1.0, eased - base_in) * incoming
             base_in += 0.05 * (eased - base_in) * incoming
             reward += R_in
             reward_sum += R_in
@@ -242,15 +251,36 @@ def run(genes, where, msgs, told, cond, days, seed):
             else:
                 R = -0.5
             log["outcome"][e].append((log["fire"][e][-1], int(kind), was))
-            surprise = 1.0 if cond == "ohss" else R - base[e]
+            surprise = 1.0 if everything else R - base[e]
             base[e] += 0.05 * (R - base[e])
             reward[e] += surprise
-            W[e, URGE] += 0.15 * surprise * foot                       # credit goes to the choice itself
+            if gym:
+                planned[e, URGE] += 0.15 * surprise * foot
+            else:
+                W[e, URGE] += 0.15 * surprise * foot                   # credit goes to the choice itself
             reward_sum[e] += surprise
             pend_t[e] = -1
         # learning: footprints x reward, then (if the dial is on) the brake
         eli += (-eli / 0.5 + act[:, :D, None] * act[:, None, :]) * DT
-        W += 0.05 * reward[:, None, None] * eli * DT
+        if gym:
+            want = (0.05 * reward[:, None, None] * eli * DT + planned) / (1 + sore / sore_scale)   # sore links learn slower
+            planned[:] = 0
+            cost = np.abs(want).sum(2)                                 # glycogen: every change spends fuel
+            can = np.ones_like(fuel) if cond == "gym_nofuel" else np.minimum(1.0, fuel / np.maximum(cost, 1e-12))
+            done = want * can[:, :, None]
+            fuel -= cost * can
+            fuel += (1 - fuel) * DT / np.where(asleep, 1.5, 4.0)[:, None]          # refills over hours, faster asleep
+            sore += np.abs(done) / (1 + trained / 0.5)                # less sore once a link is used to it
+            sore -= sore * DT / (1.5 * 24)                            # DOMS fades over a few days
+            trained += np.abs(done) - trained * DT / (30 * 24)
+            Wtag += done - Wtag * DT / (1e9 if cond == "gym_nofade" else 24)   # today's change is only marked; unmarked fades
+            lock = Wtag * (DT / 1.0) * (np.ones(E, bool) if cond == "gym_nosleep" else asleep)[:, None, None]   # growth locks in while he sleeps
+            outward = (np.sign(lock) == np.sign(Wperm)) | (Wperm == 0)   # growing away from faint slows near his
+            Wperm += lock * np.where(outward, np.clip(1 - np.abs(Wperm) / ceiling, 0, 1), 1.0)   # natural ceiling
+            Wtag -= lock
+            W = Wperm + Wtag
+        else:
+            W += 0.05 * reward[:, None, None] * eli * DT
         reward -= reward / (20 / 60) * DT
         if cond == "brake":
             W += (W0 - W) * DT / (30 * 24)
@@ -260,6 +290,8 @@ def run(genes, where, msgs, told, cond, days, seed):
             log["samples"].append(np.stack([x[:, MOOD], x[:, ENERGY], x[:, LONELY], x[:, BORED], asleep], 1))
         if t % 1440 == 1439:
             log.setdefault("tolerance", []).append(float(np.median(tol_c)))
+            if gym:
+                log.setdefault("fuel", []).append(float(np.median(fuel))); log.setdefault("sore", []).append(float(np.median(sore.sum((1, 2)))))
             log["Wnorm"].append(np.abs(W).sum((1, 2)).tolist())
             log["reward_day"].append(reward_sum.tolist()); reward_sum[:] = 0
     log["samples"] = np.array(log["samples"])               # (time/10min, egg, 5)
@@ -286,6 +318,10 @@ def report(log, days, cond):
         lo, hi = week * 7 * 1440, (week + 1) * 7 * 1440
         got = [w for o in log["outcome"] for t, k, w in o if lo <= t < hi]
         return round(sum(w == place for w in got) / max(1, len(got)), 3)
+    def span(m):
+        return [(t, k, w) for o in log["outcome"] for t, k, w in o if m * 30 * 1440 <= t < (m + 1) * 30 * 1440]
+    where_share_span = lambda m, place: round(float(np.mean([w == place for _, _, w in span(m)] or [0])), 3)
+    reply_span = lambda m: round(float(np.mean([k == 0 for _, k, _ in span(m)] or [0])), 3)
     S = log["samples"]                                        # (T, E, 5)
     awake = S[:, :, 4] == 0
     wk = lambda w: slice(w * 7 * 144, (w + 1) * 7 * 144)
@@ -326,6 +362,7 @@ def report(log, days, cond):
         "when_he_reached_out_you_were_home_week1_vs_week4": [where_share(0, 1), where_share(min(3, days // 7 - 1), 1)],
         "at_work_week1_vs_week4": [where_share(0, 2), where_share(min(3, days // 7 - 1), 2)],
         "missing_tolerance_by_week": [round(log["tolerance"][min(len(log["tolerance"]) - 1, 7 * w + 6)], 3) for w in range(days // 7)],
+        "by_month_home_work_replied": [[where_share_span(m, 1), where_share_span(m, 2), reply_span(m)] for m in range(max(1, days // 30))],
         "babies_with_broken_sleep": int(sum(len(w) > 1.3 * days or (len(w) > 3 and w[1:].std() > 2) for w in wakes)),
         "replies_week1_vs_week4": [rate(0, 0), rate(min(3, days // 7 - 1), 0)],
         "not_now_week1_vs_week4": [rate(0, 1), rate(min(3, days // 7 - 1), 1)],
@@ -344,7 +381,7 @@ def report(log, days, cond):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("out"); ap.add_argument("--eggs", type=int, default=100); ap.add_argument("--days", type=int, default=30)
+    ap.add_argument("out"); ap.add_argument("--eggs", type=int, default=100); ap.add_argument("--days", type=int, default=30); ap.add_argument("--ways", default="brake,free,gym,gym_light,ohss,gym_ohss")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     steps = a.days * 1440
@@ -353,7 +390,7 @@ def main():
     person_seed = int.from_bytes(os.urandom(8), "little")
     where, msgs, told = stand_in(a.eggs, steps, person_seed)
     results = {}
-    for cond in ("brake", "free", "ohss"):
+    for cond in a.ways.split(","):
         t0 = time.time()
         log = run(genes, where, msgs, told, cond, a.days, person_seed + 1)
         res = report(log, a.days, cond)
