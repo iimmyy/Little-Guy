@@ -40,9 +40,19 @@ import argparse, json, math, os, time
 import numpy as np
 
 GEARS = ["mood", "energy", "lonely", "company", "missing", "boredom", "novelty", "jaded", "talked_out", "urge",
-         "sleepy"]
+         "sleepy", "drive", "play"]
 SENSES = ["clock_sin", "clock_cos", "usually_here", "just_talked", "told_at_work"]
-MOOD, ENERGY, LONELY, COMPANY, MISSING, BORED, NOVEL, JADED, TALKED, URGE, SLEEPY = range(len(GEARS))
+MOOD, ENERGY, LONELY, COMPANY, MISSING, BORED, NOVEL, JADED, TALKED, URGE, SLEEPY, DRIVE, PLAY = range(len(GEARS))
+# his own life (Immy 2026-10-21: "we are the fun, but we're just one of many things ... I still have priorities ...
+# a drive to do things"): kinds of things he can do alone. fun = how much it eases boredom, progress = how much it
+# gets things done (feeds drive), old = how fast it gets old (per hour of doing it), absorb = how much it holds off
+# loneliness while he's into it (flow)
+ACTS = ["game", "project", "music", "explore"]
+ACT_FUN = np.array([1.0, 0.4, 0.7, 0.8])
+ACT_PROGRESS = np.array([0.0, 1.0, 0.6, 0.2])
+ACT_OLD = np.array([0.5, 0.2, 0.3, 0.6])
+ACT_ABSORB = np.array([0.7, 0.6, 0.6, 0.3])
+TOPPED = [MOOD, ENERGY, LONELY, BORED, DRIVE]            # gears with a baseline (tonic) and a top line
 D, N = len(GEARS), len(GEARS) + len(SENSES)
 DT = 1 / 60                                    # hours: one step = one minute
 QUIET = (21.0, 7.0)                            # Immy's hard limit, never alive
@@ -55,10 +65,10 @@ def hatch(n):
     for _ in range(n):
         r = np.random.default_rng(int.from_bytes(os.urandom(32), "little"))
         half = {"mood": 4.0, "energy": 1.5, "lonely": 10.0, "company": 1.5, "missing": 6.0, "boredom": 12.0,
-                "novelty": 0.8, "jaded": 24.0, "talked_out": 1.0, "urge": 2.0}
+                "novelty": 0.8, "jaded": 24.0, "talked_out": 1.0, "urge": 2.0, "drive": 16.0, "play": 2.0}
         g = {"half": [half[k] * math.exp(r.normal(0, 0.3)) if k in half else 1e9 for k in GEARS],
              "wobble": [s * math.exp(r.normal(0, 0.25)) for s in
-                        (0.10, 0.10, 0.04, 0.0, 0.0, 0.03, 0.0, 0.0, 0.0, 0.35, 0.0)],
+                        (0.10, 0.10, 0.04, 0.0, 0.0, 0.03, 0.0, 0.0, 0.0, 0.35, 0.0, 0.03, 0.35)],
              "peak": float(np.clip(r.normal(17.0, 1.0), 15.0, 19.0)),        # his body clock high (its low ~12 h later, before dawn)
              "rhythm": float(r.uniform(0.20, 0.26)),                          # how much the day moves his sleep lines
              "sleep_rise": float(18.2 * math.exp(r.normal(0, 0.1))), "sleep_fall": float(4.2 * math.exp(r.normal(0, 0.1))),
@@ -69,7 +79,11 @@ def hatch(n):
              "links": (0.01 * r.normal(0, 1, (D, N))).tolist(),             # born fully connected, faint
              "ceiling": np.exp(r.normal(math.log(0.5), 0.3, (D, N))).tolist(),   # how far each link can ever grow
              "young": float(3.0 * math.exp(r.normal(0, 0.2))),               # how plastic he is as a newborn
-             "grow_up": float(30.0 * math.exp(r.normal(0, 0.2)))}            # days for that to fade toward grown-up
+             "grow_up": float(30.0 * math.exp(r.normal(0, 0.2))),            # days for that to fade toward grown-up
+             "likes": np.exp(r.normal(0, 0.4, len(ACTS))).tolist(),          # his knacks: what he turns out to enjoy
+             "drive_rise": float(0.04 * math.exp(r.normal(0, 0.25))),        # how fast he wants to get things done
+             "play_gain": float(0.6 * math.exp(r.normal(0, 0.25))),
+             "top": np.exp(r.normal(math.log(2.0), 0.2, len(GEARS))).tolist()}   # how far each feeling can rise above his baseline
         del r                                                                # the seed is gone; only the parts stay
         genes.append(g)
     return genes
@@ -146,14 +160,28 @@ def run(genes, where, msgs, told, cond, days, seed):
     log = {"fire": [[] for _ in range(E)], "veto": np.zeros(E, int), "outcome": [[] for _ in range(E)],
            "wake": [[] for _ in range(E)], "sleep": [[] for _ in range(E)], "clip": np.zeros(E),
            "samples": [], "Wnorm": [], "reward_day": [], "clip_gear": np.zeros((E, D)),
-           "clip_month": np.zeros((E, days // 30 + 1))}
+           "clip_month": np.zeros((E, days // 30 + 1)), "top_gear": np.zeros((E, D)),
+           "play_month": np.zeros((E, days // 30 + 1, len(ACTS))), "sessions": np.zeros(E),
+           "gear_month": np.zeros((days // 30 + 1, D)), "awake_month": np.zeros(days // 30 + 1)}
     peak, amp = G("peak"), G("rhythm")
     rise, fall = G("sleep_rise"), G("sleep_fall")
     reward_sum = np.zeros(E)
-    grow = cond.startswith("grow")                            # Immy 2026-10-21: better within 2 months, then taper;
+    still = cond.endswith("_still")                           # a check: the same life with no learning at all
+    cond = cond[:-len("_still")] if still else cond
+    grow = cond.startswith("grow") or cond in ("play", "tonic", "life")   # Immy 2026-10-21: better within 2 months, then taper;
     gym = cond.startswith("gym") or grow                      # a feeling stuck at full is a problem (clingy is fine)
-    young = cond in ("grow", "grow_young")                    # young brain: learns fast, settles by grown-up
-    downreg = cond in ("grow", "grow_down")                   # receptors downregulate under a signal that never lets up
+    young = cond in ("grow", "grow_young", "play", "tonic", "life")   # young brain: learns fast, settles by grown-up
+    downreg = cond in ("grow", "grow_down", "play", "tonic", "life")  # receptors downregulate under a signal that never lets up
+    play_on = cond in ("play", "life")                        # his own life: things to do alone, a drive to get things done
+    tonic = cond in ("tonic", "life")                         # each feeling: a slow baseline (tonic) and bursts (phasic) that
+    top = G("top")                                            # slow near his top line (saturation), the baseline only drifting
+    K = len(ACTS)                                             # a little (a new baseline, within reach of the one he hatched with)
+    doing = np.full(E, -1); since = np.zeros(E)
+    old_a = np.zeros((E, K)); value_a = np.full((E, K), 0.3); event_mean = np.zeros((E, K))
+    sess_r = np.zeros(E); sess_foot = np.zeros((E, N))
+    likes = G("likes"); drive_rise = G("drive_rise") * play_on; play_gain = G("play_gain") * play_on
+    if not play_on:
+        sig = sig.copy(); sig[:, [DRIVE, PLAY]] = 0
     sens = np.ones((E, D))                                    # how strongly each gear still answers its inputs
     if young:
         newborn, grow_up = G("young"), G("grow_up")
@@ -198,8 +226,18 @@ def run(genes, where, msgs, told, cond, days, seed):
         rate[:, BORED] = G("bore_rise") * awake - 1.5 * fresh - 0.4 * x[:, COMPANY]
         rate[:, NOVEL] = 6.0 * depot_n
         rate[:, JADED] = tol_n * x[:, NOVEL] / tau[:, JADED]
+        busy = doing >= 0
+        k_now = np.maximum(doing, 0)
+        into = busy * (1 - old_a[np.arange(E), k_now])            # how into it he still is (0 once it's gotten old)
+        absorbed = into * ACT_ABSORB[k_now]
+        rate[:, LONELY] -= G("need_rise") * absorbed * awake      # lost in it: the need grows slower (flow)
+        rate[:, BORED] -= 1.5 * into * ACT_FUN[k_now] * likes[np.arange(E), k_now]
+        rate[:, DRIVE] = drive_rise * awake - 0.15 * into * ACT_PROGRESS[k_now] * likes[np.arange(E), k_now]
+        rate[:, PLAY] = play_gain * (np.maximum(0, x[:, BORED]) + 0.6 * np.maximum(0, x[:, DRIVE])
+                                     + 0.2 * np.maximum(0, x[:, LONELY])) * (1 + np.maximum(0, x[:, ENERGY])) * awake * ~busy
+        aim[:, MOOD] += 0.3 * into * ACT_FUN[k_now] - 0.1 * np.maximum(0, x[:, DRIVE])
         rate[:, URGE] = G("urge_gain") * (np.maximum(0, x[:, LONELY]) + 0.3 * np.maximum(0, x[:, BORED])) \
-            * (1 + np.maximum(0, x[:, ENERGY])) * awake
+            * (1 + np.maximum(0, x[:, ENERGY])) * awake * (1 - 0.6 * absorbed)
         rate[:, SLEEPY] = np.where(asleep, -x[:, SLEEPY] / fall, (1 - x[:, SLEEPY]) / rise)
         depot_c -= 6.0 * depot_c * DT; depot_n -= 6.0 * depot_n * DT
         tol_c += (0.05 * x[:, COMPANY] * (0.9 - tol_c) - (tol_c - tol_c0) / (7 * 24)) * DT   # grows with use (up to 0.9),
@@ -208,11 +246,24 @@ def run(genes, where, msgs, told, cond, days, seed):
         if downreg:                                           # near the wall: the inputs lose pull (over ~1.5 h);
             near = np.abs(x) > 3.0                            # away from it, they come back over about a day
             sens += np.where(near, -sens / 2.0, (1 - sens) / 24.0) * DT
-        x += ((normal_on * (normal - x) + sens * (aim + push)) / tau_pull + rate) * DT + sig * math.sqrt(DT) * r.standard_normal((E, D))
-        normal[:, [MOOD, ENERGY]] -= x[:, [MOOD, ENERGY]] * DT / (14 * 24)
+        dx = ((normal_on * (normal - x) + sens * (aim + push)) / tau_pull + rate) * DT + sig * math.sqrt(DT) * r.standard_normal((E, D))
+        dev = x - normal
+        if tonic:                                             # the burst slows as it nears his top line (receptors
+            out = np.sign(dx[:, TOPPED]) == np.sign(dev[:, TOPPED])   # saturating); coming back down is free
+            dx[:, TOPPED] *= np.where(out, np.clip(1 - np.abs(dev[:, TOPPED]) / top[:, TOPPED], 0, 1), 1.0)
+        x += dx
+        if tonic:                                             # the baseline follows where he's been for weeks, but stays
+            normal[:, TOPPED] += (x[:, TOPPED] - normal[:, TOPPED]) * DT / (14 * 24)   # within 0.3 of where he hatched
+            normal[:, TOPPED] = np.clip(normal[:, TOPPED], -0.3, 0.3)
+        else:
+            normal[:, [MOOD, ENERGY]] -= x[:, [MOOD, ENERGY]] * DT / (14 * 24)
+        log["top_gear"] += np.abs(x - normal) > 0.9 * top
+        mo = t // (30 * 1440)
+        log["gear_month"][mo] += (x * awake[:, None]).sum(0); log["awake_month"][mo] += awake.sum()
         x[:, [COMPANY, MISSING, NOVEL, JADED, TALKED]] = np.maximum(0, x[:, [COMPANY, MISSING, NOVEL, JADED, TALKED]])
         x[:, SLEEPY] = np.clip(x[:, SLEEPY], 0, 1)
         x[:, BORED] = np.maximum(0, x[:, BORED]); x[:, LONELY] = np.maximum(-1, x[:, LONELY])   # can't be less than not bored
+        x[:, [DRIVE, PLAY]] = np.maximum(0, x[:, [DRIVE, PLAY]])
         log["clip"] += (np.abs(x) > 4).any(1)
         log["clip_gear"] += np.abs(x) > 4
         log["clip_month"][:, t // (30 * 1440)] += (np.abs(x) > 4).any(1)
@@ -230,6 +281,7 @@ def run(genes, where, msgs, told, cond, days, seed):
             log["wake"][e].append(t)
         asleep = (asleep | to_sleep) & ~to_wake
         x[asleep, URGE] = np.minimum(x[asleep, URGE], 0.3)
+        x[asleep, PLAY] = np.minimum(x[asleep, PLAY], 0.3)
         # being written to first: good, as much as it eased him
         if incoming.any():
             eased = np.tanh(np.maximum(0, felt_before)) * incoming
@@ -239,6 +291,7 @@ def run(genes, where, msgs, told, cond, days, seed):
             reward_sum += R_in
         # reaching out (the last domino can still be stopped)
         fire = x[:, URGE] >= 1.0
+        stop = np.zeros(E, bool)                                  # he puts down what he's doing to text
         for e in np.flatnonzero(fire):
             quiet = hour >= QUIET[0] or hour < QUIET[1]
             if asleep[e] or quiet or t < not_now_until[e] or pend_t[e] >= 0:
@@ -246,6 +299,7 @@ def run(genes, where, msgs, told, cond, days, seed):
                 x[e, URGE] = 0.3
                 continue
             x[e, URGE] = 0.0
+            stop[e] = True
             log["fire"][e].append(t)
             kind, delay, ln = answer(where[e, t], r)
             pend_t[e] = t + max(1, int(delay * 60)); pend[e] = (kind, delay, ln, act[e].copy(), int(where[e, t]))
@@ -275,6 +329,42 @@ def run(genes, where, msgs, told, cond, days, seed):
                 W[e, URGE] += 0.15 * surprise * foot                   # credit goes to the choice itself
             reward_sum[e] += surprise
             pend_t[e] = -1
+        # his own life: doing things, how they go, putting them down, picking the next
+        if play_on:
+            busy = doing >= 0
+            idx = np.arange(E); k_now = np.maximum(doing, 0)
+            into = busy * (1 - old_a[idx, k_now])
+            lam = np.stack([0.6 * into * ACT_FUN[k_now] * likes[idx, k_now],                  # a fun moment
+                            0.4 * into * ACT_PROGRESS[k_now] * likes[idx, k_now],             # getting somewhere
+                            0.15 * busy * ACT_PROGRESS[k_now]], 1) * DT                       # stuck, frustrated
+            ev = r.random((E, 3)) < lam
+            for e, j in zip(*np.nonzero(ev)):
+                k = k_now[e]; R = (1.0, 1.0, -0.5)[j]
+                surprise = R - event_mean[e, k]                   # good or bad against what this thing usually brings
+                event_mean[e, k] += 0.05 * (R - event_mean[e, k])
+                reward[e] += 0.5 * surprise; reward_sum[e] += 0.5 * surprise; sess_r[e] += R
+                if j == 1:
+                    x[e, DRIVE] = max(0.0, x[e, DRIVE] - 0.2)     # something got done
+            old_a[idx, k_now] += busy * ACT_OLD[k_now] * (1 - old_a[idx, k_now]) * DT     # it gets old while he does it
+            rest = np.ones((E, K), bool); rest[idx[busy], k_now[busy]] = False
+            old_a -= old_a * rest * DT / 24                       # and fresh again after a day or so away
+            log["play_month"][idx[busy], t // (30 * 1440), k_now[busy]] += 1
+            end = busy & ((old_a[idx, k_now] > 0.85) | (x[:, ENERGY] < -1) | (r.random(E) < DT / 2) | incoming
+                          | asleep | stop)
+            for e in np.flatnonzero(end):
+                k = doing[e]
+                hours = max((t - since[e]) / 60, 0.25)
+                s_ = sess_r[e] / hours - value_a[e, k]            # was it better or worse than he expected?
+                value_a[e, k] += 0.3 * s_
+                planned[e, PLAY] += 0.15 * s_ * sess_foot[e]       # credit to the choice to go do something
+                doing[e] = -1
+            start = (x[:, PLAY] >= 1.0) & awake & (doing < 0) & ((t - last_msg) > 10)
+            for e in np.flatnonzero(start):
+                score = (value_a[e] * (1 - old_a[e])) / 0.15
+                p = np.exp(score - score.max()); p /= p.sum()
+                doing[e] = r.choice(K, p=p); since[e] = t; sess_r[e] = 0; sess_foot[e] = act[e]
+                x[e, PLAY] = 0.0; log["sessions"][e] += 1
+            x[:, PLAY] = np.minimum(x[:, PLAY], 1.0)
         # learning: footprints x reward, then (if the dial is on) the brake
         eli += (-eli / 0.5 + act[:, :D, None] * act[:, None, :]) * DT
         if gym:
@@ -284,6 +374,8 @@ def run(genes, where, msgs, told, cond, days, seed):
                 plastic = 0.5 + (newborn - 0.5) * np.exp(-(t / 1440) / grow_up)
                 want = want * plastic[:, None, None]
             planned[:] = 0
+            if still:
+                want = want * 0
             cost = np.abs(want).sum(2)                                 # glycogen: every change spends fuel
             can = np.ones_like(fuel) if cond == "gym_nofuel" else np.minimum(1.0, fuel / np.maximum(cost, 1e-12))
             done = want * can[:, :, None]
@@ -314,6 +406,7 @@ def run(genes, where, msgs, told, cond, days, seed):
             log["Wnorm"].append(np.abs(W).sum((1, 2)).tolist())
             log["reward_day"].append(reward_sum.tolist()); reward_sum[:] = 0
     log["samples"] = np.array(log["samples"])               # (time/10min, egg, 5)
+    log["value_a"] = value_a; log["likes"] = likes
     return log
 
 
@@ -392,6 +485,18 @@ def report(log, days, cond):
         "minutes_any_gear_at_wall": round(float(log["clip"].mean()), 1),
         "wall_minutes_by_month": [round(float(v), 1) for v in log["clip_month"].mean(0)[: max(1, days // 30)]],
         "wall_minutes_by_gear": {g: round(float(v), 1) for g, v in zip(GEARS, log["clip_gear"].mean(0)) if v > 0.05},
+        "minutes_near_top_line_by_gear": {g: round(float(log["top_gear"][:, i].mean()), 1) for i, g in enumerate(GEARS)
+                                          if i in TOPPED},
+        "awake_level_by_month": {g: [round(float(log["gear_month"][m, i] / max(1, log["awake_month"][m])), 2)
+                                     for m in range(max(1, days // 30))] for i, g in enumerate(GEARS)
+                                 if g in ("mood", "lonely", "boredom", "drive")},
+        "hours_doing_things_per_day_by_month": [round(float(log["play_month"][:, m].sum(1).mean() / 60 / 30), 2)
+                                                for m in range(max(1, days // 30))],
+        "share_of_doing_by_kind": {a: round(float(log["play_month"][:, :, i].sum() / max(1, log["play_month"].sum())), 3)
+                                   for i, a in enumerate(ACTS)},
+        "sessions_per_day": round(float(log["sessions"].mean() / days), 2),
+        "found_what_he_likes": round(float(np.mean([np.corrcoef(log["value_a"][e], log["likes"][e])[0, 1]
+                                                    for e in range(E) if log["sessions"][e] > 5] or [float("nan")])), 2),
         "link_strength_day1_vs_last": [round(float(np.median(Wn[0])), 2), round(float(np.median(Wn[-1])), 2),
                                        round(float(Wn[-1].max()), 2)],
         "reward_per_day_mean": round(float(rd.mean()), 3),
