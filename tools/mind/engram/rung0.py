@@ -15,11 +15,14 @@ A made-up moment is read once in one chat (context A) and its states are saved. 
               bound, not something long-term memory would have)
   salL        resL with only the most surprising words kept
   swapL       resL with a different moment's states (cheat check)
+  saeL        resL after a trip through his fragments (rung 1: stream -> SAE pieces -> stream)
+  saepleL     saeL plus the word identity (the "name tag", Immy's option A)
+  saepleLk32  saepleL keeping only the 32 strongest pieces of 64
 
 Scores: the greedy answer (does it contain the right value) and the rank of the right value among the kind's 10
 possible values (log-probability of each as the answer). Made-up moments only, no real chats.
 
-  python rung0.py --model DIR --out DIR [--check]
+  python rung0.py --model DIR --out DIR [--check] [--sae 8:sae_L8.pt,12:sae_L12.pt] [--ways text,none,...]
 """
 import argparse, json, math, random, re, time
 from pathlib import Path
@@ -218,9 +221,15 @@ def has(text, value):
     return re.search(r"\b" + re.escape(value.lower()) + r"\b", text.lower()) is not None
 
 
-def conditions(m, mem, swap_mem, n, sal, n_swap):
+def conditions(m, mem, swap_mem, n, sal, n_swap, sae_mems=None):
     """(name, slot length, cfg builder for slot start s, which answer counts)"""
     out = [("text", None, None, "answer"), ("none", 0, None, "answer")]
+    for (L, k), sm_ in (sae_mems or {}).items():
+        tag = f"{L}" if k is None else f"{L}k{k}"
+        if k is None:
+            out.append((f"sae{tag}", n, lambda s, L=L, sm_=sm_: dict(s=s, n=n, mem=sm_, L=L, block=True), "answer"))
+        out.append((f"saeple{tag}", n,
+                    lambda s, L=L, sm_=sm_: dict(s=s, n=n, mem=sm_, L=L, block=True, ple=True), "answer"))
     kv = list(range(N_KV))
     out.append(("kv", n, lambda s: dict(s=s, n=n, mem=mem, kv_layers=kv), "answer"))
     sm = subset(mem, sal)
@@ -280,6 +289,8 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--fp32", action="store_true", help="full precision (for the exactness check)")
+    ap.add_argument("--sae", default="", help="L:path,... trained fragment finders (sae.py)")
+    ap.add_argument("--ways", default="", help="only these ways (comma list); default all")
     a = ap.parse_args()
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -299,6 +310,23 @@ def main():
         saved.append(dict(mem=mem, span=span, sal=sal, surprise=surprise))
     one = saved[0]
     kv_bytes = sum(t[0, 0].numel() * 2 for d in ("k", "v") for t in one["mem"][d].values())
+    saes = {}
+    for item in filter(None, a.sae.split(",")):
+        from sae import load_sae
+        L, path = item.split(":", 1)
+        saes[int(L)] = load_sae(path)
+    for L, sae in saes.items():
+        hs = torch.cat([sv["mem"]["h"][L][0] for sv in saved]).float()
+        with torch.no_grad():
+            rt = sae.roundtrip(hs)
+        fve = 1 - (rt - hs).pow(2).sum() / (hs - hs.mean(0)).pow(2).sum()
+        print(f"layer {L}: fragments explain {fve.item():.3f} of the memory words' stream", flush=True)
+        for sv in saved:
+            with torch.no_grad():
+                for k in (None, 32):
+                    sv.setdefault("sae", {})[(L, k)] = {**sv["mem"], "h": {**sv["mem"]["h"],
+                                                                         L: sae.roundtrip(sv["mem"]["h"][L], k)}}
+    ways = set(filter(None, a.ways.split(",")))
     print(f"saved per word: KV of layers 0-{N_KV - 1} = {kv_bytes / 1024:.1f} KB (bf16), "
           f"one layer's stream = {one['mem']['h'][12][0, 0].numel() * 2 / 1024:.1f} KB", flush=True)
 
@@ -310,7 +338,10 @@ def main():
         pre = rig.ids(prefix(m["ctx_b"]))
         suf = rig.ids("\n\n" + m["question"] + "<turn|>\n<|turn>model\n")
         s = len(pre)
-        for name, slot_n, build, target in conditions(m, sv["mem"], sw["mem"], n, sv["sal"], n_swap):
+        for name, slot_n, build, target in conditions(m, sv["mem"], sw["mem"], n, sv["sal"], n_swap,
+                                                      sv.get("sae")):
+            if ways and name not in ways:
+                continue
             row = pre + (sv["span"] if name == "text" else [rig.pad] * slot_n) + suf
             cfg = build(s) if build else None
             ans = rig.answer(row, cfg)
