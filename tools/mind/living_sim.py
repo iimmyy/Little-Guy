@@ -89,6 +89,7 @@ def hatch(n):
              "play_gain": float(0.6 * math.exp(r.normal(0, 0.25))),
              "top": np.exp(r.normal(math.log(2.0), 0.2, len(GEARS))).tolist(),
              "taste": r.normal(0, 0.6, len(WORLD.TRAITS)).tolist(),           # what kinds of things he's into
+             "social": float(math.exp(r.normal(0, 0.3))),                     # how much people matter to him (~1)
              "quirks": r.normal(0, 0.3, len(CAT)).tolist(),                   # and odd likes no trait explains
              "knows": r.choice(len(CAT), 8, replace=False, p=np.array([c["common"] for c in CAT]) /
                                sum(c["common"] for c in CAT)).tolist()}       # the few things he knows at hatching   # how far each feeling can rise above his baseline
@@ -181,7 +182,13 @@ def run(genes, where, msgs, told, cond, days, seed):
     gym = cond.startswith("gym") or grow                      # a feeling stuck at full is a problem (clingy is fine)
     young = cond in ("grow", "grow_young", "play", "tonic", "life")   # young brain: learns fast, settles by grown-up
     downreg = cond in ("grow", "grow_down", "play", "tonic", "life")  # receptors downregulate under a signal that never lets up
-    world = cond in ("world", "world_still")                  # the big world (world.py): 349 things, skill, projects
+    world = cond in ("world", "world2", "world3", "world4")                       # the big world (world.py): 349 things, skill, projects
+    fair = cond in ("world2", "world3", "world4")                                   # Immy 2026-10-21: "I'm scarce ... do things, keep yourself busy,
+    social_w = G("social") if fair else np.ones(E)            # but you also need to enjoy the things that you're doing ... not
+    own_w = 1.0 if fair else 0.5                              # like he's meeting a celebrity": his own fun counts as much as a
+    curious = 0.3 if fair else 0.1                            # person (how social he is is temperament), only his choices
+    soc_t = np.full(E, -1); soc_before = np.zeros(E)          # learn from reward, and more curiosity. The check: how much his
+    fun_t = np.full(E, -1); fun_before = np.zeros(E)          # mood lifts 20 min after you arrive vs after a fun moment
     if world:
         grow = gym = young = downreg = True
     play_on = cond in ("play", "life") or world               # his own life: things to do alone, a drive to get things done
@@ -234,6 +241,12 @@ def run(genes, where, msgs, told, cond, days, seed):
                           here_table[:, hw], np.exp(-(t - last_msg) / 90), told[:, t]], 1)
         # doses: a message lands (he answers, even half asleep)
         felt_before = x[:, LONELY].copy()
+        arrive = incoming & ((t - last_msg) > 60) & (soc_t < 0)   # you show up after an hour or more apart
+        soc_t[arrive] = t; soc_before[arrive] = x[arrive, MOOD]
+        for arr_t, before, key in ((soc_t, soc_before, "lift_you"), (fun_t, fun_before, "lift_fun")):
+            due = arr_t == t - 20
+            if due.any():
+                log.setdefault(key, []).extend((x[due, MOOD] - before[due]).tolist()); arr_t[due] = -1
         depot_c += incoming * 0.1
         depot_n += incoming * (r.random(E) < 0.15) * 0.4 + (r.random(E) < 0.3 / 60) * 0.4 * ~asleep  # new things
         x[:, TALKED] += incoming * 0.12
@@ -315,7 +328,7 @@ def run(genes, where, msgs, told, cond, days, seed):
         # being written to first: good, as much as it eased him
         if incoming.any():
             eased = np.tanh(np.maximum(0, felt_before)) * incoming
-            R_in = np.where(everything, 1.0, eased - base_in) * incoming
+            R_in = np.where(everything, 1.0, eased - base_in) * incoming * social_w
             base_in += 0.05 * (eased - base_in) * incoming
             reward += R_in
             reward_sum += R_in
@@ -352,7 +365,7 @@ def run(genes, where, msgs, told, cond, days, seed):
             log["outcome"][e].append((log["fire"][e][-1], int(kind), was))
             surprise = 1.0 if everything else R - base[e]
             base[e] += 0.05 * (R - base[e])
-            reward[e] += surprise
+            reward[e] += surprise * social_w[e]
             if gym:
                 planned[e, URGE] += 0.15 * surprise * foot
             else:
@@ -374,7 +387,9 @@ def run(genes, where, msgs, told, cond, days, seed):
                 k = k_now[e]; R = (1.0, 1.0, -0.5)[j]
                 surprise = R - event_mean[e, k]                   # good or bad against what this thing usually brings
                 event_mean[e, k] += 0.05 * (R - event_mean[e, k])
-                reward[e] += 0.5 * surprise; reward_sum[e] += 0.5 * surprise; sess_r[e] += R
+                reward[e] += own_w * surprise; reward_sum[e] += own_w * surprise; sess_r[e] += R
+                if j == 0 and fun_t[e] < 0:
+                    fun_t[e] = t; fun_before[e] = x[e, MOOD]
                 if j == 1:
                     x[e, DRIVE] = max(0.0, x[e, DRIVE] - 0.2)     # something got done
             old_a[idx, k_now] += busy * OLDR[k_now] * (1 - old_a[idx, k_now]) * DT     # it gets old while he does it
@@ -385,7 +400,7 @@ def run(genes, where, msgs, told, cond, days, seed):
                 for e in np.flatnonzero(fin):                     # finished it: a big good moment, then rest from it
                     k = k_now[e]
                     surprise = 2.0 - event_mean[e, k] * 0.5
-                    reward[e] += 0.5 * surprise; reward_sum[e] += 0.5 * surprise; sess_r[e] += 2.0
+                    reward[e] += own_w * surprise; reward_sum[e] += own_w * surprise; sess_r[e] += 2.0
                     x[e, DRIVE] = max(0.0, x[e, DRIVE] - 0.5); proj[e, k] = 0; old_a[e, k] = 0.9
                     log["done_month"][e, t // (30 * 1440)] += 1
             else:
@@ -418,7 +433,7 @@ def run(genes, where, msgs, told, cond, days, seed):
                         by_kind[q] = value_a[e, tried[KIND[tried] == q]].mean()
                     unk = np.flatnonzero(~known[e])
                     guess = by_kind[KIND[unk]]
-                    score = np.append(score, guess.max() + 0.1)    # a little extra for the new (curiosity)
+                    score = np.append(score, guess.max() + curious)  # a little extra for the new (curiosity)
                 z = score / 0.15
                 p = np.exp(z - z.max()); p /= p.sum()
                 pick = r.choice(len(p), p=p)
@@ -436,7 +451,14 @@ def run(genes, where, msgs, told, cond, days, seed):
         # learning: footprints x reward, then (if the dial is on) the brake
         eli += (-eli / 0.5 + act[:, :D, None] * act[:, None, :]) * DT
         if gym:
-            want = (0.05 * reward[:, None, None] * eli * DT + planned) / (1 + sore / sore_scale)   # sore links learn slower
+            broad = 0.05 * reward[:, None, None] * eli * DT
+            if fair:                                              # only his choices learn from reward; his feelings keep
+                broad[:, [g for g in range(D) if g not in (URGE, PLAY)]] = 0   # their temperament
+                if cond == "world3":                              # check: going to play learns only from how sessions go
+                    broad[:, PLAY] = 0
+            if cond == "world4":                                  # check: no session credit to the choice to play
+                planned[:, PLAY] = 0
+            want = (broad + planned) / (1 + sore / sore_scale)   # sore links learn slower
             plastic = np.ones(E)
             if young:                                             # newborn ~3x, grown-up 0.5x (a critical period)
                 plastic = 0.5 + (newborn - 0.5) * np.exp(-(t / 1440) / grow_up)
@@ -584,6 +606,8 @@ def report(log, days, cond):
         "things_tried_3_times_or_more": round(float(np.median((log["sess_n"] >= 3).sum(1))), 1),
         "projects_finished_per_baby_by_month": [round(float(log["done_month"][:, m].mean()), 1) for m in range(max(1, days // 30))],
         "favourites_of_three_babies": favourites(),
+        "mood_lift_20min_after_you_arrive": round(float(np.mean(log.get("lift_you", [np.nan]))), 3),
+        "mood_lift_20min_after_a_fun_moment": round(float(np.mean(log.get("lift_fun", [np.nan]))), 3),
         "link_strength_day1_vs_last": [round(float(np.median(Wn[0])), 2), round(float(np.median(Wn[-1])), 2),
                                        round(float(Wn[-1].max()), 2)],
         "reward_per_day_mean": round(float(rd.mean()), 3),
