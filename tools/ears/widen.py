@@ -33,11 +33,13 @@ What it learns from (the answers are measured or come from file names, never fro
          [--where early|late|sep] [--mid 1024] [--pool 4]   (sep: the high end on its own tokens, see attach)
          [--init SIDE.pt] [--strict 1.0] [--balance 1]   init: start from a trained side path; strict: punish wrong
          guesses (strict_loss); balance: every reach/air answer equally common (card_example)
+         [--talk ADAPTER_DIR]   train with his talk adapter on (his live personality layer, wear_talk); the keep
+         lesson's teacher is still his brain without it, where he copies words faithfully
   pagecheck MODEL WAV OUT.json   sep, day one: his old audio tokens and the brain's states over them are the same
          with and without the high-end page; what the page costs his answer before any training
-  eval   CARDS_DIR MODEL OUT.json [--side OUT_DIR/side.pt] [--n 300]   held-out packs; without --side = the old ears
+  eval   CARDS_DIR MODEL OUT.json [--side OUT_DIR/side.pt] [--n 300] [--talk ADAPTER_DIR]   held-out packs; without --side = the old ears
          (name_right_dull: naming the 16 kHz round trip, the check that the side path doesn't hurt old hearing)
-  listen MODEL WAV OUT.json [--side ...] [--ask "..."]...               free answers to a full-range recording
+  listen MODEL WAV OUT.json [--side ...] [--talk ...] [--ask "..."]...  free answers to a full-range recording
 """
 import json, math, os, random, re, sys
 
@@ -224,6 +226,36 @@ def load_side(model, side_pt):
     return side
 
 
+def wear_talk(model, adapter_dir):
+    """his talk adapter (round 3: LoRA on his language rooms only, never his ears), worn the way his live brain wears
+    it: each target layer adds scale * x A^T B^T. model._talk_on switches it (the keep lesson's teacher takes it off).
+    Why (2026-10-21): in his live brain the round 5-6 ears flipped IDC's hook to "it's not okay", and the same ears
+    without this adapter kept it on every line; the adapter was trained on text only and never learned to copy words"""
+    from safetensors.torch import load_file
+    cfg = json.load(open(os.path.join(adapter_dir, "adapter_config.json")))
+    assert not cfg.get("use_rslora") and not cfg.get("use_dora") and not cfg.get("rank_pattern")
+    scale = cfg["lora_alpha"] / cfg["r"]
+    w = load_file(os.path.join(adapter_dir, "adapter_model.safetensors"))
+    mods = dict(model.named_modules())
+    n = 0
+    for k in w:
+        if not k.endswith(".lora_A.weight"):
+            continue
+        lin = mods[k[len("base_model.model."):-len(".lora_A.weight")]]
+        dev = lin.weight.device
+        A, B = w[k].to(dev, torch.bfloat16), w[k.replace(".lora_A.", ".lora_B.")].to(dev, torch.bfloat16)
+
+        def hook(mod, inp, out, A=A, B=B):
+            if not model._talk_on:
+                return out
+            return out + ((inp[0].to(A.dtype) @ A.T) @ B.T * scale).to(out.dtype)
+        lin.register_forward_hook(hook)
+        n += 1
+    model._talk_on = True
+    print(json.dumps({"talk": adapter_dir, "layers": n, "scale": scale}), flush=True)
+    return n
+
+
 def load(model_dir):
     from transformers import AutoProcessor, Gemma4ForConditionalGeneration
     proc = AutoProcessor.from_pretrained(model_dir)
@@ -402,9 +434,12 @@ def keep_loss(proc, model, high_fe, y48, question, old_answer):
     old, _, _ = encode(proc, model, high_fe, y48, question, old_answer, side_on=False)
     enc, hi, labels = encode(proc, model, high_fe, y48, question, old_answer)
     n = int((labels[0] != -100).sum()) + 1                    # the answer's words, and the step that predicts the first
+    talk = getattr(model, "_talk_on", None)
     with torch.no_grad(), torch.autocast("cuda", dtype=torch.bfloat16):
         model._high = None
+        model._talk_on = False                                # the teacher: his old ears, his brain without the adapter
         teach = model(**old, logits_to_keep=n).logits[0, :-1].float()
+    model._talk_on = talk
     model._high = hi
     with torch.autocast("cuda", dtype=torch.bfloat16):
         student = model(**enc, logits_to_keep=n).logits[0, :-1].float()
@@ -455,6 +490,8 @@ def train(cards_dir, model_dir, out_dir, *rest):
     where, mid, pool = kw.get("where", "early"), int(kw.get("mid", 0)), int(kw.get("pool", 4))
     os.makedirs(out_dir, exist_ok=True)
     proc, model = load(model_dir)
+    if kw.get("talk"):
+        wear_talk(model, kw["talk"])
     side = attach(model, where, mid, pool)
     if kw.get("init"):                                        # build on an accepted round (Immy's fallback rule)
         side.load_state_dict(torch.load(kw["init"], map_location=model.device)["side"])
@@ -517,7 +554,8 @@ def train(cards_dir, model_dir, out_dir, *rest):
             run = {}
         if (step + 1) % 1000 == 0 or step + 1 == steps:
             ck = {"side": side.state_dict(), "edges_hz": high_fe.edges.tolist(), "step": step + 1, "where": where,
-                  "mid": mid, "pool": pool, "init": kw.get("init"), "strict": strict, "balance": balance}
+                  "mid": mid, "pool": pool, "init": kw.get("init"), "strict": strict, "balance": balance,
+                  "talk": kw.get("talk")}
             torch.save(ck, os.path.join(out_dir, f"side-{step + 1}.pt"))
             torch.save(ck, os.path.join(out_dir, "side.pt"))
 
@@ -534,6 +572,8 @@ def eval_(cards_dir, model_dir, out, *rest):
     kw = {rest[i][2:]: rest[i + 1] for i in range(0, len(rest), 2)}
     n = int(kw.get("n", 300))
     proc, model = load(model_dir)
+    if kw.get("talk"):
+        wear_talk(model, kw["talk"])
     side = load_side(model, kw.get("side"))
     high_fe = HighBands().to(model.device)
     cards = cards_of(cards_dir, "test")
@@ -575,13 +615,16 @@ def eval_(cards_dir, model_dir, out, *rest):
 
 
 def listen(model_dir, wav, out, *rest):
-    side_pt, asks, i = None, [], 0
+    side_pt, talk, asks, i = None, None, [], 0
     while i < len(rest):
         if rest[i] == "--side": side_pt = rest[i + 1]
+        elif rest[i] == "--talk": talk = rest[i + 1]
         elif rest[i] == "--ask": asks.append(rest[i + 1])
         i += 2
     asks = asks or ["What do you hear in this? Describe the sound, including the high end."]
     proc, model = load(model_dir)
+    if talk:
+        wear_talk(model, talk)
     side = load_side(model, side_pt)
     high_fe = HighBands().to(model.device)
     import soundfile as sf
@@ -589,7 +632,7 @@ def listen(model_dir, wav, out, *rest):
     x = x.mean(1) if x.ndim > 1 else x
     x = resample_poly(x, SR, sr).astype(np.float32) if sr != SR else x
     x = x[: 30 * SR]
-    res = [{"ask": q, "side": side_pt, "answer": answer(proc, model, high_fe, x, q, side_pt is not None, 120)} for q in asks]
+    res = [{"ask": q, "side": side_pt, "talk": talk, "answer": answer(proc, model, high_fe, x, q, side_pt is not None, 120)} for q in asks]
     json.dump(res, open(out, "x"), indent=1)
     print(json.dumps(res, indent=1))
 
