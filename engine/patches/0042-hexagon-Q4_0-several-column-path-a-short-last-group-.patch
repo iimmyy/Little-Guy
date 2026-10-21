@@ -1,13 +1,13 @@
 From 02c2d10899a181f52f81028e6f5c3e8351f72e29 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Sat, 17 Oct 2026 12:19:58 -0700
-Subject: [PATCH] hexagon Q4_0 several-column path: a short last group computes
- only its real columns (variants for 1-4 columns of one always-inlined tile
- helper) instead of padding to 4 with repeats of the last column. Board v68,
- 4096x14336: 2 columns 3.51 -> 2.20 ms, 3 columns 3.73 -> 3.08 ms, 5 columns
- 7.21 -> 5.60 ms; 1 and 4 unchanged. Word odds on the real brain identical to
- before at batch sizes 5/6/7 (KL 0, same top 100%, the same max as the old
- engine against itself)
+Subject: [PATCH 42/48] hexagon Q4_0 several-column path: a short last group
+ computes only its real columns (variants for 1-4 columns of one
+ always-inlined tile helper) instead of padding to 4 with repeats of the last
+ column. Board v68, 4096x14336: 2 columns 3.51 -> 2.20 ms, 3 columns 3.73 ->
+ 3.08 ms, 5 columns 7.21 -> 5.60 ms; 1 and 4 unchanged. Word odds on the real
+ brain identical to before at batch sizes 5/6/7 (KL 0, same top 100%, the same
+ max as the old engine against itself)
 
 ---
  ggml/src/ggml-hexagon/htp/lg-q2k-ops.c | 101 ++++++++++++++-----------
@@ -133,6 +133,3 @@ index eddd38b..e6a9caf 100644
                  }
              }
              continue;
--- 
-2.54.0 (Apple Git-157)
-

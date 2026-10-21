@@ -1,7 +1,7 @@
 From 46efcfc5c6ff95788af994f23c06342115285c97 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Sat, 17 Oct 2026 01:14:28 -0700
-Subject: [PATCH 41/41] gemma4 dictionary preview: (1) words off the shortlist
+Subject: [PATCH 41/48] gemma4 dictionary preview: (1) words off the shortlist
  keep their rough-copy score instead of -INF (LG_DICT_TAIL=0 restores -INF):
  engine-side drift vs the 16-bit at 4096, wiki 0.000669 / chat 0.000292
  (preview off 0.000478 / 0.000273; -INF tail reads infinite), offline 2.5-3x

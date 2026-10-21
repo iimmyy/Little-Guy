@@ -1,7 +1,7 @@
 From e0a7633380ed5e70865ffe9a9382e33cb6e0b693 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Tue, 13 Oct 2026 22:35:20 -0700
-Subject: [PATCH 18/41] ggml-hexagon FA: grouped-query path, each K/V block
+Subject: [PATCH 18/48] ggml-hexagon FA: grouped-query path, each K/V block
  fetched once for all query heads that share it (2176/2176 FA tests pass)
 
 ---

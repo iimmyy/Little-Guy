@@ -1,7 +1,7 @@
 From 5089e62fb2719631edc179f840886be549b34d6d Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Sat, 17 Oct 2026 14:59:15 -0700
-Subject: [PATCH] hexagon: full data-cache clean+invalidate before every
+Subject: [PATCH 44/48] hexagon: full data-cache clean+invalidate before every
  FLASH_ATTN_EXT, so fresh runs of the same input give the same numbers.
  Before, the same prompt at temperature 0 gave different word scores within
  1-5 words from one process to the next (and NPU-drafted replies never matched
@@ -167,6 +167,3 @@ index 8c7f2a8..6b54f35 100644
              profile_start(ctx->profiler, &prof);
  
              const int st = proc_op_req(octx, tens, i, &ops[i]);
--- 
-2.54.0 (Apple Git-157)
-

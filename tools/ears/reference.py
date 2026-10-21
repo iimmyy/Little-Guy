@@ -6,7 +6,9 @@ Runs on CPU (only the ears and their embedder are loaded, not the brain).
                                               hi.npy [T,39] (widen.py HighBands), sound16.f32
   embd       MODEL SOUND48.f32 OUT.npy [SIDE.pt|random]   what the ears hand the brain [tokens, n_embd]; with SIDE.pt
                                               the side path is on; "random" = random non-zero side weights (saved
-                                              next to OUT as side-random.pt), so any mistake in a port shows
+                                              next to OUT as side-random.pt), so any mistake in a port shows;
+                                              a sep SIDE.pt (the high end on its own page) puts its tokens after
+                                              his, one per `pool` of his
 SOUND48.f32 = raw mono float32 at 48 kHz. MODEL = the transformers checkpoint folder (with the audio tower).
 """
 import os, sys
@@ -62,6 +64,16 @@ def embd(model_dir, sound, out, side_pt=None):
     x = np.fromfile(sound, np.float32)
     _, f = features(model_dir, x)
     mask = f["input_features_mask"]
+    ck = torch.load(side_pt, map_location="cpu") if side_pt and side_pt != "random" else {}
+    page = None
+    if ck.get("where") == "sep":
+        side = W.Side(tower.subsample_conv_projection, cfg.audio_config.output_proj_dims, ck.get("mid", 0), bias=True)
+        side.load_state_dict(ck["side"])
+        hi = W.HighBands()(torch.from_numpy(x), f["input_features"].shape[1]).unsqueeze(0) * mask[..., None]
+        n = ((int(mask[0].sum()) - 1) // 2) // 2 + 1
+        with torch.no_grad():
+            page = emb(inputs_embeds=W.pool_time(side(hi, mask), n, ck.get("pool", 4)))
+        side_pt = None                                        # his own tokens are untouched below
     if side_pt:
         proj = tower.subsample_conv_projection
         side = W.Side(proj, cfg.audio_config.hidden_size)
@@ -81,8 +93,11 @@ def embd(model_dir, sound, out, side_pt=None):
     with torch.no_grad():
         out_e = emb(inputs_embeds=tower(f["input_features"].float(), mask).last_hidden_state)
     n = ((int(mask[0].sum()) - 1) // 2) // 2 + 1
-    np.save(out, out_e[0, :n].numpy())
-    print({"tokens": n, "side": side_pt})
+    res = out_e[0, :n]
+    if page is not None:
+        res = torch.cat([res, page[0]])
+    np.save(out, res.numpy())
+    print({"tokens": n, "page_tokens": 0 if page is None else page.shape[1], "side": side_pt or ck.get("where")})
 
 
 if __name__ == "__main__":

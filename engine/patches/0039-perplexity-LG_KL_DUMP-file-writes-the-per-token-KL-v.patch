@@ -1,7 +1,7 @@
 From 81f92cf9079cb800cbc18ad041848f74f432c671 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Fri, 16 Oct 2026 22:25:51 -0700
-Subject: [PATCH 39/41] perplexity: LG_KL_DUMP=<file> writes the per-token KL
+Subject: [PATCH 39/48] perplexity: LG_KL_DUMP=<file> writes the per-token KL
  values (float32, text order) before the summary sorts them, so runs can be
  compared token by token without saving 8.5 GB of log-probs
 

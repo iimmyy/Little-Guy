@@ -1,7 +1,7 @@
 From 0fe97ce0db9fe2b349249b455875b68dd65b10a3 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Fri, 16 Oct 2026 20:36:50 -0700
-Subject: [PATCH 37/41] imatrix: with --process-output, tied-head models
+Subject: [PATCH 37/48] imatrix: with --process-output, tied-head models
  (Gemma) count token_embd.weight as the output matrix, and LG_ACT_DUMP saves
  its input rows (the final hidden state per word), for measuring the
  dictionary preview shortlist

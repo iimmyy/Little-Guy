@@ -1,7 +1,7 @@
 From d52a21c530354e0f4b667184ba0b9ea78b3ff786 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Sat, 17 Oct 2026 15:29:17 -0700
-Subject: [PATCH] hexagon: hex_l2flush refreshes a range with
+Subject: [PATCH 45/48] hexagon: hex_l2flush refreshes a range with
  qurt_mem_cache_clean(FLUSH_INVALIDATE) instead of a dccleaninva loop, and the
  full clean before every FLASH_ATTN_EXT (5089e62) goes. The loop left stale
  copies behind: fresh runs of the same input gave different numbers, cured
@@ -61,6 +61,3 @@ index 6b54f35..8c7f2a8 100644
              profile_start(ctx->profiler, &prof);
  
              const int st = proc_op_req(octx, tens, i, &ops[i]);
--- 
-2.54.0 (Apple Git-157)
-

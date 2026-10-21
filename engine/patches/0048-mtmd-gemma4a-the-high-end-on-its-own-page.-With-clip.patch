@@ -1,0 +1,167 @@
+From 75a9ad837e407f753246e34728dcafb34ada109a Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Tue, 20 Oct 2026 17:44:37 -0700
+Subject: [PATCH 48/48] mtmd gemma4a: the high end on its own page. With
+ clip.audio.wide_pool, the side path no longer adds to his input projection: a
+ GELU hidden layer (a.wide.mid), the mean over each group of wide_pool of his
+ 40 ms tokens (the last group may be short), and a projection with bias
+ (a.wide.proj) make extra tokens that follow his own, through his own step
+ into the brain; the token count includes them. Round 4 against the PyTorch
+ reference: his own tokens within 0.18% (as before), the page within 0.07%
+
+---
+ tools/mtmd/clip-impl.h        |  2 ++
+ tools/mtmd/clip-model.h       |  4 +++
+ tools/mtmd/clip.cpp           |  9 +++++++
+ tools/mtmd/models/gemma4a.cpp | 46 +++++++++++++++++++++++++++++++++--
+ 4 files changed, 59 insertions(+), 2 deletions(-)
+
+diff --git a/tools/mtmd/clip-impl.h b/tools/mtmd/clip-impl.h
+index b42ab4e..df27ae0 100644
+--- a/tools/mtmd/clip-impl.h
++++ b/tools/mtmd/clip-impl.h
+@@ -76,6 +76,7 @@
+ #define KEY_AUDIO_PROJ_TYPE        "clip.audio.projector_type" // for models with mixed modalities
+ #define KEY_A_NUM_MEL_BINS         "clip.audio.num_mel_bins"
+ #define KEY_A_WIDE_BANDS           "clip.audio.wide_bands"   // LG: bands above 8 kHz read by a side path (gemma4a)
++#define KEY_A_WIDE_POOL            "clip.audio.wide_pool"    // LG: > 0: the side path writes its own tokens, one per this many
+ #define KEY_A_PROJ_STACK_FACTOR    "clip.audio.projector.stack_factor"
+ #define KEY_A_CHUNK_SIZE           "clip.audio.chunk_size"
+ #define KEY_A_CONV_KERNEL_SIZE     "clip.audio.conv_kernel_size"
+@@ -253,6 +254,7 @@
+ #define TN_A_WIDE_CONV       "a.wide.conv1d.%d.%s"
+ #define TN_A_WIDE_CONV_NORM  "a.wide.conv1d.%d.norm.%s"
+ #define TN_A_WIDE_PROJ       "a.wide.proj.%s"
++#define TN_A_WIDE_MID        "a.wide.mid.%s"
+ #define TN_A_OUT_PROJ        "a.pre_encode.out.%s"
+ #define TN_A_ATTN_PRE_NORM   "%s.blk.%d.attn_pre_norm.%s"
+ #define TN_A_ATTN_POST_NORM  "%s.blk.%d.attn_post_norm.%s"
+diff --git a/tools/mtmd/clip-model.h b/tools/mtmd/clip-model.h
+index 86ba3b3..8962cdd 100644
+--- a/tools/mtmd/clip-model.h
++++ b/tools/mtmd/clip-model.h
+@@ -110,6 +110,7 @@ struct clip_hparams {
+     // audio
+     int32_t n_mel_bins = 0; // whisper preprocessor
+     int32_t audio_wide_bands = 0; // LG gemma4a: the last audio_wide_bands of n_mel_bins are 8-18 kHz bands from 48 kHz sound
++    int32_t audio_wide_pool  = 0; // LG gemma4a: > 0 = the high end on its own page: one extra token per this many of his
+     int32_t proj_stack_factor = 0; // ultravox
+     int32_t audio_chunk_size           = 0;
+     int32_t audio_conv_kernel_size     = 0;
+@@ -608,6 +609,9 @@ struct clip_model {
+     std::array<ggml_tensor *, 2> wide_conv_w = {nullptr};
+     std::array<ggml_tensor *, 2> wide_norm_w = {nullptr};
+     ggml_tensor * wide_proj_w = nullptr;
++    ggml_tensor * wide_proj_b = nullptr;
++    ggml_tensor * wide_mid_w  = nullptr; // optional hidden layer (GELU) before wide_proj
++    ggml_tensor * wide_mid_b  = nullptr;
+     ggml_tensor * audio_out_proj_w = nullptr;
+     ggml_tensor * audio_out_proj_b = nullptr;
+ 
+diff --git a/tools/mtmd/clip.cpp b/tools/mtmd/clip.cpp
+index 31071ea..167b135 100644
+--- a/tools/mtmd/clip.cpp
++++ b/tools/mtmd/clip.cpp
+@@ -1630,6 +1630,7 @@ struct clip_model_loader {
+                         // LG: wider ears: the sound comes in at 48 kHz; the 128 bands are still made from its
+                         // 16 kHz version, and the side path's bands above 8 kHz follow them in the same input
+                         get_u32(KEY_A_WIDE_BANDS, hparams.audio_wide_bands, false);
++                        get_u32(KEY_A_WIDE_POOL, hparams.audio_wide_pool, false);
+                         if (hparams.audio_wide_bands > 0) {
+                             hparams.audio_sample_rate = 48000;
+                             hparams.n_mel_bins       += hparams.audio_wide_bands;
+@@ -2556,6 +2557,9 @@ struct clip_model_loader {
+                             model.wide_norm_w[i] = get_tensor(string_format(TN_A_WIDE_CONV_NORM, i, "weight"));
+                         }
+                         model.wide_proj_w = get_tensor(string_format(TN_A_WIDE_PROJ, "weight"));
++                        model.wide_proj_b = get_tensor(string_format(TN_A_WIDE_PROJ, "bias"), false);
++                        model.wide_mid_w  = get_tensor(string_format(TN_A_WIDE_MID, "weight"), false);
++                        model.wide_mid_b  = get_tensor(string_format(TN_A_WIDE_MID, "bias"), false);
+                     }
+                     model.audio_out_proj_w = get_tensor(string_format(TN_A_OUT_PROJ, "weight"), false);
+                     model.audio_out_proj_b = get_tensor(string_format(TN_A_OUT_PROJ, "bias"), false);
+@@ -3471,6 +3475,11 @@ int clip_n_output_tokens(const clip_ctx * ctx, const clip_image_f32 * img) {
+                     n = (n - 1) / 2 + 1;
+                 }
+                 n_patches = n;
++                // LG: the high-end page follows his own tokens: one per audio_wide_pool of them
++                const int pool = ctx->model.hparams.audio_wide_pool;
++                if (pool > 0) {
++                    n_patches += (n + pool - 1) / pool;
++                }
+             } break;
+         case PROJECTOR_TYPE_GEMMA4UA:
+             {
+diff --git a/tools/mtmd/models/gemma4a.cpp b/tools/mtmd/models/gemma4a.cpp
+index 8f0f33e..a38afe0 100644
+--- a/tools/mtmd/models/gemma4a.cpp
++++ b/tools/mtmd/models/gemma4a.cpp
+@@ -37,9 +37,12 @@ ggml_cgraph * clip_graph_gemma4a::build() {
+         return ggml_reshape_2d(ctx0, x, x->ne[0] * x->ne[1], x->ne[2]);
+     };
+     // LG wider ears: the input's last audio_wide_bands rows are the bands above 8 kHz; his own path reads only the
+-    // first rows (the 128 he always had), a side path reads the rest, and its projection is added to his
++    // first rows (the 128 he always had), a side path reads the rest. Without audio_wide_pool its projection is
++    // added to his input projection; with it, the side path writes its own page of tokens after his (see the end)
+     const int n_wide = hparams.audio_wide_bands;
++    const int pool   = hparams.audio_wide_pool;
+     ggml_tensor * high = nullptr;
++    ggml_tensor * page = nullptr;
+     if (n_wide > 0) {
+         const int64_t n_old = cur->ne[0] - n_wide;
+         high = ggml_cont(ctx0, ggml_view_2d(ctx0, cur, n_wide, cur->ne[1], cur->nb[1], n_old * ggml_element_size(cur)));
+@@ -55,7 +58,41 @@ ggml_cgraph * clip_graph_gemma4a::build() {
+         }
+         if (high) {
+             ggml_tensor * side = subsample(high, model.wide_conv_w, {nullptr, nullptr}, model.wide_norm_w);
+-            cur = ggml_add(ctx0, cur, build_mm(model.wide_proj_w, side));
++            if (pool <= 0) {
++                cur = ggml_add(ctx0, cur, build_mm(model.wide_proj_w, side));
++            } else {
++                // the page (tools/ears/widen.py attach, where="sep"): GELU hidden layer, then the mean over each group
++                // of `pool` of his 40 ms tokens (the last group may be short), then the projection (with its bias, the
++                // silence it started from); it goes through his own step into the brain below
++                if (model.wide_mid_w) {
++                    side = ggml_mul_mat(ctx0, model.wide_mid_w, side);
++                    if (model.wide_mid_b) {
++                        side = ggml_add(ctx0, side, model.wide_mid_b);
++                    }
++                    side = ggml_gelu_erf(ctx0, side);
++                }
++                const int64_t n_tok  = side->ne[1];
++                const int64_t n_full = n_tok / pool;
++                const int64_t n_rest = n_tok - n_full * pool;
++                ggml_tensor * st = ggml_cont(ctx0, ggml_transpose(ctx0, side));          // [time, dim]
++                ggml_tensor * groups = nullptr;
++                if (n_full > 0) {
++                    groups = ggml_view_2d(ctx0, st, n_full * pool, st->ne[1], st->nb[1], 0);
++                    groups = ggml_reshape_3d(ctx0, ggml_cont(ctx0, groups), pool, n_full, st->ne[1]);
++                    groups = ggml_reshape_2d(ctx0, ggml_mean(ctx0, groups), n_full, st->ne[1]);  // [n_full, dim]
++                }
++                if (n_rest > 0) {
++                    ggml_tensor * last = ggml_view_2d(ctx0, st, n_rest, st->ne[1], st->nb[1],
++                                                      n_full * pool * ggml_element_size(st));
++                    last = ggml_mean(ctx0, ggml_cont(ctx0, last));                           // [1, dim]
++                    groups = groups ? ggml_concat(ctx0, groups, last, 0) : last;
++                }
++                page = ggml_cont(ctx0, ggml_transpose(ctx0, groups));                      // [dim, n_page]
++                page = ggml_mul_mat(ctx0, model.wide_proj_w, page);
++                if (model.wide_proj_b) {
++                    page = ggml_add(ctx0, page, model.wide_proj_b);
++                }
++            }
+         }
+     }
+ 
+@@ -279,6 +316,11 @@ ggml_cgraph * clip_graph_gemma4a::build() {
+         }
+     }
+ 
++    // LG: the page joins after his own tokens, in the same space, so both go through his step into the brain
++    if (page) {
++        cur = ggml_concat(ctx0, cur, page, 1);
++    }
++
+     // 5. Audio Multimodal Embedder
+     cur = ggml_rms_norm(ctx0, cur, norm_eps);
+     if (model.mm_soft_emb_norm_w) {

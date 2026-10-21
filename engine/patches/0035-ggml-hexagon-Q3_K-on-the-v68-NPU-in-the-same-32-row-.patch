@@ -1,7 +1,7 @@
 From d29ef34ca16b52af84cadb80c1fde5fdd66e3384 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Thu, 15 Oct 2026 23:31:50 -0700
-Subject: [PATCH 35/41] ggml-hexagon: Q3_K on the v68 NPU in the same 32-row
+Subject: [PATCH 35/48] ggml-hexagon: Q3_K on the v68 NPU in the same 32-row
  tiles (low 2 bits in the Q2_K layout, high-bit planes, packed 6-bit scales
  unpacked on the DSP, exact integer math as ggml_vec_dot_q3_K_q8_K); co-op
  copy and q8_K pre-quantization shared with Q2_K. NPU vs board CPU KL 0.004 on

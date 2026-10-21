@@ -1,7 +1,7 @@
 From 443dab6a5b03b7d8c979be166e6ce90019c1fa0a Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Mon, 12 Oct 2026 12:41:27 -0700
-Subject: [PATCH 10/41] gemma4: optional dictionary preview for the lm_head
+Subject: [PATCH 10/48] gemma4: optional dictionary preview for the lm_head
  (token_embd_preview, LG_DICT_PREVIEW)
 
 When the GGUF has a rough low-bit copy of the tied dictionary, the lm_head scores that copy first, keeps the

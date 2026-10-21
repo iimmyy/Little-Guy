@@ -1,7 +1,7 @@
 From d6c26fc05a1ee81178148913aaed1dd6edc3b6e4 Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Sat, 17 Oct 2026 13:59:28 -0700
-Subject: [PATCH] hexagon: element-wise ops split long rows, and an op's
+Subject: [PATCH 43/48] hexagon: element-wise ops split long rows, and an op's
  failure reaches the host. The unary job keeps 2 input + 2 output rows per
  thread in VTCM; a 262144-value row (Gemma's whole dictionary in the final
  soft-capping SCALE / TANH / SCALE) needed 4 MB, failed VTCM_TOO_SMALL, and
@@ -161,6 +161,3 @@ index 33fd63f..dfe0e0e 100644
      test_cases.emplace_back(new test_softcap(GGML_TYPE_F32, {10, 10, 10, 10}, 50.0f));
      test_cases.emplace_back(new test_silu_back());
  
--- 
-2.54.0 (Apple Git-157)
-

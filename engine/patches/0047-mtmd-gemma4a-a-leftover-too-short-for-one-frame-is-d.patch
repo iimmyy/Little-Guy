@@ -1,0 +1,31 @@
+From 5a821129d82c6411ca15d09baae22cdbe288ba9a Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Tue, 20 Oct 2026 10:53:07 -0700
+Subject: [PATCH 47/48] mtmd gemma4a: a leftover too short for one frame is
+ dropped instead of failing the whole sound (a 30 s sound decoded to 480001
+ samples left a 1-sample last chunk and the sound was refused: 'Unable to
+ preprocess audio'); every length from 1000 to 481000 samples now works
+
+---
+ tools/mtmd/mtmd-audio.cpp | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/tools/mtmd/mtmd-audio.cpp b/tools/mtmd/mtmd-audio.cpp
+index ca3e067..6b04dfc 100644
+--- a/tools/mtmd/mtmd-audio.cpp
++++ b/tools/mtmd/mtmd-audio.cpp
+@@ -1021,6 +1021,14 @@ bool mtmd_audio_preprocessor_gemma4a::preprocess(const float *                 s
+         const int n_with_left = (int)chunk_len + pad_left;
+         // PyTorch: unfold(size=frame_length+1, step=hop) on semicausal-padded waveform
+         const int64_t pt_frames = (n_with_left - (hparams.audio_window_len + 1)) / hop + 1;
++        if (n_with_left < hparams.audio_window_len + 1) {
++            // LG: a leftover too short for one frame (a sound a few samples over 30 s leaves a 1-sample last chunk,
++            // which made the whole sound fail); it holds less than one 10 ms step, so it is dropped
++            if (output.empty()) {
++                return false;
++            }
++            continue;
++        }
+         const int64_t n_padded_needed = (pt_frames - 1) * hop + fft_size;
+         const int total_pad = std::max((int)(n_padded_needed - (int)chunk_len), pad_left);
+         std::vector<float> padded_samples(total_pad + chunk_len, 0.0f);

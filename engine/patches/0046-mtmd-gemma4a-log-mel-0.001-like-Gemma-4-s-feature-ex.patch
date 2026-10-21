@@ -1,0 +1,367 @@
+From db564dfa255e165899adfb415e7f720cad4aa8fd Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Tue, 20 Oct 2026 08:29:20 -0700
+Subject: [PATCH 46/48] mtmd gemma4a: log(mel + 0.001) like Gemma 4's feature
+ extractor (log(max(mel, 0.001)) put 8% of a hi-hat's values off by more than
+ 0.05, up to 0.54; now within 0.0007 of transformers), and wider ears: with
+ clip.audio.wide_bands the sound comes at 48 kHz, the 128 bands come from its
+ 16 kHz version (scipy resample_poly(x, 1, 3)'s 61-tap Kaiser filter), the
+ bands above 8 kHz from the 48 kHz sound itself (20 ms Hann frames in a
+ 1024-point FFT, measured from the floor), and a side path (a.wide.conv1d.*,
+ a.wide.proj) adds its projection to the input projection. Front end within
+ 0.0014 of the PyTorch reference (LittleGuy tools/ears/widen.py).
+
+---
+ tools/mtmd/clip-impl.h        |   4 +
+ tools/mtmd/clip-model.h       |   5 ++
+ tools/mtmd/clip.cpp           |  14 ++++
+ tools/mtmd/models/gemma4a.cpp |  44 +++++++----
+ tools/mtmd/mtmd-audio.cpp     | 134 ++++++++++++++++++++++++++++++++--
+ tools/mtmd/mtmd-audio.h       |   4 +
+ 6 files changed, 186 insertions(+), 19 deletions(-)
+
+diff --git a/tools/mtmd/clip-impl.h b/tools/mtmd/clip-impl.h
+index 5b41368..b42ab4e 100644
+--- a/tools/mtmd/clip-impl.h
++++ b/tools/mtmd/clip-impl.h
+@@ -75,6 +75,7 @@
+ // audio-specific
+ #define KEY_AUDIO_PROJ_TYPE        "clip.audio.projector_type" // for models with mixed modalities
+ #define KEY_A_NUM_MEL_BINS         "clip.audio.num_mel_bins"
++#define KEY_A_WIDE_BANDS           "clip.audio.wide_bands"   // LG: bands above 8 kHz read by a side path (gemma4a)
+ #define KEY_A_PROJ_STACK_FACTOR    "clip.audio.projector.stack_factor"
+ #define KEY_A_CHUNK_SIZE           "clip.audio.chunk_size"
+ #define KEY_A_CONV_KERNEL_SIZE     "clip.audio.conv_kernel_size"
+@@ -249,6 +250,9 @@
+ #define TN_A_INP_PROJ        "a.input_projection.%s"
+ #define TN_A_CONV1D          "a.conv1d.%d.%s"
+ #define TN_A_CONV1D_NORM     "a.conv1d.%d.norm.%s"
++#define TN_A_WIDE_CONV       "a.wide.conv1d.%d.%s"
++#define TN_A_WIDE_CONV_NORM  "a.wide.conv1d.%d.norm.%s"
++#define TN_A_WIDE_PROJ       "a.wide.proj.%s"
+ #define TN_A_OUT_PROJ        "a.pre_encode.out.%s"
+ #define TN_A_ATTN_PRE_NORM   "%s.blk.%d.attn_pre_norm.%s"
+ #define TN_A_ATTN_POST_NORM  "%s.blk.%d.attn_post_norm.%s"
+diff --git a/tools/mtmd/clip-model.h b/tools/mtmd/clip-model.h
+index f86702e..86ba3b3 100644
+--- a/tools/mtmd/clip-model.h
++++ b/tools/mtmd/clip-model.h
+@@ -109,6 +109,7 @@ struct clip_hparams {
+ 
+     // audio
+     int32_t n_mel_bins = 0; // whisper preprocessor
++    int32_t audio_wide_bands = 0; // LG gemma4a: the last audio_wide_bands of n_mel_bins are 8-18 kHz bands from 48 kHz sound
+     int32_t proj_stack_factor = 0; // ultravox
+     int32_t audio_chunk_size           = 0;
+     int32_t audio_conv_kernel_size     = 0;
+@@ -603,6 +604,10 @@ struct clip_model {
+     std::array<ggml_tensor *, 2> sscp_norm_w = {nullptr};
+     ggml_tensor * sscp_inp_proj_w = nullptr;
+     ggml_tensor * sscp_inp_proj_b = nullptr;
++    // LG: the side path that reads the bands above 8 kHz (its projection is added to sscp_inp_proj's output)
++    std::array<ggml_tensor *, 2> wide_conv_w = {nullptr};
++    std::array<ggml_tensor *, 2> wide_norm_w = {nullptr};
++    ggml_tensor * wide_proj_w = nullptr;
+     ggml_tensor * audio_out_proj_w = nullptr;
+     ggml_tensor * audio_out_proj_b = nullptr;
+ 
+diff --git a/tools/mtmd/clip.cpp b/tools/mtmd/clip.cpp
+index 7bd4860..31071ea 100644
+--- a/tools/mtmd/clip.cpp
++++ b/tools/mtmd/clip.cpp
+@@ -1627,6 +1627,13 @@ struct clip_model_loader {
+                         // due to a mistake in the original conversion code, rms_norm_eps is set to a wrong value
+                         // since all gemma4a models use 1e-6, we just hardcode it here to avoid re-conversion
+                         hparams.eps = 1e-6f;
++                        // LG: wider ears: the sound comes in at 48 kHz; the 128 bands are still made from its
++                        // 16 kHz version, and the side path's bands above 8 kHz follow them in the same input
++                        get_u32(KEY_A_WIDE_BANDS, hparams.audio_wide_bands, false);
++                        if (hparams.audio_wide_bands > 0) {
++                            hparams.audio_sample_rate = 48000;
++                            hparams.n_mel_bins       += hparams.audio_wide_bands;
++                        }
+                     } break;
+                 case PROJECTOR_TYPE_GEMMA4UA:
+                     {
+@@ -2543,6 +2550,13 @@ struct clip_model_loader {
+                     }
+                     model.sscp_inp_proj_w = get_tensor(string_format(TN_A_INP_PROJ, "weight"));
+                     model.sscp_inp_proj_b = get_tensor(string_format(TN_A_INP_PROJ, "bias"), false);
++                    if (hparams.audio_wide_bands > 0) {
++                        for (int i = 0; i < 2; i++) {
++                            model.wide_conv_w[i] = get_tensor(string_format(TN_A_WIDE_CONV, i, "weight"));
++                            model.wide_norm_w[i] = get_tensor(string_format(TN_A_WIDE_CONV_NORM, i, "weight"));
++                        }
++                        model.wide_proj_w = get_tensor(string_format(TN_A_WIDE_PROJ, "weight"));
++                    }
+                     model.audio_out_proj_w = get_tensor(string_format(TN_A_OUT_PROJ, "weight"), false);
+                     model.audio_out_proj_b = get_tensor(string_format(TN_A_OUT_PROJ, "bias"), false);
+                     // audio multimodal embedder (mm.a.* namespace, not mm.*)
+diff --git a/tools/mtmd/models/gemma4a.cpp b/tools/mtmd/models/gemma4a.cpp
+index 5dd64b7..8f0f33e 100644
+--- a/tools/mtmd/models/gemma4a.cpp
++++ b/tools/mtmd/models/gemma4a.cpp
+@@ -16,31 +16,47 @@ ggml_cgraph * clip_graph_gemma4a::build() {
+     ggml_tensor * inp = build_inp_raw(1);
+     auto * cur = ggml_cont(ctx0, ggml_transpose(ctx0, inp));
+ 
+-    // 2. Subsampling Conv2D (symmetric padding=1, matching PyTorch)
+-    {
++    // 2. Subsampling Conv2D (symmetric padding=1, matching PyTorch), then flatten [freq, time, ch] -> [ch*freq, time]
++    auto subsample = [&](ggml_tensor * x, const std::array<ggml_tensor *, 2> & conv_w,
++                         const std::array<ggml_tensor *, 2> & conv_b, const std::array<ggml_tensor *, 2> & norm_w) {
+         for (int i = 0; i < 2; i++) {
+-            cur = ggml_conv_2d(ctx0, model.sscp_conv_w[i], cur, 2, 2, 1, 1, 1, 1);
+-            if (model.sscp_conv_b[i]) {
+-                cur = ggml_add(ctx0, cur, model.sscp_conv_b[i]);
++            x = ggml_conv_2d(ctx0, conv_w[i], x, 2, 2, 1, 1, 1, 1);
++            if (conv_b[i]) {
++                x = ggml_add(ctx0, x, conv_b[i]);
+             }
+             // nn.LayerNorm(channels): permute ch to ne[0], normalize, permute back
+-            if (model.sscp_norm_w[i]) {
+-                cur = ggml_cont(ctx0, ggml_permute(ctx0, cur, 1, 2, 0, 3));
+-                cur = ggml_norm(ctx0, cur, norm_eps);
+-                cur = ggml_mul(ctx0, cur, model.sscp_norm_w[i]);
+-                cur = ggml_cont(ctx0, ggml_permute(ctx0, cur, 2, 0, 1, 3));
++            if (norm_w[i]) {
++                x = ggml_cont(ctx0, ggml_permute(ctx0, x, 1, 2, 0, 3));
++                x = ggml_norm(ctx0, x, norm_eps);
++                x = ggml_mul(ctx0, x, norm_w[i]);
++                x = ggml_cont(ctx0, ggml_permute(ctx0, x, 2, 0, 1, 3));
+             }
+-            cur = ggml_relu(ctx0, cur);
++            x = ggml_relu(ctx0, x);
+         }
+-        // Flatten [freq, time, ch, 1] -> [ch*freq, time]
+-        cur = ggml_cont(ctx0, ggml_permute(ctx0, cur, 1, 2, 0, 3));
+-        cur = ggml_reshape_2d(ctx0, cur, cur->ne[0] * cur->ne[1], cur->ne[2]);
++        x = ggml_cont(ctx0, ggml_permute(ctx0, x, 1, 2, 0, 3));
++        return ggml_reshape_2d(ctx0, x, x->ne[0] * x->ne[1], x->ne[2]);
++    };
++    // LG wider ears: the input's last audio_wide_bands rows are the bands above 8 kHz; his own path reads only the
++    // first rows (the 128 he always had), a side path reads the rest, and its projection is added to his
++    const int n_wide = hparams.audio_wide_bands;
++    ggml_tensor * high = nullptr;
++    if (n_wide > 0) {
++        const int64_t n_old = cur->ne[0] - n_wide;
++        high = ggml_cont(ctx0, ggml_view_2d(ctx0, cur, n_wide, cur->ne[1], cur->nb[1], n_old * ggml_element_size(cur)));
++        cur  = ggml_cont(ctx0, ggml_view_2d(ctx0, cur, n_old, cur->ne[1], cur->nb[1], 0));
++    }
++    {
++        cur = subsample(cur, model.sscp_conv_w, model.sscp_conv_b, model.sscp_norm_w);
+         if (model.sscp_inp_proj_w) {
+             cur = build_mm(model.sscp_inp_proj_w, cur);
+             if (model.sscp_inp_proj_b) {
+                 cur = ggml_add(ctx0, cur, model.sscp_inp_proj_b);
+             }
+         }
++        if (high) {
++            ggml_tensor * side = subsample(high, model.wide_conv_w, {nullptr, nullptr}, model.wide_norm_w);
++            cur = ggml_add(ctx0, cur, build_mm(model.wide_proj_w, side));
++        }
+     }
+ 
+     const int64_t n_pos = cur->ne[1];
+diff --git a/tools/mtmd/mtmd-audio.cpp b/tools/mtmd/mtmd-audio.cpp
+index b72fd06..ca3e067 100644
+--- a/tools/mtmd/mtmd-audio.cpp
++++ b/tools/mtmd/mtmd-audio.cpp
+@@ -878,7 +878,56 @@ bool mtmd_audio_preprocessor_granite_speech::preprocess(const float *
+ // mtmd_audio_preprocessor_gemma4a
+ //
+ 
++// LG: the 48 kHz -> 16 kHz resampler of scipy.signal.resample_poly(x, 1, 3) (window ('kaiser', 5.0)): a 61-tap
++// lowpass at 1/3 of Nyquist, scaled to unit DC gain, centered on every third sample
++static std::vector<float> lg_fir_1_3() {
++    const int half = 30, n = 2 * half + 1;
++    const double fc = 1.0 / 3.0, beta = 5.0;
++    auto i0 = [](double x) {                      // modified Bessel function of the first kind, order 0
++        double sum = 1.0, term = 1.0;
++        for (int k = 1; k < 50; k++) { term *= (x / (2.0 * k)) * (x / (2.0 * k)); sum += term; }
++        return sum;
++    };
++    std::vector<double> h(n);
++    double s = 0.0;
++    for (int i = 0; i < n; i++) {
++        const double m = i - half;
++        const double sinc = m == 0 ? 1.0 : std::sin(M_PI * fc * m) / (M_PI * fc * m);
++        const double r = 2.0 * i / (n - 1) - 1.0;
++        h[i] = fc * sinc * i0(beta * std::sqrt(std::max(0.0, 1.0 - r * r))) / i0(beta);
++        s += h[i];
++    }
++    std::vector<float> out(n);
++    for (int i = 0; i < n; i++) { out[i] = (float) (h[i] / s); }
++    return out;
++}
++
++static std::vector<float> lg_resample_1_3(const std::vector<float> & fir, const float * x, size_t n) {
++    const int half = (int) fir.size() / 2;
++    const size_t n_out = (n + 2) / 3;
++    std::vector<float> y(n_out, 0.0f);
++    for (size_t m = 0; m < n_out; m++) {
++        double acc = 0.0;
++        for (int i = 0; i < (int) fir.size(); i++) {
++            const int64_t k = (int64_t) (3 * m) + half - i;
++            if (k >= 0 && k < (int64_t) n) { acc += (double) fir[i] * x[k]; }
++        }
++        y[m] = (float) acc;
++    }
++    return y;
++}
++
++// LG: log(mel + floor) as Gemma 4's feature extractor does (log_mel_spectrogram gives log(max(mel, floor)), which
++// differs for quiet bands); the spectrogram is made with a negligible floor, then the real one is added here
++static void lg_log_plus_floor(mtmd_audio_mel & m, float scale, float floor, bool from_floor) {
++    const float base = from_floor ? logf(floor) : 0.0f;
++    for (auto & v : m.data) { v = logf(expf(v) * scale + floor) - base; }
++}
++
+ void mtmd_audio_preprocessor_gemma4a::initialize() {
++    const int n_wide = hparams.audio_wide_bands;
++    const int n_old  = hparams.n_mel_bins - n_wide;
++    const int sr_old = n_wide > 0 ? 16000 : hparams.audio_sample_rate;
+     cache.fill_sin_cos_table(hparams.audio_n_fft);
+ 
+     // Standard periodic Hann window, zero-padded to FFT size
+@@ -889,12 +938,39 @@ void mtmd_audio_preprocessor_gemma4a::initialize() {
+ 
+     // HTK mel scale, no Slaney area normalization
+     cache.fill_mel_filterbank_matrix(
+-        hparams.n_mel_bins, hparams.audio_n_fft, hparams.audio_sample_rate,
+-        0.0f, hparams.audio_sample_rate / 2.0f,
++        n_old, hparams.audio_n_fft, sr_old,
++        0.0f, sr_old / 2.0f,
+         /*slaney_area_norm=*/ false,
+         /*scale=*/ 1.0f,
+         /*use_htk=*/ true
+     );
++    if (n_wide <= 0) {
++        return;
++    }
++    // the bands above 8 kHz (tools/ears/widen.py high_filters): 20 ms periodic Hann frames of the 48 kHz sound
++    // (960 samples) in a 1024-point FFT, triangles at his 128 bands' mel spacing, the first starting at 8 kHz
++    const int n_fft = 1024, win = 960, sr = 48000;
++    cache_hi.fill_sin_cos_table(n_fft);
++    cache_hi.hann_window.assign(n_fft, 0.0f);
++    for (int i = 0; i < win; i++) {
++        cache_hi.hann_window[i] = 0.5f - 0.5f * cosf((2.0f * (float)M_PI * i) / win);
++    }
++    auto mel  = [](double f) { return 2595.0 * std::log10(1.0 + f / 700.0); };
++    auto hz   = [](double m) { return 700.0 * (std::pow(10.0, m / 2595.0) - 1.0); };
++    const double d = mel(8000.0) / (n_old + 1);
++    const int n_bins = n_fft / 2 + 1;
++    cache_hi.filters.n_mel = n_wide;
++    cache_hi.filters.n_fft = n_bins;
++    cache_hi.filters.data.assign((size_t) n_wide * n_bins, 0.0f);
++    for (int j = 0; j < n_wide; j++) {
++        const double lo = hz(mel(8000.0) + d * j), c = hz(mel(8000.0) + d * (j + 1)), hi = hz(mel(8000.0) + d * (j + 2));
++        for (int k = 0; k < n_bins; k++) {
++            const double f = (double) k * sr / n_fft;
++            const double w = std::max(0.0, std::min((f - lo) / (c - lo), (hi - f) / (hi - c)));
++            cache_hi.filters.data[(size_t) j * n_bins + k] = (float) w;
++        }
++    }
++    fir_1_3 = lg_fir_1_3();
+ }
+ 
+ bool mtmd_audio_preprocessor_gemma4a::preprocess(const float *                 samples,
+@@ -908,18 +984,20 @@ bool mtmd_audio_preprocessor_gemma4a::preprocess(const float *                 s
+     GGML_ASSERT(!cache.cos_vals.empty());
+     GGML_ASSERT(!cache.filters.data.empty());
+ 
++    const int n_wide = hparams.audio_wide_bands;
++    const int n_old  = hparams.n_mel_bins - n_wide;
+     filter_params params;
+-    params.n_mel            = hparams.n_mel_bins;
++    params.n_mel            = n_old;
+     params.n_fft_bins       = 1 + (hparams.audio_n_fft / 2);
+     params.hann_window_size = hparams.audio_n_fft; // window is zero-padded to FFT size
+     params.hop_length       = hparams.audio_hop_len;
+-    params.sample_rate      = hparams.audio_sample_rate;
++    params.sample_rate      = n_wide > 0 ? 16000 : hparams.audio_sample_rate;
+     params.no_padding       = true;
+     params.center_padding   = false;
+     params.preemph          = 0.0f;
+     params.use_natural_log  = true;
+     params.use_magnitude    = true;
+-    params.mel_floor        = 0.001f;
++    params.mel_floor        = 1e-30f;              // LG: the real floor (0.001) is added after, lg_log_plus_floor
+     params.norm_per_feature = false;
+ 
+     // Split into 30-second chunks (model context limit, ~750 tokens each)
+@@ -927,6 +1005,14 @@ bool mtmd_audio_preprocessor_gemma4a::preprocess(const float *                 s
+     for (size_t off = 0; off < n_samples; off += chunk_samples) {
+         const float * chunk_ptr = samples + off;
+         size_t chunk_len = std::min(chunk_samples, n_samples - off);
++        const float * chunk48 = chunk_ptr;
++        const size_t len48 = chunk_len;
++        std::vector<float> chunk16;
++        if (n_wide > 0) {                          // LG: his 128 bands hear the 16 kHz version
++            chunk16 = lg_resample_1_3(fir_1_3, chunk48, len48);
++            chunk_ptr = chunk16.data();
++            chunk_len = chunk16.size();
++        }
+ 
+         // Semicausal left-padding + right-padding to match PyTorch frame count
+         const int pad_left = hparams.audio_window_len / 2;
+@@ -948,6 +1034,44 @@ bool mtmd_audio_preprocessor_gemma4a::preprocess(const float *                 s
+ 
+         // Trim to PyTorch frame count
+         out_chunk.n_len = std::min(out_chunk.n_len, pt_frames);
++        if ((int64_t) out_chunk.data.size() != out_chunk.n_mel * out_chunk.n_len) {   // keep [n_mel][n_len] packed
++            std::vector<float> packed((size_t) out_chunk.n_mel * out_chunk.n_len);
++            const int64_t full = (int64_t) out_chunk.data.size() / out_chunk.n_mel;
++            for (int64_t j = 0; j < out_chunk.n_mel; j++) {
++                std::copy(out_chunk.data.begin() + j * full, out_chunk.data.begin() + j * full + out_chunk.n_len,
++                          packed.begin() + j * out_chunk.n_len);
++            }
++            out_chunk.data.swap(packed);
++        }
++        lg_log_plus_floor(out_chunk, 1.0f, 0.001f, false);
++
++        if (n_wide > 0) {
++            // LG: the bands above 8 kHz on the same clock: frame i covers the same 20 ms (10 ms of zeros in front,
++            // 960-sample frames every 480 samples), magnitudes / 3 (3x the samples of his 16 kHz frames), measured
++            // from the floor: log(mel / 3 + 0.001) - log(0.001)
++            const int64_t T = out_chunk.n_len;
++            const int hop = 480, n_fft = 1024;
++            std::vector<float> padded48((size_t) (T - 1) * hop + n_fft, 0.0f);
++            std::copy(chunk48, chunk48 + std::min(len48, padded48.size() - hop), padded48.data() + hop);
++            filter_params ph = params;
++            ph.n_mel = n_wide; ph.n_fft_bins = n_fft / 2 + 1; ph.hann_window_size = n_fft; ph.hop_length = hop;
++            ph.sample_rate = 48000;
++            mtmd_audio_mel hi;
++            if (!log_mel_spectrogram(padded48.data(), padded48.size(), 4, ph, cache_hi, hi) || hi.n_len < T) {
++                return false;
++            }
++            if (hi.n_len != T) {                   // keep [n_mel][n_len] packed at T frames
++                std::vector<float> packed((size_t) n_wide * T);
++                for (int64_t j = 0; j < n_wide; j++) {
++                    std::copy(hi.data.begin() + j * hi.n_len, hi.data.begin() + j * hi.n_len + T, packed.begin() + j * T);
++                }
++                hi.data.swap(packed);
++                hi.n_len = T;
++            }
++            lg_log_plus_floor(hi, 1.0f / 3.0f, 0.001f, true);
++            out_chunk.data.insert(out_chunk.data.end(), hi.data.begin(), hi.data.end());
++            out_chunk.n_mel += n_wide;
++        }
+ 
+         output.push_back(std::move(out_chunk));
+     }
+diff --git a/tools/mtmd/mtmd-audio.h b/tools/mtmd/mtmd-audio.h
+index ad96bd8..2b6a350 100644
+--- a/tools/mtmd/mtmd-audio.h
++++ b/tools/mtmd/mtmd-audio.h
+@@ -94,6 +94,10 @@ struct mtmd_audio_preprocessor_gemma4a : mtmd_audio_preprocessor {
+ 
+   private:
+     mtmd_audio_cache cache;
++    // LG wider ears (hparams.audio_wide_bands > 0): the sound comes at 48 kHz; the 128 bands come from its 16 kHz
++    // version (resampled like scipy's resample_poly(x, 1, 3)), the bands above 8 kHz from the 48 kHz sound itself
++    mtmd_audio_cache cache_hi;
++    std::vector<float> fir_1_3;   // the 61-tap Kaiser lowpass of that resampler
+ };
+ 
+ struct mtmd_audio_preprocessor_gemma4ua : mtmd_audio_preprocessor {
