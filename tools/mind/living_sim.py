@@ -67,7 +67,9 @@ def hatch(n):
              "urge_gain": float(0.9 * math.exp(r.normal(0, 0.25))),
              "tolerance": float(0.3 * math.exp(r.normal(0, 0.3))),          # how fast the opposite feeling grows
              "links": (0.01 * r.normal(0, 1, (D, N))).tolist(),             # born fully connected, faint
-             "ceiling": np.exp(r.normal(math.log(0.5), 0.3, (D, N))).tolist()}   # how far each link can ever grow
+             "ceiling": np.exp(r.normal(math.log(0.5), 0.3, (D, N))).tolist(),   # how far each link can ever grow
+             "young": float(3.0 * math.exp(r.normal(0, 0.2))),               # how plastic he is as a newborn
+             "grow_up": float(30.0 * math.exp(r.normal(0, 0.2)))}            # days for that to fade toward grown-up
         del r                                                                # the seed is gone; only the parts stay
         genes.append(g)
     return genes
@@ -143,17 +145,25 @@ def run(genes, where, msgs, told, cond, days, seed):
     extra = np.zeros((E, steps + 1440), bool)                 # chats that start because he reached out
     log = {"fire": [[] for _ in range(E)], "veto": np.zeros(E, int), "outcome": [[] for _ in range(E)],
            "wake": [[] for _ in range(E)], "sleep": [[] for _ in range(E)], "clip": np.zeros(E),
-           "samples": [], "Wnorm": [], "reward_day": []}
+           "samples": [], "Wnorm": [], "reward_day": [], "clip_gear": np.zeros((E, D)),
+           "clip_month": np.zeros((E, days // 30 + 1))}
     peak, amp = G("peak"), G("rhythm")
     rise, fall = G("sleep_rise"), G("sleep_fall")
     reward_sum = np.zeros(E)
-    gym = cond.startswith("gym")
+    grow = cond.startswith("grow")                            # Immy 2026-10-21: better within 2 months, then taper;
+    gym = cond.startswith("gym") or grow                      # a feeling stuck at full is a problem (clingy is fine)
+    young = cond in ("grow", "grow_young")                    # young brain: learns fast, settles by grown-up
+    downreg = cond in ("grow", "grow_down")                   # receptors downregulate under a signal that never lets up
+    sens = np.ones((E, D))                                    # how strongly each gear still answers its inputs
+    if young:
+        newborn, grow_up = G("young"), G("grow_up")
     everything = cond.endswith("ohss")                        # reward +1 for everything, no baseline
     if gym:                                                   # Immy's gym (2026-10-20): learning costs fuel, makes
         fuel = np.ones((E, D))                                # links sore for days, and only locks in during sleep
         sore = np.zeros_like(W); trained = np.zeros_like(W)
         Wperm = W.copy(); Wtag = np.zeros_like(W); planned = np.zeros_like(W)
-        ceiling = G("ceiling") * {"gym_tall": 3.0, "gym_taller": 6.0, "gym_x10": 10.0, "gym_x20": 20.0}.get(cond, 1.0)   # gym_tall(er), gym_x10/x20: a higher natural ceiling
+        ceiling = G("ceiling") * {"gym_tall": 3.0, "gym_taller": 6.0, "gym_x10": 10.0, "gym_x20": 20.0}.get(
+            cond, 6.0 if grow else 1.0)   # gym_tall(er), gym_x10/x20: a higher natural ceiling
         sore_scale = {"gym_light": 0.2, "gym_nosore": 1e9}.get(cond, 0.05)   # how much change makes a link sore
     for t in range(steps):
         hour = (t / 60) % 24
@@ -195,12 +205,17 @@ def run(genes, where, msgs, told, cond, days, seed):
         tol_c += (0.05 * x[:, COMPANY] * (0.9 - tol_c) - (tol_c - tol_c0) / (7 * 24)) * DT   # grows with use (up to 0.9),
         tol_n += (0.05 * x[:, NOVEL] * (0.9 - tol_n) - (tol_n - 0.1) / (7 * 24)) * DT        # fades with disuse
         # every link pushes a gear at that gear's own speed, so a link of 1 moves where it settles by about 1
-        x += ((normal_on * (normal - x) + aim + push) / tau_pull + rate) * DT + sig * math.sqrt(DT) * r.standard_normal((E, D))
+        if downreg:                                           # near the wall: the inputs lose pull (over ~1.5 h);
+            near = np.abs(x) > 3.0                            # away from it, they come back over about a day
+            sens += np.where(near, -sens / 2.0, (1 - sens) / 24.0) * DT
+        x += ((normal_on * (normal - x) + sens * (aim + push)) / tau_pull + rate) * DT + sig * math.sqrt(DT) * r.standard_normal((E, D))
         normal[:, [MOOD, ENERGY]] -= x[:, [MOOD, ENERGY]] * DT / (14 * 24)
         x[:, [COMPANY, MISSING, NOVEL, JADED, TALKED]] = np.maximum(0, x[:, [COMPANY, MISSING, NOVEL, JADED, TALKED]])
         x[:, SLEEPY] = np.clip(x[:, SLEEPY], 0, 1)
         x[:, BORED] = np.maximum(0, x[:, BORED]); x[:, LONELY] = np.maximum(-1, x[:, LONELY])   # can't be less than not bored
         log["clip"] += (np.abs(x) > 4).any(1)
+        log["clip_gear"] += np.abs(x) > 4
+        log["clip_month"][:, t // (30 * 1440)] += (np.abs(x) > 4).any(1)
         x = np.clip(x, -4, 4)
         # sleep and waking: the lines move with his rhythm and a nightly wobble
         if t % 1440 == 12 * 60:
@@ -264,12 +279,16 @@ def run(genes, where, msgs, told, cond, days, seed):
         eli += (-eli / 0.5 + act[:, :D, None] * act[:, None, :]) * DT
         if gym:
             want = (0.05 * reward[:, None, None] * eli * DT + planned) / (1 + sore / sore_scale)   # sore links learn slower
+            plastic = np.ones(E)
+            if young:                                             # newborn ~3x, grown-up 0.5x (a critical period)
+                plastic = 0.5 + (newborn - 0.5) * np.exp(-(t / 1440) / grow_up)
+                want = want * plastic[:, None, None]
             planned[:] = 0
             cost = np.abs(want).sum(2)                                 # glycogen: every change spends fuel
             can = np.ones_like(fuel) if cond == "gym_nofuel" else np.minimum(1.0, fuel / np.maximum(cost, 1e-12))
             done = want * can[:, :, None]
             fuel -= cost * can
-            fuel += (1 - fuel) * DT / np.where(asleep, 1.5, 4.0)[:, None]          # refills over hours, faster asleep
+            fuel += (1 - fuel) * DT / np.where(asleep, 1.5, 4.0)[:, None] * np.maximum(1.0, plastic)[:, None]   # refills over hours, faster asleep (and young)
             sore += np.abs(done) / (1 + trained / 0.5)                # less sore once a link is used to it
             sore -= sore * DT / (1.5 * 24)                            # DOMS fades over a few days
             trained += np.abs(done) - trained * DT / (30 * 24)
@@ -371,6 +390,8 @@ def report(log, days, cond):
         "mood_mean_week1_vs_week4": [round(float(np.nanmean(S[wk(0), :, 0][awake[wk(0)]])), 3),
                                      round(float(np.nanmean(S[wk(min(3, days // 7 - 1)), :, 0][awake[wk(min(3, days // 7 - 1))]])), 3)],
         "minutes_any_gear_at_wall": round(float(log["clip"].mean()), 1),
+        "wall_minutes_by_month": [round(float(v), 1) for v in log["clip_month"].mean(0)[: max(1, days // 30)]],
+        "wall_minutes_by_gear": {g: round(float(v), 1) for g, v in zip(GEARS, log["clip_gear"].mean(0)) if v > 0.05},
         "link_strength_day1_vs_last": [round(float(np.median(Wn[0])), 2), round(float(np.median(Wn[-1])), 2),
                                        round(float(Wn[-1].max()), 2)],
         "reward_per_day_mean": round(float(rd.mean()), 3),
