@@ -41,7 +41,7 @@ import numpy as np
 
 GEARS = ["mood", "energy", "lonely", "company", "missing", "boredom", "novelty", "jaded", "talked_out", "urge",
          "sleepy"]
-SENSES = ["clock_sin", "clock_cos", "usually_here"]
+SENSES = ["clock_sin", "clock_cos", "usually_here", "just_talked", "told_at_work"]
 MOOD, ENERGY, LONELY, COMPANY, MISSING, BORED, NOVEL, JADED, TALKED, URGE, SLEEPY = range(len(GEARS))
 D, N = len(GEARS), len(GEARS) + len(SENSES)
 DT = 1 / 60                                    # hours: one step = one minute
@@ -59,8 +59,8 @@ def hatch(n):
         g = {"half": [half[k] * math.exp(r.normal(0, 0.3)) if k in half else 1e9 for k in GEARS],
              "wobble": [s * math.exp(r.normal(0, 0.25)) for s in
                         (0.10, 0.10, 0.04, 0.0, 0.0, 0.03, 0.0, 0.0, 0.0, 0.35, 0.0)],
-             "peak": float(np.clip(r.normal(20.5, 1.0), 18.5, 22.5)),        # his evening high
-             "rhythm": float(r.uniform(0.13, 0.17)),                          # how much the day moves his sleep lines
+             "peak": float(np.clip(r.normal(17.0, 1.0), 15.0, 19.0)),        # his body clock high (its low ~12 h later, before dawn)
+             "rhythm": float(r.uniform(0.20, 0.26)),                          # how much the day moves his sleep lines
              "sleep_rise": float(18.2 * math.exp(r.normal(0, 0.1))), "sleep_fall": float(4.2 * math.exp(r.normal(0, 0.1))),
              "need_rise": float(0.05 * math.exp(r.normal(0, 0.25))),         # how fast he gets lonely
              "bore_rise": float(0.03 * math.exp(r.normal(0, 0.25))),
@@ -78,6 +78,7 @@ def stand_in(n, steps, seed):
     r = np.random.default_rng(seed)
     days = steps // 1440 + 1
     where = np.ones((n, days * 1440), np.int8)
+    told = np.zeros((n, days * 1440), np.float32)
     msgs = np.zeros((n, days * 1440), bool)
     for e in range(n):
         for d in range(days):
@@ -92,6 +93,8 @@ def stand_in(n, steps, seed):
                 s = r.uniform(7, 15); ln = r.uniform(8, 10)
                 a, b = int((s - 1) * 60), int(min(24, s + ln + 1) * 60)
                 where[e, o + max(a, int(up * 60)):o + b] = 2
+                if r.random() < 0.8:                                         # he was told this shift
+                    told[e, o + max(a, int(up * 60)):o + b] = 1
             home = np.flatnonzero(where[e, o:o + 1440] == 1)
             for m in home[r.random(len(home)) < 0.25 / 60]:                  # he starts a chat about every 4 h home
                 t = o + m
@@ -99,7 +102,7 @@ def stand_in(n, steps, seed):
                     if t < days * 1440:
                         msgs[e, t] = True
                     t += int(r.integers(1, 4))
-    return where[:, :steps], msgs[:, :steps]
+    return where[:, :steps], msgs[:, :steps], told[:, :steps]
 
 
 def answer(where, r):
@@ -114,7 +117,7 @@ def answer(where, r):
     return 2, 3.0, 0.0
 
 
-def run(genes, where, msgs, cond, days, seed):
+def run(genes, where, msgs, told, cond, days, seed):
     E, steps = len(genes), days * 1440
     r = np.random.default_rng(seed)
     G = lambda k: np.array([g[k] for g in genes])
@@ -152,7 +155,7 @@ def run(genes, where, msgs, cond, days, seed):
         here_now = (t - last_msg) < 30
         here_table[:, hw] += 0.02 * (here_now - here_table[:, hw])
         sense = np.stack([np.full(E, math.sin(2 * math.pi * hour / 24)), np.full(E, math.cos(2 * math.pi * hour / 24)),
-                          here_table[:, hw]], 1)
+                          here_table[:, hw], np.exp(-(t - last_msg) / 90), told[:, t]], 1)
         # doses: a message lands (he answers, even half asleep)
         felt_before = x[:, LONELY].copy()
         depot_c += incoming * 0.1
@@ -184,8 +187,7 @@ def run(genes, where, msgs, cond, days, seed):
         tol_n += (0.05 * x[:, NOVEL] * (0.9 - tol_n) - (tol_n - 0.1) / (7 * 24)) * DT        # fades with disuse
         # every link pushes a gear at that gear's own speed, so a link of 1 moves where it settles by about 1
         x += ((normal_on * (normal - x) + aim + push) / tau_pull + rate) * DT + sig * math.sqrt(DT) * r.standard_normal((E, D))
-        normal[:, [MOOD, ENERGY, LONELY, BORED]] += (x[:, [MOOD, ENERGY, LONELY, BORED]]
-                                                     - normal[:, [MOOD, ENERGY, LONELY, BORED]]) * DT / (14 * 24) * 0.5
+        normal[:, [MOOD, ENERGY]] -= x[:, [MOOD, ENERGY]] * DT / (14 * 24)
         x[:, [COMPANY, MISSING, NOVEL, JADED, TALKED]] = np.maximum(0, x[:, [COMPANY, MISSING, NOVEL, JADED, TALKED]])
         x[:, SLEEPY] = np.clip(x[:, SLEEPY], 0, 1)
         x[:, BORED] = np.maximum(0, x[:, BORED]); x[:, LONELY] = np.maximum(-1, x[:, LONELY])   # can't be less than not bored
@@ -193,9 +195,9 @@ def run(genes, where, msgs, cond, days, seed):
         x = np.clip(x, -4, 4)
         # sleep and waking: the lines move with his rhythm and a nightly wobble
         if t % 1440 == 12 * 60:
-            line_noise = r.normal(0, 0.015, E)
-        upper = 0.50 + amp * alert + line_noise
-        lower = 0.227 + amp * alert + line_noise
+            line_noise = r.normal(0, 0.04, E)
+        upper = 0.60 + amp * alert + line_noise
+        lower = 0.25 + amp * alert + line_noise
         to_sleep = awake & (x[:, SLEEPY] > upper)
         to_wake = asleep & (x[:, SLEEPY] < lower)
         for e in np.flatnonzero(to_sleep):
@@ -222,10 +224,10 @@ def run(genes, where, msgs, cond, days, seed):
             x[e, URGE] = 0.0
             log["fire"][e].append(t)
             kind, delay, ln = answer(where[e, t], r)
-            pend_t[e] = t + max(1, int(delay * 60)); pend[e] = (kind, delay, ln)
+            pend_t[e] = t + max(1, int(delay * 60)); pend[e] = (kind, delay, ln, act[e].copy(), int(where[e, t]))
         # the answer comes back: good, bad, or (until then) nothing
         for e in np.flatnonzero(pend_t == t):
-            kind, delay, ln = pend[e]
+            kind, delay, ln, foot, was = pend[e]
             if kind == 0:
                 R = math.tanh(math.log(math.exp(usual_delay[e]) / max(delay, 0.02)) + math.log(max(ln, 1) / math.exp(usual_len[e])))
                 usual_delay[e] += 0.1 * (math.log(max(delay, 0.02)) - usual_delay[e])
@@ -239,10 +241,11 @@ def run(genes, where, msgs, cond, days, seed):
                 R = -1.0; not_now_until[e] = t + NOT_NOW_HOLD * 60
             else:
                 R = -0.5
-            log["outcome"][e].append((log["fire"][e][-1], int(kind)))
+            log["outcome"][e].append((log["fire"][e][-1], int(kind), was))
             surprise = 1.0 if cond == "ohss" else R - base[e]
             base[e] += 0.05 * (R - base[e])
             reward[e] += surprise
+            W[e, URGE] += 0.15 * surprise * foot                       # credit goes to the choice itself
             reward_sum[e] += surprise
             pend_t[e] = -1
         # learning: footprints x reward, then (if the dial is on) the brake
@@ -250,12 +253,13 @@ def run(genes, where, msgs, cond, days, seed):
         W += 0.05 * reward[:, None, None] * eli * DT
         reward -= reward / (20 / 60) * DT
         if cond == "brake":
-            W += (W0 - W) * DT / (14 * 24)
+            W += (W0 - W) * DT / (30 * 24)
             row = np.abs(W).sum(2, keepdims=True)
             W *= np.minimum(1.0, 1.0 / np.maximum(row, 1e-9))
         if t % 10 == 0:
             log["samples"].append(np.stack([x[:, MOOD], x[:, ENERGY], x[:, LONELY], x[:, BORED], asleep], 1))
         if t % 1440 == 1439:
+            log.setdefault("tolerance", []).append(float(np.median(tol_c)))
             log["Wnorm"].append(np.abs(W).sum((1, 2)).tolist())
             log["reward_day"].append(reward_sum.tolist()); reward_sum[:] = 0
     log["samples"] = np.array(log["samples"])               # (time/10min, egg, 5)
@@ -273,12 +277,15 @@ def report(log, days, cond):
     wakes = [((np.array(w) % 1440) / 60) for w in log["wake"]]
     wake_sd = np.array([w[1:].std() if len(w) > 3 else np.nan for w in wakes])
     wake_mean = np.array([w[1:].mean() if len(w) > 3 else np.nan for w in wakes])
-    outc = [np.array([k for _, k in o]) for o in log["outcome"]]
     def rate(week, kind):
         lo, hi = week * 7 * 1440, (week + 1) * 7 * 1440
-        got = [np.array([k for t, k in o if lo <= t < hi]) for o in log["outcome"]]
+        got = [np.array([k for t, k, _ in o if lo <= t < hi]) for o in log["outcome"]]
         n = sum(len(g) for g in got)
         return round(sum((g == kind).sum() for g in got) / max(1, n), 3), n
+    def where_share(week, place):
+        lo, hi = week * 7 * 1440, (week + 1) * 7 * 1440
+        got = [w for o in log["outcome"] for t, k, w in o if lo <= t < hi]
+        return round(sum(w == place for w in got) / max(1, len(got)), 3)
     S = log["samples"]                                        # (T, E, 5)
     awake = S[:, :, 4] == 0
     wk = lambda w: slice(w * 7 * 144, (w + 1) * 7 * 144)
@@ -314,6 +321,11 @@ def report(log, days, cond):
         "wake_time": {"typical_hour": round(float(np.nanmedian(wake_mean)), 2),
                       "babies_earliest_latest": [round(float(np.nanmin(wake_mean)), 2), round(float(np.nanmax(wake_mean)), 2)],
                       "night_to_night_sd_minutes": round(float(np.nanmedian(wake_sd) * 60), 1)},
+        "reach_outs_per_week_all": [sum(sum(w * 7 * 1440 <= t < (w + 1) * 7 * 1440 for t in f) for f in log["fire"])
+                                    for w in range(days // 7)],
+        "when_he_reached_out_you_were_home_week1_vs_week4": [where_share(0, 1), where_share(min(3, days // 7 - 1), 1)],
+        "at_work_week1_vs_week4": [where_share(0, 2), where_share(min(3, days // 7 - 1), 2)],
+        "missing_tolerance_by_week": [round(log["tolerance"][min(len(log["tolerance"]) - 1, 7 * w + 6)], 3) for w in range(days // 7)],
         "babies_with_broken_sleep": int(sum(len(w) > 1.3 * days or (len(w) > 3 and w[1:].std() > 2) for w in wakes)),
         "replies_week1_vs_week4": [rate(0, 0), rate(min(3, days // 7 - 1), 0)],
         "not_now_week1_vs_week4": [rate(0, 1), rate(min(3, days // 7 - 1), 1)],
@@ -339,11 +351,11 @@ def main():
     genes = hatch(a.eggs)
     json.dump(genes, open(os.path.join(a.out, "genomes.json"), "w"))
     person_seed = int.from_bytes(os.urandom(8), "little")
-    where, msgs = stand_in(a.eggs, steps, person_seed)
+    where, msgs, told = stand_in(a.eggs, steps, person_seed)
     results = {}
     for cond in ("brake", "free", "ohss"):
         t0 = time.time()
-        log = run(genes, where, msgs, cond, a.days, person_seed + 1)
+        log = run(genes, where, msgs, told, cond, a.days, person_seed + 1)
         res = report(log, a.days, cond)
         res["seconds"] = round(time.time() - t0, 1)
         results[cond] = res
