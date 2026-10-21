@@ -35,6 +35,8 @@ What it learns from (the answers are measured or come from file names, never fro
          guesses (strict_loss); balance: every reach/air answer equally common (card_example)
          [--talk ADAPTER_DIR]   train with his talk adapter on (his live personality layer, wear_talk); the keep
          lesson's teacher is still his brain without it, where he copies words faithfully
+         [--listen RANK --listen_lr 1e-4]   round 8: his brain learns to listen too (wear_listen: a LoRA only on the
+         audio positions he reads, never text), trained with the side path; saved in side.pt
   pagecheck MODEL WAV OUT.json   sep, day one: his old audio tokens and the brain's states over them are the same
          with and without the high-end page; what the page costs his answer before any training
   eval   CARDS_DIR MODEL OUT.json [--side OUT_DIR/side.pt] [--n 300] [--talk ADAPTER_DIR]   held-out packs; without --side = the old ears
@@ -216,13 +218,55 @@ def attach(model, where="early", mid=0, pool=4):
     return side
 
 
+LISTEN_TARGETS = re.compile(r".*language_model.*\.(q_proj|k_proj|v_proj|o_proj|gate_proj|up_proj)$")
+
+
+def wear_listen(model, rank):
+    """round 8 (Immy 2026-10-21, "something's bogging it down"; the probe: the tokens his brain receives carry the
+    high end far better than he says it): his brain learns to listen too. A LoRA on his language rooms that acts ONLY
+    on the audio positions of what he reads (his old audio tokens and the high-end page), never on text: Partial LoRA
+    (BLSP-KD, Wang et al. 2024). Text-only prompts, and every word he writes, pass through untouched, so his talk can't
+    change; only how he takes in sound does. model._listen_on switches it (the keep lesson's teacher takes it off).
+    B starts at zero: day one he hears exactly as before."""
+    if getattr(model, "_listen", None) is not None:
+        return model._listen
+    aid = model.config.audio_token_id
+
+    def mark(mod, args, kwargs):                              # which positions of this forward are sound
+        ids = kwargs.get("input_ids", args[0] if args else None)
+        model._audio_mask = (ids == aid) if ids is not None else None
+    model.register_forward_pre_hook(mark, with_kwargs=True)
+    g = torch.Generator().manual_seed(8)
+    pieces = {}
+    for name, lin in model.named_modules():
+        if not (isinstance(lin, nn.Linear) and LISTEN_TARGETS.match(name)):
+            continue
+        A = nn.Parameter((torch.randn(rank, lin.in_features, generator=g) / math.sqrt(lin.in_features)).to(lin.weight.device))
+        B = nn.Parameter(torch.zeros(lin.out_features, rank, device=lin.weight.device))
+        def hook(mod, inp, out, A=A, B=B):
+            m = getattr(model, "_audio_mask", None)
+            if not getattr(model, "_listen_on", False) or m is None or m.shape != out.shape[:2] or not m.any():
+                return out
+            return out + (((inp[0].float() @ A.T) @ B.T) * m[..., None]).to(out.dtype)
+        lin.register_forward_hook(hook)
+        pieces[name] = (A, B)
+    model._listen, model._listen_on = pieces, True
+    print(json.dumps({"listen": len(pieces), "rank": rank}), flush=True)
+    return pieces
+
+
 def load_side(model, side_pt):
-    """attaches a saved side path the way it was trained (early or late, its hidden layer), or an empty early one"""
+    """attaches a saved side path the way it was trained (early or late, its hidden layer), or an empty early one;
+    with its listener (round 8 on) when it has one"""
     if not side_pt:
         return attach(model)
     ck = torch.load(side_pt, map_location=model.device)
     side = attach(model, ck.get("where", "early"), ck.get("mid", 0), ck.get("pool", 4))
     side.load_state_dict(ck["side"])
+    if ck.get("listen"):
+        pieces = wear_listen(model, ck["listen_rank"])
+        for name, (A, B) in pieces.items():
+            A.data.copy_(ck["listen"][name + ".A"]); B.data.copy_(ck["listen"][name + ".B"])
     return side
 
 
@@ -434,12 +478,13 @@ def keep_loss(proc, model, high_fe, y48, question, old_answer):
     old, _, _ = encode(proc, model, high_fe, y48, question, old_answer, side_on=False)
     enc, hi, labels = encode(proc, model, high_fe, y48, question, old_answer)
     n = int((labels[0] != -100).sum()) + 1                    # the answer's words, and the step that predicts the first
-    talk = getattr(model, "_talk_on", None)
+    talk, listen = getattr(model, "_talk_on", None), getattr(model, "_listen_on", False)
     with torch.no_grad(), torch.autocast("cuda", dtype=torch.bfloat16):
         model._high = None
         model._talk_on = False                                # the teacher: his old ears, his brain without the adapter
+        model._listen_on = False                              # (and without the listener)
         teach = model(**old, logits_to_keep=n).logits[0, :-1].float()
-    model._talk_on = talk
+    model._talk_on, model._listen_on = talk, listen
     model._high = hi
     with torch.autocast("cuda", dtype=torch.bfloat16):
         student = model(**enc, logits_to_keep=n).logits[0, :-1].float()
@@ -499,7 +544,13 @@ def train(cards_dir, model_dir, out_dir, *rest):
         side.out.bias.data.copy_(silence_vector(proc, model))
     strict, balance = float(kw.get("strict", 0)), kw.get("balance", "0") == "1"
     high_fe = HighBands().to(model.device)
-    opt = torch.optim.AdamW(side.parameters(), lr=lr, weight_decay=0.0)
+    groups = [{"params": list(side.parameters()), "lr": lr}]
+    listen_rank = int(kw.get("listen", 0))
+    if listen_rank:                                           # round 8: his brain learns to listen (wear_listen)
+        pieces = wear_listen(model, listen_rank)
+        groups.append({"params": [p for ab in pieces.values() for p in ab], "lr": float(kw.get("listen_lr", 1e-4))})
+    trainable = [p for g_ in groups for p in g_["params"]]
+    opt = torch.optim.AdamW(groups, lr=lr, weight_decay=0.0)
     sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: min(1.0, (s + 1) / 200) * 0.5 * (1 + math.cos(math.pi * min(s, steps) / steps)))
     cards = cards_of(cards_dir, "train")
     log = open(os.path.join(out_dir, "train.jsonl"), "a")
@@ -545,7 +596,7 @@ def train(cards_dir, model_dir, out_dir, *rest):
             (loss / accum).backward()
             run.setdefault(kind, []).append(loss.item())
             done += 1; seen += 1
-        torch.nn.utils.clip_grad_norm_(side.parameters(), 1.0)
+        torch.nn.utils.clip_grad_norm_(trainable, 1.0)
         opt.step(); sched.step()
         if (step + 1) % 50 == 0:
             row = {"step": step + 1, "seen": seen, "lr": sched.get_last_lr()[0], "sec_per_step": round((time.time() - t0) / (step + 1), 2),
@@ -553,7 +604,10 @@ def train(cards_dir, model_dir, out_dir, *rest):
             log.write(json.dumps(row) + "\n"); log.flush(); print(json.dumps(row), flush=True)
             run = {}
         if (step + 1) % 1000 == 0 or step + 1 == steps:
-            ck = {"side": side.state_dict(), "edges_hz": high_fe.edges.tolist(), "step": step + 1, "where": where,
+            if listen_rank:
+                listen_sd = {f"{n}.{w}": t.detach().cpu() for n, (A, B) in pieces.items() for w, t in (("A", A), ("B", B))}
+            ck = {"listen": listen_sd if listen_rank else None, "listen_rank": listen_rank,
+                  "side": side.state_dict(), "edges_hz": high_fe.edges.tolist(), "step": step + 1, "where": where,
                   "mid": mid, "pool": pool, "init": kw.get("init"), "strict": strict, "balance": balance,
                   "talk": kw.get("talk")}
             torch.save(ck, os.path.join(out_dir, f"side-{step + 1}.pt"))
