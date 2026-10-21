@@ -170,7 +170,7 @@ def run(genes, where, msgs, told, cond, days, seed):
            "wake": [[] for _ in range(E)], "sleep": [[] for _ in range(E)], "clip": np.zeros(E),
            "samples": [], "Wnorm": [], "reward_day": [], "clip_gear": np.zeros((E, D)),
            "clip_month": np.zeros((E, days // 30 + 1)), "top_gear": np.zeros((E, D)),
-           "play_month": np.zeros((E, days // 30 + 1, len(KINDS) if cond.startswith("world") else len(ACTS))),
+           "play_month": np.zeros((E, days // 30 + 1, len(KINDS) if cond.startswith(("world", "alive")) else len(ACTS))),
            "sessions": np.zeros(E), "done_month": np.zeros((E, days // 30 + 1)), "known_month": np.zeros((E, days // 30 + 1)),
            "gear_month": np.zeros((days // 30 + 1, D)), "awake_month": np.zeros(days // 30 + 1)}
     peak, amp = G("peak"), G("rhythm")
@@ -182,6 +182,8 @@ def run(genes, where, msgs, told, cond, days, seed):
     gym = cond.startswith("gym") or grow                      # a feeling stuck at full is a problem (clingy is fine)
     young = cond in ("grow", "grow_young", "play", "tonic", "life")   # young brain: learns fast, settles by grown-up
     downreg = cond in ("grow", "grow_down", "play", "tonic", "life")  # receptors downregulate under a signal that never lets up
+    alive = cond == "alive"                                   # the design as of v7 (Immy 2026-10-21): the big world, fair
+    cond = "world4" if alive else cond                        # learning, no expectation credit to "go do something"
     world = cond in ("world", "world2", "world3", "world4")                       # the big world (world.py): 349 things, skill, projects
     fair = cond in ("world2", "world3", "world4")                                   # Immy 2026-10-21: "I'm scarce ... do things, keep yourself busy,
     social_w = G("social") if fair else np.ones(E)            # but you also need to enjoy the things that you're doing ... not
@@ -530,7 +532,7 @@ def report(log, days, cond):
             return float("nan")
         return np.corrcoef(log["value_a"][e][m], log["likes"][e][m])[0, 1]
     def favourites():
-        if not cond.startswith("world"):
+        if not cond.startswith(("world", "alive")):
             return None
         out = []
         for e in range(3):
@@ -599,7 +601,7 @@ def report(log, days, cond):
         "hours_doing_things_per_day_by_month": [round(float(log["play_month"][:, m].sum(1).mean() / 60 / 30), 2)
                                                 for m in range(max(1, days // 30))],
         "share_of_doing_by_kind": {a: round(float(log["play_month"][:, :, i].sum() / max(1, log["play_month"].sum())), 3)
-                                   for i, a in enumerate(KINDS if cond.startswith("world") else ACTS)},
+                                   for i, a in enumerate(KINDS if cond.startswith(("world", "alive")) else ACTS)},
         "sessions_per_day": round(float(log["sessions"].mean() / days), 2),
         "found_what_he_likes": round(float(np.nanmean([liked(e) for e in range(E)] or [float("nan")])), 2),
         "things_known_by_month": [round(float(np.median(log["known_month"][:, m])), 1) for m in range(max(1, days // 30))],
