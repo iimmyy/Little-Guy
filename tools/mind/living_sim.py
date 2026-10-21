@@ -39,6 +39,10 @@ usage: living_sim.py OUT_DIR [--eggs 100] [--days 30]
 import argparse, json, math, os, time
 import numpy as np
 
+import world as WORLD                                        # tools/mind/world.py: the things he can do
+CAT = WORLD.catalog()
+KINDS = list(WORLD.KINDS)
+
 GEARS = ["mood", "energy", "lonely", "company", "missing", "boredom", "novelty", "jaded", "talked_out", "urge",
          "sleepy", "drive", "play"]
 SENSES = ["clock_sin", "clock_cos", "usually_here", "just_talked", "told_at_work"]
@@ -83,7 +87,11 @@ def hatch(n):
              "likes": np.exp(r.normal(0, 0.4, len(ACTS))).tolist(),          # his knacks: what he turns out to enjoy
              "drive_rise": float(0.04 * math.exp(r.normal(0, 0.25))),        # how fast he wants to get things done
              "play_gain": float(0.6 * math.exp(r.normal(0, 0.25))),
-             "top": np.exp(r.normal(math.log(2.0), 0.2, len(GEARS))).tolist()}   # how far each feeling can rise above his baseline
+             "top": np.exp(r.normal(math.log(2.0), 0.2, len(GEARS))).tolist(),
+             "taste": r.normal(0, 0.6, len(WORLD.TRAITS)).tolist(),           # what kinds of things he's into
+             "quirks": r.normal(0, 0.3, len(CAT)).tolist(),                   # and odd likes no trait explains
+             "knows": r.choice(len(CAT), 8, replace=False, p=np.array([c["common"] for c in CAT]) /
+                               sum(c["common"] for c in CAT)).tolist()}       # the few things he knows at hatching   # how far each feeling can rise above his baseline
         del r                                                                # the seed is gone; only the parts stay
         genes.append(g)
     return genes
@@ -161,7 +169,8 @@ def run(genes, where, msgs, told, cond, days, seed):
            "wake": [[] for _ in range(E)], "sleep": [[] for _ in range(E)], "clip": np.zeros(E),
            "samples": [], "Wnorm": [], "reward_day": [], "clip_gear": np.zeros((E, D)),
            "clip_month": np.zeros((E, days // 30 + 1)), "top_gear": np.zeros((E, D)),
-           "play_month": np.zeros((E, days // 30 + 1, len(ACTS))), "sessions": np.zeros(E),
+           "play_month": np.zeros((E, days // 30 + 1, len(KINDS) if cond.startswith("world") else len(ACTS))),
+           "sessions": np.zeros(E), "done_month": np.zeros((E, days // 30 + 1)), "known_month": np.zeros((E, days // 30 + 1)),
            "gear_month": np.zeros((days // 30 + 1, D)), "awake_month": np.zeros(days // 30 + 1)}
     peak, amp = G("peak"), G("rhythm")
     rise, fall = G("sleep_rise"), G("sleep_fall")
@@ -172,14 +181,34 @@ def run(genes, where, msgs, told, cond, days, seed):
     gym = cond.startswith("gym") or grow                      # a feeling stuck at full is a problem (clingy is fine)
     young = cond in ("grow", "grow_young", "play", "tonic", "life")   # young brain: learns fast, settles by grown-up
     downreg = cond in ("grow", "grow_down", "play", "tonic", "life")  # receptors downregulate under a signal that never lets up
-    play_on = cond in ("play", "life")                        # his own life: things to do alone, a drive to get things done
-    tonic = cond in ("tonic", "life")                         # each feeling: a slow baseline (tonic) and bursts (phasic) that
+    world = cond in ("world", "world_still")                  # the big world (world.py): 349 things, skill, projects
+    if world:
+        grow = gym = young = downreg = True
+    play_on = cond in ("play", "life") or world               # his own life: things to do alone, a drive to get things done
+    tonic = cond in ("tonic", "life") or world                # each feeling: a slow baseline (tonic) and bursts (phasic) that
     top = G("top")                                            # slow near his top line (saturation), the baseline only drifting
-    K = len(ACTS)                                             # a little (a new baseline, within reach of the one he hatched with)
+    if world:                                                 # a little (a new baseline, within reach of the one he hatched with)
+        FUN, PROG, OLDR, ABS = (np.array([c[k] for c in CAT]) for k in ("fun", "progress", "old", "absorb"))
+        DIFF, GOAL = np.array([c["difficulty"] for c in CAT]), np.array([c["goal"] for c in CAT], float)
+        KIND = np.array([KINDS.index(c["kind"]) for c in CAT])
+        TR = np.array([c["traits"] for c in CAT]); TR = TR / TR.sum(1, keepdims=True)
+        likes = np.exp(1.5 * G("taste") @ TR.T + G("quirks"))  # how much he'd enjoy each, if he ever tried it
+        likes /= likes.mean(1, keepdims=True)
+        known = np.zeros((E, len(CAT)), bool)
+        for e, g in enumerate(genes):
+            known[e, g["knows"]] = True
+    else:
+        FUN, PROG, OLDR, ABS = ACT_FUN, ACT_PROGRESS, ACT_OLD, ACT_ABSORB
+        DIFF, GOAL, KIND = np.zeros(len(ACTS)), np.zeros(len(ACTS)), np.arange(len(ACTS))
+        likes = G("likes"); known = np.ones((E, len(ACTS)), bool)
+    K = len(FUN)
     doing = np.full(E, -1); since = np.zeros(E)
-    old_a = np.zeros((E, K)); value_a = np.full((E, K), 0.3); event_mean = np.zeros((E, K))
+    old_a = np.zeros((E, K)); old_t = np.zeros((E, K))        # how old each has gotten (it freshens over a day, lazily)
+    skill = np.zeros((E, K)); skill_t = np.zeros((E, K))      # how good he is at each (fades over months unused)
+    proj = np.zeros((E, K)); sess_n = np.zeros((E, K))        # hours into the current project of each; sessions of each
+    value_a = np.full((E, K), 0.3); event_mean = np.zeros((E, K))
     sess_r = np.zeros(E); sess_foot = np.zeros((E, N))
-    likes = G("likes"); drive_rise = G("drive_rise") * play_on; play_gain = G("play_gain") * play_on
+    drive_rise = G("drive_rise") * play_on; play_gain = G("play_gain") * play_on
     if not play_on:
         sig = sig.copy(); sig[:, [DRIVE, PLAY]] = 0
     sens = np.ones((E, D))                                    # how strongly each gear still answers its inputs
@@ -229,13 +258,14 @@ def run(genes, where, msgs, told, cond, days, seed):
         busy = doing >= 0
         k_now = np.maximum(doing, 0)
         into = busy * (1 - old_a[np.arange(E), k_now])            # how into it he still is (0 once it's gotten old)
-        absorbed = into * ACT_ABSORB[k_now]
+        absorbed = into * ABS[k_now]
+        flow = 0.5 + 0.5 * np.exp(-((skill[np.arange(E), k_now] - DIFF[k_now]) / 0.35) ** 2) if world else 1.0
         rate[:, LONELY] -= G("need_rise") * absorbed * awake      # lost in it: the need grows slower (flow)
-        rate[:, BORED] -= 1.5 * into * ACT_FUN[k_now] * likes[np.arange(E), k_now]
-        rate[:, DRIVE] = drive_rise * awake - 0.15 * into * ACT_PROGRESS[k_now] * likes[np.arange(E), k_now]
+        rate[:, BORED] -= 1.5 * into * FUN[k_now] * likes[np.arange(E), k_now] * flow
+        rate[:, DRIVE] = drive_rise * awake - 0.15 * into * PROG[k_now] * likes[np.arange(E), k_now]
         rate[:, PLAY] = play_gain * (np.maximum(0, x[:, BORED]) + 0.6 * np.maximum(0, x[:, DRIVE])
                                      + 0.2 * np.maximum(0, x[:, LONELY])) * (1 + np.maximum(0, x[:, ENERGY])) * awake * ~busy
-        aim[:, MOOD] += 0.3 * into * ACT_FUN[k_now] - 0.1 * np.maximum(0, x[:, DRIVE])
+        aim[:, MOOD] += 0.3 * into * FUN[k_now] - 0.1 * np.maximum(0, x[:, DRIVE])
         rate[:, URGE] = G("urge_gain") * (np.maximum(0, x[:, LONELY]) + 0.3 * np.maximum(0, x[:, BORED])) \
             * (1 + np.maximum(0, x[:, ENERGY])) * awake * (1 - 0.6 * absorbed)
         rate[:, SLEEPY] = np.where(asleep, -x[:, SLEEPY] / fall, (1 - x[:, SLEEPY]) / rise)
@@ -334,9 +364,11 @@ def run(genes, where, msgs, told, cond, days, seed):
             busy = doing >= 0
             idx = np.arange(E); k_now = np.maximum(doing, 0)
             into = busy * (1 - old_a[idx, k_now])
-            lam = np.stack([0.6 * into * ACT_FUN[k_now] * likes[idx, k_now],                  # a fun moment
-                            0.4 * into * ACT_PROGRESS[k_now] * likes[idx, k_now],             # getting somewhere
-                            0.15 * busy * ACT_PROGRESS[k_now]], 1) * DT                       # stuck, frustrated
+            sk, dif = skill[idx, k_now], DIFF[k_now]
+            flow = 0.5 + 0.5 * np.exp(-((sk - dif) / 0.35) ** 2) if world else 1.0   # best when just hard enough
+            lam = np.stack([0.6 * into * FUN[k_now] * likes[idx, k_now] * flow,                         # a fun moment
+                            0.4 * into * PROG[k_now] * likes[idx, k_now] * ((0.4 + sk) if world else 1.0),   # getting somewhere
+                            0.15 * busy * PROG[k_now] * (np.clip(dif - sk, 0, 1) * 2 if world else 1.0)], 1) * DT   # stuck
             ev = r.random((E, 3)) < lam
             for e, j in zip(*np.nonzero(ev)):
                 k = k_now[e]; R = (1.0, 1.0, -0.5)[j]
@@ -345,10 +377,21 @@ def run(genes, where, msgs, told, cond, days, seed):
                 reward[e] += 0.5 * surprise; reward_sum[e] += 0.5 * surprise; sess_r[e] += R
                 if j == 1:
                     x[e, DRIVE] = max(0.0, x[e, DRIVE] - 0.2)     # something got done
-            old_a[idx, k_now] += busy * ACT_OLD[k_now] * (1 - old_a[idx, k_now]) * DT     # it gets old while he does it
-            rest = np.ones((E, K), bool); rest[idx[busy], k_now[busy]] = False
-            old_a -= old_a * rest * DT / 24                       # and fresh again after a day or so away
-            log["play_month"][idx[busy], t // (30 * 1440), k_now[busy]] += 1
+            old_a[idx, k_now] += busy * OLDR[k_now] * (1 - old_a[idx, k_now]) * DT     # it gets old while he does it
+            if world:
+                skill[idx, k_now] += busy * 0.03 * (1 - skill[idx, k_now]) * DT        # practice (~30 h to get good)
+                proj[idx, k_now] += busy * (GOAL[k_now] > 0) * into * DT                 # hours into this project
+                fin = busy & (GOAL[k_now] > 0) & (proj[idx, k_now] >= GOAL[k_now])
+                for e in np.flatnonzero(fin):                     # finished it: a big good moment, then rest from it
+                    k = k_now[e]
+                    surprise = 2.0 - event_mean[e, k] * 0.5
+                    reward[e] += 0.5 * surprise; reward_sum[e] += 0.5 * surprise; sess_r[e] += 2.0
+                    x[e, DRIVE] = max(0.0, x[e, DRIVE] - 0.5); proj[e, k] = 0; old_a[e, k] = 0.9
+                    log["done_month"][e, t // (30 * 1440)] += 1
+            else:
+                rest = np.ones((E, K), bool); rest[idx[busy], k_now[busy]] = False
+                old_a -= old_a * rest * DT / 24                   # and fresh again after a day or so away
+            log["play_month"][idx[busy], t // (30 * 1440), KIND[k_now[busy]]] += 1
             end = busy & ((old_a[idx, k_now] > 0.85) | (x[:, ENERGY] < -1) | (r.random(E) < DT / 2) | incoming
                           | asleep | stop)
             for e in np.flatnonzero(end):
@@ -357,14 +400,39 @@ def run(genes, where, msgs, told, cond, days, seed):
                 s_ = sess_r[e] / hours - value_a[e, k]            # was it better or worse than he expected?
                 value_a[e, k] += 0.3 * s_
                 planned[e, PLAY] += 0.15 * s_ * sess_foot[e]       # credit to the choice to go do something
+                old_t[e, k] = skill_t[e, k] = t; sess_n[e, k] += 1
                 doing[e] = -1
             start = (x[:, PLAY] >= 1.0) & awake & (doing < 0) & ((t - last_msg) > 10)
             for e in np.flatnonzero(start):
-                score = (value_a[e] * (1 - old_a[e])) / 0.15
-                p = np.exp(score - score.max()); p /= p.sum()
-                doing[e] = r.choice(K, p=p); since[e] = t; sess_r[e] = 0; sess_foot[e] = act[e]
+                if world:                                         # what's gotten old freshens, skills fade, lazily
+                    gone = (t - old_t[e]) / 1440
+                    old_a[e] *= np.exp(-gone); old_t[e] = t
+                    skill[e] *= np.exp(-(t - skill_t[e]) / (90 * 1440)); skill_t[e] = t
+                kn = np.flatnonzero(known[e])
+                score = value_a[e, kn] * (1 - old_a[e, kn])
+                if world and (~known[e]).any():                   # or try something new: his guess for an unknown thing
+                    tried = kn[sess_n[e, kn] > 0]                 # is how he's liked things of that kind so far
+                    mean_all = value_a[e, tried].mean() if len(tried) else 0.3
+                    by_kind = np.full(len(KINDS), mean_all)
+                    for q in np.unique(KIND[tried]):
+                        by_kind[q] = value_a[e, tried[KIND[tried] == q]].mean()
+                    unk = np.flatnonzero(~known[e])
+                    guess = by_kind[KIND[unk]]
+                    score = np.append(score, guess.max() + 0.1)    # a little extra for the new (curiosity)
+                z = score / 0.15
+                p = np.exp(z - z.max()); p /= p.sum()
+                pick = r.choice(len(p), p=p)
+                if pick < len(kn):
+                    k = kn[pick]
+                else:                                             # a new thing, leaning to kinds he likes
+                    q = np.exp((guess - guess.max()) / 0.1) * np.array([CAT[u]["common"] for u in unk]) ** 0.5
+                    k = unk[r.choice(len(unk), p=q / q.sum())]
+                    known[e, k] = True; value_a[e, k] = guess[list(unk).index(k)]
+                doing[e] = k; since[e] = t; sess_r[e] = 0; sess_foot[e] = act[e]
                 x[e, PLAY] = 0.0; log["sessions"][e] += 1
             x[:, PLAY] = np.minimum(x[:, PLAY], 1.0)
+            if t % 1440 == 1439:
+                log["known_month"][:, t // (30 * 1440)] = known.sum(1)
         # learning: footprints x reward, then (if the dial is on) the brake
         eli += (-eli / 0.5 + act[:, :D, None] * act[:, None, :]) * DT
         if gym:
@@ -406,7 +474,7 @@ def run(genes, where, msgs, told, cond, days, seed):
             log["Wnorm"].append(np.abs(W).sum((1, 2)).tolist())
             log["reward_day"].append(reward_sum.tolist()); reward_sum[:] = 0
     log["samples"] = np.array(log["samples"])               # (time/10min, egg, 5)
-    log["value_a"] = value_a; log["likes"] = likes
+    log["value_a"] = value_a; log["likes"] = likes; log["sess_n"] = sess_n; log["known"] = known; log["skill"] = skill
     return log
 
 
@@ -434,6 +502,22 @@ def report(log, days, cond):
         return [(t, k, w) for o in log["outcome"] for t, k, w in o if m * 30 * 1440 <= t < (m + 1) * 30 * 1440]
     where_share_span = lambda m, place: round(float(np.mean([w == place for _, _, w in span(m)] or [0])), 3)
     reply_span = lambda m: round(float(np.mean([k == 0 for _, k, _ in span(m)] or [0])), 3)
+    def liked(e):                                             # does what he came to expect match his hidden tastes,
+        m = log["sess_n"][e] >= 3                             # over the things he really tried?
+        if m.sum() < 4:
+            return float("nan")
+        return np.corrcoef(log["value_a"][e][m], log["likes"][e][m])[0, 1]
+    def favourites():
+        if not cond.startswith("world"):
+            return None
+        out = []
+        for e in range(3):
+            m = np.flatnonzero(log["sess_n"][e] >= 3)
+            top = m[np.argsort(-log["value_a"][e][m])][:5]
+            best = np.argsort(-log["likes"][e])[:5]
+            out.append({"his_top_5": [CAT[k]["name"] for k in top], "secretly_best_for_him": [CAT[k]["name"] for k in best],
+                        "knows": int(log["known"][e].sum()), "most_skilled": CAT[int(np.argmax(log["skill"][e]))]["name"]})
+        return out
     S = log["samples"]                                        # (T, E, 5)
     awake = S[:, :, 4] == 0
     wk = lambda w: slice(w * 7 * 144, (w + 1) * 7 * 144)
@@ -493,10 +577,13 @@ def report(log, days, cond):
         "hours_doing_things_per_day_by_month": [round(float(log["play_month"][:, m].sum(1).mean() / 60 / 30), 2)
                                                 for m in range(max(1, days // 30))],
         "share_of_doing_by_kind": {a: round(float(log["play_month"][:, :, i].sum() / max(1, log["play_month"].sum())), 3)
-                                   for i, a in enumerate(ACTS)},
+                                   for i, a in enumerate(KINDS if cond.startswith("world") else ACTS)},
         "sessions_per_day": round(float(log["sessions"].mean() / days), 2),
-        "found_what_he_likes": round(float(np.mean([np.corrcoef(log["value_a"][e], log["likes"][e])[0, 1]
-                                                    for e in range(E) if log["sessions"][e] > 5] or [float("nan")])), 2),
+        "found_what_he_likes": round(float(np.nanmean([liked(e) for e in range(E)] or [float("nan")])), 2),
+        "things_known_by_month": [round(float(np.median(log["known_month"][:, m])), 1) for m in range(max(1, days // 30))],
+        "things_tried_3_times_or_more": round(float(np.median((log["sess_n"] >= 3).sum(1))), 1),
+        "projects_finished_per_baby_by_month": [round(float(log["done_month"][:, m].mean()), 1) for m in range(max(1, days // 30))],
+        "favourites_of_three_babies": favourites(),
         "link_strength_day1_vs_last": [round(float(np.median(Wn[0])), 2), round(float(np.median(Wn[-1])), 2),
                                        round(float(Wn[-1].max()), 2)],
         "reward_per_day_mean": round(float(rd.mean()), 3),
