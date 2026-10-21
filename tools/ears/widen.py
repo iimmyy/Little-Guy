@@ -688,6 +688,182 @@ def pagecheck(model_dir, wav, out, *rest):
     print(json.dumps(res, indent=1))
 
 
+def wear_fix(model, adapter_dir, rank):
+    """a new LoRA piece on the same layers as his talk adapter, worn on top of it (model._fix_on switches it). B starts
+    at zero, so on day one he is exactly round 3. Trained in fp32 and saved in the talk adapter's own format, so
+    tools/train/distill.py join makes one adapter of both for his brainstem"""
+    cfg = json.load(open(os.path.join(adapter_dir, "adapter_config.json")))
+    from safetensors.torch import load_file
+    names = [k[len("base_model.model."):-len(".lora_A.weight")]
+             for k in load_file(os.path.join(adapter_dir, "adapter_model.safetensors")) if k.endswith(".lora_A.weight")]
+    mods = dict(model.named_modules())
+    g = torch.Generator().manual_seed(7)
+    fix = {}
+    for name in names:
+        lin = mods[name]
+        A = nn.Parameter((torch.randn(rank, lin.in_features, generator=g) / math.sqrt(lin.in_features)).to(lin.weight.device))
+        B = nn.Parameter(torch.zeros(lin.out_features, rank, device=lin.weight.device))
+        def hook(mod, inp, out, A=A, B=B):
+            if not model._fix_on:
+                return out
+            return out + ((inp[0].float() @ A.T) @ B.T).to(out.dtype)
+        lin.register_forward_hook(hook)
+        fix[name] = (A, B)
+    model._fix_on = False
+    return fix, dict(cfg, r=rank, lora_alpha=rank)
+
+
+def save_fix(fix, cfg, out_dir):
+    from safetensors.torch import save_file
+    os.makedirs(out_dir, exist_ok=True)
+    w = {}
+    for name, (A, B) in fix.items():
+        w[f"base_model.model.{name}.lora_A.weight"] = A.detach().to(torch.bfloat16).cpu().contiguous()
+        w[f"base_model.model.{name}.lora_B.weight"] = B.detach().to(torch.bfloat16).cpu().contiguous()
+    save_file(w, os.path.join(out_dir, "adapter_model.safetensors"))
+    json.dump(cfg, open(os.path.join(out_dir, "adapter_config.json"), "w"), indent=1)
+
+
+def word_match(said, ref):
+    """share of the reference's words he says, in order (difflib's matching blocks over lowercased words)"""
+    import difflib
+    a, b = re.findall(r"[a-z']+", said.lower()), re.findall(r"[a-z']+", ref.lower())
+    if not b:
+        return 1.0 if not a else 0.0
+    return sum(m.size for m in difflib.SequenceMatcher(None, a, b, autojunk=False).get_matching_blocks()) / len(b)
+
+
+def hearfix(keep_dir, model_dir, out_dir, *rest):
+    """the talk side of the hook flip (2026-10-21, Immy: "if you want to fix him with the talking side as well, go
+    ahead"). His talk adapter (round 3) was trained on text only, so with strong ears it rewrites what he hears (IDC:
+    "bitch I don't care" -> "it's not okay"); without it his brain copies the words. A small new piece on top of round 3
+    learns two things at once, both output matching, no labels and no AI judge:
+      hear  on vocal clips (KEEP_DIR, never IDC): his transcription with the adapter on should be what his brain says
+            with it off. The teacher's own greedy answer is the text (Wang et al. 2025, "Teacher CE"), and the loss is
+            the KL from the teacher's next-word odds to his on those words (as the keep lesson)
+      talk  on round 3's own rows (--text, distill.py's rows-r3.jsonl): the KL to round 3 as it is, so how he talks
+            stays round 3's (the anchor distill.py uses)
+    Others found the same: a speech LLM loses skills when fine-tuned on one modality and keeps them when the other
+    modality's own outputs are mixed back in (DiVA, Held et al. 2025; VoiceTextBlender, Peng et al. 2024).
+    Known gap: his neurons-off and mood drip hooks (tools/train/choices.py Brain) are not worn here, as in the ears
+    rounds; the engine with his real brain is the verdict.
+      hearfix KEEP_DIR MODEL OUT_DIR --talk ADAPTER --text rows-r3.jsonl [--side SIDE.pt] [--rank 8] [--steps 400]
+              [--accum 8] [--lr 1e-4] [--text_w 1.0] [--hold 60] [--max_prompt 3072] [--max_words 400]
+    writes OUT_DIR/teacher.jsonl (the teacher's answers, resumable), train.jsonl, verdict.json, fix/ (the new piece)"""
+    import time
+    kw = {rest[i][2:]: rest[i + 1] for i in range(0, len(rest), 2)}
+    rank, steps, accum = int(kw.get("rank", 8)), int(kw.get("steps", 400)), int(kw.get("accum", 8))
+    lr, text_w, hold = float(kw.get("lr", 1e-4)), float(kw.get("text_w", 1.0)), int(kw.get("hold", 60))
+    max_prompt, max_words = int(kw.get("max_prompt", 3072)), int(kw.get("max_words", 400))
+    os.makedirs(out_dir, exist_ok=True)
+    log = open(os.path.join(out_dir, "train.jsonl"), "a")
+    say = lambda **r: (print(json.dumps(r), flush=True), log.write(json.dumps(r) + "\n"), log.flush())
+    proc, model = load(model_dir)
+    wear_talk(model, kw["talk"])
+    fix, cfg = wear_fix(model, kw["talk"], rank)
+    side = load_side(model, kw.get("side"))
+    use_side = kw.get("side") is not None
+    high_fe = HighBands().to(model.device)
+    tok = proc.tokenizer
+
+    # the teacher's answers: his brain without the talk adapter, these ears, greedy, long enough for a verse
+    keeps = [json.loads(l) for l in open(os.path.join(keep_dir, "keep.jsonl"))]
+    keeps = [k for k in keeps if not IDC.search(k.get("src", "") + k["clip"])]
+    tpath = os.path.join(out_dir, "teacher.jsonl")
+    have = {json.loads(l)["clip"]: json.loads(l) for l in open(tpath)} if os.path.exists(tpath) else {}
+    model._talk_on, model._fix_on = False, False
+    with open(tpath, "a") as f:
+        for k in keeps:
+            if k["clip"] not in have:
+                y = read_flac(os.path.join(keep_dir, "clips", k["clip"]))
+                have[k["clip"]] = dict(k, teacher=answer(proc, model, high_fe, y, k["q"], use_side, 160))
+                f.write(json.dumps(have[k["clip"]]) + "\n"); f.flush()
+    teach = [have[k["clip"]] for k in keeps if have[k["clip"]]["teacher"]]
+    rng = random.Random(21)
+    rng.shuffle(teach)
+    hear_ho, hear_tr = teach[:hold], teach[hold:]
+    rows = [json.loads(l) for l in open(kw["text"])]
+    text_tr = [r for r in rows if not r["held_out"]]
+    text_ho = [r for r in rows if r["held_out"]][:100]
+
+    def hear_kl(t, grad):
+        y = read_flac(os.path.join(keep_dir, "clips", t["clip"]))
+        enc, hi, labels = encode(proc, model, high_fe, y, t["q"], t["teacher"], side_on=use_side)
+        n = int((labels[0] != -100).sum()) + 1
+        model._high = hi if use_side else None
+        with torch.no_grad(), torch.autocast("cuda", dtype=torch.bfloat16):
+            model._talk_on, model._fix_on = False, False
+            ref = model(**enc, logits_to_keep=n).logits[0, :-1].float()
+        model._talk_on, model._fix_on = True, True
+        with torch.set_grad_enabled(grad), torch.autocast("cuda", dtype=torch.bfloat16):
+            cur = model(**enc, logits_to_keep=n).logits[0, :-1].float()
+        return F.kl_div(F.log_softmax(cur, -1), F.log_softmax(ref, -1), log_target=True, reduction="batchmean")
+
+    def talk_kl(r, grad):
+        p = tok(r["prompt"], add_special_tokens=False)["input_ids"][-max_prompt:]
+        t = tok(r["text"] + r["end"], add_special_tokens=False)["input_ids"][:max_words]
+        x = torch.tensor([p + t], device=model.device)
+        n = len(t) + 1
+        model._high = None
+        with torch.no_grad(), torch.autocast("cuda", dtype=torch.bfloat16):
+            model._talk_on, model._fix_on = True, False
+            ref = model(input_ids=x, logits_to_keep=n).logits[0, :-1].float()
+        model._talk_on, model._fix_on = True, True
+        with torch.set_grad_enabled(grad), torch.autocast("cuda", dtype=torch.bfloat16):
+            cur = model(input_ids=x, logits_to_keep=n).logits[0, :-1].float()
+        return F.kl_div(F.log_softmax(cur, -1), F.log_softmax(ref, -1), log_target=True, reduction="batchmean")
+
+    @torch.no_grad()
+    def check(tag):
+        """held-out clips: how much of the teacher's words he says with the adapter (and the fix) on; held-out talk:
+        how far the fix moved round 3"""
+        res = {"at": tag, "hear_kl": 0.0, "talk_kl": 0.0}
+        said = []
+        for t in hear_ho:
+            res["hear_kl"] += float(hear_kl(t, False)) / len(hear_ho)
+            model._talk_on, model._fix_on = True, True
+            y = read_flac(os.path.join(keep_dir, "clips", t["clip"]))
+            a = answer(proc, model, high_fe, y, t["q"], use_side, 160)
+            said.append({"clip": t["clip"], "q": t["q"], "teacher": t["teacher"], "said": a,
+                         "match": round(word_match(a, t["teacher"]), 3)})
+        for r in text_ho:
+            res["talk_kl"] += float(talk_kl(r, False)) / len(text_ho)
+        res["hear_match"] = round(float(np.mean([s["match"] for s in said])), 3)
+        res["hear_exact"] = round(float(np.mean([s["match"] == 1.0 for s in said])), 3)
+        res = {k: (round(v, 4) if isinstance(v, float) else v) for k, v in res.items()}
+        json.dump(said, open(os.path.join(out_dir, f"said-{tag}.json"), "w"), indent=1)
+        return res
+
+    before = check("before")                                 # fix at zero: round 3 as it is live
+    say(mode="hearfix", talk=kw["talk"], side=kw.get("side"), rank=rank, hear_train=len(hear_tr),
+        hear_held=len(hear_ho), text_train=len(text_tr), text_held=len(text_ho), before=before)
+    params = [p for A_B in fix.values() for p in A_B]
+    opt = torch.optim.AdamW(params, lr=lr, weight_decay=0.0)
+    sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: min(1.0, (s + 1) / 20) * 0.5 * (1 + math.cos(math.pi * min(s, steps) / steps)))
+    t0, run, seen = time.time(), {"hear": [], "talk": []}, 0
+    for step in range(steps):
+        opt.zero_grad(set_to_none=True)
+        for j in range(accum):                                # one sound row, one talk row, in turn
+            if seen % 2 == 0:
+                loss = hear_kl(rng.choice(hear_tr), True); run["hear"].append(loss.item())
+            else:
+                loss = text_w * talk_kl(rng.choice(text_tr), True); run["talk"].append(loss.item() / text_w)
+            (loss / accum).backward()
+            seen += 1
+        torch.nn.utils.clip_grad_norm_(params, 1.0)
+        opt.step(); sched.step()
+        if (step + 1) % 20 == 0:
+            say(step=step + 1, lr=sched.get_last_lr()[0], sec_per_step=round((time.time() - t0) / (step + 1), 2),
+                **{k: round(float(np.mean(v)), 4) for k, v in run.items() if v})
+            run = {"hear": [], "talk": []}
+    save_fix(fix, cfg, os.path.join(out_dir, "fix"))
+    after = check("after")
+    json.dump({"talk": kw["talk"], "side": kw.get("side"), "before": before, "after": after},
+              open(os.path.join(out_dir, "verdict.json"), "w"), indent=1)
+    say(done=True, before=before, after=after)
+
+
 if __name__ == "__main__":
     cmd, args = sys.argv[1], sys.argv[2:]
-    {"train": train, "eval": eval_, "listen": listen, "keepset": keepset, "pagecheck": pagecheck}[cmd](*args)
+    {"train": train, "eval": eval_, "listen": listen, "keepset": keepset, "pagecheck": pagecheck,
+     "hearfix": hearfix}[cmd](*args)
