@@ -1,5 +1,5 @@
 // LG: engram S0. Can his real engine keep a moment's KV cache and slide it into another chat (short-term memory)?
-//   kv-check MODEL CASES.jsonl OUT.jsonl [--no-swa-full] [--offset D]
+//   kv-check MODEL CASES.jsonl OUT.jsonl [--no-swa-full] [--offset D] [--lora ADAPTER.gguf]
 // CASES, one per line (tools/mind/engram/s0.py writes them): {"a": chat A up to the moment, "moment": its words,
 //   "b": chat B up to where the memory goes, "q": the rest of chat B (the question and the start of his turn)}
 // 1. shift check (case 0): read A+moment, then move the whole cache D positions later and read q; must give the
@@ -114,9 +114,11 @@ int main(int argc, char ** argv) {
     if (argc < 4) { std::fprintf(stderr, "see the top of kv_check.cpp\n"); return 1; }
     bool swa_full = true;
     int D = 100;
+    const char * lora = nullptr;
     for (int i = 4; i < argc; i++) {
         if (!std::strcmp(argv[i], "--no-swa-full")) { swa_full = false; }
         if (!std::strcmp(argv[i], "--offset") && i + 1 < argc) { D = std::atoi(argv[++i]); }
+        if (!std::strcmp(argv[i], "--lora") && i + 1 < argc) { lora = argv[++i]; }
     }
     llama_backend_init();
     llama_model_params mp = llama_model_default_params();
@@ -132,6 +134,13 @@ int main(int argc, char ** argv) {
     cp.swa_full = swa_full;
     llama_context * ctx = llama_init_from_model(model, cp);
     if (!ctx) { return 1; }
+    // his talk adapter (tools/train), worn for everything, as in his thinking context
+    if (lora) {
+        llama_adapter_lora * ad = llama_adapter_lora_init(model, lora);
+        float scale = 1.0f;
+        if (!ad) { std::fprintf(stderr, "kv-check: could not load the adapter %s\n", lora); return 1; }
+        llama_set_adapters_lora(ctx, &ad, 1, &scale);
+    }
     llama_memory_t mem = llama_get_memory(ctx);
     const bool can_shift = llama_memory_can_shift(mem);
     const llama_token stop = tokenize(vocab, "<turn|>").at(0);
@@ -143,7 +152,7 @@ int main(int argc, char ** argv) {
             if (!line.empty()) { cases.push_back(json::parse(line)); }
         }
     }
-    json head = {{"swa_full", swa_full}, {"can_shift", can_shift}, {"offset", D}};
+    json head = {{"swa_full", swa_full}, {"can_shift", can_shift}, {"offset", D}, {"adapter", lora != nullptr}};
     std::printf("%s\n", head.dump().c_str());
     if (!can_shift) { std::fprintf(stderr, "kv-check: this cache cannot move words (needs swa_full)\n"); return 2; }
 
