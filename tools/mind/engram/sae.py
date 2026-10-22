@@ -166,18 +166,29 @@ def cmd_train(a):
     tok, model = load_model(a.model)
     tap = Tap(model, LAYERS)
     rows = np.load(out / "train.npy", mmap_mode="r")
-    cursor = [0]
+    cursor, spare = [0], {L: [] for L in LAYERS}    # spare = words read past the last half, used first next time
 
     def fresh(n):
-        acts = {L: [] for L in LAYERS}
-        have = 0
+        """the next n words' activations, or None once the data runs out (nothing read is thrown away)"""
+        acts = {L: list(spare[L]) for L in LAYERS}
+        have = sum(t.shape[0] for t in acts[LAYERS[0]])
         while have < n:
+            if cursor[0] >= len(rows):
+                return None
             r = torch.from_numpy(np.array(rows[cursor[0]:cursor[0] + FWD_ROWS])).cuda()
             cursor[0] += FWD_ROWS
             for L, t in tap(r).items():
                 acts[L].append(t)
             have += r.shape[0] * (ROW - 1)
-        return {L: torch.cat(v)[:n] for L, v in acts.items()}
+        got = {L: torch.cat(v) for L, v in acts.items()}
+        for L in LAYERS:
+            spare[L] = [got[L][n:]]
+        return {L: t[:n] for L, t in got.items()}
+
+    def save(seen):
+        for L in LAYERS:
+            torch.save(dict(state=saes[L].state_dict(), W_dec=saes[L].W_dec.detach(), k=K, layer=L,
+                            words=seen), out / f"sae_L{L}.pt")
 
     d = model.config.text_config.hidden_size
     keep = fresh(HALF)
@@ -190,12 +201,15 @@ def cmd_train(a):
         saes[L] = sae
         opts[L] = torch.optim.Adam(sae.parameters(), lr=LR, betas=(0.9, 0.999), eps=6.25e-10)
         last_fired[L] = torch.zeros(WIDTH, dtype=torch.long, device="cuda")
-    total_steps = a.tokens // BATCH
+    # the cool-down has to end inside the data: the last kept half is never trained on
+    total_steps = min(a.tokens, len(rows) * (ROW - 1) - HALF) // BATCH
     step, seen, t0 = 0, 0, time.time()
     log = open(out / "train.log", "a")
     stats = {L: dict(fve=0.0, aux=0.0, n=0) for L in LAYERS}
-    while step < total_steps and cursor[0] + FWD_ROWS <= len(rows):
+    while step < total_steps:
         new = fresh(HALF)
+        if new is None:
+            break
         perm = torch.randperm(2 * HALF, device="cuda")
         bufs = {}
         for L in LAYERS:
@@ -251,10 +265,12 @@ def cmd_train(a):
         log.write(msg + "\n")
         log.flush()
         stats = {L: dict(fve=0.0, aux=0.0, n=0) for L in LAYERS}
-        if seen // 20_000_000 != (seen - HALF) // 20_000_000 or step >= total_steps:
-            for L in LAYERS:
-                torch.save(dict(state=saes[L].state_dict(), W_dec=saes[L].W_dec.detach(), k=K, layer=L,
-                                words=seen), out / f"sae_L{L}.pt")
+        if seen // 20_000_000 != (seen - HALF) // 20_000_000:
+            save(seen)
+    save(seen)
+    msg = f"done at {seen / 1e6:.1f}M words ({step} of {total_steps} steps)"
+    print(msg, flush=True)
+    log.write(msg + "\n")
 
 
 # ---------------------------------------------------------------- eval
@@ -262,7 +278,7 @@ def cmd_eval(a):
     out = Path(a.out)
     tok, model = load_model(a.model)
     lm = model.model.language_model
-    rows = torch.from_numpy(np.load(out / "eval.npy")).cuda()
+    rows = torch.from_numpy(np.load(out / "eval.npy").astype(np.int64)).cuda()
     res = {}
     for L in LAYERS:
         sae = load_sae(out / f"sae_L{L}.pt")

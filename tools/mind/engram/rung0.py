@@ -7,7 +7,8 @@ A made-up moment is read once in one chat (context A) and its states are saved. 
   none        nothing (floor: what guessing gets)
   kv          the saved keys and values of layers 0-23 (layers 24-41 reuse 22/23), re-aimed to the new positions:
               short-term memory = his own KV cache, kept
-  kvsal       same, only the most surprising words of the moment
+  kvsal       same, only the most surprising word pieces of the moment
+  kvsalw      same budget, but whole words: a word is kept or dropped as one (its most surprising piece decides)
   kvswap      the saved KV of a DIFFERENT moment of the same kind (cheat check: does the answer follow the memory?)
   resL        the moment's layer-L stream re-lit at layer L; below L the moment does not exist (masked);
               per-layer inputs at those positions are the pad token's, as for sound (long-term path, exact states)
@@ -18,6 +19,8 @@ A made-up moment is read once in one chat (context A) and its states are saved. 
   saeL        resL after a trip through his fragments (rung 1: stream -> SAE pieces -> stream)
   saepleL     saeL plus the word identity (the "name tag", Immy's option A)
   saepleLk32  saepleL keeping only the 32 strongest pieces of 64
+  WAY_after   the same memory put right AFTER the question instead of before it (the order the engine would use:
+              hear the message, be reminded, answer; nothing has to be re-read)
 
 Scores: the greedy answer (does it contain the right value) and the rank of the right value among the kind's 10
 possible values (log-probability of each as the answer). Made-up moments only, no real chats.
@@ -71,6 +74,7 @@ LS = [4, 8, 12, 16, 20, 22, 28]        # 28 is past the KV-sharing line on purpo
 SAL_LS = [8, 12, 16, 20, 22]
 N_KV = 24                               # layers 0-23 make their own keys and values
 SAL_FRAC = 0.4
+AFTER = {"text", "kv", "kvsalw", "kvswap", "res8", "ple8", "sae8", "saeple8", "sae12", "saeple12"}
 MAX_NEW = 12
 ASK = " Answer in a few words."
 
@@ -221,7 +225,23 @@ def has(text, value):
     return re.search(r"\b" + re.escape(value.lower()) + r"\b", text.lower()) is not None
 
 
-def conditions(m, mem, swap_mem, n, sal, n_swap, sae_mems=None):
+def whole_words(tok, span, surprise, frac):
+    """the most surprising whole words, as positions, until they hold frac of the pieces (same budget as kvsal)"""
+    words = []
+    for j, piece in enumerate(tok.convert_ids_to_tokens(span)):
+        if not words or piece.startswith("\u2581"):
+            words.append([])
+        words[-1].append(j)
+    words.sort(key=lambda w: -max(surprise[j] for j in w))
+    keep, need = [], max(3, math.ceil(frac * len(span)))
+    for w in words:
+        if len(keep) >= need:
+            break
+        keep += w
+    return sorted(keep)
+
+
+def conditions(m, mem, swap_mem, n, sal, n_swap, sae_mems=None, salw=None):
     """(name, slot length, cfg builder for slot start s, which answer counts)"""
     out = [("text", None, None, "answer"), ("none", 0, None, "answer")]
     for (L, k), sm_ in (sae_mems or {}).items():
@@ -234,6 +254,9 @@ def conditions(m, mem, swap_mem, n, sal, n_swap, sae_mems=None):
     out.append(("kv", n, lambda s: dict(s=s, n=n, mem=mem, kv_layers=kv), "answer"))
     sm = subset(mem, sal)
     out.append(("kvsal", len(sal), lambda s: dict(s=s, n=len(sal), mem=sm, kv_layers=kv), "answer"))
+    if salw is not None:
+        smw = subset(mem, salw)
+        out.append(("kvsalw", len(salw), lambda s: dict(s=s, n=len(salw), mem=smw, kv_layers=kv), "answer"))
     out.append(("kvswap", n_swap, lambda s: dict(s=s, n=n_swap, mem=swap_mem, kv_layers=kv), "swap"))
     for L in LS:
         out.append((f"res{L}", n, lambda s, L=L: dict(s=s, n=n, mem=mem, L=L, block=True), "answer"))
@@ -307,7 +330,8 @@ def main():
         mem, surprise = rig.capture(pre, span)
         k = max(3, math.ceil(SAL_FRAC * len(span)))
         sal = sorted(sorted(range(len(span)), key=lambda j: -surprise[j])[:k])
-        saved.append(dict(mem=mem, span=span, sal=sal, surprise=surprise))
+        saved.append(dict(mem=mem, span=span, sal=sal, salw=whole_words(rig.tok, span, surprise, SAL_FRAC),
+                          surprise=surprise))
     one = saved[0]
     kv_bytes = sum(t[0, 0].numel() * 2 for d in ("k", "v") for t in one["mem"][d].values())
     saes = {}
@@ -337,12 +361,19 @@ def main():
         n, n_swap = len(sv["span"]), len(sw["span"])
         pre = rig.ids(prefix(m["ctx_b"]))
         suf = rig.ids("\n\n" + m["question"] + "<turn|>\n<|turn>model\n")
-        s = len(pre)
+        q_first, turn_end = rig.ids(m["question"] + "\n\n"), rig.ids("<turn|>\n<|turn>model\n")
+        layouts = []
         for name, slot_n, build, target in conditions(m, sv["mem"], sw["mem"], n, sv["sal"], n_swap,
-                                                      sv.get("sae")):
+                                                      sv.get("sae"), sv["salw"]):
+            layouts.append((name, slot_n, build, target, False))
+            if name in AFTER:
+                layouts.append((name + "_after", slot_n, build, target, True))
+        for name, slot_n, build, target, after in layouts:
             if ways and name not in ways:
                 continue
-            row = pre + (sv["span"] if name == "text" else [rig.pad] * slot_n) + suf
+            slot = sv["span"] if name.startswith("text") else [rig.pad] * slot_n
+            row = pre + q_first + slot + turn_end if after else pre + slot + suf
+            s = len(pre) + (len(q_first) if after else 0)
             cfg = build(s) if build else None
             ans = rig.answer(row, cfg)
             sc = rig.cand_scores(row, cfg, m["cands"])
@@ -353,7 +384,8 @@ def main():
                        own=m["answer"], said=ans, said_right=has(ans, want), said_own=has(ans, m["answer"]),
                        top=best, top_right=best == want, p_right=p, slot=slot_n,
                        distractor_top=(best == m["distractor"]) if m["distractor"] else None,
-                       kept=[rig.tok.decode([sv["span"][j]]) for j in sv["sal"]] if "sal" in name else None)
+                       kept=[rig.tok.decode([sv["span"][j]]) for j in sv["salw" if "salw" in name else "sal"]]
+                       if "sal" in name else None)
             rows_out.write(json.dumps(rec) + "\n")
         rows_out.flush()
         print(f"{i + 1}/{len(ms)} moments done, {time.time() - t0:.0f} s", flush=True)
