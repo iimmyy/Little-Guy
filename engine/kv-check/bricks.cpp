@@ -1,6 +1,7 @@
 // LG: engram bricks in his real engine. A memory kept as layer-L pieces + name tags is rebuilt inside a new chat
 // (rung0.py does it in HF; this is the same splice in llama.cpp, from outside the library: the graph callback).
 //   bricks MODEL CASES.jsonl BRICKS.f32 OUT.jsonl [--layer L] [--lora ADAPTER.gguf] [--max-new N]
+//          [--watch 12,16,... --watch-out THOUGHTS.f32] [--prompt-only]
 // CASES (tools/mind/engram/livebricks.py writes them), one per line:
 //   {"parts": [{"text": ...} | {"slot": the memory's words or null, "n": words, "brick": its first row in BRICKS}],
 //    "cands": [...], "meta": {...}}                       a case: greedy answer + every candidate's score
@@ -12,6 +13,9 @@
 // The check reads a memory in its own chat three ways: plainly; with the slot hidden below L and the plain reading's
 // own layer-L stream put back from the slot on (must give the same next-word scores: the splice lands, the hiding
 // stops at L); hidden with nothing put back (must not: the hiding works).
+// --watch keeps his thought on the last word of each case's prompt (where he is about to answer) going into each
+// listed layer, n_embd floats per layer, case after case, to THOUGHTS.f32 ("watch_row" in OUT says which);
+// --prompt-only reads the prompts and nothing more (no answer, no candidates).
 #include "ggml-backend.h"
 #include "ggml.h"
 #include "llama.h"
@@ -38,6 +42,8 @@ struct hook {
     int pos0 = 0;                                       // position of this decode's first token
     std::vector<float> * grab = nullptr;                // keep this decode's rows going into layer L
     std::vector<std::pair<ggml_tensor *, std::vector<uint8_t>>> hidden;   // masks hidden so far, original bytes
+    std::map<std::string, int> watch;                   // "l_out-(k-1)" -> its place in the --watch list
+    std::vector<float> * last = nullptr;                // this decode's last row going into each watched layer
 };
 
 static int layer_of(const char * name) {
@@ -82,7 +88,13 @@ static bool on_tensor(ggml_tensor * t, bool ask, void * ud) {
                 hide_cells(h, m);
             }
         }
-        return mine;
+        return mine || (h->last && h->watch.count(t->name));
+    }
+    if (!mine) {   // a watched layer: keep the last word's row
+        const auto it = h->watch.find(t->name);
+        ggml_backend_tensor_get(t, h->last->data() + (size_t) it->second * h->n_embd, (t->ne[1] - 1) * t->nb[1],
+                                (size_t) h->n_embd * sizeof(float));
+        return true;
     }
     // layers 0..L-1 are done: layers L.. see everything again, and the slot's stream becomes its bricks
     for (auto & [m, was] : h->hidden) { ggml_backend_tensor_set(m, was.data(), 0, was.size()); }
@@ -99,6 +111,10 @@ static bool on_tensor(ggml_tensor * t, bool ask, void * ud) {
     for (int r = 0; r < t->ne[1]; r++) {
         const auto it = h->put.find(h->pos0 + r);
         if (it != h->put.end()) { ggml_backend_tensor_set(t, it->second, r * t->nb[1], row); }
+    }
+    if (h->last && h->watch.count(t->name)) {
+        ggml_backend_tensor_get(t, h->last->data() + (size_t) h->watch[t->name] * h->n_embd, (t->ne[1] - 1) * t->nb[1],
+                                row);
     }
     return true;
 }
@@ -211,12 +227,26 @@ int main(int argc, char ** argv) {
     if (argc < 5) { std::fprintf(stderr, "see the top of bricks.cpp\n"); return 1; }
     hook h;
     const char * lora = nullptr;
+    const char * watch_out = nullptr;
+    bool prompt_only = false;
+    std::vector<int> watch_layers;
     for (int i = 5; i < argc; i++) {
+        if (!std::strcmp(argv[i], "--watch") && i + 1 < argc) {
+            for (const char * c = argv[++i]; *c; ) {
+                watch_layers.push_back(std::atoi(c));
+                while (*c && *c != ',') { c++; }
+                if (*c == ',') { c++; }
+            }
+        }
+        if (!std::strcmp(argv[i], "--watch-out") && i + 1 < argc) { watch_out = argv[++i]; }
+        if (!std::strcmp(argv[i], "--prompt-only")) { prompt_only = true; }
         if (!std::strcmp(argv[i], "--layer") && i + 1 < argc) { h.L = std::atoi(argv[++i]); }
         if (!std::strcmp(argv[i], "--lora") && i + 1 < argc) { lora = argv[++i]; }
         if (!std::strcmp(argv[i], "--max-new") && i + 1 < argc) { MAX_NEW = std::atoi(argv[++i]); }
     }
     h.name = "l_out-" + std::to_string(h.L - 1);
+    for (size_t j = 0; j < watch_layers.size(); j++) { h.watch["l_out-" + std::to_string(watch_layers[j] - 1)] = (int) j; }
+    if (!watch_layers.empty() && !watch_out) { std::fprintf(stderr, "bricks: --watch needs --watch-out\n"); return 1; }
     llama_backend_init();
     llama_model * model = llama_model_load_from_file(argv[1], llama_model_default_params());
     if (!model) { return 1; }
@@ -251,6 +281,9 @@ int main(int argc, char ** argv) {
     const llama_token stop = turn_end.size() == 1 ? turn_end[0] : LLAMA_TOKEN_NULL;
     std::ifstream in(argv[2]);
     std::ofstream out(argv[4]);
+    std::ofstream thoughts;
+    if (watch_out) { thoughts.open(watch_out, std::ios::binary); }
+    std::vector<float> last(watch_layers.size() * 4096);
     std::string line;
     int n_done = 0;
     while (std::getline(in, line)) {
@@ -267,9 +300,24 @@ int main(int argc, char ** argv) {
         fresh(ctx, h);
         h.hide = p.slots;
         h.put = p.put;
+        last.assign(watch_layers.size() * h.n_embd, NAN);
+        h.last = watch_out ? &last : nullptr;
         const int P = (int) p.toks.size();
         if (!feed(ctx, h, p.toks, 0, false)) { std::fprintf(stderr, "bricks: decode failed\n"); return 1; }
         h.put.clear();
+        h.last = nullptr;
+        if (watch_out) {
+            if (std::any_of(last.begin(), last.end(), [](float x) { return std::isnan(x); })) {
+                std::fprintf(stderr, "bricks: a watched layer was not seen\n");
+                return 1;
+            }
+            thoughts.write((const char *) last.data(), last.size() * sizeof(float));
+        }
+        if (prompt_only) {
+            out << json({{"watch_row", n_done}, {"slot", p.slots}, {"meta", c.value("meta", json::object())}}).dump() << "\n";
+            if (++n_done % 64 == 0) { std::fprintf(stderr, "bricks: %d cases\n", n_done); }
+            continue;
+        }
         const auto first = last_scores(ctx, n_vocab);
         // greedy answer
         std::string said;
@@ -311,8 +359,9 @@ int main(int argc, char ** argv) {
             for (double x : lps) { z += std::exp(x - mx); }
             sc[w] = mx + std::log(z);
         }
-        out << json({{"said", said}, {"scores", sc}, {"slot", p.slots}, {"meta", c.value("meta", json::object())}}).dump()
-            << "\n";
+        json row = {{"said", said}, {"scores", sc}, {"slot", p.slots}, {"meta", c.value("meta", json::object())}};
+        if (watch_out) { row["watch_row"] = n_done; }
+        out << row.dump() << "\n";
         out.flush();
         if (++n_done % 64 == 0) { std::fprintf(stderr, "bricks: %d cases\n", n_done); }
     }
