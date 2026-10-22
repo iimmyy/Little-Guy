@@ -24,6 +24,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 LG_MIND = os.environ.get("LG_MIND", os.path.join(HERE, "..", "..", "engine", "lg-mind", "build", "llama-lg-mind"))
 DRIP = range(18, 41)                       # rooms the feelings drip into
 READ = range(24, 37)                       # rooms his notes are read from
+PRINT_ROOM = 11                            # how a message sounds to him: going into layer 12, where the
+                                           # who's-writing signal was strongest (whois.py, 2026-10-22)
 CAL = ["Hey.", "How's it going?", "Tell me about octopuses.", "Plan me a quick dinner with eggs and rice."]
 
 
@@ -160,6 +162,12 @@ class Brain:
             x = [(H[i] @ self.dial[k][L] - self.spread[k + "_rest"][L]) / self.spread[k][L] for i, L in enumerate(READ)]
             out.append(float(sum(x) / len(x)))
         return out
+
+    def style_print(self, text):
+        """how a message sounds to him (who's writing, not what it says): his state on the message as it came in, at
+        the last word before he answers, going into layer 12; no drip"""
+        prompt = self.render([{"role": "user", "content": text}])
+        return self._states(prompt, "", [PRINT_ROOM], "all")[0, -1].astype(float).tolist()
 
     def close(self):
         self.p.stdin.close(); self.p.wait()

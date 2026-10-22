@@ -32,9 +32,19 @@ Settings (env): PERSON (default "your person"), MOMENT_EVERY (minutes, default 1
   REUNION_H (silence that makes a message a homecoming, default 1), ALARM (chance a task gets an alarm, default 1),
   OWN_ACT (1: he may also do a task on his own, without its alarm; default 0)
 """
-import ctypes, ctypes.util, json, math, os, random, re, socket, struct, sys, threading, time, unicodedata
+import ctypes, ctypes.util, json, math, os, random, re, socket, struct, sys, threading, time, types, unicodedata
 import memory as mem
 import tasks as tk
+
+try:
+    import numpy  # noqa: F401
+except ImportError:              # his room has no numpy; the engine's minute step never uses it (only its lab models)
+    sys.modules["numpy"] = types.ModuleType("numpy")
+try:
+    import engine as chem        # /opt/littleguy/engine.py in his room
+except ImportError:              # on the Mac (practice.py): the engine's own folder
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(tk.__file__)), "..", "mind", "chem"))
+    import engine as chem
 
 INBOX = "/var/lib/littleguy/inbox"
 NOTEBOOK = "/var/lib/littleguy/room/notebook"
@@ -132,6 +142,138 @@ def step(feel, dr, thought_read, hours, slept, bias=(0.0, 0.0)):
         x += M * sum(aff[d][i] * dr[d] for d in EVENTS)
         out.append(soft(x, CEIL if k == "valence" else CEIL_AROUSAL))
     return out
+
+
+# --- his body: the chemistry engine (tools/mind/chem/engine.py, as section F stands) --------------------------------
+# Immy, 2026-10-22: "wire the engine into his brain even as it is right now". It lives on his clock, a step a minute
+# (coarser over long gaps): asleep from SLEEP_FROM to WAKE, his person counted as company while here, alone_long
+# growing over a day without them. A message is a pulse of appraisals from his own brain: surprise at its timing,
+# novelty on a homecoming, threat from how the words read to him, and a reward event (DA prediction error, learned
+# per cue). Its knobs, measured against his own egg at rest at 8 AM, become the two dials his brain feels; his thoughts
+# (rumination) and his drift still add on top. BODY=off falls back on life_sim's dials.
+BODY_ON = env("BODY", "chem") != "off"
+# first mapping, mine (the group map replaces it): each knob's relative change from his rest, weighted
+DIAL_V = {"wanting": 0.4, "liking": 0.4, "comfort": 0.6, "warmth": 0.6, "dysphoria": -0.6, "anxious": -0.3, "sick": -0.6}
+DIAL_A = {"awake": 1.0, "anxious": 0.5, "sympathetic": 0.3}
+BODY_SHOW = ("ne", "da", "ht", "oxa", "oxb", "crh", "cort", "mor", "ot", "ado", "mel", "npy")
+# a message reads as a threat from 1 SD below how messages coming in usually read to him (st["zero"]["heard"], with its
+# SD), full at 3 SD below; measured 2026-10-22 on chat_pool.txt (107 lines): valence -0.62 +- 0.46, while bad news read
+# -0.83 to -1.9. Without that zero nothing reads as a threat
+THREAT_FROM, THREAT_FULL = 1.0, 3.0
+THREAT_TAU = 600.0         # seconds: a threatening message stays on his mind, fading (mine, a first guess)
+BODY = None
+
+
+def body_up(st, now):
+    """his body: picked up where it was, or born now (an average egg; its rest at 8 AM is his zero)"""
+    global BODY
+    if not BODY_ON:
+        return
+    try:
+        with open(os.path.join(NOTEBOOK, "chem.json")) as fh:      # plain data, never code (no pickle)
+            BODY = object.__new__(chem.Chem)
+            BODY.__dict__.update(json.load(fh))
+        if chem.CAL is None:
+            chem.CAL = BODY.cal
+        if "chem_rest" not in st:
+            st["chem_rest"] = chem.Chem(hour=8.0).knobs()
+        st.setdefault("chem_t", now)
+    except (OSError, ValueError):
+        lt = time.localtime(now)
+        st["chem_rest"] = chem.Chem(hour=8.0).knobs()
+        BODY = chem.Chem(hour=lt.tm_hour + lt.tm_min / 60)
+        st["chem_t"], st["mind"] = now, [0.0, 0.0]
+        body_save()
+
+
+def body_save():
+    path = os.path.join(NOTEBOOK, "chem.json")
+    tmp = path + ".tmp"
+    with open(tmp, "w") as fh:
+        json.dump(vars(BODY), fh)
+    os.replace(tmp, path)
+
+
+def body_live(st, now, pulse=None):
+    """his body from its last minute to now; the pulse (a message's appraisals) lands in the last step"""
+    t = st.get("chem_t", now)
+    gap = max(0.0, now - t)
+    step_s = 300 if gap > 6 * 3600 else 60
+    n = min(int(gap // step_s), 14 * 86400 // step_s)
+    if pulse and not n:
+        n, step_s = 1, 60
+    for i in range(n):
+        tt = t + (i + 1) * step_s
+        lt = time.localtime(tt - step_s)
+        BODY.hour = lt.tm_hour + lt.tm_min / 60 + lt.tm_sec / 3600   # his clock is the room's clock
+        here = bool(st["last_heard"]) and tt - st["last_heard"] < PRESENT_MIN * 60
+        alone = 0.0 if here else min(1.0, (tt - (st["last_heard"] or st["born"])) / 3600 / 24)
+        ap = st.get("appraisal") or {}
+        threat = ap.get("threat", 0.0) * math.exp(-max(0.0, tt - ap.get("t", tt)) / THREAT_TAU)
+        x = dict(awake=not asleep_at(tt), company=1.0 if here else 0.0, alone_long=alone, threat=threat)
+        if pulse and i == n - 1:
+            x.update(pulse)
+        BODY.step(step_s / 3600, **x)
+    st["chem_t"] = max(now, t + n * step_s) if pulse else t + n * step_s
+
+
+def heard_threat(raw, st):
+    z, sd = st["zero"].get("heard"), st["zero"].get("heard_sd")
+    if not z or not sd:
+        return 0.0
+    below = (z[0] - raw[0]) / sd[0]
+    return min(1.0, max(0.0, (below - THREAT_FROM) / (THREAT_FULL - THREAT_FROM)))
+
+
+def body_dials(st):
+    k, rest = BODY.knobs(), st["chem_rest"]
+    r = lambda name: (k[name] - rest[name]) / max(abs(rest[name]), 0.1)
+    return [sum(w * r(n) for n, w in DIAL_V.items()), sum(w * r(n) for n, w in DIAL_A.items())]
+
+
+# --- his ear for people (Immy, 2026-10-22: "just like a baby learns its parents' voice ... he should learn our style
+# first", and it has to be human, not shaped to one person: it ships). Every message is stamped with the way it came in
+# (the guard's via). For each way in he keeps his own running print of how its messages sound (brainstem /print),
+# learned only from hearing them, starting from nothing; "unknown" teaches nothing (nobody knows who held it). Once two
+# ways in are each known from VOICE_MIN messages, a new message sounds like the print it points toward (each print
+# against the mean of everything he has heard, so what all messages share drops out). When it comes in through one
+# way but sounds like another, his body notices (surprise and novelty); he is told nothing.
+VOICE_MIN = 10
+VOICE_ODD = 0.5            # surprise and novelty when a message doesn't sound like its way in (mine, a first guess)
+
+
+def cos(x, y):
+    nx, ny = math.sqrt(sum(a * a for a in x)), math.sqrt(sum(b * b for b in y))
+    return sum(a * b for a, b in zip(x, y)) / (nx * ny) if nx and ny else 0.0
+
+
+def sounds_like(voices, x):
+    known = {w: v for w, v in voices["by"].items() if v["n"] >= VOICE_MIN}
+    if len(known) < 2:
+        return None, {}
+    c = voices["all"]["mean"]
+    d = [a - b for a, b in zip(x, c)]
+    score = {w: round(cos(d, [m - b for m, b in zip(v["mean"], c)]), 4) for w, v in known.items()}
+    return max(score, key=score.get), score
+
+
+def hear_voice(text, via):
+    """how this message sounds to him, from what he has heard so far; then he learns from it"""
+    path = os.path.join(NOTEBOOK, "voices.json")
+    try:
+        voices = json.load(open(path))
+    except (OSError, ValueError):
+        voices = {"all": {"n": 0, "mean": None}, "by": {}}
+    x = brain("print", text=text[:8000])["print"]
+    like, score = sounds_like(voices, x)
+    n_via = voices["by"].get(via, {}).get("n", 0)
+    odd = bool(like) and n_via >= VOICE_MIN and like != via
+    learn = [voices["all"]] + ([voices["by"].setdefault(via, {"n": 0, "mean": None})] if via != "unknown" else [])
+    for v in learn:                                                 # a running mean: every message counts the same
+        v["n"] += 1
+        v["mean"] = x if v["mean"] is None else [m + (a - m) / v["n"] for m, a in zip(v["mean"], x)]
+    write_json(path, voices)
+    return dict(via=via, known_from=n_via, sounds_like=like, scores=score, odd=odd)
 
 
 def urge_step(u, gap, arousal, hours):
@@ -370,14 +512,30 @@ def drives(now, st, here):
     return dr, gap
 
 
-def advance(now, st, dr, gap, slept=False):
+def advance(now, st, dr, gap, slept=False, pulse=None, kick=(0.0, 0.0)):
     """the feeling and the urge over the time since the last update (rates, so how often he thinks doesn't matter).
     Over a night's sleep the urge to call out only drains: asleep, he isn't missing anyone (life_sim filled it over
-    the night too, which on the real clock means calling out the moment he wakes, every morning)"""
+    the night too, which on the real clock means calling out the moment he wakes, every morning).
+    With his body on, the dials are his body's read-out + his thoughts (relaxing toward what they read, as life_sim's
+    did, plus a message's kick) + his drift; the body keeps its own clock, so life_sim's rhythm term drops out."""
     hours = max(0.0, now - st["t"]) / 3600
     drift_step(st, hours)
-    bias = (st["drift"][0], st["drift"][1] - RHYTHM_AROUSAL * temperament(st)["amp"] * rhythm(now, st))
-    st["feel"] = step(st["feel"], dr, st["read"], hours, slept, bias)
+    if BODY is not None:
+        body_live(st, now, pulse)
+        m = st.setdefault("mind", [0.0, 0.0])
+        for i, k in enumerate(("valence", "arousal")):
+            target = M * GAIN * st["read"][i]
+            m[i] = target + (m[i] - target) * 0.5 ** (hours / HALF_LIFE[k]) + kick[i]
+            if slept:
+                m[i] *= SLEEP_LEFT
+        bv, ba = body_dials(st)
+        st["feel"] = [soft(bv + m[0] + st["drift"][0]), soft(ba + m[1] + st["drift"][1], CEIL_AROUSAL)]
+        st["body"] = {k: round(BODY.c[k], 3) for k in BODY_SHOW}
+        st["body_dials"] = [round(bv, 3), round(ba, 3)]
+        body_save()
+    else:
+        bias = (st["drift"][0], st["drift"][1] - RHYTHM_AROUSAL * temperament(st)["amp"] * rhythm(now, st))
+        st["feel"] = step(st["feel"], dr, st["read"], hours, slept, bias)
     st["urge"] = urge_step(st["urge"], 0.0 if slept else dr["social"], st["feel"][1], hours)
     st["gap_hours"] += gap * hours
     st["t"] = now
@@ -512,27 +670,45 @@ def write_note(now, st, new=None, slept=False):
                            "valence": round(st["feel"][0], 3), "arousal": round(st["feel"][1], 3),
                            "urge": round(st["urge"], 2), "called": call, "says": bool(said),
                            "rhythm": round(rhythm(now, st), 3), "drift": [round(x, 3) for x in st["drift"]],
-                           "thought_reads": [round(x, 2) for x in st["read"]], "thought": th})
+                           "thought_reads": [round(x, 2) for x in st["read"]], "thought": th,
+                           "body": st.get("body"), "body_dials": st.get("body_dials")})
     with open(os.path.join(NOTEBOOK, "notes.txt"), "a") as fh:
         fh.write(f"[{when(now)}] {th}\n")
     st["last_note"] = now
 
 
 def answer(now, st, heard):
-    """heard = [(inbox name, text), ...] that came in together; one reply, to the last of them"""
+    """heard = [(inbox name, text, via), ...] that came in together; one reply, to the last of them"""
     reunion = not st["last_heard"] or (now - st["last_heard"]) / 3600 >= REUNION_H
     if reunion:
         st["close"], st["gap_hours"] = 1.0, 0.0
     dr, gap = drives(now, st, True)
     dr["reunion"] = 1.0 if reunion else 0.0
     dr["boredom"] = 0.0
-    advance(now, st, dr, gap)
     surprise = (1.0 - usual_at(now)) if reunion else 0.1             # did he expect to hear from them now?
+    text = "\n".join(h[1] for h in heard)
+    via = heard[-1][2] if len(heard[-1]) > 2 else "unknown"
+    try:
+        voice = hear_voice(text, via)
+    except (OSError, RuntimeError, ValueError, KeyError) as e:      # no ear today (an old brainstem): he still answers
+        voice = {"via": via, "error": str(e)[:200]}
+    pulse, kick, appraised = None, (0.0, 0.0), None
+    if BODY is not None:                                             # his body hears it before he answers
+        heard_read = read_feel(text)
+        threat = heard_threat(heard_read, st)
+        st["appraisal"] = {"threat": threat, "t": now}
+        odd = VOICE_ODD if voice.get("odd") else 0.0                 # it doesn't sound like who it came through
+        pulse = dict(awake=True, surprise=max(surprise, odd), novelty=max(1.0 if reunion else 0.0, odd), company=1.0)
+        rw = BODY.reward_event(PERSON, 1.0 - threat)                 # hearing from his person, learned per person;
+                                                                     # bad news isn't a reward
+        kick = (0.3 * rw["delta"], 0.2 * max(0.0, rw["delta"]))      # first mapping, mine: a DA burst lifts him
+        appraised = dict(heard_reads=[round(x, 2) for x in heard_read], threat=round(threat, 3),
+                         surprise=round(surprise, 3), da_delta=round(rw["delta"], 3), d1=round(rw["d1"], 3))
+    advance(now, st, dr, gap, pulse=pulse, kick=kick)
     st["prev_gap"] = 0.0
     sal = mem.tag(st["feel"], surprise)
     cid = f"c{round(now)}"
     st["last_heard"] = st["last_new"] = now
-    text = "\n".join(t for _, t in heard)
     system = (PERSONA + "\n\nYour notebook (your own private notes, nobody else reads them):\n" + notebook(6) + "\n\n" +
               routine(now) + "\n\nRight now: " + facts(now, st))
     hist = chat_history(now)
@@ -562,7 +738,9 @@ def answer(now, st, heard):
                           "reply": r, "reunion": reunion, **sal, "thinking": thinking, "private": private,
                           "tasks_taken": asked,
                           "valence": round(st["feel"][0], 3), "arousal": round(st["feel"][1], 3),
-                          "reply_reads": [round(x, 2) for x in st["read"]]})
+                          "reply_reads": [round(x, 2) for x in st["read"]],
+                          "body": st.get("body"), "body_dials": st.get("body_dials"), "appraised": appraised,
+                          "voice": voice})
 
 
 TASK_HINT = (f"\n\nIf {PERSON} asks you to remember to do something at a certain time, also write it on its own line: "
@@ -818,12 +996,13 @@ def new_messages(st):
             continue
         last = name
         try:
-            text = json.load(open(os.path.join(INBOX, name)))["text"]
+            note = json.load(open(os.path.join(INBOX, name)))
+            text, via = note["text"], note.get("via", "unknown")
             fresh = time.time() - float(name[:-5]) < REPLY_WINDOW
         except (OSError, ValueError, KeyError, TypeError):
             continue
         if isinstance(text, str) and text.strip() and fresh:
-            out.append((name, text.strip()[:4000]))
+            out.append((name, text.strip()[:4000], via if isinstance(via, str) else "unknown"))
     return out, last
 
 
@@ -837,8 +1016,10 @@ def main():
               "asleep": asleep_at(now), "seen": "", "zero": None, "way": WAY}
         # what was already in the inbox before he was born is not his to answer
         st["seen"] = max([n for n in os.listdir(INBOX) if not n.startswith(".")], default="")
+    body_up(st, now)
+    write_json(STATE, st)
     print(f"MIND_UP way={WAY} person={PERSON!r} notes every {NOTE_EVERY} h, asleep {SLEEP_FROM}-{WAKE}, "
-          f"temperament {temperament(st)}", flush=True)
+          f"temperament {temperament(st)}, body {'on' if BODY is not None else 'off'}", flush=True)
     global EAR
     try:
         EAR = Ear(INBOX)

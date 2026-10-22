@@ -35,7 +35,7 @@ done
 echo "== his code and brain, read-only"
 install -d -o root -g root -m 0755 /opt/littleguy
 install -o root -g root -m 0644 "$HERE/guard.py" "$HERE/mind_stub.py" "$HERE/mind_live.py" "$HERE/memory.py" "$HERE/tasks.py" "$HERE/escape_test.py" \
-        /opt/littleguy/
+        "$HERE/../mind/chem/engine.py" /opt/littleguy/
 if [ "$MIND" = live ]; then
   [ -n "${PERSONA:-}" ] && [ -n "${BRAIN_KEY_FILE:-}" ] || { echo "MIND=live needs PERSONA and BRAIN_KEY_FILE"; exit 1; }
   install -o root -g root -m 0644 "$PERSONA" /opt/littleguy/persona.txt

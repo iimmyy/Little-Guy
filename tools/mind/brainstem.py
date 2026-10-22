@@ -6,6 +6,8 @@ network), and the room's relay (tools/room/relay.py) forwards only these two, wi
   POST /think  {"messages": [...], "v": .., "a": .., "max_tokens": .., "temperature": .., "top_p": .., "seed": ..}
                -> {"text": ...}     a reply with his feelings as a drip
   POST /read   {"text": ...}  -> {"feel": [valence, arousal]}   how a text reads inside him
+  POST /print  {"text": ...}  -> {"print": [n_embd floats]}   how a message sounds to him (who's writing): his ear
+               learns each person's print from these (tools/room/mind_live.py, voices)
   POST /choose {"messages": [...], "choices": ["no", "wander", ...], "v": .., "a": ..}
                -> {"face": "[ .. ]", "logprobs": {choice: lp}}   the odds of each choice as his whole answer, after
                the face he opens with (2 to 8 plain words)
@@ -159,7 +161,12 @@ def main(gguf, dials, key_file, port="8771"):
                         if not isinstance(t, str) or not 0 < len(t) <= 8000:
                             raise ValueError("text: 1 to 8000 characters")
                         return self.send(200, {"feel": brain.read_feel(t)})
-                return self.send(404, {"error": "only /think, /read, /choose and /hush"})
+                    if self.path == "/print":
+                        t = r.get("text")
+                        if not isinstance(t, str) or not 0 < len(t) <= 8000:
+                            raise ValueError("text: 1 to 8000 characters")
+                        return self.send(200, {"print": [round(x, 4) for x in brain.style_print(t)]})
+                return self.send(404, {"error": "only /think, /read, /choose, /print and /hush"})
             except (ValueError, KeyError, TypeError, json.JSONDecodeError) as e:
                 return self.send(400, {"error": str(e)})
 

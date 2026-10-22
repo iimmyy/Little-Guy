@@ -268,7 +268,7 @@ struct Caret: Shape {
             p.executableURL = URL(fileURLWithPath: orbPath)
             // arguments go through as they are (no shell), so quotes and several lines arrive intact
             p.arguments = ["-m", roomMachine, "-u", "root", "sudo", "-u", "littleguy-guard", "python3",
-                           "/opt/littleguy/guard.py", "tell", text]
+                           "/opt/littleguy/guard.py", "tell", text, "menubar"]   // the way in, for his ear
             let out = Pipe()
             p.standardOutput = out
             p.standardError = out

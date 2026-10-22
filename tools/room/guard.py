@@ -9,10 +9,11 @@ reads each note, and acts only on the allowlist below; anything else is dropped 
   reply {"kind": "reply", "to": "<inbox note name>", "text": "..."}   his answer to one thing his person said
                                                             (chat.jsonl): only to a note that is really in his inbox,
                                                             at most REPLY_WINDOW s old, once per note
-It also writes into his inbox (what his senses and his person say): guard.py tell "<text>".
+It also writes into his inbox (what his senses and his person say): guard.py tell "<text>" [via], via = the way it
+came in (menubar = Immy's menu bar app, terminal = talk.sh on the Mac; default unknown).
 A note is read only if it is a plain file (never a link), has one name (no hard links), and is small. The guard
 never runs anything a note says and never opens a path a note names.
-usage: guard.py run | guard.py tell "<text>"
+usage: guard.py run | guard.py tell "<text>" [via]
 """
 import json, os, re, stat, sys, time, unicodedata
 
@@ -154,19 +155,25 @@ def run():
         time.sleep(1)
 
 
-def tell(text):
-    """put something in his inbox (what his senses or his person say)"""
+VIA = re.compile(r"^[a-z][a-z0-9-]{0,23}$")                  # the way a message came in: menubar, terminal, ...
+
+
+def tell(text, via="unknown"):
+    """put something in his inbox (what his senses or his person say), stamped with the way it came in: his ear learns
+    who writes through each way (mind_live.py voices), like a baby learning whoever holds it"""
+    if not VIA.match(via):
+        sys.exit(f"via: {VIA.pattern}")
     name = f"{time.time():.6f}.json"
     tmp = os.path.join(INBOX, "." + name)
     with open(tmp, "w") as f:
-        json.dump({"t": time.time(), "text": text}, f)
+        json.dump({"t": time.time(), "text": text, "via": via}, f)
     os.replace(tmp, os.path.join(INBOX, name))
 
 
 if __name__ == "__main__":
     if sys.argv[1:2] == ["run"]:
         run()
-    elif sys.argv[1:2] == ["tell"] and len(sys.argv) == 3:
-        tell(sys.argv[2])
+    elif sys.argv[1:2] == ["tell"] and len(sys.argv) in (3, 4):
+        tell(*sys.argv[2:])
     else:
         sys.exit(__doc__)
