@@ -165,6 +165,16 @@ PFC_BETA = 0.03     # β1's share of resting cAMP: small (propranolol leaves wor
                     # stress impairment goes through α1, not β: Birnbaum 1999); theory
 PFC_PKC = 0.13      # PKC's cost at rest, placed so the top of the U sits at an alert, calm egg (Arnsten); theory
 
+# inside-the-cell tubs (change 21; Immy 2026-10-22: NET clears NE in seconds, yet the feeling outlasts it). A receptor
+# that acts through a second messenger and a kinase (Gs -> cAMP -> PKA; Gq -> PKC; prefrontal α2A through cAMP, as in
+# Immy's chain) passes its signal through an inner state that fills from the receptor and empties on its own clock.
+# Ion channels, channel-gated brakes (GIRK), Gi/o receptors acting mainly through channels, and MR/GR stay direct.
+INNER = ("b1", "b1_pfc", "d1", "d1_pfc", "crhr1_lc", "crhr1_amy", "crhr1_vta", "a2ar",                         # Gs
+         "a1_pfc", "a1_amy", "a1_ox", "a1_symp", "ox1r", "ox2r", "ox_rvlm", "m1", "h1", "ht2c", "oxtr", "v1a", "v1b",  # Gq
+         "a2a_pfc")
+TAU_INNER = 246 / 3600 / math.log(2)   # t½ 246 s: PKA substrates after β blockade, limited by PDE (Saucerman 2006);
+                                       # the PKC route uses the same clock (theory: no PKC number found)
+
 CAL = None          # filled by calibrate(): scales of the fast systems, rest signals, rest knobs
 
 
@@ -198,6 +208,7 @@ class Chem:
         self.calm_skill = 0.0                                # learned top-down brake on the LC (Immy's skill)
         self.values, self.seen = {}, {}                      # learned reward expectations per cue; novelty counts
         self.fear_cs = 0.0                                   # one conditioned fear (for extinction tests)
+        self.inner = {}                                      # inside-the-cell tubs (INNER), filled at the first step
         self.inp, self.raw = {}, {k: 1.0 for k in FAST}
         self.drive, self.brake = 1.0, 0.0
         self.ref_occ, self.occ_avg = {}, {}                  # empty = receptors don't adapt (settling, reference)
@@ -211,8 +222,14 @@ class Chem:
 
     # ------------------------------------------------------------ helpers
     def dev(self, r):
-        """how far receptor r's signal is from an average egg at rest"""
-        return self.sig(r) - self.cal["rest"].get(r, self.sig(r))
+        """how far what receptor r does is from an average egg at rest (through its inner tub, if it has one)"""
+        return self.eff(r) - self.cal["rest"].get(r, self.sig(r))
+
+    def eff(self, r):
+        """what receptor r is doing inside its cells: its inner tub if it acts through a second messenger (INNER),
+        else its signal now"""
+        inner = self.__dict__.get("inner")
+        return inner[r] if inner and r in inner else self.sig(r)
 
     def amy_out(self):
         """how much the amygdala's excitability reaches its outputs: tonic inhibition through extrasynaptic (δ)
@@ -424,6 +441,13 @@ class Chem:
         # the fast systems at balance
         self._fast()
         self._nm = self.nmda_state()
+        # inside-the-cell tubs follow their receptors (change 21)
+        if "inner" not in self.__dict__:
+            self.inner = {}                                  # a body saved before the tubs existed
+        k_in = 1 - math.exp(-dt / TAU_INNER)
+        for r in INNER:
+            now = self.sig(r)
+            self.inner[r] = now if r not in self.inner else self.inner[r] + (now - self.inner[r]) * k_in
 
         # BDNF: activity (exercise, a glutamate surge when interneurons are held shut), lowered by high GR; made
         # fast, cleared slowly
@@ -496,14 +520,14 @@ class Chem:
 
     def _write(self, b1):
         """how hard a moment is written (K7): M1, β1, GR; open-channel NMDA block and strong GABA-A cut it"""
-        s = self.sig
+        s = self.eff
         return (s("m1") * (1 + b1 + 0.5 * s("gr")) * (1 - 0.8 * self._nm["syn"])
                 * max(0.0, 1 - 1.5 * max(0.0, self.dev("gabaa_syn"))))
 
     def _lr(self, r):
         """log ratio of receptor r's signal to its rest signal, softened so an empty receptor stays finite"""
         rest = self.cal["rest"].get(r, 1.0)
-        return math.log((self.sig(r) + 0.25 * rest) / (1.25 * rest))
+        return math.log((self.eff(r) + 0.25 * rest) / (1.25 * rest))
 
     def ne_burst(self):
         """an LC burst: its release, the pupil change, β1 at the peak and how hard that moment is written"""
@@ -520,8 +544,8 @@ class Chem:
         keep climbing with NE"""
         rest = self.cal["rest"]
         def rel(r):
-            return self.sig(r) / max(1e-9, rest.get(r, self.sig(r)))
-        sa, sa0 = self.sig("a2a_pfc"), rest.get("a2a_pfc", self.sig("a2a_pfc"))
+            return self.eff(r) / max(1e-9, rest.get(r, self.sig(r)))
+        sa, sa0 = self.eff("a2a_pfc"), rest.get("a2a_pfc", self.sig("a2a_pfc"))
         gi, gi0 = sa / (sa + 0.5 * sa0), 2 / 3
         camp = ((1 + PFC_BETA * rel("b1_pfc")) * (1 - PFC_GI_MAX * gi)) / ((1 + PFC_BETA) * (1 - PFC_GI_MAX * gi0))
         hcn = 2 / (1 + camp ** 2)
@@ -529,7 +553,7 @@ class Chem:
         return hcn * pkc
 
     def knobs(self):
-        s = self.sig
+        s = self.eff
         nm = self._nm
         u_ne = 0.5 * self.pfc_ne()                                    # Immy's chain (α2A / β1 cAMP, α1 PKC)
         u_da = 4 * s("d1_pfc") * (1 - s("d1_pfc"))

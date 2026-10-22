@@ -22,10 +22,21 @@ import time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import engine as E
 
+# "wired" as Immy's paper defines it (2026-10-22; §8, §5.2.1, §3.4, §4): an NE system that is activated but poorly
+# regulated: the drive stays up AND the α2A/GIRK brake is worn, with the CRF/orexin loops feeding back into the LC.
+# Drive and brake are separate genes; "wired" is their interaction. The paper gives no numbers, so the levels are
+# picked by WIRED_RULE from the four features it names (the wired_* tests and high_tonic_pattern), never from a drug
+# result: the mildest pair (smallest |ln drive| + |ln brake|) that shows all four. Picked in
+# .run/results/mind/chem/*-wired-grid/ (2026-10-22).
+WIRED_RULE = "mildest (lc_drive, rx_a2a_auto) pair passing wired_background, wired_exaggerated, wired_persists, high_tonic_pattern"
+WIRED_DRIVE, WIRED_BRAKE = 1.6, 1.0     # placeholder until the grid has run
 EGGS = {
     "average": {},
     "high_gain": dict(stress_gain=1.6),                                   # calm the same, reacts more
-    "wired": dict(lc_drive=1.6, stress_gain=1.5),                         # the high-tonic pattern
+    # driven: an LC pushed hard with its brake intact (Aston-Jones high-tonic mode). This was "wired" in runs 1-7;
+    # it stays as a comparison subject
+    "driven": dict(lc_drive=1.6, stress_gain=1.5),
+    "wired": dict(lc_drive=WIRED_DRIVE, rx_a2a_auto=WIRED_BRAKE, stress_gain=1.5),
     # ~20% less net GABA (Goddard 2001: -22% cortical GABA in panic disorder), partly covered by an endozepine
     # (theory, Nutt 1990), low NPY, high orexin (Johnson 2010)
     "panic_prone": dict(gaba_tone=0.6, endozepine=0.3, npy_tone=0.6, ox_cells=1.3),
@@ -67,6 +78,39 @@ def live(e, hours, inp=None, dt=1 / 60, sched=True, every=None):
 def until(e, hour, inp=None, dt=1 / 60, sched=True):
     """run until the clock reads `hour`"""
     return live(e, ((hour - e.hour) % 24) or 24, inp, dt, sched)[0]
+
+
+_LIVED = {}
+
+
+def _scheduled_minutes(e, start_minute, minutes, stressful_evening=False):
+    """Advance a declared day without floating-point drift at sleep boundaries."""
+    for minute in range(start_minute, start_minute + minutes):
+        hour = (minute % (24 * 60)) / 60
+        threat = 0.5 if stressful_evening and 20 <= hour < 21 else 0.0
+        e.step(1 / 60, awake=awake_sched(hour), threat=threat)
+
+
+def lived_egg(kind="average", hour=8.0, **genes):
+    """One full normal day/night from 07:00, then the requested test-day hour.
+
+    Cache by genes, not the mutable temperament name used by the wired grid.
+    Every caller receives a deep copy and cannot change another test's history.
+    """
+    resolved = dict(EGGS[kind], **genes)
+    key = tuple(sorted(dict(E.GENES, **resolved).items()))
+    if key not in _LIVED:
+        e = egg(kind, hour=7.0, **genes)
+        _scheduled_minutes(e, 7 * 60, 24 * 60)
+        _LIVED[key] = {0: e}
+    minute = int(round(((hour - 7.0) % 24) * 60))
+    cached = _LIVED[key]
+    if minute not in cached:
+        previous = max(t for t in cached if t <= minute)
+        e = copy.deepcopy(cached[previous])
+        _scheduled_minutes(e, 7 * 60 + previous, minute - previous)
+        cached[minute] = e
+    return copy.deepcopy(cached[minute])
 
 
 def r3(x):
@@ -273,9 +317,9 @@ def running_total():
 
 
 @test("gain", "Pupil: resting size (background) and the change to an event (burst) are two read-outs that move apart "
-      "in a high-tonic egg", "checked (Joshi 2016: a clue, not proof)")
+      "in a high-tonic (driven) egg", "checked (Joshi 2016: a clue, not proof)")
 def pupil():
-    ka, kw = egg().knobs(), egg("wired").knobs()
+    ka, kw = egg().knobs(), egg("driven").knobs()
     ok = kw["pupil"] > 1.15 * ka["pupil"] and kw["burst"] < 0.9 * ka["burst"]
     return ok, dict(rest_avg=ka["pupil"], rest_wired=kw["pupil"], evoked_avg=ka["burst"], evoked_wired=kw["burst"])
 
@@ -295,13 +339,101 @@ def startle():
                     rise_high=out["high_gain"][1])
 
 
-@test("gain", "The high-tonic pattern, all three at once: loud background + weak useful bursts + worse focus",
-      "checked (Aston-Jones & Cohen 2005) / what Immy sent")
+@test("gain", "The driven pattern, all three at once: loud background + weak useful bursts (smaller in absolute terms) "
+      "+ worse focus. This is the original high_tonic_pattern rule, unchanged, now on the driven egg (LC pushed hard, "
+      "brake intact), which is what it described in runs 1-7", "checked (Aston-Jones & Cohen 2005)")
+def driven_pattern():
+    ka, kd = egg().knobs(), egg("driven").knobs()
+    ok = kd["pupil"] > 1.15 * ka["pupil"] and kd["burst"] < 0.9 * ka["burst"] and kd["focus"] < 0.9 * ka["focus"]
+    return ok, dict(background=(ka["pupil"], kd["pupil"]), burst=(ka["burst"], kd["burst"]),
+                    focus=(ka["focus"], kd["focus"]), deliberate=(ka["deliberate"], kd["deliberate"]))
+
+
+@test("gain", "The wired pattern: loud background + REDUCED PHASIC-TO-TONIC CONTRAST (burst / background under 0.9x "
+      "an average egg's). Corrected 2026-10-22 with Immy: §3.4 of his paper says useful signals lose contrast against "
+      "the raised background even when their release is intact, so the old endpoint 'weak useful bursts' (read as "
+      "smaller absolute bursts; runs 1-7, kept as driven_pattern) assessed that mechanism wrongly. A correction to how "
+      "the mechanism is assessed, not independent validation. Background and absolute burst are reported separately",
+      "what Immy sent (§3.4, §8) / checked (Aston-Jones & Cohen 2005)")
 def high_tonic_pattern():
     ka, kw = egg().knobs(), egg("wired").knobs()
-    ok = kw["pupil"] > 1.15 * ka["pupil"] and kw["burst"] < 0.9 * ka["burst"] and kw["focus"] < 0.9 * ka["focus"]
-    return ok, dict(background=(ka["pupil"], kw["pupil"]), burst=(ka["burst"], kw["burst"]),
-                    focus=(ka["focus"], kw["focus"]), deliberate=(ka["deliberate"], kw["deliberate"]))
+    ca, cw = ka["burst"] / ka["pupil"], kw["burst"] / kw["pupil"]
+    ok = kw["pupil"] > 1.15 * ka["pupil"] and cw < 0.9 * ca
+    return ok, dict(background=(ka["pupil"], kw["pupil"]), burst_absolute=(ka["burst"], kw["burst"]),
+                    phasic_to_tonic_contrast=(ca, cw), deliberate=(ka["deliberate"], kw["deliberate"]))
+
+
+def _ne_challenge(kind, minutes, threat=0.5):
+    """an egg and its unchallenged twin from 10 AM; threat for `minutes`. Returns both (NE excess = egg - twin, so the
+    time of day never counts as a response)"""
+    e, twin = egg(kind, hour=9.0), egg(kind, hour=9.0)
+    until(e, 10.0, sched=False); until(twin, 10.0, sched=False)
+    peak = 0.0
+    for _ in range(int(minutes)):
+        e.step(1 / 60, awake=True, threat=threat); twin.step(1 / 60, awake=True)
+        peak = max(peak, e.c["ne"] - twin.c["ne"])
+    return e, twin, peak
+
+
+@test("wired", "Wired, quiet: background NE modestly up at rest (+10% to +50% over an average egg; a resting floor "
+      "should sit below a strong acute stressor, which raises rat prefrontal NE +50-115%)",
+      "what Immy sent (§5.2.1) / cutoff: modelling choice")
+def wired_background():
+    a, w = egg(hour=10.0), egg("wired", hour=10.0)
+    r = w.c["ne"] / a.c["ne"]
+    return 1.10 <= r <= 1.50, dict(rest_ne_avg=a.c["ne"], rest_ne_wired=w.c["ne"], ratio=r)
+
+
+@test("wired", "Wired, challenged: exaggerated stress response (10 minutes of threat 0.5: NE rise at least 1.3x an "
+      "average egg's)", "what Immy sent (§5.2.1) / checked (Simson & Weiss 1987: a weaker α2 brake = bigger LC "
+      "responses) / cutoff: the same 1.3x as the other gain tests")
+def wired_exaggerated():
+    ra, rw = _ne_challenge("average", 10)[2], _ne_challenge("wired", 10)[2]
+    return rw >= 1.3 * ra, dict(ne_rise_avg=ra, ne_rise_wired=rw, ratio=rw / ra)
+
+
+@test("wired", "Lived-day wired: after 30 minutes of threat 0.5 starting at 10:00, 15:00 and 20:00, the anxious "
+      "read-out (what the receptors set off inside the cells, which outlasts NE) takes at least 1.5x average's time to "
+      "fall below 10% of its own rise at ALL three times; NE and sympathetic recovery are reported only",
+      "user-prespecified clock robustness test / read-out corrected 2026-10-22 with Immy: NET clears NE in seconds and "
+      "the felt state outlasts it (change 21) / 1.5x cutoff: modelling choice; ENGINE-CHANGES.md")
+def wired_persists():
+    read = {"anxious": lambda e: e.knobs()["anxious"], "sympathetic": lambda e: e.knobs()["sympathetic"],
+            "ne": lambda e: e.c["ne"]}
+
+    def comparison(hour, fresh=False):
+        out = {}
+        for kind in ("average", "wired"):
+            if fresh:
+                e, twin, _ = _ne_challenge(kind, 30)
+            else:
+                e = lived_egg(kind, hour=hour)
+                twin = copy.deepcopy(e)
+                for _ in range(30):
+                    e.step(1 / 60, awake=True, threat=0.5)
+                    twin.step(1 / 60, awake=True)
+            rise = {n: f(e) - f(twin) for n, f in read.items()}
+            back = {n: 12 * 60 for n in read}
+            trace = [dict(minute=0, **rise)]
+            for i in range(1, 12 * 60):
+                e.step(1 / 60, awake=True); twin.step(1 / 60, awake=True)
+                excess = {n: f(e) - f(twin) for n, f in read.items()}
+                trace.append(dict(minute=i, **excess))
+                for n in read:
+                    if back[n] == 12 * 60 and excess[n] < 0.1 * rise[n]:
+                        back[n] = i
+                if all(b < 12 * 60 for b in back.values()):
+                    break
+            out[kind] = dict(rise=rise, minutes_back=back, nonpositive_rise={n: rise[n] <= 0 for n in read},
+                             censored={n: back[n] == 12 * 60 for n in read}, trace=trace)
+        a, w = out["average"]["minutes_back"], out["wired"]["minutes_back"]
+        return dict(passed=w["anxious"] >= 1.5 * a["anxious"], rise_avg=out["average"]["rise"]["anxious"],
+                    minutes_back_avg=a["anxious"], rise_wired=out["wired"]["rise"]["anxious"],
+                    minutes_back_wired=w["anxious"], report_only_minutes_back=dict(average=a, wired=w), eggs=out)
+
+    by_hour = {hour: comparison(hour) for hour in (10, 15, 20)}
+    return all(row["passed"] for row in by_hour.values()), dict(
+        by_hour=by_hour, report_only_fresh_10=comparison(10, fresh=True))
 
 
 def _with(kind, drug, dose=1.0, minutes=30, awake=True, **genes):
@@ -458,51 +590,90 @@ def caffeine():
     return ok, dict(awake_at_23=(out[0.0][0], out[1.0][0]), hour_below_0_6=(out[0.0][1], out[1.0][1]))
 
 
-@test("drug", "lemborexant (OX1R+OX2R blocked), a low daytime dose: sleepier everywhere; sympathetic tone (the "
-      "blood-pressure input) and NE fall in a high-orexin or wired egg, almost not in a normal egg",
-      "checked (Li 2013; Lee 2013)")
+@test("drug", "Lived-day lemborexant dose 0.5 at 08:00, 13:00 and 18:00: the original sympathetic-drop and "
+      "sleepiness rule must hold at ALL three times",
+      "Li 2013; Lee 2013 / user-prespecified clock robustness test; ENGINE-CHANGES.md")
 def lemborexant_bp():
-    out = {}
-    for kind in ("average", "high_orexin", "wired"):
-        e, k0, k, n0 = _with(kind, "lemborexant", dose=0.5, minutes=60)
-        out[kind] = dict(sympathetic_drop=k0["sympathetic"] - k["sympathetic"], ne_drop=n0 - e.c["ne"],
-                         awake_drop=k0["awake"] - k["awake"], orexin_a_at_rest=egg(kind).c["oxa"])
-    sa = out["average"]["sympathetic_drop"]
-    ok = (out["high_orexin"]["sympathetic_drop"] > 3 * sa and out["wired"]["sympathetic_drop"] > 3 * sa
-          and all(v["awake_drop"] > 0.03 for v in out.values()))
-    return ok, out
+    by_hour = {}
+    for hour in (8, 13, 18):
+        out = {}
+        for kind in ("average", "high_orexin", "wired"):
+            e = lived_egg(kind, hour=hour)
+            twin = copy.deepcopy(e)
+            k0, n0, oxa = e.knobs(), e.c["ne"], e.c["oxa"]
+            e.give("lemborexant", 0.5)
+            trace = []
+            for minute in range(1, 61):
+                k = e.step(1 / 60, awake=True)
+                kt = twin.step(1 / 60, awake=True)
+                trace.append(dict(minute=minute, ne=e.c["ne"], twin_ne=twin.c["ne"],
+                                  awake=k["awake"], twin_awake=kt["awake"],
+                                  sympathetic=k["sympathetic"], twin_sympathetic=kt["sympathetic"]))
+            out[kind] = dict(sympathetic_drop=k0["sympathetic"] - k["sympathetic"],
+                             ne_drop=n0 - e.c["ne"], awake_drop=k0["awake"] - k["awake"],
+                             orexin_a_at_start=oxa, trace=trace,
+                             report_only_matched_twin=dict(sympathetic_drop=kt["sympathetic"] - k["sympathetic"],
+                                 ne_drop=twin.c["ne"] - e.c["ne"], awake_drop=kt["awake"] - k["awake"]))
+        sa = out["average"]["sympathetic_drop"]
+        ok = (out["high_orexin"]["sympathetic_drop"] > 3 * sa
+              and out["wired"]["sympathetic_drop"] > 3 * sa
+              and all(v["awake_drop"] > 0.03 for v in out.values()))
+        by_hour[hour] = dict(passed=ok, eggs=out)
+    return all(row["passed"] for row in by_hour.values()), dict(by_hour=by_hour)
 
 
-def _sleep_dose(kind, calm=0.0, drug="daridorexant"):
-    """smallest dose that brings 'awake' under 0.5 half an hour after it is taken at 23:00, lying in the dark"""
+def _sleep_dose(kind, calm=0.0, drug="daridorexant", stressful_evening=False):
+    """Lived-day minimum dose at 23:00; stress comparisons are report-only."""
+    base = lived_egg(kind, hour=7.0)
+    base.calm_skill = calm
+    _scheduled_minutes(base, 7 * 60, 16 * 60, stressful_evening=stressful_evening)
+    evaluations = []
+
     def awake_after(dose):
-        e = egg(kind, hour=22.0)
-        e.calm_skill = calm
-        until(e, 23.0, dict(awake=True), sched=False)
+        e = copy.deepcopy(base)
         if dose:
             e.give(drug, dose)
         k, _ = live(e, 0.5, dict(awake=True), sched=False)
+        evaluations.append(dict(dose=dose, awake=k["awake"]))
         return k["awake"]
+
+    awake0 = awake_after(0.0)
+    details = dict(start_hour=base.hour, woke_at=base.woke_at, S=base.S,
+                   sleep_loss=min(1.0, max(0.0, (base.S - 0.62) / 0.1)),
+                   concentrations_at_dose=dict(base.c), calm_skill=calm,
+                   stressful_evening=stressful_evening, evaluated_doses=evaluations)
+    if awake0 < 0.5:
+        return 0.0, awake0, details
     lo, hi = 0.0, 16.0
     if awake_after(hi) >= 0.5:
-        return float("inf"), awake_after(0.0)
+        return float("inf"), awake0, details
     for _ in range(18):
         mid = (lo + hi) / 2
         lo, hi = (lo, mid) if awake_after(mid) < 0.5 else (mid, hi)
-    return hi, awake_after(0.0)
+    return hi, awake0, details
 
 
-@test("drug", "daridorexant dose shift: the dose needed to fall asleep scales with his own orexin tone; a wired egg "
-      "needs about twice the usual dose, and once its NE is calmed the usual dose works",
-      "checked (competitive antagonism) / one person's course")
+@test("drug", "Lived calm-night daridorexant: wired dose >=1.5x average and calmed wired dose <=1.25x average; "
+      "every stressful-evening dose is report-only, with no asserted direction",
+      "one person's course / Yu 2022 limits universal stress-direction claim; preregistered ENGINE-CHANGES.md")
 def daridorexant_dose():
-    da, wa = _sleep_dose("average")
-    dw, ww = _sleep_dose("wired")
-    dc, wc = _sleep_dose("wired", calm=0.35)
-    dh, _ = _sleep_dose("high_orexin")
-    ok = dw >= 1.5 * da and dc <= 1.25 * da
-    return ok, dict(dose_average=da, dose_wired=dw, dose_wired_calmed=dc, awake_without_drug=(wa, ww, wc),
-                    report_only_dose_high_orexin=dh)
+    nights = {}
+    for night, stressful in (("calm", False), ("stressful_evening", True)):
+        out = {}
+        for name, kind, calm in (("average", "average", 0), ("wired", "wired", 0),
+                                  ("wired_calmed", "wired", 0.35), ("high_orexin", "high_orexin", 0)):
+            dose, awake0, details = _sleep_dose(kind, calm=calm, stressful_evening=stressful)
+            out[name] = dict(dose=dose, awake_without_drug=awake0, details=details)
+        nights[night] = out
+    da, dw, dc = (nights["calm"][k]["dose"] for k in ("average", "wired", "wired_calmed"))
+    finite = all(math.isfinite(v) for v in (da, dw, dc))
+    conditions = dict(wired_at_least_1_5_average=dw >= 1.5 * da,
+                      calmed_wired_at_most_1_25_average=dc <= 1.25 * da)
+    return finite and all(conditions.values()), dict(
+        nights=nights, calm_conditions=conditions, finite_calm_doses=finite,
+        calm_ratios=dict(wired=dw / da, wired_calmed=dc / da) if finite and da > 0 else None,
+        report_only_stress_minus_calm={k: nights["stressful_evening"][k]["dose"] - nights["calm"][k]["dose"]
+                                      for k in nights["calm"]})
 
 
 @test("drug", "propranolol (β blocked): strong moments no longer written extra hard; deliberate control intact",
@@ -824,7 +995,8 @@ def main(out_dir):
     L = [f"# Chemistry foundations: section F tests ({time.strftime('%Y-%m-%d %H:%M')})", "",
          f"{n_pass} of {len(rows)} pass. Engine: `tools/mind/chem/engine.py`; tests: `tools/mind/chem/test_foundations.py`.",
          "Every pass rule was written before the run. Numbers are relative units (1 = an average egg at rest).", ""]
-    for g, title in (("bio", "Biology signatures"), ("gain", "Gain tests"), ("drug", "Drug challenges")):
+    for g, title in (("bio", "Biology signatures"), ("gain", "Gain tests"), ("wired", "The wired phenotype (Immy's paper)"),
+                     ("drug", "Drug challenges")):
         L += [f"## {title}", "", "| | test | what must happen | how sure | numbers |", "|---|---|---|---|---|"]
         for r in rows:
             if r["group"] == g:
