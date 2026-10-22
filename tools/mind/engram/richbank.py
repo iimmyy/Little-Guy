@@ -76,7 +76,8 @@ EVENTS = {
               "It took {num} hours to mop up. {P} said \"{quote}\". My {rel2} {name2} brought everyone dinner. "
               "The water ruined a {color} couch in the corner. I felt {feeling} for {o}.",
         num=(2, 11), mood=BAD, gist=["pipe", "flood"],
-        q=dict(who="Whose workplace had the burst pipe?", gist="What happened at my {rel}'s work?",
+        # who: the first set asked "Whose workplace had the burst pipe?", answered with the place
+        q=dict(who="Who works at the place where the pipe burst?", gist="What happened at my {rel}'s work?",
                where="Where does my {rel} work, the place with the burst pipe?",
                when="What day did the pipe burst at my {rel}'s work?", number="How many hours did it take to mop up?",
                quote="What did my {rel} say about the burst pipe?",

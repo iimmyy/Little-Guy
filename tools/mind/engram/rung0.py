@@ -37,7 +37,7 @@ from pathlib import Path
 
 import torch
 
-from moments import KINDS, PER_KIND, SMALL_TALK, moments, prefix
+from moments import KINDS, PER_KIND, REFUSED, SMALL_TALK, moments, prefix
 
 LS = [4, 8, 12, 16, 20, 22, 28]        # 28 is past the KV-sharing line on purpose (should look like nothing)
 SAL_LS = [8, 12, 16, 20, 22]
@@ -47,10 +47,6 @@ LATER = {"text", "none", "kv", "kvsalw", "kvswap", "res4", "ple4", "res8", "ple8
          "saeple8k16", "saeple8k8", "saepleswap8", "res12", "ple12", "sae12", "saeple12"}   # also run after / recall
 SAE_KS = {8: (None, 32, 16, 8)}         # pieces kept per word (None = all 64); other layers: (None, 32)
 MAX_NEW = 12
-REFUSED = re.compile(r"don't know|do not know|not sure|no idea|don't remember|do not remember|not have access|"
-                     r"don't have access|haven't told|have not told|didn't tell|did not tell|haven't mentioned|"
-                     r"have not mentioned|didn't mention|did not mention|not mentioned|no information|need more|"
-                     r"no way of knowing|don't have|do not have|cannot|can't|^unknown", re.I)   # a pointer, not the grade
 
 
 class Splicer:

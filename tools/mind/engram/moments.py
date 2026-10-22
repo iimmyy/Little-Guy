@@ -1,7 +1,7 @@
 """The made-up moments of engram rungs 0 and 1 (and the engine check), shared so every test asks the same things.
 
 Each moment is read once in one chat (context A) and asked about later in another (context B)."""
-import random
+import random, re
 
 COLORS = ["brown", "black", "white", "green", "blue", "red", "yellow", "gray", "orange", "purple"]
 KINDS = {
@@ -42,6 +42,11 @@ SMALL_TALK = [
 ]
 PER_KIND = 8
 ASK = " Answer in a few words."
+# he says he doesn't have it (a pointer for reading, not the grade)
+REFUSED = re.compile(r"don't know|do not know|not sure|no idea|don't remember|do not remember|not have access|"
+                     r"don't have access|haven't told|have not told|didn't tell|did not tell|haven't mentioned|"
+                     r"have not mentioned|didn't mention|did not mention|not mentioned|no information|need more|"
+                     r"no way of knowing|don't have|do not have|cannot|can't|^unknown", re.I)
 
 
 def moments(seed=2026):
