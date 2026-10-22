@@ -115,7 +115,7 @@ def act(raw, last_say):
         if time.time() - last_say < SAY_REST:
             return "drop", "say: resting (spoke too recently)", last_say
         with open(os.path.join(STATE, "said.log"), "a") as f:   # on the board: the speaker
-            f.write(f"{time.strftime('%H:%M:%S')} {text}\n")
+            f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} {text}\n")
         return "said", text, time.time()
     if kind == "mood":
         try:

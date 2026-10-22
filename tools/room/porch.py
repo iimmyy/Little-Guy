@@ -73,6 +73,31 @@ def mac_memory():
     return used >> 20, total >> 20
 
 
+SAID = re.compile(r"^(?:(\d{4}-\d\d-\d\d) )?(\d\d):(\d\d):(\d\d) (.*)$")
+
+
+def said_lines(lines, now=None):
+    """said.log -> [(epoch, text)], oldest first. New lines carry their date; old ones only a clock time, so each is
+    put on the latest day that keeps the file in order (a time earlier than the line after it = the same day)"""
+    now = now or time.time()
+    out, nxt = [], now
+    for l in reversed(lines):
+        m = SAID.match(l)
+        if not m:
+            continue
+        day, hh, mm, ss, text = m.groups()
+        if day:
+            t = time.mktime(time.strptime(f"{day} {hh}:{mm}:{ss}", "%Y-%m-%d %H:%M:%S"))
+        else:
+            lt = time.localtime(nxt)
+            t = time.mktime((lt.tm_year, lt.tm_mon, lt.tm_mday, int(hh), int(mm), int(ss), 0, 0, -1))
+            if t > nxt:
+                t -= 86400
+        out.append((t, text))
+        nxt = t
+    return out[::-1]
+
+
 def feed(w):
     """one timeline of what he did, oldest first: notes, inner thoughts, what was said, tasks; then his mood now"""
     rows = []
@@ -96,8 +121,9 @@ def feed(w):
         t = x.get("done_t") or x["due"]
         rows.append((t, f"[{stamp(t)}] task {x['status']}: {x['what']} (reward {x['reward']:+.2f}, "
                         f"{x['thoughts']} thoughts about it)"))
+    for t, text in said_lines(w["said"][-20:]):
+        rows.append((t, f"[{stamp(t)}] said out loud: {text}"))
     lines = [r for _, r in sorted(rows)][-60:]
-    lines += [f"said out loud ({l[:8]}): {l[9:]}" for l in w["said"][-5:]]
     m = w["mood"]
     if m:
         lines.append(f"mood now: pleasant {m['valence']:+.2f}, keyed up {m['arousal']:+.2f}"
@@ -147,8 +173,8 @@ def loop():
             if spoken is None:
                 spoken = len(w["said"])                      # only what he says from now on
                 replied = max([c["t"] for c in chat], default=0)
-            for line in w["said"][spoken:]:
-                speak(line[9:])
+            for _, text in said_lines(w["said"][spoken:]):
+                speak(text)
             spoken = len(w["said"])
             for c in chat:
                 if c["t"] > replied and c.get("reply"):

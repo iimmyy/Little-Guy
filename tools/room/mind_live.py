@@ -156,6 +156,7 @@ BODY_ON = env("BODY", "chem") != "off"
 DIAL_V = {"wanting": 0.4, "liking": 0.4, "comfort": 0.6, "warmth": 0.6, "dysphoria": -0.6, "anxious": -0.3, "sick": -0.6}
 DIAL_A = {"awake": 1.0, "anxious": 0.5, "sympathetic": 0.3}
 BODY_SHOW = ("ne", "da", "ht", "oxa", "oxb", "crh", "cort", "mor", "ot", "ado", "mel", "npy")
+KICK_HALF = 0.25           # hours: a message's DA burst lifts him for minutes, not hours (they stacked: pinned at +0.69)
 # a message reads as a threat from 1 SD below how messages coming in usually read to him (st["zero"]["heard"], with its
 # SD), full at 3 SD below; measured 2026-10-22 on chat_pool.txt (107 lines): valence -0.62 +- 0.46, while bad news read
 # -0.83 to -1.9. Without that zero nothing reads as a threat
@@ -517,19 +518,20 @@ def advance(now, st, dr, gap, slept=False, pulse=None, kick=(0.0, 0.0)):
     Over a night's sleep the urge to call out only drains: asleep, he isn't missing anyone (life_sim filled it over
     the night too, which on the real clock means calling out the moment he wakes, every morning).
     With his body on, the dials are his body's read-out + his thoughts (relaxing toward what they read, as life_sim's
-    did, plus a message's kick) + his drift; the body keeps its own clock, so life_sim's rhythm term drops out."""
+    did) + a message's kick (fading in minutes) + his drift; the body keeps its own clock, so life_sim's rhythm term drops out."""
     hours = max(0.0, now - st["t"]) / 3600
     drift_step(st, hours)
     if BODY is not None:
         body_live(st, now, pulse)
-        m = st.setdefault("mind", [0.0, 0.0])
+        m, kk = st.setdefault("mind", [0.0, 0.0]), st.setdefault("kick", [0.0, 0.0])
         for i, k in enumerate(("valence", "arousal")):
             target = M * GAIN * st["read"][i]
-            m[i] = target + (m[i] - target) * 0.5 ** (hours / HALF_LIFE[k]) + kick[i]
+            m[i] = target + (m[i] - target) * 0.5 ** (hours / HALF_LIFE[k])
+            kk[i] = kk[i] * 0.5 ** (hours / KICK_HALF) + kick[i]
             if slept:
                 m[i] *= SLEEP_LEFT
         bv, ba = body_dials(st)
-        st["feel"] = [soft(bv + m[0] + st["drift"][0]), soft(ba + m[1] + st["drift"][1], CEIL_AROUSAL)]
+        st["feel"] = [soft(bv + m[0] + kk[0] + st["drift"][0]), soft(ba + m[1] + kk[1] + st["drift"][1], CEIL_AROUSAL)]
         st["body"] = {k: round(BODY.c[k], 3) for k in BODY_SHOW}
         st["body_dials"] = [round(bv, 3), round(ba, 3)]
         body_save()
