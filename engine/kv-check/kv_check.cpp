@@ -1,14 +1,17 @@
 // LG: engram S0. Can his real engine keep a moment's KV cache and slide it into another chat (short-term memory)?
 //   kv-check MODEL CASES.jsonl OUT.jsonl [--no-swa-full] [--offset D] [--lora ADAPTER.gguf]
-// CASES, one per line (tools/mind/engram/s0.py writes them): {"a": chat A up to the moment, "moment": its words,
-//   "b": chat B up to where the memory goes, "q": the rest of chat B (the question and the start of his turn)}
+// CASES, one per line (tools/mind/engram/s0.py and reader.py write them): {"a": chat A up to the moment, "moment":
+//   its words, "b": chat B up to where the memory goes, "q": the rest of chat B (the question and the start of his
+//   turn)}, or {"pile": [{"a": ..., "moment": ...}, ...], "b": ..., "q": ...} for several memories side by side, each
+//   saved from its own chat
 // 1. shift check (case 0): read A+moment, then move the whole cache D positions later and read q; must give the
 //    same next-word scores as reading everything at D from the start. The floor is the gap between reading at 0 and
 //    at D (rounding only: his attention only cares about distances).
 // 2. restore check (case 0): save the moment's cache, wipe everything, re-read A, put the moment back, read q;
 //    must give the same scores as reading A+moment+q straight.
 // 3. every case three ways, greedy answer: text (the moment read fresh in chat B), kv (the moment's saved cache
-//    from chat A, moved into chat B right before the question), none. One JSON line per case and way to OUT.
+//    from chat A, moved into chat B right before the question; a pile goes in one after another), none. One JSON
+//    line per case and way to OUT.
 #include "llama.h"
 #include "nlohmann/json.hpp"
 
@@ -17,6 +20,7 @@
 #include <cstdio>
 #include <cstring>
 #include <fstream>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -98,6 +102,13 @@ static std::string answer(llama_context * ctx, const llama_vocab * vocab, int po
 
 struct diff { double max_abs = 0; int same_top = 0, n = 0; };
 
+static json pile_of(const json & c) {
+    return c.contains("pile") ? c["pile"] : json::array({{{"a", c["a"]}, {"moment", c["moment"]}}});
+}
+
+// a memory as he saved it: read in its own chat, the moment's cells kept
+struct saved_moment { std::vector<uint8_t> buf; int from = 0; std::vector<llama_token> words; };
+
 static diff compare(const std::vector<float> & x, const std::vector<float> & y, int n_vocab) {
     diff d;
     d.n = (int) (x.size() / n_vocab);
@@ -156,8 +167,9 @@ int main(int argc, char ** argv) {
     std::printf("%s\n", head.dump().c_str());
     if (!can_shift) { std::fprintf(stderr, "kv-check: this cache cannot move words (needs swa_full)\n"); return 2; }
 
-    const auto a = tokenize(vocab, cases[0]["a"].get<std::string>());
-    const auto m = tokenize(vocab, cases[0]["moment"].get<std::string>());
+    const json first = pile_of(cases[0])[0];
+    const auto a = tokenize(vocab, first["a"].get<std::string>());
+    const auto m = tokenize(vocab, first["moment"].get<std::string>());
     const auto q = tokenize(vocab, cases[0]["q"].get<std::string>());
     std::vector<llama_token> am(a);
     am.insert(am.end(), m.begin(), m.end());
@@ -197,29 +209,47 @@ int main(int argc, char ** argv) {
         {"saved_bytes_per_word", (double) saved.size() / m.size()}};
     std::printf("%s\n", checks.dump().c_str());
 
-    // 3. every case, three ways
+    // 3. every case, three ways (each moment is saved once and reused across cases)
+    std::map<std::string, saved_moment> kept;
+    auto keep = [&](const json & e) -> const saved_moment & {
+        const std::string key = e["a"].get<std::string>() + '\x01' + e["moment"].get<std::string>();
+        auto it = kept.find(key);
+        if (it != kept.end()) { return it->second; }
+        saved_moment sm;
+        const auto ea = tokenize(vocab, e["a"].get<std::string>());
+        sm.words = tokenize(vocab, e["moment"].get<std::string>());
+        std::vector<llama_token> x(ea);
+        x.insert(x.end(), sm.words.begin(), sm.words.end());
+        llama_memory_clear(mem, true);
+        feed(ctx, x, 0, false);
+        sm.from = (int) ea.size();
+        sm.buf = save_span(ctx, sm.from, (int) x.size());
+        return kept.emplace(key, std::move(sm)).first->second;
+    };
     std::ofstream out(argv[3]);
     for (size_t i = 0; i < cases.size(); i++) {
         const auto & c = cases[i];
-        const auto ca = tokenize(vocab, c["a"].get<std::string>()), cm = tokenize(vocab, c["moment"].get<std::string>());
+        const json pile = pile_of(c);
+        std::vector<const saved_moment *> mems;
+        for (const auto & e : pile) { mems.push_back(&keep(e)); }
         const auto cb = tokenize(vocab, c["b"].get<std::string>()), cq = tokenize(vocab, c["q"].get<std::string>());
         for (const std::string way : {"text", "kv", "none"}) {
             llama_memory_clear(mem, true);
             int pos = 0;
             if (way == "kv") {
-                std::vector<llama_token> x(ca);
-                x.insert(x.end(), cm.begin(), cm.end());
-                feed(ctx, x, 0, false);
-                const auto buf = save_span(ctx, (int) ca.size(), (int) x.size());
-                llama_memory_clear(mem, true);
                 feed(ctx, cb, 0, false);
-                if (!put_back(ctx, buf, (int) ca.size(), (int) cb.size())) { std::fprintf(stderr, "put back failed\n"); return 3; }
-                pos = (int) (cb.size() + cm.size());
+                pos = (int) cb.size();
+                for (const auto * sm : mems) {
+                    if (!put_back(ctx, sm->buf, sm->from, pos)) { std::fprintf(stderr, "put back failed\n"); return 3; }
+                    pos += (int) sm->words.size();
+                }
                 feed(ctx, cq, pos, false);
                 pos += (int) cq.size();
             } else {
                 std::vector<llama_token> x(cb);
-                if (way == "text") { x.insert(x.end(), cm.begin(), cm.end()); }
+                if (way == "text") {
+                    for (const auto * sm : mems) { x.insert(x.end(), sm->words.begin(), sm->words.end()); }
+                }
                 x.insert(x.end(), cq.begin(), cq.end());
                 feed(ctx, x, 0, false);
                 pos = (int) x.size();
