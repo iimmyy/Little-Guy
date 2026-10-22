@@ -1,0 +1,287 @@
+# Immy's group map: every chemical system placed in every feeling / thinking group it shows up in.
+# One cell = [level, receptor, evidence, source and note].
+#   level:    up | down | burst | mixed | none   (none = shown NOT to be involved)
+#   evidence: checked (read and confirmed when the cell was written)
+#             known   (established literature, from memory, not re-read)
+#             theory  (an inference nobody has shown directly)
+# A group missing from a system means unknown. Unknown stays unknown; never guessed.
+# The pull runs both ways (foundations doc I.2): the chemistry brings the group on, and the group pulls the
+# chemistry back toward its cells.
+
+groups:
+  # Cowen & Keltner 2017: 27 kinds of human emotion
+  admiration:      {label: admiration, kind: emotion}
+  adoration:       {label: adoration, kind: emotion}
+  aesthetic:       {label: aesthetic appreciation, kind: emotion}
+  amusement:       {label: amusement, kind: emotion}
+  anger:           {label: anger, kind: emotion}
+  anxiety:         {label: anxiety, kind: emotion}
+  awe:             {label: awe, kind: emotion}
+  awkwardness:     {label: awkwardness, kind: emotion}
+  boredom:         {label: boredom, kind: emotion}
+  calmness:        {label: calmness, kind: emotion}
+  confusion:       {label: confusion, kind: emotion}
+  craving:         {label: craving, kind: emotion}
+  disgust:         {label: disgust, kind: emotion}
+  empathic_pain:   {label: empathic pain, kind: emotion}
+  entrancement:    {label: entrancement, kind: emotion}
+  excitement:      {label: excitement, kind: emotion}
+  fear:            {label: fear, kind: emotion}
+  horror:          {label: horror, kind: emotion}
+  interest:        {label: interest, kind: emotion}
+  joy:             {label: joy, kind: emotion}
+  nostalgia:       {label: nostalgia, kind: emotion}
+  relief:          {label: relief, kind: emotion}
+  romance:         {label: romance, kind: emotion}
+  sadness:         {label: sadness, kind: emotion}
+  satisfaction:    {label: satisfaction (liking), kind: emotion}
+  sexual_desire:   {label: sexual desire, kind: emotion}
+  surprise:        {label: surprise, kind: emotion}
+  # states Cowen & Keltner didn't test that matter for him
+  panic:           {label: panic, kind: state}
+  stress:          {label: stress, kind: state}
+  loneliness:      {label: loneliness, kind: state}
+  missing:         {label: missing someone, kind: state}
+  guilt:           {label: guilt, kind: state}
+  shame:           {label: shame, kind: state}
+  pride:           {label: pride, kind: state}
+  flat_wanting:    {label: "flatness: wanting side", kind: state}
+  flat_liking:     {label: "flatness: liking side", kind: state}
+  # thinking states (Immy's two-way pull: ADHD-like example)
+  focused:         {label: focused / flow, kind: thinking}
+  scattered:       {label: scattered (ADHD-like), kind: thinking}
+  restless:        {label: restless, kind: thinking}
+  alert:           {label: alert, kind: thinking}
+  sleepy:          {label: sleepy / drowsy, kind: thinking}
+
+systems:
+  ne:    {label: NE, name: norepinephrine (LC)}
+  da:    {label: DA, name: dopamine (VTA / SN)}
+  ht:    {label: 5-HT, name: serotonin (raphe)}
+  ach:   {label: ACh, name: acetylcholine (basal forebrain)}
+  ha:    {label: HA, name: histamine (TMN)}
+  ox:    {label: OX, name: orexin A / B}
+  dyn:   {label: DYN, name: dynorphin (KOR)}
+  ado:   {label: ADO, name: adenosine}
+  crh:   {label: CRH, name: CRH}
+  cort:  {label: CORT, name: cortisol (MR / GR)}
+  mor:   {label: MOR, name: mu-opioid}
+  ot:    {label: OT, name: oxytocin}
+  avp:   {label: AVP, name: vasopressin}
+  mel:   {label: MEL, name: melatonin / clock}
+  glu:   {label: GLU, name: glutamate (background vs signal)}
+  gaba:  {label: GABA, name: GABA (incl. neurosteroids)}
+  ecb:   {label: eCB, name: endocannabinoids}
+  npy:   {label: NPY, name: neuropeptide Y}
+  gal:   {label: GAL, name: galanin (LC co-release)}
+  cyt:   {label: CYT, name: cytokines (sickness signal)}
+  bdnf:  {label: BDNF, name: BDNF (slow growth)}
+
+cells:
+  ne:
+    fear:       [burst, "α1, β1", known, "LC fires to threats; β1 writes fear moments harder (propranolol blocks it)"]
+    anxiety:    [up, α1, known, "tonic up; yohimbine (α2 brake off) raises anxiety (Charney 1984)"]
+    panic:      [up, α1, known, "yohimbine sets off panic in panic disorder (Charney 1984)"]
+    stress:     [up, "α1 (via CRHR1 on the LC)", known, "CRH raises tonic LC firing (Valentino; McCall 2015)"]
+    surprise:   [burst, "", known, "phasic burst to the unexpected; network reset (Bouret & Sara 2005)"]
+    confusion:  [up, "", theory, "NE = unexpected uncertainty (Yu & Dayan 2005 model)"]
+    interest:   [burst, α2A, known, "engaged = phasic mode (Aston-Jones & Cohen 2005)"]
+    focused:    [mixed, α2A, known, "moderate tonic + strong bursts; the inverted U (Aston-Jones & Cohen 2005; Arnsten)"]
+    scattered:  [mixed, "α2A / α1", known, "either end of the inverted U: too little (ADHD-like) or too much tonic (stress) (Arnsten 2009)"]
+    restless:   [up, "", known, "high tonic = explore mode, distractible (Aston-Jones & Cohen 2005)"]
+    alert:      [up, "α1, β", known, "wake and vigilance"]
+    sleepy:     [down, "", known, "LC slows in deep sleep, silent in REM"]
+    calmness:   [down, α2A, known, "clonidine / guanfacine calm by cutting tonic NE"]
+    anger:      [up, "", known, "sympathetic rise; anger more NE-like than fear (Ax 1953)"]
+    craving:    [up, "α1, β", known, "stress-triggered craving needs NE in rats (Shaham; Erb)"]
+    excitement: [burst, "", theory, "arousal burst toward a coming reward"]
+    relief:     [down, "", theory, "tonic falls once a threat ends"]
+    horror:     [up, "", theory, "fear-like arousal"]
+    boredom:    [mixed, "", checked, "feels flat, but heart rate and skin conductance rise: arousal readying a switch (London 1972; Raffaelli 2016 review)"]
+    awkwardness: [mixed, "", checked, "the blush rises while heart rate slows; unlike fear's sympathetic rise (Keltner & Buswell 1997 review)"]
+
+  da:
+    joy:          [burst, D1, known, "better than expected (Schultz)"]
+    excitement:   [up, "D1 / D2", known, "anticipation: ventral striatum rises before a reward (Knutson)"]
+    interest:     [burst, D1, known, "novelty and wanting information (Bromberg-Martin & Hikosaka 2009; Gruber 2014)"]
+    craving:      [up, "D3 / D1", known, "wanting (Berridge; Robinson & Berridge)"]
+    surprise:     [burst, "", known, "the fast salience part of a burst"]
+    satisfaction: [none, "", checked, "liking is opioid; dopamine never adds liking (Berridge 2018)"]
+    aesthetic:    [up, "D2 (striatum)", known, "music chills release striatal DA; anticipation caudate, peak accumbens (Salimpoor 2011)"]
+    romance:      [up, "", known, "VTA active in early romantic love (Aron & Fisher 2005)"]
+    relief:       [burst, "", known, "a pain that stops is a reward: accumbens DA (Navratilova 2012)"]
+    boredom:      [down, D2, theory, "tonic DA tracks the average reward rate (Niv 2007)"]
+    sadness:      [down, "", theory, "low minute-level DA"]
+    flat_wanting: [down, D3, checked, "cariprazine's anti-anhedonic effect needs D3 (Duric 2017; McIntyre 2024)"]
+    flat_liking:  [none, "", known, "blocking DA leaves liking intact (Berridge)"]
+    focused:      [mixed, D1, known, "prefrontal D1 inverted U (Arnsten; Vijayraghavan 2007)"]
+    scattered:    [down, "D2 / D3, DAT", known, "ADHD: lower D2/D3 and DAT in the reward path (Volkow 2009)"]
+    loneliness:   [up, "", known, "after 10 h alone, midbrain craving for social cues, like hunger (Tomova 2020)"]
+    missing:      [up, "", theory, "wanting aimed at one person (from Tomova 2020)"]
+    stress:       [mixed, "D1 / CRHR1", known, "acute stress raises prefrontal DA; CRH in the VTA cuts DA to rewards (Wanat 2013)"]
+    sleepy:       [down, DAT, checked, "wake-promoting; modafinil works through DAT (Wisor 2001)"]
+    fear:         [up, "", known, "some DA cells burst to salient threats (Bromberg-Martin 2010)"]
+    nostalgia:    [up, "", checked, "SN/VTA and ventral striatum fire together with the hippocampus (Oba 2016); nostalgia eases loneliness (Zhou 2008)"]
+    sexual_desire: [up, "D2 / D3", known, "dopamine agonists can bring on hypersexuality (impulse control problems in Parkinson's)"]
+
+  ht:
+    calmness:     [up, 5-HT1A, known, "raphe 5-HT makes waiting for a likely reward easier (Miyazaki 2014)"]
+    sadness:      [down, "", known, "tryptophan depletion lowers mood in people who had depression (Ruhé 2007 meta-analysis)"]
+    anger:        [down, "", known, "low 5-HT = more punishing of unfairness, more aggression (Crockett 2008)"]
+    anxiety:      [mixed, "5-HT1A vs 5-HT2C", known, "1A calms, 2C makes anxious; SSRIs can raise anxiety in the first weeks"]
+    flat_liking:  [mixed, "5-HT1A / SERT", known, "SSRIs can blunt feelings (Price 2009); 5-HT1A partial agonism helps anhedonia (cariprazine)"]
+    awe:          [up, 5-HT2A, known, "psilocybin brings on awe and mystical experience (Griffiths 2006)"]
+    entrancement: [up, 5-HT2A, known, "absorption under psilocybin"]
+    aesthetic:    [up, 5-HT2A, known, "psilocybin deepens emotion to music (Kaelen 2015)"]
+    restless:     [down, "", theory, "low 5-HT = can't wait, impulsive"]
+    guilt:        [down, "", checked, "tryptophan depletion raises guilt in highly empathic people (Kanen et al. 2021, n = 73)"]
+    sexual_desire: [mixed, "5-HT1A vs 5-HT2A / SERT", known, "SSRIs lower desire; flibanserin (1A agonist, 2A blocker) raises it"]
+    disgust:      [mixed, "5-HT3 vs SERT", checked, "5-HT3 in the posterior insula is needed for nausea-learned disgust in rats (Tuerke 2012); one dose of escitalopram lowers felt disgust and fear in people (Sklivanioti Greenfield 2023)"]
+
+  ach:
+    interest:     [up, "nicotinic, M1", known, "cholinergic transients mark a cue being noticed (Parikh 2007; Sarter)"]
+    focused:      [up, "nicotinic, M1", known, "sustained attention"]
+    alert:        [up, "", known, "high awake"]
+    sleepy:       [down, "", known, "low in deep sleep (high again in REM)"]
+    confusion:    [up, M1, theory, "ACh = expected uncertainty (Yu & Dayan 2005 model)"]
+    sadness:      [up, muscarinic, known, "physostigmine brings on low mood (Janowsky 1972); scopolamine lifts depression within days (Furey & Drevets 2006)"]
+    stress:       [up, "", known, "hippocampal and prefrontal ACh rise with stress (rodents)"]
+
+  ha:
+    alert:        [up, H1, known, "TMN histamine keeps the cortex awake"]
+    sleepy:       [down, H1, known, "antihistamines sedate; TMN silent in sleep"]
+
+  ox:
+    joy:          [up, OX1R, known, "human amygdala orexin peaks with positive emotion and social contact (Blouin 2013)"]
+    amusement:    [up, "OX1R / OX2R", known, "laughter triggers cataplexy when orexin is missing: orexin holds the body up through it"]
+    anger:        [up, "", known, "human amygdala orexin also peaks with anger (Blouin 2013)"]
+    excitement:   [up, OX1R, known, "arousal toward rewards (Blouin 2013)"]
+    interest:     [up, OX1R, known, "exploring"]
+    craving:      [up, OX1R, known, "cue-driven seeking (Harris 2005)"]
+    fear:         [up, OX1R, checked, "orexin cells drive the panic / defence response (Johnson 2010 review)"]
+    anxiety:      [up, OX1R, checked, "spinal-fluid orexin high with anxiety and panic symptoms (Johnson 2010)"]
+    panic:        [up, OX1R, checked, "needed for the panic-prone state in rats; high CSF orexin in panic (Johnson 2010)"]
+    stress:       [mixed, "OX1R / OX2R", checked, "up with acute stress; stays high in an anxious, high-NE person (blood pressure falls when it's blocked: Li 2013), burns out in a flat one (James 2014)"]
+    sadness:      [down, "", checked, "low CSF orexin in depression (Brundin 2007)"]
+    flat_wanting: [down, OX1R, checked, "the lower the orexin, the harder it is to start things (Brundin 2007)"]
+    sleepy:       [down, OX2R, checked, "loss = narcolepsy; blockers = sleep"]
+    alert:        [up, OX2R, known, "holds wake steady"]
+
+  dyn:
+    sadness:      [up, KOR, known, "KOR agonists cause dysphoria in people (Pfeiffer 1986)"]
+    flat_wanting: [up, KOR, known, "KOR damps DA release: the anti-reward (Koob; Knoll & Carlezon 2010)"]
+    stress:       [up, KOR, known, "released by stress; the after-cost (Bruchas)"]
+    anxiety:      [up, KOR, known, "KOR blockers calm in rodents"]
+    craving:      [up, KOR, known, "the craving of withdrawal, to escape a bad state (Koob)"]
+
+  ado:
+    sleepy:       [up, "A1 / A2A", checked, "builds while awake; slower breakdown (ADA 22G>A) = more sleep pressure (Rétey 2005; Bachmann 2012)"]
+    alert:        [down, "A1 / A2A", checked, "caffeine wakes by blocking it"]
+    focused:      [down, A1, checked, "slower adenosine breakdown = worse daytime attention (Bachmann 2012)"]
+    anxiety:      [down, A2A, checked, "blocking A2A (caffeine) makes sensitive people anxious (ADORA2A; Rétey 2005)"]
+
+  crh:
+    anxiety:      [up, CRHR1, known, "CRH on the LC raises tonic NE (McCall 2015)"]
+    fear:         [up, CRHR1, known, "amygdala CeA CRH"]
+    stress:       [up, "CRHR1 / CRHR2", known, "the stress axis starts here"]
+    flat_wanting: [up, CRHR1, known, "CRH in the VTA cuts DA to rewards (Wanat 2013)"]
+    sleepy:       [down, CRHR1, known, "stress keeps you awake"]
+
+  cort:
+    stress:       [up, GR, known, "peaks 15-30 min after a stressor"]
+    shame:        [up, GR, known, "social-evaluative threat that can't be controlled gives the biggest cortisol rise (Dickerson & Kemeny 2004 meta-analysis)"]
+    awkwardness:  [up, GR, theory, "being judged by others (from Dickerson & Kemeny 2004)"]
+    fear:         [mixed, GR, known, "cortisol after fear weakens fear-memory recall (de Quervain 2011)"]
+    sadness:      [mixed, "MR / GR", checked, "high while a stress is ongoing, below normal long after (Miller 2007)"]
+    loneliness:   [up, GR, known, "lonely days give a bigger rise on waking the next morning (Adam 2006)"]
+    alert:        [up, "MR / GR", known, "morning rise after waking"]
+    anxiety:      [up, GR, known, "acute"]
+
+  mor:
+    satisfaction: [up, MOR, checked, "liking: hedonic hotspots (Berridge 2018)"]
+    joy:          [up, MOR, known, "pleasure as it arrives"]
+    amusement:    [up, MOR, known, "social laughter releases opioids (Manninen 2017, PET)"]
+    calmness:     [up, MOR, known, "comfort of company"]
+    loneliness:   [down, MOR, checked, "separation distress; the G variant feels rejection more (Way 2009)"]
+    missing:      [down, MOR, checked, "monkeys with the G variant keep crying through repeated separations (Barr 2008)"]
+    sadness:      [down, MOR, known, "sustained sadness lowers MOR activation (Zubieta 2003, PET)"]
+    adoration:    [up, MOR, known, "touch from a loved one releases opioids (Nummenmaa 2016)"]
+    romance:      [up, MOR, known, "bonding (Nummenmaa 2016)"]
+    aesthetic:    [up, MOR, known, "naltrexone takes pleasure out of music (Mallik 2017)"]
+    relief:       [up, MOR, known, "pain relief"]
+    flat_liking:  [down, MOR, known, "the liking side of anhedonia"]
+    empathic_pain: [down, MOR, checked, "opioid (placebo) pain relief also lowers pain felt for others; naltrexone brings it back (Rütgen 2015, n = 102 + 50)"]
+    sexual_desire: [down, MOR, known, "long opioid use lowers desire"]
+
+  ot:
+    adoration:    [up, OXTR, known, "warmth toward the familiar"]
+    romance:      [up, OXTR, known, "pair bonding"]
+    calmness:     [up, OXTR, known, "oxytocin + a friend's support = lowest cortisol and anxiety (Heinrichs 2003)"]
+    fear:         [down, OXTR, known, "lowers amygdala response to fearful faces (Kirsch 2005)"]
+    anxiety:      [mixed, OXTR, known, "calming on average; findings mixed"]
+    empathic_pain: [up, OXTR, known, "reading others' feelings better (Domes 2007; mixed)"]
+    guilt:        [up, OXTR, checked, "intranasal oxytocin (not vasopressin) raises guilt for deliberate harm (Zheng 2024, n = 180)"]
+    sexual_desire: [up, OXTR, known, "released with sexual arousal and at orgasm"]
+    shame:        [up, OXTR, checked, "and shame, same study (Zheng 2024)"]
+
+  avp:
+    anger:        [up, V1a, known, "spinal-fluid vasopressin tracks aggression (Coccaro 1998)"]
+    anxiety:      [up, V1b, known, "with CRH on the stress axis"]
+    stress:       [up, V1b, known, "boosts ACTH with CRH"]
+    romance:      [up, V1a, known, "male pair bonding (prairie voles)"]
+
+  mel:
+    sleepy:       [up, "MT1 / MT2", known, "evening rise"]
+    alert:        [down, "MT1 / MT2", known, "low by day"]
+
+  glu:
+    stress:       [up, "NMDA (extrasynaptic)", known, "stress raises glutamate release in prefrontal cortex and hippocampus (Popoli 2011)"]
+    anxiety:      [up, "NMDA / AMPA", known, "an easier-to-fire amygdala (C.2 rule 3)"]
+    scattered:    [up, "NMDA (extrasynaptic)", theory, "background noise drowns the signal; memantine removes only the excess (Lipton 2006)"]
+    confusion:    [up, "NMDA (extrasynaptic)", theory, "noisy background"]
+    focused:      [burst, "NMDA / AMPA (synaptic)", theory, "clean phasic signal over a quiet background"]
+    sadness:      [mixed, "NMDA / AMPA", checked, "a ketamine-driven glutamate surge lifts it within hours (Gould 2019 review)"]
+    flat_wanting: [mixed, "NMDA / AMPA", known, "ketamine lifts anhedonia quickly (Lally 2014)"]
+
+  gaba:
+    calmness:     [up, GABA-A, known, "benzodiazepines; neurosteroids"]
+    anxiety:      [down, GABA-A, known, "less inhibition = more anxiety"]
+    panic:        [down, "GABA-A (benzo site)", known, "flumazenil sets off panic in panic disorder, not in controls (Nutt 1990)"]
+    sleepy:       [up, GABA-A, known, "sleep-promoting"]
+    alert:        [down, GABA-A, known, ""]
+    sadness:      [down, "GABA-A (extrasynaptic)", checked, "allopregnanolone falls in postpartum depression; giving it back works in days (brexanolone, zuranolone)"]
+    stress:       [mixed, "GABA-A (extrasynaptic)", checked, "allopregnanolone up with acute stress, down with chronic stress"]
+
+  ecb:
+    calmness:     [up, CB1, checked, "more anandamide (FAAH C385A) = less trait anxiety (Dincheva 2015)"]
+    anxiety:      [down, CB1, checked, "blocking CB1 (rimonabant) raised anxiety"]
+    relief:       [up, CB1, checked, "faster fear extinction with more anandamide (Dincheva 2015)"]
+    sadness:      [down, CB1, checked, "rimonabant raised depression and suicidal thoughts"]
+    satisfaction: [up, CB1, known, "anandamide in the accumbens shell hotspot amplifies liking (Mahler 2007)"]
+    joy:          [up, CB1, known, "the runner's high needs CB1 in mice (Fuss 2015)"]
+    stress:       [mixed, CB1, known, "anandamide falls (gate opens), 2-AG rises to end it (Hill & Patel)"]
+
+  npy:
+    calmness:     [up, Y1, checked, "resilience: more NPY under interrogation = less distress (Morgan 2000, 2002)"]
+    anxiety:      [down, Y1, checked, "amygdala NPY calms; counterweight to CRH"]
+    fear:         [down, Y1, checked, "blocks CRH-driven avoidance in rats"]
+    panic:        [down, Y1, checked, "lower NPY goes with more panic symptoms in PTSD (Rasmusson 2000)"]
+    stress:       [mixed, Y1, checked, "rises with acute stress, depleted after long stress (Morgan 2000)"]
+
+  gal:
+    stress:       [up, GalR1, checked, "released only when the LC fires hard (Tillage 2021)"]
+    anxiety:      [mixed, "GalR1 / GalR2", checked, "helps anxiety set in over hours to days after a stress; raised for weeks (exercise) it gives resilience (Tillage 2020, 2021)"]
+    calmness:     [up, GalR1, checked, "chronically raised by exercise = resilience (Tillage 2020)"]
+
+  cyt:
+    sadness:      [up, "IL-6 / TNF", checked, "endotoxin lowers mood in healthy people (Eisenberger 2010)"]
+    flat_wanting: [up, "IL-6 / TNF", checked, "less ventral striatum response to rewards; cytokines cut DA release (Eisenberger 2010; Felger 2015)"]
+    loneliness:   [up, "IL-6 / TNF", checked, "feeling disconnected from others after endotoxin (Eisenberger 2010)"]
+    sleepy:       [up, "IL-1 / IL-6", checked, "fatigue (Eisenberger 2010)"]
+    # his input (Immy, 2026-10-22): his own machine's health (heat, errors, low power) is his "feeling sick"
+    shame:        [up, TNF, known, "induced shame raises inflammatory activity (Dickerson 2004)"]
+    awe:          [down, IL-6, known, "people who feel awe often have lower IL-6 (Stellar 2015)"]
+
+  bdnf:
+    sadness:      [down, TrkB, checked, "lowered by chronic stress; antidepressants and exercise raise it (slow)"]
+    stress:       [down, TrkB, checked, "chronic stress lowers hippocampal BDNF"]
