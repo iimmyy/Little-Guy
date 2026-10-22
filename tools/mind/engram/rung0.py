@@ -18,14 +18,19 @@ A made-up moment is read once in one chat (context A) and its states are saved. 
   swapL       resL with a different moment's states (cheat check)
   saeL        resL after a trip through his fragments (rung 1: stream -> SAE pieces -> stream)
   saepleL     saeL plus the word identity (the "name tag", Immy's option A)
-  saepleLk32  saepleL keeping only the 32 strongest pieces of 64
+  saepleLkN   saepleL keeping only the N strongest pieces of 64 (32 at both layers; 16 and 8 at layer 8: fading)
+  saepleswap8 saeple8 with a different moment's pieces (cheat check for the bricks)
   WAY_after   the same memory put right AFTER the question instead of before it (the order the engine would use:
               hear the message, be reminded, answer; nothing has to be re-read)
+  WAY_recall  after the question, at the start of his own turn, with its source: You told me: "<memory>"
+              (Immy's bricks test: re-lit pieces are rebuilt there from layer L up, listening to the question and
+              his own turn; a saved KV memory was made in another chat and can't)
 
-Scores: the greedy answer (does it contain the right value) and the rank of the right value among the kind's 10
-possible values (log-probability of each as the answer). Made-up moments only, no real chats.
+Scores: the greedy answer (does it contain the right value; did he refuse) and the rank of the right value among the
+kind's 10 possible values (log-probability of each as the answer). Made-up moments only, no real chats.
 
   python rung0.py --model DIR --out DIR [--check] [--sae 8:sae_L8.pt,12:sae_L12.pt] [--ways text,none,...]
+                  [--layouts before,after,recall]
 """
 import argparse, json, math, re, time
 from pathlib import Path
@@ -38,8 +43,14 @@ LS = [4, 8, 12, 16, 20, 22, 28]        # 28 is past the KV-sharing line on purpo
 SAL_LS = [8, 12, 16, 20, 22]
 N_KV = 24                               # layers 0-23 make their own keys and values
 SAL_FRAC = 0.4
-AFTER = {"text", "kv", "kvsalw", "kvswap", "res8", "ple8", "sae8", "saeple8", "sae12", "saeple12"}
+LATER = {"text", "none", "kv", "kvsalw", "kvswap", "res4", "ple4", "res8", "ple8", "sae8", "saeple8", "saeple8k32",
+         "saeple8k16", "saeple8k8", "saepleswap8", "res12", "ple12", "sae12", "saeple12"}   # also run after / recall
+SAE_KS = {8: (None, 32, 16, 8)}         # pieces kept per word (None = all 64); other layers: (None, 32)
 MAX_NEW = 12
+REFUSED = re.compile(r"don't know|do not know|not sure|no idea|don't remember|do not remember|not have access|"
+                     r"don't have access|haven't told|have not told|didn't tell|did not tell|haven't mentioned|"
+                     r"have not mentioned|didn't mention|did not mention|not mentioned|no information|need more|"
+                     r"no way of knowing|don't have|do not have|cannot|can't|^unknown", re.I)   # a pointer, not the grade
 
 
 class Splicer:
@@ -179,7 +190,7 @@ def whole_words(tok, span, surprise, frac):
     return sorted(keep)
 
 
-def conditions(m, mem, swap_mem, n, sal, n_swap, sae_mems=None, salw=None):
+def conditions(m, mem, swap_mem, n, sal, n_swap, sae_mems=None, salw=None, swap_sae=None):
     """(name, slot length, cfg builder for slot start s, which answer counts)"""
     out = [("text", None, None, "answer"), ("none", 0, None, "answer")]
     for (L, k), sm_ in (sae_mems or {}).items():
@@ -188,6 +199,10 @@ def conditions(m, mem, swap_mem, n, sal, n_swap, sae_mems=None, salw=None):
             out.append((f"sae{tag}", n, lambda s, L=L, sm_=sm_: dict(s=s, n=n, mem=sm_, L=L, block=True), "answer"))
         out.append((f"saeple{tag}", n,
                     lambda s, L=L, sm_=sm_: dict(s=s, n=n, mem=sm_, L=L, block=True, ple=True), "answer"))
+    if swap_sae and (8, None) in swap_sae:
+        ssm = swap_sae[(8, None)]
+        out.append(("saepleswap8", n_swap,
+                    lambda s: dict(s=s, n=n_swap, mem=ssm, L=8, block=True, ple=True), "swap"))
     kv = list(range(N_KV))
     out.append(("kv", n, lambda s: dict(s=s, n=n, mem=mem, kv_layers=kv), "answer"))
     sm = subset(mem, sal)
@@ -251,8 +266,11 @@ def main():
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--fp32", action="store_true", help="full precision (for the exactness check)")
     ap.add_argument("--sae", default="", help="L:path,... trained fragment finders (sae.py)")
-    ap.add_argument("--ways", default="", help="only these ways (comma list); default all")
+    ap.add_argument("--ways", default="", help="only these ways (comma list, e.g. kv,saeple8_recall); default all")
+    ap.add_argument("--layouts", default="before,after,recall", help="which orders to run (comma list)")
     a = ap.parse_args()
+    orders = a.layouts.split(",")
+    assert set(orders) <= {"before", "after", "recall"}, orders
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     rig = Rig(a.model, torch.float32 if a.fp32 else torch.bfloat16)
@@ -285,7 +303,7 @@ def main():
         print(f"layer {L}: fragments explain {fve.item():.3f} of the memory words' stream", flush=True)
         for sv in saved:
             with torch.no_grad():
-                for k in (None, 32):
+                for k in SAE_KS.get(L, (None, 32)):
                     sv.setdefault("sae", {})[(L, k)] = {**sv["mem"], "h": {**sv["mem"]["h"],
                                                                          L: sae.roundtrip(sv["mem"]["h"][L], k)}}
     ways = set(filter(None, a.ways.split(",")))
@@ -298,28 +316,32 @@ def main():
         sv, sw = saved[i], saved[m["swap"]]
         n, n_swap = len(sv["span"]), len(sw["span"])
         pre = rig.ids(prefix(m["ctx_b"]))
-        suf = rig.ids("\n\n" + m["question"] + "<turn|>\n<|turn>model\n")
-        q_first, turn_end = rig.ids(m["question"] + "\n\n"), rig.ids("<turn|>\n<|turn>model\n")
+        # (chat B up to the memory, chat B after it) for each order
+        around = {"before": ([], rig.ids("\n\n" + m["question"] + "<turn|>\n<|turn>model\n")),
+                  "after": (rig.ids(m["question"] + "\n\n"), rig.ids("<turn|>\n<|turn>model\n")),
+                  "recall": (rig.ids(m["question"] + "<turn|>\n<|turn>model\n" + 'You told me: "'), rig.ids('"\n\n'))}
         layouts = []
         for name, slot_n, build, target in conditions(m, sv["mem"], sw["mem"], n, sv["sal"], n_swap,
-                                                      sv.get("sae"), sv["salw"]):
-            layouts.append((name, slot_n, build, target, False))
-            if name in AFTER:
-                layouts.append((name + "_after", slot_n, build, target, True))
-        for name, slot_n, build, target, after in layouts:
+                                                      sv.get("sae"), sv["salw"], sw.get("sae")):
+            for order in orders:
+                if order == "before" or name in LATER:
+                    layouts.append((name if order == "before" else f"{name}_{order}", slot_n, build, target, order))
+        for name, slot_n, build, target, order in layouts:
             if ways and name not in ways:
                 continue
             slot = sv["span"] if name.startswith("text") else [rig.pad] * slot_n
-            row = pre + q_first + slot + turn_end if after else pre + slot + suf
-            s = len(pre) + (len(q_first) if after else 0)
+            lead, tail = around[order]
+            row = pre + lead + slot + tail
+            s = len(pre) + len(lead)
             cfg = build(s) if build else None
             ans = rig.answer(row, cfg)
             sc = rig.cand_scores(row, cfg, m["cands"])
             want = m["answer"] if target == "answer" else ms[m["swap"]]["answer"]
             best = max(sc, key=sc.get)
             p = torch.softmax(torch.tensor(list(sc.values())), 0)[list(sc).index(want)].item()
-            rec = dict(i=i, kind=m["kind"], cond=name, moment=m["text"], question=m["question"], want=want,
-                       own=m["answer"], said=ans, said_right=has(ans, want), said_own=has(ans, m["answer"]),
+            rec = dict(i=i, kind=m["kind"], cond=name, order=order, moment=m["text"], question=m["question"],
+                       want=want, own=m["answer"], said=ans, said_right=has(ans, want), said_own=has(ans, m["answer"]),
+                       refused=not has(ans, want) and REFUSED.search(ans) is not None,
                        top=best, top_right=best == want, p_right=p, slot=slot_n,
                        distractor_top=(best == m["distractor"]) if m["distractor"] else None,
                        kept=[rig.tok.decode([sv["span"][j]]) for j in sv["salw" if "salw" in name else "sal"]]
@@ -332,15 +354,17 @@ def main():
     recs = [json.loads(l) for l in open(out / "rung0.jsonl")]
     names = list(dict.fromkeys(r["cond"] for r in recs))
     summary = {}
-    print(f"\n{'way':8} {'said right':>10} {'ranked 1st':>10} {'p(right)':>9}   (10 choices each, chance 10%)")
+    print(f"\n{'way':18} {'said right':>10} {'refused':>8} {'ranked 1st':>10} {'p(right)':>9}"
+          "   (10 choices each, chance 10%)")
     for c in names:
         rs = [r for r in recs if r["cond"] == c]
         sr = sum(r["said_right"] for r in rs) / len(rs)
+        rf = sum(r["refused"] for r in rs) / len(rs)
         tr = sum(r["top_right"] for r in rs) / len(rs)
         pr = sum(r["p_right"] for r in rs) / len(rs)
-        summary[c] = dict(n=len(rs), said_right=sr, ranked_first=tr, p_right=pr,
+        summary[c] = dict(n=len(rs), said_right=sr, refused=rf, ranked_first=tr, p_right=pr,
                           by_kind={k: sum(r["top_right"] for r in rs if r["kind"] == k) / PER_KIND for k in KINDS})
-        print(f"{c:8} {sr:10.1%} {tr:10.1%} {pr:9.3f}")
+        print(f"{c:18} {sr:10.1%} {rf:8.1%} {tr:10.1%} {pr:9.3f}")
     json.dump(summary, open(out / "summary.json", "w"), indent=1)
 
 
