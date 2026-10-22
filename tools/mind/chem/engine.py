@@ -49,17 +49,19 @@ GENES = {
 
 # ---------------------------------------------------------------- receptors (D): ligands with relative Kd
 RECEPTORS = {
-    # NE: α2A 56 nM vs α1 330 nM = 1 : 5.9 (Arnsten); β1 lowest. Placed so the top of the inverted U sits a little
-    # above an alert, calm egg (moderate NE = α2A = thinking clearly; Arnsten 2009). The LC's own α2A brake sits low
-    # on its curve (NE at the LC's cell bodies is far below Kd): a small agonist dose silences the LC (clonidine), so
-    # NE alone never fills it, and the brake grows in step with release, as in lc_spikes()
-    "a2a_auto": [("ne", 8.0)], "a2a_pfc": [("ne", 0.5)],
+    # NE: α2A 56 nM vs α1 330 nM = 1 : 5.9 (Arnsten); β1 lowest. The LC's own α2A brake sits low on its curve (NE at
+    # the LC's cell bodies is far below Kd): a small agonist dose silences the LC (clonidine), so NE alone never fills
+    # it, and the brake grows in step with release, as in lc_spikes(). The prefrontal receptors see the same low
+    # local NE (one number for one receptor): α2A agonists still restore working memory after NE is depleted (Cai
+    # 1993; Arnsten & Goldman-Rakic 1985), so a drug's own action there must stand on its own, which it can't if NE
+    # keeps the receptor full. α1 and β1 keep their ratios to α2A (x5.9, x12)
+    "a2a_auto": [("ne", 8.0)], "a2a_pfc": [("ne", 8.0)],
     # α2 on the orexin cells: a GIRK-linked pool that is switched off in the rested brain and comes online after
     # sleep loss, flipping NE's effect on orexin cells from excitation (α1) to inhibition (rats: Grivel 2005,
     # Uschakov 2011; in mice it's inhibition throughout: Li & van den Pol 2005, Yamanaka 2006)
     "a2_ox": [("ne", 0.5)],
-    "a1_pfc": [("ne", 2.95)], "a1_amy": [("ne", 2.95)], "a1_ox": [("ne", 2.95)], "a1_symp": [("ne", 2.95)],
-    "b1": [("ne", 6.0)],
+    "a1_pfc": [("ne", 47.2)], "a1_amy": [("ne", 2.95)], "a1_ox": [("ne", 2.95)], "a1_symp": [("ne", 2.95)],
+    "b1": [("ne", 6.0)], "b1_pfc": [("ne", 96.0)],
     # DA: D2 75% at rest, >95% in a burst; D1 3.5% at rest, ~25% in a burst (Dreyer 2010); D3 highest of the D2s
     "d1": [("da", 27.6)], "d2": [("da", 0.333)], "d3": [("da", 0.25)], "d2_auto": [("da", 0.333)],
     "d1_pfc": [("da_pfc", 1.86)],             # prefrontal D1 sits a little below the top of its inverted U at rest
@@ -95,7 +97,7 @@ DRUGS = {
     "caffeine":        dict(t_half=5, targets=[("a1r", "antagonist", 1.0, 0), ("a2ar", "antagonist", 1.0, 0)]),
     "lemborexant":     dict(t_half=None, targets=[(r, "antagonist", 0.2, 0) for r in ("ox1r", "ox2r", "ox_rvlm")]),
     "daridorexant":    dict(t_half=None, targets=[(r, "antagonist", 0.4, 0) for r in ("ox1r", "ox2r", "ox_rvlm")]),
-    "propranolol":     dict(t_half=None, targets=[("b1", "antagonist", 0.1, 0)]),
+    "propranolol":     dict(t_half=None, targets=[("b1", "antagonist", 0.1, 0), ("b1_pfc", "antagonist", 0.1, 0)]),
     # guanfacine: dose 1 cuts NE about as much as a clinical α2 agonist cuts plasma NE (~40-50%)
     "guanfacine":      dict(t_half=None, targets=[("a2a_auto", "agonist", 10.0, 1.0), ("a2a_pfc", "agonist", 10.0, 1.0)]),
     "a2a_pam":         dict(t_half=None, targets=[("a2a_auto", "pam", 1.0, 2.0), ("a2a_pfc", "pam", 1.0, 2.0)]),
@@ -154,6 +156,14 @@ WAKE = {"ox2r": 1.5, "h1": 1.5, "d1": 1.5, "d2": 0.5, "a1_pfc": 1.0, "m1": 0.5,
 
 # the amygdala's brakes (knobs: anxious): synaptic GABA-A strongest (benzodiazepines), then tonic GABA-A, CB1, NPY
 AMY_BRAKES = {"gabaa_syn": 2.0, "gabaa_ex": 1.0, "cb1": 1.0, "y1": 0.7, "ht1a_post": 0.5, "oxtr": 0.3}
+
+# prefrontal working-memory network (knobs: deliberate), Immy's chain (what he sent, 2026-10-22; Arnsten 2009):
+# α2A (Gi) lowers cAMP -> HCN channels stay closed -> stronger network; β (Gs) raises cAMP (PKA); α1 (Gq) engages PKC;
+# both weaken it. α2A fights only the cAMP route
+PFC_GI_MAX = 0.7    # most Gi can cut adenylyl cyclase (known range ~50-80%)
+PFC_BETA = 0.03     # β1's share of resting cAMP: small (propranolol leaves working memory alone at rest, and the
+                    # stress impairment goes through α1, not β: Birnbaum 1999); theory
+PFC_PKC = 0.13      # PKC's cost at rest, placed so the top of the U sits at an alert, calm egg (Arnsten); theory
 
 CAL = None          # filled by calibrate(): scales of the fast systems, rest signals, rest knobs
 
@@ -502,10 +512,26 @@ class Chem:
         return dict(release=rel, pupil_evoked=rel, b1=b1, write=self._write(b1))
 
     # ------------------------------------------------------------ knobs (E): what the receptors change in him
+    def pfc_ne(self):
+        """NE's part of the prefrontal network (1 = an average egg at rest), from Immy's chain. α2A cuts cAMP through
+        Gi with spare receptors (2/3 of its most at rest: moderate NE engages α2A), β1 adds to it; HCN channels open
+        as cAMP rises (two cAMP sites working together: Hill 2) and the network weakens; α1 -> PKC needs DAG and Ca2+
+        together (Hill 2). The inverted U is written nowhere: it comes from α2A's help leveling off while α1 and β1
+        keep climbing with NE"""
+        rest = self.cal["rest"]
+        def rel(r):
+            return self.sig(r) / max(1e-9, rest.get(r, self.sig(r)))
+        sa, sa0 = self.sig("a2a_pfc"), rest.get("a2a_pfc", self.sig("a2a_pfc"))
+        gi, gi0 = sa / (sa + 0.5 * sa0), 2 / 3
+        camp = ((1 + PFC_BETA * rel("b1_pfc")) * (1 - PFC_GI_MAX * gi)) / ((1 + PFC_BETA) * (1 - PFC_GI_MAX * gi0))
+        hcn = 2 / (1 + camp ** 2)
+        pkc = (1 + PFC_PKC) / (1 + PFC_PKC * rel("a1_pfc") ** 2)
+        return hcn * pkc
+
     def knobs(self):
         s = self.sig
         nm = self._nm
-        u_ne = s("a2a_pfc") * (1 - s("a1_pfc"))                      # the inverted U from 56 vs 330 nM
+        u_ne = 0.5 * self.pfc_ne()                                    # Immy's chain (α2A / β1 cAMP, α1 PKC)
         u_da = 4 * s("d1_pfc") * (1 - s("d1_pfc"))
         noise = sat(self.c["glu_bg"]) * (1 - nm["ex"])
         f_rel = self.raw["f"] / self.cal["scale"]["f"]
