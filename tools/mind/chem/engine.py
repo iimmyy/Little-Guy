@@ -186,6 +186,11 @@ TAU_INNER = 246 / 3600 / math.log(2)   # t½ 246 s: PKA substrates after β bloc
 BODY_LOOP = 0.11    # sized in ENGINE-CHANGES.md change 22: the average egg settles 10% later (loop gain ~0.1)
 BODY_CEIL = 1.0     # one full threat's worth
 
+# wanting (change 23): the receptors it reads sit nearly full all the time, so what illness cuts is the cue-triggered
+# burst (Eisenberger 2010: endotoxin lowers ventral-striatum responses to reward cues; Draper 2017). Half the read-out
+# follows the burst factor; no evidence favours any other split (any share of 0.2 or more passes the endotoxin test).
+WANT_BURST = 0.5
+
 CAL = None          # filled by calibrate(): scales of the fast systems, rest signals, rest knobs
 
 
@@ -535,13 +540,16 @@ class Chem:
         delta = value * self.g["reward_gain"] + 0.5 / (1 + n) - v
         self.values[cue] = v + alpha * (value * self.g["reward_gain"] - v)
         self.seen[cue] = n + 1
-        # release per burst is cut by KOR, CRH in the VTA and cytokines (the same factors as tonic firing), and only
-        # the active DA cells can burst
-        rel = (self.vta_pop * max(0.0, 1 - 0.5 * self.dev("kor")) * max(0.0, 1 - 0.4 * self.dev("crhr1_vta"))
-               * max(0.0, 1 - 0.6 * self.dev("cytr")))
+        rel = self.burst_factor()
         peak = self.c["da"] * (1 + 8.0 * delta * rel) if delta > 0 else self.c["da"] * max(0.02, 1 + delta)
         return dict(delta=delta, da_peak=peak, d1=self.sig("d1", {"da": peak}), d2=self.sig("d2", {"da": peak}),
                     d1_rest=self.sig("d1"), d2_rest=self.sig("d2"))
+
+    def burst_factor(self):
+        """how big a reward burst is now (1 = an average egg at rest): release per burst is cut by KOR, CRH in the VTA
+        and cytokines (the same factors as tonic firing), and only the active DA cells can burst"""
+        return (self.vta_pop * max(0.0, 1 - 0.5 * self.dev("kor")) * max(0.0, 1 - 0.4 * self.dev("crhr1_vta"))
+                * max(0.0, 1 - 0.6 * self.dev("cytr")))
 
     def burst_release(self):
         """how much NE an LC burst to something unexpected releases (1 = an average egg at rest). A burst is driven
@@ -600,7 +608,8 @@ class Chem:
         k["focus"] = burst / max(1.0, f_rel)
         k["trust_input"] = s("m1")
         k["explore"] = f_rel
-        k["wanting"] = (0.5 * s("d2") + s("d3") + 0.5 * s("ox1r") - 0.6 * s("kor")) * self.syn
+        steady = (0.5 * s("d2") + s("d3") + 0.5 * s("ox1r") - 0.6 * s("kor")) * self.syn
+        k["wanting"] = steady * ((1 - WANT_BURST) + WANT_BURST * self.burst_factor())
         k["patience"] = s("ht1a_post")
         k["write"] = self._write(s("b1"))
         # wake drive: each system counts by how far its receptor signal moved from rest, as a log ratio, so a nearly
