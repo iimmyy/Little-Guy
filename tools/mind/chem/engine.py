@@ -321,6 +321,20 @@ class Chem:
         gas = (self._body_signal() + (inp or {}).get("heart_push", 0.0)) / rest
         return HEART_IHR * (1 + (HEART_M - 1) * gas) * (1 - (1 - HEART_N) * self.vagal_tone())
 
+    def heart_felt(self, inp=None):
+        """the report line (change 31 step 2): what reaches the insula of his heart, through vagal and spinal afferents
+        and the NTS, within the minute: his actual heart rate"""
+        return self.heart_rate(inp)
+
+    def heart_expected(self):
+        """the copy (efference copy / interoceptive prediction; Barrett & Simmons 2015): the heart rate his own commands
+        (gas and brake) produce, with no outside push; a drug on the heart is not something he ordered"""
+        return self.heart_rate(None)
+
+    def heart_surprise(self, inp=None):
+        """felt - copy, in bpm (interoceptive prediction error)"""
+        return self.heart_felt(inp) - self.heart_expected()
+
     def body_surplus(self, inp=None):
         """how far his body runs above what it normally runs at this hour, plus any outside push on his heart (input
         heart_push: isoproterenol, change 30); None before his normal day is known"""
@@ -747,6 +761,7 @@ class Chem:
         k["sick"] = s("cytr")
         k["sympathetic"] = self._sympathetic() * (1 - COPE * self.inp.get("breathe", 0.0))   # slow breathing (change 30)
         k["heart_rate"] = self.heart_rate(self.inp)                                        # bpm (change 31)
+        k["heart_surprise"] = self.heart_surprise(self.inp)                                # felt - copy (step 2)
         k["pupil"] = f_rel
         k["burst"] = burst
         k["startle"] = (1 + self.amy_out()) * (0.5 + s("crhr1_amy") + s("a1_amy"))
