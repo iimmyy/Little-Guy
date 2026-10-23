@@ -234,6 +234,10 @@ WORRY_IN, WORRY_W = 1.0, 0.475   # W sized: 10 min of worry raises the heart 3.1
 # response equals its worry-off response (ENGINE-CHANGES.md change 31 step 3b addendum 4)
 SCARE_DIRECT = 0.715
 TAU_WORRY_UP, TAU_WORRY_DOWN = 2 / 60, 15 / 60
+# the prefrontal brake on the worry (change 32; Immy: "what if it can be dynamic?"): the worry trigger is divided by how
+# hard the medial prefrontal cortex is braking right now, weakened by stress (pfc_ne) and by staying up past bedtime.
+# One night awake amplifies the amygdala's response 60% (Yoo 2007): 1 / (1 - 0.375) = 1.6
+SLEEP_PFC = 0.375
 TSST_BPM = 13.5        # the average egg's heart-rate rise at minute 15 of the engine's TSST (run 20)
 VAGAL_W = 0.18          # sized: at minute 15 of the engine's TSST the brake's share = the gas's (rise +13.5 bpm)
 
@@ -327,6 +331,14 @@ class Chem:
     def vagal_tone(self):
         """the brake on the heart (vagus): 1 at rest, let go as the LC fires above rest (change 31)"""
         return max(0.0, 1 - VAGAL_W * max(0.0, self.raw["f"] / self.cal["scale"]["f"] - 1))
+
+    def sleep_loss(self):
+        """awake past his usual bedtime pressure: 0 through a normal day, 1 by 04:00 on a night kept awake"""
+        return min(1.0, max(0.0, (self.S - 0.62) / 0.1))
+
+    def worry_brake(self):
+        """how hard the prefrontal cortex is braking the worry (1 = an average egg, rested, at rest; change 32)"""
+        return max(1e-3, self.pfc_ne() * (1 - SLEEP_PFC * self.sleep_loss()))
 
     def heart_rate(self, inp=None):
         """beats per minute: intrinsic x gas x brake (change 31). The gas is the brain's sympathetic command (the body
@@ -549,7 +561,7 @@ class Chem:
         self.worry_adapt = self.__dict__.get("worry_adapt", 0.0)
         self.worry_adapt += (up - self.worry_adapt) * (1 - math.exp(-dt / BODY_HAB))
         drive = (WORRY_IN * fresh * g["worry_trait"] * g["body_attention"]
-                 * (1.0 + inp.get("body_reminded", 0.0)) * away) if self.awake else 0.0
+                 * (1.0 + inp.get("body_reminded", 0.0)) * away / self.worry_brake()) if self.awake else 0.0
         target = math.tanh(drive + inp.get("worry", 0.0)) if self.awake else 0.0
         w = self.__dict__.get("worry_st", 0.0)
         self.worry_st = w + (target - w) * (1 - math.exp(-dt / (TAU_WORRY_UP if target > w else TAU_WORRY_DOWN)))
@@ -610,7 +622,7 @@ class Chem:
         # orexin cells: day drive while awake, excited by NE (α1 on the cells), CRH, exploring; adenosine (A1)
         # inhibits them; one release, two peptides (A stable, B fast)
         if self.awake:
-            sleep_loss = min(1.0, max(0.0, (self.S - 0.62) / 0.1))      # awake past his usual bedtime pressure
+            sleep_loss = self.sleep_loss()
             x = (g["ox_cells"] * (0.5 + 0.5 * day)
                  * max(0.0, 1 + 3.0 * g["ne_ox_link"] * dev("a1_ox") + 0.3 * max(0.0, self.c["crh"] - 1)
                        + 0.3 * inp.get("novelty", 0.0) - 1.5 * sleep_loss * self.sig("a2_ox"))
