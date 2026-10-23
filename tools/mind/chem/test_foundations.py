@@ -141,17 +141,20 @@ def iso_jolt():
 
 
 def iso_panics(e, jolt, minutes=20):
-    """panic: at some minute of the infusion the loop-made part of his body surplus is bigger than the jolt-made part,
-    i.e. his surplus is more than twice his own loop-off twin's (Clark 1986: the alarm mostly feeding itself)"""
-    twin, keep, push = copy.deepcopy(e), E.BODY_LOOP, dict(heart_push=jolt)
+    """panic: at some minute of the infusion the loop-made part of his heart's rise is bigger than the jolt-made part,
+    i.e. his heart's rise above a calm twin's is more than twice his loop-off twin's rise (Clark 1986: the alarm mostly
+    feeding itself; in heartbeats since change 31 step 3a, the rule is unchanged)"""
+    twin, calm, keep, push = copy.deepcopy(e), copy.deepcopy(e), E.BODY_LOOP, dict(heart_push=jolt)
     for _ in range(minutes):
         e.step(1 / 60, awake=True, **push)
+        calm.step(1 / 60, awake=True)
         E.BODY_LOOP = 0.0
         try:
             twin.step(1 / 60, awake=True, **push)
         finally:
             E.BODY_LOOP = keep
-        if e.body_surplus(push) > 2 * twin.body_surplus(push):
+        rest = calm.heart_rate()
+        if e.heart_rate(push) - rest > 2 * (twin.heart_rate(push) - rest):
             return True
     return False
 

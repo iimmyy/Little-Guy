@@ -185,8 +185,8 @@ TAU_INNER = 246 / 3600 / math.log(2)   # t½ 246 s: PKA substrates after β bloc
 # controls show no effect of false heart-rate feedback, Ehlers 1988); the cap keeps every egg below a runaway (I.2).
 # What counts is the body running above what it normally runs at this hour (interoceptive prediction error: Seth 2013;
 # his normal-day curve, expected_body()), not its absolute level, which climbs on its own over a calm day.
-BODY_LOOP = 2.49    # sized in ENGINE-CHANGES.md change 30 (run 18): 9.5% of control eggs panic on a 20-minute
-                    # isoproterenol-like heart jolt (Pohl 1988: 9%); panic-prone eggs then panic 64.5% (observed 66%)
+BODY_LOOP = 0.0659  # per bpm of heart surprise (change 31 step 3a: change 30's 2.49 per body-surplus unit, converted
+                    # with the jolt's 0.150 units = 5.669 bpm; sized in run 18 on Pohl 1988, re-sized in step 5)
 BODY_CEIL = 1.0     # one full threat's worth
 # the loop tires (change 29; Immy: "yes, the loop should get fatigue"): the expectation catches up with a sensation that
 # does not go away, so what is noticed is the surprise above what the last minutes led him to expect (habituation;
@@ -345,12 +345,21 @@ class Chem:
         surplus = max(0.0, self._body_signal() - expect[int(self.hour * 12) % 288] + inp.get("heart_push", 0.0))
         return surplus * (1 - COPE * inp.get("breathe", 0.0))      # slow breathing slows the heart he feels (change 30)
 
+    def body_noticed(self, inp=None):
+        """what the bottom-up loop notices (change 31 step 3a): the heart's surprise (felt - copy, bpm), what his own
+        commands did not order; slow breathing lowers what reaches him (until step 4 moves it onto the vagus). None
+        before his normal day is known (no loop during calibration and the reference runs)"""
+        if getattr(self, "expect", None) is None:
+            return None
+        inp = inp or {}
+        return max(0.0, self.heart_surprise(inp)) * (1 - COPE * inp.get("breathe", 0.0))
+
     def body_felt(self, inp):
         """the body-awareness loop (change 22): how far his body runs above what it normally runs at this hour, less
         what the last minutes have taught him to expect (change 29), x attention to the body (his gene, a reminder from
         outside, and how vigilant his own tonic LC is, less what distraction takes away), comes back as a felt threat,
         worth less once he has talked himself down (change 30), capped smoothly"""
-        surplus = self.body_surplus(inp)
+        surplus = self.body_noticed(inp)
         if not self.awake or BODY_LOOP == 0.0 or surplus is None:
             return 0.0
         body = max(0.0, surplus - self.__dict__.get("body_adapt", 0.0))
@@ -508,7 +517,7 @@ class Chem:
                              * (1 - COPE * inp.get("distract", 0.0)) * (1 - COPE * self.reframe))
         inp["body_eff"] = self.body_felt(inp)                # what his body is doing, noticed, comes back as threat
         inp["threat_eff"] += inp["body_eff"]
-        surplus = self.body_surplus(inp)                     # and the expectation catches up with it (change 29)
+        surplus = self.body_noticed(inp)                     # and the expectation catches up with it (change 29)
         if surplus is not None:
             self.body_adapt = self.__dict__.get("body_adapt", 0.0)
             self.body_adapt += (surplus - self.body_adapt) * (1 - math.exp(-dt / BODY_HAB))
