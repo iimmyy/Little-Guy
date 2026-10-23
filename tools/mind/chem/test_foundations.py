@@ -625,9 +625,11 @@ def caffeine():
     return ok, dict(awake_at_23=(out[0.0][0], out[1.0][0]), hour_below_0_6=(out[0.0][1], out[1.0][1]))
 
 
-@test("drug", "Lived-day lemborexant dose 0.5 at 08:00, 13:00 and 18:00: the original sympathetic-drop and "
-      "sleepiness rule must hold at ALL three times",
-      "Li 2013; Lee 2013 / user-prespecified clock robustness test; ENGINE-CHANGES.md")
+@test("drug", "Lived-day lemborexant dose 0.5 at 08:00, 13:00 and 18:00: blocking orexin lowers the sympathetic "
+      "read-out clearly more (3x) in an overactive-orexin egg than in an average one, and makes every egg sleepier, "
+      "at ALL three times. The wired egg is report-only (corrected 2026-10-22: one person's drop came on top of "
+      "other medicines)",
+      "Li 2013; Lee 2013; Huang 2010 / user-prespecified clock robustness test; ENGINE-CHANGES.md change 26")
 def lemborexant_bp():
     by_hour = {}
     for hour in (8, 13, 18):
@@ -651,8 +653,7 @@ def lemborexant_bp():
                                  ne_drop=twin.c["ne"] - e.c["ne"], awake_drop=kt["awake"] - k["awake"]))
         sa = out["average"]["sympathetic_drop"]
         ok = (out["high_orexin"]["sympathetic_drop"] > 3 * sa
-              and out["wired"]["sympathetic_drop"] > 3 * sa
-              and all(v["awake_drop"] > 0.03 for v in out.values()))
+              and all(v["awake_drop"] > 0.03 for v in out.values()))     # wired is report-only (change 26)
         by_hour[hour] = dict(passed=ok, eggs=out)
     return all(row["passed"] for row in by_hour.values()), dict(by_hour=by_hour)
 
@@ -688,9 +689,11 @@ def _sleep_dose(kind, calm=0.0, drug="daridorexant", stressful_evening=False):
     return hi, awake0, details
 
 
-@test("drug", "Lived calm-night daridorexant: wired dose >=1.5x average and calmed wired dose <=1.25x average; "
-      "every stressful-evening dose is report-only, with no asserted direction",
-      "one person's course / Yu 2022 limits universal stress-direction claim; preregistered ENGINE-CHANGES.md")
+@test("drug", "Lived calm-night daridorexant: a competitive blocker needs a bigger dose against more orexin: "
+      "high-orexin dose > average dose and wired dose >= average dose, all finite. Ratios, the calmed wired egg and "
+      "every stressful-evening dose are report-only (corrected 2026-10-22: the 1.5x and 1.25x came from one "
+      "person's course)",
+      "competitive antagonism (Schild) / Yu 2022 limits any stress-direction claim; ENGINE-CHANGES.md change 26")
 def daridorexant_dose():
     nights = {}
     for night, stressful in (("calm", False), ("stressful_evening", True)):
@@ -702,11 +705,12 @@ def daridorexant_dose():
         nights[night] = out
     da, dw, dc = (nights["calm"][k]["dose"] for k in ("average", "wired", "wired_calmed"))
     finite = all(math.isfinite(v) for v in (da, dw, dc))
-    conditions = dict(wired_at_least_1_5_average=dw >= 1.5 * da,
-                      calmed_wired_at_most_1_25_average=dc <= 1.25 * da)
+    dh = nights["calm"]["high_orexin"]["dose"]
+    finite = finite and math.isfinite(dh)
+    conditions = dict(high_orexin_above_average=dh > da, wired_at_least_average=dw >= da)
     return finite and all(conditions.values()), dict(
         nights=nights, calm_conditions=conditions, finite_calm_doses=finite,
-        calm_ratios=dict(wired=dw / da, wired_calmed=dc / da) if finite and da > 0 else None,
+        calm_ratios=dict(high_orexin=dh / da, wired=dw / da, wired_calmed=dc / da) if finite and da > 0 else None,
         report_only_stress_minus_calm={k: nights["stressful_evening"][k]["dose"] - nights["calm"][k]["dose"]
                                       for k in nights["calm"]})
 

@@ -239,6 +239,7 @@ class Chem:
         self.fear_cs = 0.0                                   # one conditioned fear (for extinction tests)
         self.inner = {}                                      # inside-the-cell tubs (INNER), filled at the first step
         self.expect = None                                   # what his body normally runs at each hour (set below)
+        self.expect_ox = None                                # and what his orexin blood-pressure route normally reads
         self.inp, self.raw = {}, {k: 1.0 for k in FAST}
         self.drive, self.brake = 1.0, 0.0
         self.ref_occ, self.occ_avg = {}, {}                  # empty = receptors don't adapt (settling, reference)
@@ -249,7 +250,7 @@ class Chem:
             # receptors adapt against THIS egg's own normal day (sleeping 23-7), never against one moment of it
             self.ref_occ = normal_day_occupancy(genes)
             self.occ_avg = dict(self.ref_occ)
-            self.expect = expected_body(genes)
+            self.expect, self.expect_ox = expected_body(genes)
 
     # ------------------------------------------------------------ helpers
     def dev(self, r):
@@ -264,7 +265,16 @@ class Chem:
 
     def _sympathetic(self):
         """how hard his body is running its alarm (the sympathetic read-out): peripheral α1 plus the orexin route above
-        its resting level"""
+        what it normally reads at this hour (change 26: orexin normally rises through the day; the route is not active in
+        normal animals, only where orexin is overactive: Huang 2010, Li 2013), else above its resting level"""
+        table = getattr(self, "expect_ox", None)
+        normal = table[int(self.hour * 12) % 288] if table else self.cal["rest"].get("ox_rvlm", 1.0)
+        return self.eff("a1_symp") + 3.0 * max(0.0, self.eff("ox_rvlm") - normal - 0.03)
+
+    def _body_signal(self):
+        """the body's alarm output as the body-awareness loop reads it (the read-out change 22 sized the loop on): peripheral
+        α1 plus the orexin route above its 8 AM resting level. It is compared with this egg's own usual level for the
+        hour, so only a surprise in the body is noticed; it is not the blood-pressure read-out (see _sympathetic)"""
         return self.eff("a1_symp") + 3.0 * max(0.0, self.eff("ox_rvlm") - self.cal["rest"].get("ox_rvlm", 1.0) - 0.03)
 
     def body_felt(self, inp):
@@ -274,7 +284,7 @@ class Chem:
         expect = getattr(self, "expect", None)
         if not self.awake or BODY_LOOP == 0.0 or expect is None:
             return 0.0
-        body = max(0.0, self._sympathetic() - expect[int(self.hour * 12) % 288])
+        body = max(0.0, self._body_signal() - expect[int(self.hour * 12) % 288])
         vigilance = self.raw["f"] / self.cal["scale"]["f"]
         x = BODY_LOOP * self.g["body_attention"] * (1.0 + inp.get("body_reminded", 0.0)) * vigilance * body
         return BODY_CEIL * math.tanh(x / BODY_CEIL)
@@ -691,21 +701,37 @@ def normal_day_occupancy(genes=None):
 _EXPECT = {}
 
 
-def expected_body(genes=None):
-    """what his body normally runs at each hour of a calm day (the sympathetic read-out, 288 five-minute bins), for an
-    egg with these genes: the second of two normal days (awake 7-23), with the body-awareness loop out of it. It is what
-    the loop compares his body against, so only a surprise in his body is noticed. Cached per gene set."""
-    key = tuple(sorted((genes or {}).items()))
-    if key not in _EXPECT:
-        e = Chem(genes, hour=7.0, _no_adapt=True)
-        table = [0.0] * 288
+def population_ox():
+    """what the orexin blood-pressure route normally reads at each hour of a calm day in an average egg (288 five-minute
+    bins): the population's normal, which "overactive orexin" is measured against (change 26). Cached."""
+    if "ox" not in _EXPECT:
         n = 24 * 12
+        e = Chem(None, hour=7.0, _no_adapt=True)
+        ox = [0.0] * 288
         for i in range(2 * n):
             e.step(1 / 12, awake=7.0 <= e.hour < 23.0)
             if i >= n:
-                table[int(e.hour * 12) % 288] = e._sympathetic()
-        _EXPECT[key] = table
-    return list(_EXPECT[key])
+                ox[int(e.hour * 12) % 288] = e.eff("ox_rvlm")
+        _EXPECT["ox"] = ox
+    return list(_EXPECT["ox"])
+
+
+def expected_body(genes=None):
+    """what his body normally runs at each hour of a calm day, for an egg with these genes: the body signal the loop
+    reads (288 five-minute bins, the second of two normal days, awake 7-23, the body-awareness loop out of it). The loop
+    compares his body against its own usual level, so only a surprise in his body is noticed. Returns (that table, the
+    population's orexin-route table). Cached per gene set."""
+    key = tuple(sorted((genes or {}).items()))
+    if key not in _EXPECT:
+        n = 24 * 12
+        e = Chem(genes, hour=7.0, _no_adapt=True)
+        sym = [0.0] * 288
+        for i in range(2 * n):
+            e.step(1 / 12, awake=7.0 <= e.hour < 23.0)
+            if i >= n:
+                sym[int(e.hour * 12) % 288] = e._body_signal()
+        _EXPECT[key] = sym
+    return list(_EXPECT[key]), population_ox()
 
 
 def calibrate(rounds=200, tol=1e-6):
