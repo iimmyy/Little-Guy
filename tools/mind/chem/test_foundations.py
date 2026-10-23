@@ -39,7 +39,9 @@ EGGS = {
     "wired": dict(lc_drive=WIRED_DRIVE, rx_a2a_auto=WIRED_BRAKE, stress_gain=1.5),
     # ~20% less net GABA (Goddard 2001: -22% cortical GABA in panic disorder), partly covered by an endozepine
     # (theory, Nutt 1990), low NPY, high orexin (Johnson 2010)
-    "panic_prone": dict(gaba_tone=0.6, endozepine=0.3, npy_tone=0.6, ox_cells=1.3),
+    # body_attention 1.75: the ratio of mean Anxiety Sensitivity Index scores, panic disorder (about 33.3) to the
+    # non-clinical norm (19.0): Taylor, Koch & McNally 1992, Peterson & Reiss (change 25)
+    "panic_prone": dict(gaba_tone=0.6, endozepine=0.3, npy_tone=0.6, ox_cells=1.3, body_attention=1.75),
     "ox_null": dict(ox_cells=0.0),                                        # orexin cells gone (narcolepsy model)
     "high_orexin": dict(ox_cells=1.6),
 }
