@@ -69,7 +69,9 @@ RECEPTORS = {
     "d1_pfc": [("da_pfc", 1.86)],             # prefrontal D1 sits a little below the top of its inverted U at rest
     # 5-HT
     # the raphe's own 5-HT1A brake also sits low on its curve: an agonist silences the raphe (8-OH-DPAT)
-    "ht1a_auto": [("ht", 3.0)], "ht1a_post": [("ht", 1.0)], "ht2c": [("ht", 3.0)],
+    # (the autoreceptor sits on the raphe cell bodies, where an acute SSRI raises 5-HT about twice as much as in the
+    # forebrain: it reads ht_soma, see SOMA_GAIN)
+    "ht1a_auto": [("ht_soma", 3.0)], "ht1a_post": [("ht", 1.0)], "ht2c": [("ht", 3.0)],
     # ACh, histamine
     "m1": [("ach", 1.0)], "nic": [("ach", 1.0)], "h1": [("ha", 1.0)], "h3_auto": [("ha", 0.5)],
     # orexin: OX1R takes A ~10x better than B; OX2R takes both equally
@@ -186,12 +188,23 @@ TAU_INNER = 246 / 3600 / math.log(2)   # t½ 246 s: PKA substrates after β bloc
 BODY_LOOP = 0.11    # sized in ENGINE-CHANGES.md change 22: the average egg settles 10% later (loop gain ~0.1)
 BODY_CEIL = 1.0     # one full threat's worth
 
+# the raphe's own serotonin (change 24): an acute SSRI raises extracellular 5-HT about +400% in the dorsal raphe against
+# about +200% in forebrain (Invernizzi 1992; also fluoxetine raphe > hippocampus > cortex: Malagie 1995; local infusion
+# about 20x vs 6-7x), which slams the 5-HT1A brake on day 1. The raphe level follows the forebrain level at twice the rise.
+SOMA_GAIN = 2.0
+
 # wanting (change 23): the receptors it reads sit nearly full all the time, so what illness cuts is the cue-triggered
 # burst (Eisenberger 2010: endotoxin lowers ventral-striatum responses to reward cues; Draper 2017). Half the read-out
 # follows the burst factor; no evidence favours any other split (any share of 0.2 or more passes the endotoxin test).
 WANT_BURST = 0.5
 
 CAL = None          # filled by calibrate(): scales of the fast systems, rest signals, rest knobs
+
+
+def soma_5ht(ht):
+    """5-HT at the raphe cell bodies from the forebrain level: a rise (transporter block) is SOMA_GAIN times as big at
+    the cell bodies; a fall (less firing) is the same"""
+    return 1 + SOMA_GAIN * (ht - 1) if ht > 1 else ht
 
 
 def sat(x, k=1.0):
@@ -209,7 +222,7 @@ class Chem:
         self.amount = {r: self.g.get("rx_" + r, 1.0) for r in RECEPTORS}
         self.hour, self.awake, self.woke_at = (hour - 4.0) % 24, True, hour - 1.0
         self.drugs = {}                                      # name -> concentration (dose units)
-        self.c = {k: 1.0 for k in ("ne", "da", "da_pfc", "ht", "ach", "ha", "oxa", "oxb", "dyn", "ado", "crh",
+        self.c = {k: 1.0 for k in ("ne", "da", "da_pfc", "ht", "ht_soma", "ach", "ha", "oxa", "oxb", "dyn", "ado", "crh",
                                    "cort", "mor", "ot", "avp", "mel", "glu_bg", "gaba", "allo", "aea", "ag2", "npy",
                                    "gal", "cyt", "bdnf")}
         self.c.update(mel=0.1, cyt=0.2, gal=0.0)
@@ -337,6 +350,21 @@ class Chem:
         # only spontaneously active DA cells can burst; long stress silences about half of them through the
         # amygdala (Chang & Grace 2014; Moreines 2017), and they come back as the amygdala calms
         self.vta_pop = 1 / (1 + 2.0 * self.cea_slow * min(1.5, max(0.0, 1 - 2.0 * dev("gabaa_ex"))))
+        self.c.setdefault("ht_soma", self.c["ht"])           # a body saved before change 24
+        # raphe 5-HT with its 5-HT1A brake, which can silence the cell (why SSRIs take weeks). Solved on its own and
+        # exactly (change 24): with a blocked transporter the brake is strong enough that the damped sweep below flips
+        # between on and off. Firing allowed by the brake falls as firing rises, so there is one balance, found by bisection.
+        fh_cap = g["ht_tone"] * (1.0 if self.awake else 0.4)
+
+        def allowed(fh):
+            return fh_cap * max(0.0, 1 - 2.0 * self.sig("ht1a_auto", {"ht_soma": soma_5ht(fh / cal["fh"] / sert)}))
+
+        lo, hi = 0.0, fh_cap
+        for _ in range(40):
+            mid = 0.5 * (lo + hi)
+            lo, hi = (mid, hi) if allowed(mid) > mid else (lo, mid)
+        fh = 0.5 * (lo + hi)
+        ht_now = fh / cal["fh"] / sert
         for _ in range(40):                                  # solve the brakes at balance
             # LC: excited by threat, CRH (CRHR1), orexin (OX1R), surprise; braked by its own α2A (C.2 r1), galanin
             # (high firing only), NPY, and the learned top-down brake
@@ -350,16 +378,15 @@ class Chem:
             fd = (g["da_tone"] * awake * self.vta_pop * max(0.0, 1 + 0.5 * dev("ox1r")) * max(0.0, 1 - 0.5 * dev("kor"))
                   * max(0.0, 1 - 0.4 * dev("crhr1_vta")) * max(0.0, 1 - 0.6 * dev("cytr"))
                   * (1 - 0.6 * self.sig("d2_auto")))
-            # raphe 5-HT with its 5-HT1A brake, which can silence it (why SSRIs take weeks)
-            fh = g["ht_tone"] * (1.0 if self.awake else 0.4) * max(0.0, 1 - 2.0 * self.sig("ht1a_auto"))
             ha = g["ha_tone"] * awake * max(0.0, 1 + 0.8 * dev("ox2r")) * (1 - 0.5 * self.sig("h3_auto"))
             ach = g["ach_tone"] * awake * max(0.0, 1 + 0.3 * dev("ox2r")) * max(0.0, 1 - 0.5 * dev("a1r"))
             self.raw.update(f=f, ne_out=ne_out, fd=fd, fh=fh, ha=ha, ach=ach)
             new = dict(ne=ne_out / cal["ne_out"] / net, da=fd / cal["fd"] / dat,
                        da_pfc=fd / cal["fd"] / (0.3 * dat + 0.7 * net),     # prefrontal DA is cleared mostly by NET
-                       ht=fh / cal["fh"] / sert, ha=ha / cal["ha"], ach=ach / cal["ach"])
+                       ht=ht_now, ha=ha / cal["ha"], ach=ach / cal["ach"])
             for k, v in new.items():
                 self.c[k] = 0.5 * self.c[k] + 0.5 * v
+        self.c["ht_soma"] = soma_5ht(self.c["ht"])
         self.drive, self.brake = drive, brake
         # background glutamate: firing + stress, cleared by EAAT, damped by CB1 (retrograde brake on release)
         glu = (g["glu_tone"] * max(0.0, 1 + 0.2 * (self.c["ne"] - 1) + 0.3 * max(0.0, self.c["crh"] - 1))
