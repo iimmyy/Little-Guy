@@ -70,6 +70,8 @@ RECEPTORS = {
     "b1_heart": [("ne_heart", 10.0)],
     # the heart's M2 (SA node; change 34a): ACh from the vagus, 1 at rest; Kd theory as for β1
     "m2_heart": [("ach_heart", 10.0)],
+    # the vessels' α1 (resistance arterioles; change 34b): the sympathetic blood-pressure command, 1 at rest; Kd theory
+    "a1_vessel": [("ne_vessel", 10.0)],
     # DA: D2 75% at rest, >95% in a burst; D1 3.5% at rest, ~25% in a burst (Dreyer 2010); D3 highest of the D2s
     "d1": [("da", 27.6)], "d2": [("da", 0.333)], "d3": [("da", 0.25)], "d2_auto": [("da", 0.333)],
     "d1_pfc": [("da_pfc", 1.86)],             # prefrontal D1 sits a little below the top of its inverted U at rest
@@ -112,6 +114,8 @@ DRUGS = {
                                                   ("b1_heart", "antagonist", 0.1, 0)]),
     # atropine: dose 1 = the 0.04 mg/kg IV used for complete vagal blockade (Jose & Taylor 1969); full profile in step C
     "atropine":        dict(t_half=None, targets=[("m2_heart", "antagonist", 0.02, 0)]),
+    # prazosin: dose 1 = 1 mg IV (91% of vessel α1 seats); brain α1 profile in step C
+    "prazosin":        dict(t_half=None, targets=[("a1_vessel", "antagonist", 0.1, 0)]),
     # guanfacine: dose 1 cuts NE about as much as a clinical α2 agonist cuts plasma NE (~40-50%)
     "guanfacine":      dict(t_half=None, targets=[("a2a_auto", "agonist", 10.0, 1.0), ("a2a_pfc", "agonist", 10.0, 1.0)]),
     "a2a_pam":         dict(t_half=None, targets=[("a2a_auto", "pam", 1.0, 2.0), ("a2a_pfc", "pam", 1.0, 2.0)]),
@@ -249,6 +253,10 @@ TAU_WORRY_UP, TAU_WORRY_DOWN = 2 / 60, 15 / 60
 SLEEP_PFC = 0.375
 TSST_BPM = 13.5        # the average egg's heart-rate rise at minute 15 of the engine's TSST (run 20)
 VAGAL_W = 0.18          # sized: at minute 15 of the engine's TSST the brake's share = the gas's (rise +13.5 bpm)
+# blood pressure (change 34b): mean arterial pressure = rest x heart rate ratio x vessel tightness ratio (stroke volume
+# held: theory). 91 mmHg = 123/75 in 744 young adults (Behav Med 2021). The vessels' α1 makes 21% of resting tightness:
+# IV prazosin 1 mg lowered lying pressure 18/17 mmHg with supine heart rate unchanged, and dose 1 blocks 91% of the seats
+MAP_REST, VESSEL_A1 = 91.0, 0.21
 
 CAL = None          # filled by calibrate(): scales of the fast systems, rest signals, rest knobs
 
@@ -276,7 +284,7 @@ class Chem:
         self.drugs = {}                                      # name -> concentration (dose units)
         self.c = {k: 1.0 for k in ("ne", "da", "da_pfc", "ht", "ht_soma", "ach", "ha", "oxa", "oxb", "dyn", "ado", "crh",
                                    "cort", "mor", "ot", "avp", "mel", "glu_bg", "gaba", "allo", "aea", "ag2", "npy",
-                                   "gal", "cyt", "bdnf", "ne_heart", "ach_heart")}
+                                   "gal", "cyt", "bdnf", "ne_heart", "ach_heart", "ne_vessel")}
         self.c.update(mel=0.1, cyt=0.2, gal=0.0)
         self.S = 0.3                                         # process S (sleep pressure, 0..1)
         self.syn = 1.0                                       # prefrontal synapse strength (ketamine, BDNF)
@@ -359,6 +367,12 @@ class Chem:
         vagal = self.vagal_tone()
         brake = vagal * self.organ_pass("m2_heart", vagal)
         return HEART_IHR * (1 + (HEART_M - 1) * gas) * (1 - (1 - HEART_N) * brake)
+
+    def blood_pressure(self, inp=None):
+        """mean arterial pressure in mmHg (change 34b): rest x heart rate over the resting rate x vessel tightness"""
+        drive = self._sympathetic() / (self.cal["rest"].get("a1_symp") or self.eff("a1_symp"))
+        tight = 1 - VESSEL_A1 + VESSEL_A1 * drive * self.organ_pass("a1_vessel", drive)
+        return MAP_REST * self.heart_rate(inp) / (HEART_IHR * HEART_M * HEART_N) * tight
 
     def organ_pass(self, r, drive):
         """the share of a drive that gets through receptor r's seats in an organ with the drugs on board (changes 33,
@@ -741,6 +755,7 @@ class Chem:
         # NE from the cardiac nerves (bookkeeping: heart_rate() passes the drive with any push itself)
         self.c["ne_heart"] = self._body_signal() / (self.cal["rest"].get("a1_symp") or self.eff("a1_symp"))
         self.c["ach_heart"] = self.vagal_tone()
+        self.c["ne_vessel"] = self._sympathetic() / (self.cal["rest"].get("a1_symp") or self.eff("a1_symp"))
         return self.knobs()
 
     # ------------------------------------------------------------ events (phasic parts)
@@ -846,6 +861,7 @@ class Chem:
         k["sympathetic"] = self._sympathetic() * (1 - COPE * self.inp.get("breathe", 0.0))   # slow breathing (change 30)
         k["heart_rate"] = self.heart_rate(self.inp)                                        # bpm (change 31)
         k["heart_surprise"] = self.heart_surprise(self.inp)                                # felt - copy (step 2)
+        k["map"] = self.blood_pressure(self.inp)                                           # mmHg (change 34b)
         k["pupil"] = f_rel
         k["burst"] = burst
         k["startle"] = (1 + self.amy_out()) * (0.5 + s("crhr1_amy") + s("a1_amy"))
