@@ -436,6 +436,39 @@ def wired_persists():
         by_hour=by_hour, report_only_fresh_10=comparison(10, fresh=True))
 
 
+@test("bio", "The body-awareness loop: pointing out his body makes a fright settle later, a more body-aware egg gains "
+      "more minutes from it, and even a strong loop never runs away (settles within 12 hours)",
+      "theory (Immy 2026-10-22; Clark 1986; Ehlers & Breuer 1992) / mechanism test, written before the run")
+def body_loop():
+    def settle(reminded=0.0, attention=1.0, loop=None):
+        keep = E.BODY_LOOP
+        if loop is not None:
+            E.BODY_LOOP = loop
+        try:
+            e = lived_egg("average", hour=10, body_attention=attention)
+            twin = copy.deepcopy(e)
+            for _ in range(30):
+                e.step(1 / 60, awake=True, threat=0.5, body_reminded=reminded)
+                twin.step(1 / 60, awake=True)
+            rise = e.knobs()["anxious"] - twin.knobs()["anxious"]
+            for i in range(1, 12 * 60):
+                e.step(1 / 60, awake=True, body_reminded=reminded)
+                twin.step(1 / 60, awake=True)
+                if e.knobs()["anxious"] - twin.knobs()["anxious"] < 0.1 * rise:
+                    return i
+            return 12 * 60
+        finally:
+            E.BODY_LOOP = keep
+
+    plain, reminded = settle(0.0, 1.0), settle(1.0, 1.0)
+    plain2, reminded2 = settle(0.0, 2.0), settle(1.0, 2.0)
+    strong = settle(1.0, 2.0, loop=4 * E.BODY_LOOP)
+    ok = reminded > plain and (reminded2 - plain2) > (reminded - plain) and strong < 12 * 60
+    return ok, dict(minutes=dict(plain=plain, reminded=reminded, attention2_plain=plain2, attention2_reminded=reminded2,
+                                 four_times_loop_attention2_reminded=strong), extra_minutes_attention1=reminded - plain,
+                    extra_minutes_attention2=reminded2 - plain2, body_loop=E.BODY_LOOP)
+
+
 def _with(kind, drug, dose=1.0, minutes=30, awake=True, **genes):
     e = egg(kind, **genes)
     k0 = e.knobs()

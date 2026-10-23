@@ -40,6 +40,8 @@ GENES = {
     "gr_feedback": 1.0,
     # clearance: transporters and enzymes (1 = average speed)
     "net": 1.0, "dat": 1.0, "sert": 1.0, "faah": 1.0, "ada": 1.0, "eaat": 1.0,
+    # attention to his own body (anxiety sensitivity; 1 = average): how much of what his body is doing reaches his alarm
+    "body_attention": 1.0,
     # sleep pressure time constants (Daan, Beersma & Borbely 1984), as in living_sim.py
     "sleep_rise": 18.2, "sleep_fall": 4.2,
     # benzodiazepine-site tone (THEORY: a compensating endozepine, only for the flumazenil test)
@@ -175,6 +177,15 @@ INNER = ("b1", "b1_pfc", "d1", "d1_pfc", "crhr1_lc", "crhr1_amy", "crhr1_vta", "
 TAU_INNER = 246 / 3600 / math.log(2)   # t½ 246 s: PKA substrates after β blockade, limited by PDE (Saucerman 2006);
                                        # the PKC route uses the same clock (theory: no PKC number found)
 
+# the body-awareness loop (change 22; Immy 2026-10-22: noticing a racing heart makes the heart race and the noticing
+# stronger). What his body is doing above rest, times how much attention he gives it, comes back as a felt threat, one
+# minute late, through the same doors a scare uses. BODY_LOOP is sized in ENGINE-CHANGES.md (a loop gain of about 0.1:
+# controls show no effect of false heart-rate feedback, Ehlers 1988); the cap keeps every egg below a runaway (I.2).
+# What counts is the body running above what it normally runs at this hour (interoceptive prediction error: Seth 2013;
+# his normal-day curve, expected_body()), not its absolute level, which climbs on its own over a calm day.
+BODY_LOOP = 0.11    # sized in ENGINE-CHANGES.md change 22: the average egg settles 10% later (loop gain ~0.1)
+BODY_CEIL = 1.0     # one full threat's worth
+
 CAL = None          # filled by calibrate(): scales of the fast systems, rest signals, rest knobs
 
 
@@ -209,6 +220,7 @@ class Chem:
         self.values, self.seen = {}, {}                      # learned reward expectations per cue; novelty counts
         self.fear_cs = 0.0                                   # one conditioned fear (for extinction tests)
         self.inner = {}                                      # inside-the-cell tubs (INNER), filled at the first step
+        self.expect = None                                   # what his body normally runs at each hour (set below)
         self.inp, self.raw = {}, {k: 1.0 for k in FAST}
         self.drive, self.brake = 1.0, 0.0
         self.ref_occ, self.occ_avg = {}, {}                  # empty = receptors don't adapt (settling, reference)
@@ -219,6 +231,7 @@ class Chem:
             # receptors adapt against THIS egg's own normal day (sleeping 23-7), never against one moment of it
             self.ref_occ = normal_day_occupancy(genes)
             self.occ_avg = dict(self.ref_occ)
+            self.expect = expected_body(genes)
 
     # ------------------------------------------------------------ helpers
     def dev(self, r):
@@ -230,6 +243,23 @@ class Chem:
         else its signal now"""
         inner = self.__dict__.get("inner")
         return inner[r] if inner and r in inner else self.sig(r)
+
+    def _sympathetic(self):
+        """how hard his body is running its alarm (the sympathetic read-out): peripheral α1 plus the orexin route above
+        its resting level"""
+        return self.eff("a1_symp") + 3.0 * max(0.0, self.eff("ox_rvlm") - self.cal["rest"].get("ox_rvlm", 1.0) - 0.03)
+
+    def body_felt(self, inp):
+        """the body-awareness loop (change 22): how far his body runs above what it normally runs at this hour, x
+        attention to the body (his gene, a reminder from outside, and how vigilant his own tonic LC is), comes back as a
+        felt threat, capped smoothly"""
+        expect = getattr(self, "expect", None)
+        if not self.awake or BODY_LOOP == 0.0 or expect is None:
+            return 0.0
+        body = max(0.0, self._sympathetic() - expect[int(self.hour * 12) % 288])
+        vigilance = self.raw["f"] / self.cal["scale"]["f"]
+        x = BODY_LOOP * self.g["body_attention"] * (1.0 + inp.get("body_reminded", 0.0)) * vigilance * body
+        return BODY_CEIL * math.tanh(x / BODY_CEIL)
 
     def amy_out(self):
         """how much the amygdala's excitability reaches its outputs: tonic inhibition through extrasynaptic (δ)
@@ -338,7 +368,8 @@ class Chem:
     def step(self, dt=1 / 60, **inp):
         """advance dt hours. inputs (appraisals, all optional): awake, threat (0..1), controllable, surprise,
         company (0/1), touch, rejection, judged, novelty, exercise, machine_sick (0..1), endotoxin (pulse size),
-        light, safe_cue (the conditioned cue shown with nothing bad: extinction)"""
+        light, safe_cue (the conditioned cue shown with nothing bad: extinction), body_reminded (0..1: his body is
+        pointed out to him)"""
         g, dev = self.g, self.dev
         was = self.awake
         self.awake = inp.get("awake", True)
@@ -346,6 +377,8 @@ class Chem:
             self.woke_at = self.hour
         self.hour = (self.hour + dt) % 24
         inp["threat_eff"] = inp.get("threat", 0.0) * g["stress_gain"] * (0.7 if inp.get("controllable") else 1.0)
+        inp["body_eff"] = self.body_felt(inp)                # what his body is doing, noticed, comes back as threat
+        inp["threat_eff"] += inp["body_eff"]
         # being judged is a social threat: it reaches the LC through the amygdala as well as through CRH
         inp["judged_eff"] = judged = 0.8 * inp.get("judged", 0.0) * g["stress_gain"]
         self.inp = inp
@@ -589,7 +622,7 @@ class Chem:
         k["liking"] = s("mor") + 0.5 * s("cb1")
         k["noise"] = noise
         k["sick"] = s("cytr")
-        k["sympathetic"] = s("a1_symp") + 3.0 * max(0.0, s("ox_rvlm") - self.cal["rest"].get("ox_rvlm", 1.0) - 0.03)
+        k["sympathetic"] = self._sympathetic()
         k["pupil"] = f_rel
         k["burst"] = burst
         k["startle"] = (1 + self.amy_out()) * (0.5 + s("crhr1_amy") + s("a1_amy"))
@@ -617,6 +650,26 @@ def normal_day_occupancy(genes=None):
                     acc[r] += v / n
         _REF[key] = acc
     return dict(_REF[key])
+
+
+_EXPECT = {}
+
+
+def expected_body(genes=None):
+    """what his body normally runs at each hour of a calm day (the sympathetic read-out, 288 five-minute bins), for an
+    egg with these genes: the second of two normal days (awake 7-23), with the body-awareness loop out of it. It is what
+    the loop compares his body against, so only a surprise in his body is noticed. Cached per gene set."""
+    key = tuple(sorted((genes or {}).items()))
+    if key not in _EXPECT:
+        e = Chem(genes, hour=7.0, _no_adapt=True)
+        table = [0.0] * 288
+        n = 24 * 12
+        for i in range(2 * n):
+            e.step(1 / 12, awake=7.0 <= e.hour < 23.0)
+            if i >= n:
+                table[int(e.hour * 12) % 288] = e._sympathetic()
+        _EXPECT[key] = table
+    return list(_EXPECT[key])
 
 
 def calibrate(rounds=200, tol=1e-6):
