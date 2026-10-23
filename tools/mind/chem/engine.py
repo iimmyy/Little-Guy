@@ -218,6 +218,14 @@ WANT_BURST = 0.5
 # Eastman & Burgess 2009 (92 and 57 min/day).
 CLOCK_DELAY, CLOCK_ADVANCE = 1.5, 1.0
 
+# the nervous system (change 31; Immy: "we need to give it a nervous system"). Step 1: nerves and a heart. Heart rate =
+# intrinsic x accelerator (gas, sympathetic) x decelerator (brake, vagus) (Rosenblueth & Simeone; at rest 94 x 1.17 x
+# 0.60 = 66 bpm with atropine + propranolol in healthy 24-year-olds: Bergfeldt & Vahedi 2026). The brake lets go as the
+# LC fires above rest (the LC inhibits parasympathetic outflow: Samuels & Szabadi 2008); VAGAL_W is sized so the brake
+# and the gas share a stress heart-rate rise equally (Brindle meta-analysis, 186 studies; ENGINE-CHANGES.md change 31).
+HEART_IHR, HEART_M, HEART_N = 94.0, 1.17, 0.60
+VAGAL_W = 0.18          # sized: at minute 15 of the engine's TSST the brake's share = the gas's (rise +13.5 bpm)
+
 CAL = None          # filled by calibrate(): scales of the fast systems, rest signals, rest knobs
 
 
@@ -300,6 +308,18 @@ class Chem:
         α1 plus the orexin route above its 8 AM resting level. It is compared with this egg's own usual level for the
         hour, so only a surprise in the body is noticed; it is not the blood-pressure read-out (see _sympathetic)"""
         return self.eff("a1_symp") + 3.0 * max(0.0, self.eff("ox_rvlm") - self.cal["rest"].get("ox_rvlm", 1.0) - 0.03)
+
+    def vagal_tone(self):
+        """the brake on the heart (vagus): 1 at rest, let go as the LC fires above rest (change 31)"""
+        return max(0.0, 1 - VAGAL_W * max(0.0, self.raw["f"] / self.cal["scale"]["f"] - 1))
+
+    def heart_rate(self, inp=None):
+        """beats per minute: intrinsic x gas x brake (change 31). The gas is the brain's sympathetic command (the body
+        signal) plus any outside push on the heart's β1 receptors (heart_push: a drug acts at the heart, not through the
+        brain), relative to the command at rest"""
+        rest = self.cal["rest"].get("a1_symp") or self.eff("a1_symp")          # during calibration: now is rest
+        gas = (self._body_signal() + (inp or {}).get("heart_push", 0.0)) / rest
+        return HEART_IHR * (1 + (HEART_M - 1) * gas) * (1 - (1 - HEART_N) * self.vagal_tone())
 
     def body_surplus(self, inp=None):
         """how far his body runs above what it normally runs at this hour, plus any outside push on his heart (input
@@ -726,6 +746,7 @@ class Chem:
         k["noise"] = noise
         k["sick"] = s("cytr")
         k["sympathetic"] = self._sympathetic() * (1 - COPE * self.inp.get("breathe", 0.0))   # slow breathing (change 30)
+        k["heart_rate"] = self.heart_rate(self.inp)                                        # bpm (change 31)
         k["pupil"] = f_rel
         k["burst"] = burst
         k["startle"] = (1 + self.amy_out()) * (0.5 + s("crhr1_amy") + s("a1_amy"))
