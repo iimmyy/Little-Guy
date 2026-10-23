@@ -196,13 +196,19 @@ def high_tonic_weak_burst():
     return b_hi < 0.85 * b_lo, dict(burst_release_1hz=b_lo, burst_release_4hz=b_hi)
 
 
-@test("bio", "NE: the inverted U of deliberate control appears from α2A vs α1 occupancy (written nowhere); an alert "
-      "calm egg sits near its top", "checked (Arnsten 2009)")
+@test("bio", "Arousal: the inverted U of deliberate control appears from α2A vs α1 occupancy (written nowhere); a drowsy "
+      "or a revved brain turns its arousal systems (LC, DA, orexin, histamine, ACh) down or up together, and an alert "
+      "calm egg sits near the top (the quiet end corrected 2026-10-22 with Immy: an under-aroused brain is not low in NE alone)",
+      "checked (Arnsten 2009) / change 28")
 def inverted_u():
     drives = [0.3, 0.5, 0.7, 1.0, 1.3, 1.6, 2.0, 2.5, 3.0, 4.0]
-    out = []
+    ne_only = []                                           # the old sweep: only the LC (report-only since change 28)
     for d in drives:
         e = egg(lc_drive=d)
+        ne_only.append((e.c["ne"], e.knobs()["deliberate"]))
+    out = []
+    for d in drives:                                       # change 28: a drowsy or a revved brain turns ALL its arousal systems
+        e = egg(lc_drive=d, da_tone=d, ox_cells=d, ha_tone=d, ach_tone=d)
         out.append((e.c["ne"], e.knobs()["deliberate"]))
     vals = [v for _, v in out]
     top = max(vals)
@@ -214,6 +220,7 @@ def inverted_u():
         k, _ = live(e, 0.5, dict(threat=th), sched=False)
         stress[th] = (e.c["ne"], k["deliberate"])
     return ok, dict(ne=[n for n, _ in out], deliberate=vals, peak_at_lc_drive=drives[i],
+                    report_only_ne_only_sweep=dict(ne=[n for n, _ in ne_only], deliberate=[v for _, v in ne_only]),
                     report_only_threat_sweep_ne_and_deliberate=stress)
 
 
