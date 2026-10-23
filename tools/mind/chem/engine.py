@@ -42,6 +42,7 @@ GENES = {
     "net": 1.0, "dat": 1.0, "sert": 1.0, "faah": 1.0, "ada": 1.0, "eaat": 1.0,
     # attention to his own body (anxiety sensitivity; 1 = average): how much of what his body is doing reaches his alarm
     "body_attention": 1.0,
+    "worry_trait": 1.0,
     # sleep pressure time constants (Daan, Beersma & Borbely 1984), as in living_sim.py
     "sleep_rise": 18.2, "sleep_fall": 4.2,
     # benzodiazepine-site tone (THEORY: a compensating endozepine, only for the flumazenil test)
@@ -224,6 +225,16 @@ CLOCK_DELAY, CLOCK_ADVANCE = 1.5, 1.0
 # LC fires above rest (the LC inhibits parasympathetic outflow: Samuels & Szabadi 2008); VAGAL_W is sized so the brake
 # and the gas share a stress heart-rate rise equally (Brindle meta-analysis, 186 studies; ENGINE-CHANGES.md change 31).
 HEART_IHR, HEART_M, HEART_N = 94.0, 1.17, 0.60
+# overthinking (change 31 step 3b; Immy: "it's really just overthinking"): a worry state fed by what he notices of his
+# heart, explained or not, that outlasts its cause and comes back as threat (perseverative cognition: Brosschot 2006;
+# Ottaviani 2016). WORRY_W is sized on Ottaviani's heart-rate effect; WORRY_IN is theory (ENGINE-CHANGES.md change 31).
+WORRY_IN, WORRY_W = 1.0, 0.475   # W sized: 10 min of worry raises the heart 3.1 bpm (Ottaviani 2016 g 0.28)
+# the share of a scare that reaches the brain straight, the rest now coming through the worry (Immy: "split the salt";
+# the engine was sized on real people, who already overthink under stress). Sized so the average egg's TSST cortisol
+# response equals its worry-off response (ENGINE-CHANGES.md change 31 step 3b addendum 4)
+SCARE_DIRECT = 0.715
+TAU_WORRY_UP, TAU_WORRY_DOWN = 2 / 60, 15 / 60
+TSST_BPM = 13.5        # the average egg's heart-rate rise at minute 15 of the engine's TSST (run 20)
 VAGAL_W = 0.18          # sized: at minute 15 of the engine's TSST the brake's share = the gas's (rise +13.5 bpm)
 
 CAL = None          # filled by calibrate(): scales of the fast systems, rest signals, rest knobs
@@ -267,8 +278,11 @@ class Chem:
         self.fear_cs = 0.0                                   # one conditioned fear (for extinction tests)
         self.inner = {}                                      # inside-the-cell tubs (INNER), filled at the first step
         self.expect = None                                   # what his body normally runs at each hour (set below)
+        self.expect_hr = None                                # and his heart rate (change 31 step 3b)
         self.body_adapt = 0.0                                # what the last minutes taught him to expect on top
         self.reframe = 0.0                                   # how much he has talked himself down (reappraisal)
+        self.worry_st = 0.0                                  # overthinking (change 31 step 3b)
+        self.worry_adapt = 0.0                               # the heart rise he has got used to (step 3b addendum 2)
         self.shift, self.light_phase = 0.0, 0.0              # body clock behind the wall clock (h); where light is pulling it
         self.abs_t, self.sleep_start = 0.0, -99.0            # hours lived; when the last sleep began
         self.expect_ox = None                                # and what his orexin blood-pressure route normally reads
@@ -283,6 +297,7 @@ class Chem:
             self.ref_occ = normal_day_occupancy(genes)
             self.occ_avg = dict(self.ref_occ)
             self.expect, self.expect_ox = expected_body(genes)
+            self.expect_hr = expected_heart(genes)
 
     # ------------------------------------------------------------ helpers
     def dev(self, r):
@@ -344,6 +359,17 @@ class Chem:
         inp = inp or {}
         surplus = max(0.0, self._body_signal() - expect[int(self.hour * 12) % 288] + inp.get("heart_push", 0.0))
         return surplus * (1 - COPE * inp.get("breathe", 0.0))      # slow breathing slows the heart he feels (change 30)
+
+    def heart_up(self, inp=None):
+        """how far his felt heart runs above its usual rate for this hour, in TSSTs (change 31 step 3b): his own heart
+        rate on a calm reference day (expected_heart); 0 before his normal day is known"""
+        table = getattr(self, "expect_hr", None)
+        if table is None:
+            return 0.0
+        x = self.hour * 12                                   # between its 5-minute bins, read smoothly
+        i, f = int(x) % 288, x - int(x)
+        usual = table[i] * (1 - f) + table[(i + 1) % 288] * f
+        return max(0.0, self.heart_felt(inp) - usual) / TSST_BPM
 
     def body_noticed(self, inp=None):
         """what the bottom-up loop notices (change 31 step 3a): the heart's surprise (felt - copy, bpm), what his own
@@ -513,8 +539,22 @@ class Chem:
         tau = TAU_REFRAME_UP if re > self.__dict__.get("reframe", 0.0) else TAU_REFRAME_DOWN
         self.reframe = self.__dict__.get("reframe", 0.0)
         self.reframe += (re - self.reframe) * (1 - math.exp(-dt / tau))
-        inp["threat_eff"] = (inp.get("threat", 0.0) * g["stress_gain"] * (0.7 if inp.get("controllable") else 1.0)
+        inp["threat_eff"] = (inp.get("threat", 0.0) * g["stress_gain"] * SCARE_DIRECT
+                             * (0.7 if inp.get("controllable") else 1.0)
                              * (1 - COPE * inp.get("distract", 0.0)) * (1 - COPE * self.reframe))
+        # overthinking (change 31 step 3b): noticing his heart up, explained or not, feeds a worry that outlasts it
+        away = 1 - COPE * inp.get("distract", 0.0)
+        up = self.heart_up(inp)                              # less what the last minutes made normal (addendum 2)
+        fresh = max(0.0, up - self.__dict__.get("worry_adapt", 0.0))
+        self.worry_adapt = self.__dict__.get("worry_adapt", 0.0)
+        self.worry_adapt += (up - self.worry_adapt) * (1 - math.exp(-dt / BODY_HAB))
+        drive = (WORRY_IN * fresh * g["worry_trait"] * g["body_attention"]
+                 * (1.0 + inp.get("body_reminded", 0.0)) * away) if self.awake else 0.0
+        target = math.tanh(drive + inp.get("worry", 0.0)) if self.awake else 0.0
+        w = self.__dict__.get("worry_st", 0.0)
+        self.worry_st = w + (target - w) * (1 - math.exp(-dt / (TAU_WORRY_UP if target > w else TAU_WORRY_DOWN)))
+        inp["worry_eff"] = WORRY_W * self.worry_st * (1 - COPE * self.reframe) * away
+        inp["threat_eff"] += inp["worry_eff"]
         inp["body_eff"] = self.body_felt(inp)                # what his body is doing, noticed, comes back as threat
         inp["threat_eff"] += inp["body_eff"]
         surplus = self.body_noticed(inp)                     # and the expectation catches up with it (change 29)
@@ -522,7 +562,7 @@ class Chem:
             self.body_adapt = self.__dict__.get("body_adapt", 0.0)
             self.body_adapt += (surplus - self.body_adapt) * (1 - math.exp(-dt / BODY_HAB))
         # being judged is a social threat: it reaches the LC through the amygdala as well as through CRH
-        inp["judged_eff"] = judged = 0.8 * inp.get("judged", 0.0) * g["stress_gain"]
+        inp["judged_eff"] = judged = 0.8 * inp.get("judged", 0.0) * g["stress_gain"] * SCARE_DIRECT
         self.inp = inp
         company = inp.get("company", 0.0) * g["social_gain"]
 
@@ -827,13 +867,21 @@ def expected_body(genes=None):
     if key not in _EXPECT:
         n = 24 * 12
         e = Chem(genes, hour=7.0, _no_adapt=True)
-        sym = [0.0] * 288
+        sym, hr = [0.0] * 288, [0.0] * 288
         for i in range(2 * n):
             e.step(1 / 12, awake=7.0 <= e.hour < 23.0)
             if i >= n:
                 sym[int(e.hour * 12) % 288] = e._body_signal()
+                hr[int(e.hour * 12) % 288] = e.heart_rate()
         _EXPECT[key] = sym
+        _EXPECT[("heart",) + key] = hr
     return list(_EXPECT[key]), population_ox()
+
+
+def expected_heart(genes=None):
+    """his heart rate at each hour of the same calm reference day (change 31 step 3b): what he is used to feeling"""
+    expected_body(genes)
+    return list(_EXPECT[("heart",) + tuple(sorted((genes or {}).items()))])
 
 
 def calibrate(rounds=200, tol=1e-6):

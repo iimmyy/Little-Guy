@@ -42,7 +42,8 @@ EGGS = {
     # (theory, Nutt 1990), low NPY, high orexin (Johnson 2010)
     # body_attention 1.75: the ratio of mean Anxiety Sensitivity Index scores, panic disorder (about 33.3) to the
     # non-clinical norm (19.0): Taylor, Koch & McNally 1992, Peterson & Reiss (change 25)
-    "panic_prone": dict(gaba_tone=0.6, endozepine=0.3, npy_tone=0.6, ox_cells=1.3, body_attention=1.75),
+    "panic_prone": dict(gaba_tone=0.6, endozepine=0.3, npy_tone=0.6, ox_cells=1.3, body_attention=1.75,
+                        worry_trait=1.43),   # PSWQ panic disorder 53.8 vs community 42.4, above the floor 16
     "ox_null": dict(ox_cells=0.0),                                        # orexin cells gone (narcolepsy model)
     "high_orexin": dict(ox_cells=1.6),
 }
@@ -127,7 +128,7 @@ def iso_jolt():
     TSST; a TSST and 1 µg/min isoproterenol both raise heart rate about 20-30 bpm), with the loop off so the jolt does
     not depend on the loop it is used to size"""
     if "jolt" not in _ISO:
-        keep, E.BODY_LOOP = E.BODY_LOOP, 0.0
+        keep, E.BODY_LOOP, E.WORRY_W = (E.BODY_LOOP, E.WORRY_W), 0.0, 0.0     # both self-feeding loops off
         try:
             e = lived_egg("average", hour=10)
             top = 0.0
@@ -135,7 +136,7 @@ def iso_jolt():
                 e.step(1 / 60, awake=True, judged=1.0)
                 top = max(top, e.body_surplus())
         finally:
-            E.BODY_LOOP = keep
+            E.BODY_LOOP, E.WORRY_W = keep
         _ISO["jolt"] = top
     return _ISO["jolt"]
 
@@ -144,15 +145,15 @@ def iso_panics(e, jolt, minutes=20):
     """panic: at some minute of the infusion the loop-made part of his heart's rise is bigger than the jolt-made part,
     i.e. his heart's rise above a calm twin's is more than twice his loop-off twin's rise (Clark 1986: the alarm mostly
     feeding itself; in heartbeats since change 31 step 3a, the rule is unchanged)"""
-    twin, calm, keep, push = copy.deepcopy(e), copy.deepcopy(e), E.BODY_LOOP, dict(heart_push=jolt)
+    twin, calm, keep, push = copy.deepcopy(e), copy.deepcopy(e), (E.BODY_LOOP, E.WORRY_W), dict(heart_push=jolt)
     for _ in range(minutes):
         e.step(1 / 60, awake=True, **push)
         calm.step(1 / 60, awake=True)
-        E.BODY_LOOP = 0.0
+        E.BODY_LOOP, E.WORRY_W = 0.0, 0.0                    # the twin: both self-feeding loops off (step 3b)
         try:
             twin.step(1 / 60, awake=True, **push)
         finally:
-            E.BODY_LOOP = keep
+            E.BODY_LOOP, E.WORRY_W = keep
         rest = calm.heart_rate()
         if e.heart_rate(push) - rest > 2 * (twin.heart_rate(push) - rest):
             return True
