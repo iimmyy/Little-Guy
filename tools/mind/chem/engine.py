@@ -68,6 +68,8 @@ RECEPTORS = {
     # the heart's own β1 (SA node; change 33): its agonist drive is the gas, NE from the cardiac nerves plus any outside
     # push (isoproterenol), 1 at rest. Kd theory: about 9% of the seats taken at rest (spare receptors)
     "b1_heart": [("ne_heart", 10.0)],
+    # the heart's M2 (SA node; change 34a): ACh from the vagus, 1 at rest; Kd theory as for β1
+    "m2_heart": [("ach_heart", 10.0)],
     # DA: D2 75% at rest, >95% in a burst; D1 3.5% at rest, ~25% in a burst (Dreyer 2010); D3 highest of the D2s
     "d1": [("da", 27.6)], "d2": [("da", 0.333)], "d3": [("da", 0.25)], "d2_auto": [("da", 0.333)],
     "d1_pfc": [("da_pfc", 1.86)],             # prefrontal D1 sits a little below the top of its inverted U at rest
@@ -108,6 +110,8 @@ DRUGS = {
     # propranolol: dose 1 = an isoprenaline dose ratio of 11 at the heart (10-30 at clinical levels: Coltart & Shand 1970)
     "propranolol":     dict(t_half=None, targets=[("b1", "antagonist", 0.1, 0), ("b1_pfc", "antagonist", 0.1, 0),
                                                   ("b1_heart", "antagonist", 0.1, 0)]),
+    # atropine: dose 1 = the 0.04 mg/kg IV used for complete vagal blockade (Jose & Taylor 1969); full profile in step C
+    "atropine":        dict(t_half=None, targets=[("m2_heart", "antagonist", 0.02, 0)]),
     # guanfacine: dose 1 cuts NE about as much as a clinical α2 agonist cuts plasma NE (~40-50%)
     "guanfacine":      dict(t_half=None, targets=[("a2a_auto", "agonist", 10.0, 1.0), ("a2a_pfc", "agonist", 10.0, 1.0)]),
     "a2a_pam":         dict(t_half=None, targets=[("a2a_auto", "pam", 1.0, 2.0), ("a2a_pfc", "pam", 1.0, 2.0)]),
@@ -272,7 +276,7 @@ class Chem:
         self.drugs = {}                                      # name -> concentration (dose units)
         self.c = {k: 1.0 for k in ("ne", "da", "da_pfc", "ht", "ht_soma", "ach", "ha", "oxa", "oxb", "dyn", "ado", "crh",
                                    "cort", "mor", "ot", "avp", "mel", "glu_bg", "gaba", "allo", "aea", "ag2", "npy",
-                                   "gal", "cyt", "bdnf", "ne_heart")}
+                                   "gal", "cyt", "bdnf", "ne_heart", "ach_heart")}
         self.c.update(mel=0.1, cyt=0.2, gal=0.0)
         self.S = 0.3                                         # process S (sleep pressure, 0..1)
         self.syn = 1.0                                       # prefrontal synapse strength (ketamine, BDNF)
@@ -351,15 +355,18 @@ class Chem:
         brain), relative to the command at rest"""
         rest = self.cal["rest"].get("a1_symp") or self.eff("a1_symp")          # during calibration: now is rest
         drive = (self._body_signal() + (inp or {}).get("heart_push", 0.0)) / rest
-        gas = drive * self.b1_heart_pass(drive)
-        return HEART_IHR * (1 + (HEART_M - 1) * gas) * (1 - (1 - HEART_N) * self.vagal_tone())
+        gas = drive * self.organ_pass("b1_heart", drive)
+        vagal = self.vagal_tone()
+        brake = vagal * self.organ_pass("m2_heart", vagal)
+        return HEART_IHR * (1 + (HEART_M - 1) * gas) * (1 - (1 - HEART_N) * brake)
 
-    def b1_heart_pass(self, drive):
-        """the share of the gas that gets through the heart's β1 seats with the drugs on board (change 33): the
-        receptor's signal with drugs over without, at the same drive; exactly 1 with no drug"""
+    def organ_pass(self, r, drive):
+        """the share of a drive that gets through receptor r's seats in an organ with the drugs on board (changes 33,
+        34): the receptor's signal with drugs over without, at the same drive; exactly 1 with no drug"""
         if not self.drugs or drive <= 0:
             return 1.0
-        return self.sig("b1_heart", {"ne_heart": drive}) / self.sig("b1_heart", {"ne_heart": drive}, nodrug=True)
+        lig = RECEPTORS[r][0][0]
+        return self.sig(r, {lig: drive}) / self.sig(r, {lig: drive}, nodrug=True)
 
     def heart_felt(self, inp=None):
         """the report line (change 31 step 2): what reaches the insula of his heart, through vagal and spinal afferents
@@ -733,6 +740,7 @@ class Chem:
             self.fear_cs -= dt * 0.6 * self.fear_cs * max(0.05, 1 + dev("cb1") + 0.5 * dev("y1"))
         # NE from the cardiac nerves (bookkeeping: heart_rate() passes the drive with any push itself)
         self.c["ne_heart"] = self._body_signal() / (self.cal["rest"].get("a1_symp") or self.eff("a1_symp"))
+        self.c["ach_heart"] = self.vagal_tone()
         return self.knobs()
 
     # ------------------------------------------------------------ events (phasic parts)
