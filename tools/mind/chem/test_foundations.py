@@ -478,6 +478,43 @@ def body_loop():
                     extra_minutes_attention2=reminded2 - plain2, body_loop=E.BODY_LOOP)
 
 
+@test("bio", "Disrupted clock: a body clock running 4 h late on a normal schedule shows dysregulation that follows the "
+      "clock, not the schedule: cortisol at 07:00 under 0.7x an aligned egg's, at least 10% more awake at 23:00 (harder "
+      "to fall asleep), and it re-entrains at travel rates (still 1 h or more off after 2 days, under 0.5 h after 7). "
+      "The abrupt 12-hour flip is report-only",
+      "checked (Scheer 2009: cortisol follows the clock, rhythm reversed at 12 h; Eastman & Burgess 2009; CDC) / known "
+      "(delayed phase, social jet lag) / change 27")
+def circadian_disruption():
+    def night_and_day(shift):
+        e = lived_egg("average", hour=22.0)
+        e.shift = shift
+        _scheduled_minutes(e, 22 * 60, 9 * 60)                     # the night, to 07:00
+        cort_wake = e.c["cort"]
+        _scheduled_minutes(e, 7 * 60, 8 * 60)                      # to 15:00
+        cort_15 = e.c["cort"]
+        _scheduled_minutes(e, 15 * 60, 8 * 60)                     # to 23:00, still awake
+        k = e.knobs()
+        return dict(cortisol_at_07=cort_wake, cortisol_at_15=cort_15, awake_at_23=k["awake"], melatonin_at_23=e.c["mel"],
+                    shift_at_23=e.shift)
+
+    aligned, late = night_and_day(0.0), night_and_day(4.0)
+    flip = night_and_day(12.0)
+    e = egg(hour=7.0)
+    e.shift = 4.0
+    offsets = {}
+    for day in range(1, 8):
+        _scheduled_minutes(e, 7 * 60, 24 * 60)
+        offsets[day] = e.shift
+    a = egg(hour=7.0)
+    _scheduled_minutes(a, 7 * 60, 24 * 60)
+    conditions = dict(cortisol_follows_clock=late["cortisol_at_07"] < 0.7 * aligned["cortisol_at_07"],
+                      harder_to_fall_asleep=late["awake_at_23"] >= 1.10 * aligned["awake_at_23"],
+                      slow_to_realign=offsets[2] >= 1.0 and offsets[7] < 0.5,
+                      aligned_stays_aligned=a.shift == 0.0)
+    return all(conditions.values()), dict(conditions=conditions, aligned=aligned, delayed_4h=late,
+                                          report_only_flip_12h=flip, offset_by_day=offsets)
+
+
 def _with(kind, drug, dose=1.0, minutes=30, awake=True, **genes):
     e = egg(kind, **genes)
     k0 = e.knobs()

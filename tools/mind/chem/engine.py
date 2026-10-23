@@ -198,6 +198,13 @@ SOMA_GAIN = 2.0
 # follows the burst factor; no evidence favours any other split (any share of 0.2 or more passes the endotoxin test).
 WANT_BURST = 0.5
 
+# the body clock (change 27; Immy: a disrupted rhythm should show dysregulation). The orexin day curve, melatonin and the
+# cortisol rhythm read BODY time, which is the wall clock minus `shift` (hours the body clock runs behind). Light
+# (waking after a night of sleep) pulls the shift toward the waking time at a limited speed: real travellers re-entrain
+# 1.5 h/day after westward travel (the clock delays) and 1.0 h/day after eastward (it advances): CDC Yellow Book;
+# Eastman & Burgess 2009 (92 and 57 min/day).
+CLOCK_DELAY, CLOCK_ADVANCE = 1.5, 1.0
+
 CAL = None          # filled by calibrate(): scales of the fast systems, rest signals, rest knobs
 
 
@@ -239,6 +246,8 @@ class Chem:
         self.fear_cs = 0.0                                   # one conditioned fear (for extinction tests)
         self.inner = {}                                      # inside-the-cell tubs (INNER), filled at the first step
         self.expect = None                                   # what his body normally runs at each hour (set below)
+        self.shift, self.light_phase = 0.0, 0.0              # body clock behind the wall clock (h); where light is pulling it
+        self.abs_t, self.sleep_start = 0.0, -99.0            # hours lived; when the last sleep began
         self.expect_ox = None                                # and what his orexin blood-pressure route normally reads
         self.inp, self.raw = {}, {k: 1.0 for k in FAST}
         self.drive, self.brake = 1.0, 0.0
@@ -415,9 +424,20 @@ class Chem:
         g, dev = self.g, self.dev
         was = self.awake
         self.awake = inp.get("awake", True)
+        if "shift" not in self.__dict__:                     # a body saved before change 27
+            self.shift, self.light_phase, self.abs_t, self.sleep_start = 0.0, 0.0, 0.0, -99.0
+        self.abs_t += dt
+        if was and not self.awake:
+            self.sleep_start = self.abs_t
         if self.awake and not was:
             self.woke_at = self.hour
+            if self.abs_t - self.sleep_start >= 4.0:         # waking after a night's sleep: light reaches him now
+                self.light_phase = round((((self.hour - 7.0) + 12.0) % 24.0 - 12.0) * 2) / 2   # to the half hour
         self.hour = (self.hour + dt) % 24
+        err = (self.light_phase - self.shift + 12.0) % 24.0 - 12.0
+        if err:
+            self.shift += max(-CLOCK_ADVANCE, min(CLOCK_DELAY, err)) / 24.0 * dt
+        body_hour = (self.hour - self.shift) % 24            # what time it is for his body
         inp["threat_eff"] = inp.get("threat", 0.0) * g["stress_gain"] * (0.7 if inp.get("controllable") else 1.0)
         inp["body_eff"] = self.body_felt(inp)                # what his body is doing, noticed, comes back as threat
         inp["threat_eff"] += inp["body_eff"]
@@ -443,8 +463,8 @@ class Chem:
         else:
             self.S += (0 - self.S) * (1 - math.exp(-dt / g["sleep_fall"]))
         self.c["ado"] = (0.3 + 1.4 * self.S) / g["ada"] / 0.72   # slower breakdown (ADA 22G>A) = more adenosine
-        day = 0.5 + 0.5 * math.cos((self.hour - 17.0) / 24 * 2 * math.pi)     # body clock high ~5 PM
-        night = not (7.0 <= self.hour < 21.5)
+        day = 0.5 + 0.5 * math.cos((body_hour - 17.0) / 24 * 2 * math.pi)     # body clock high ~5 PM
+        night = not (7.0 <= body_hour < 21.5)
         toward("mel", 3.0 if night and not inp.get("light") else 0.1, TAU["mel"])
 
         # CRH: threat and being judged, x his gain, x amygdala excitability; NPY, CB1 and allopregnanolone (GABA-A
@@ -458,9 +478,9 @@ class Chem:
         toward("crh", max(0.2, crh_t), TAU["crh"])
 
         # cortisol: low around sleep onset, rising through the night to a peak at waking, + the waking rise + CRH
-        h = self.hour
+        h = body_hour
         circ = 0.3 + 1.3 * ((h / 7.5) ** 2 if h < 7.5 else ((24 - h) / 16.5) ** 1.5)
-        since = (h - self.woke_at) % 24
+        since = (self.hour - self.woke_at) % 24
         car = 0.6 * math.exp(-((since - 0.6) / 0.35) ** 2) if self.awake else 0.0
         # CRH -> ACTH -> cortisol, sized so 15 minutes of being judged adds ~40% of the waking peak (TSST
         # responders roughly double their cortisol; Kirschbaum 1993, Dickerson & Kemeny 2004)
