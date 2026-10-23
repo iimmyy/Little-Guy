@@ -187,6 +187,10 @@ TAU_INNER = 246 / 3600 / math.log(2)   # t½ 246 s: PKA substrates after β bloc
 # his normal-day curve, expected_body()), not its absolute level, which climbs on its own over a calm day.
 BODY_LOOP = 0.11    # sized in ENGINE-CHANGES.md change 22: the average egg settles 10% later (loop gain ~0.1)
 BODY_CEIL = 1.0     # one full threat's worth
+# the loop tires (change 29; Immy: "yes, the loop should get fatigue"): the expectation catches up with a sensation that
+# does not go away, so what is noticed is the surprise above what the last minutes led him to expect (habituation;
+# panic attacks end on their own, median 8 min, longest 30 in ambulatory monitoring: Meuret 2011). Theory tau: 10 min.
+BODY_HAB = 10 / 60
 
 # the raphe's own serotonin (change 24): an acute SSRI raises extracellular 5-HT about +400% in the dorsal raphe against
 # about +200% in forebrain (Invernizzi 1992; also fluoxetine raphe > hippocampus > cortex: Malagie 1995; local infusion
@@ -246,6 +250,7 @@ class Chem:
         self.fear_cs = 0.0                                   # one conditioned fear (for extinction tests)
         self.inner = {}                                      # inside-the-cell tubs (INNER), filled at the first step
         self.expect = None                                   # what his body normally runs at each hour (set below)
+        self.body_adapt = 0.0                                # what the last minutes taught him to expect on top
         self.shift, self.light_phase = 0.0, 0.0              # body clock behind the wall clock (h); where light is pulling it
         self.abs_t, self.sleep_start = 0.0, -99.0            # hours lived; when the last sleep began
         self.expect_ox = None                                # and what his orexin blood-pressure route normally reads
@@ -286,14 +291,21 @@ class Chem:
         hour, so only a surprise in the body is noticed; it is not the blood-pressure read-out (see _sympathetic)"""
         return self.eff("a1_symp") + 3.0 * max(0.0, self.eff("ox_rvlm") - self.cal["rest"].get("ox_rvlm", 1.0) - 0.03)
 
-    def body_felt(self, inp):
-        """the body-awareness loop (change 22): how far his body runs above what it normally runs at this hour, x
-        attention to the body (his gene, a reminder from outside, and how vigilant his own tonic LC is), comes back as a
-        felt threat, capped smoothly"""
+    def body_surplus(self):
+        """how far his body runs above what it normally runs at this hour (None before his normal day is known)"""
         expect = getattr(self, "expect", None)
-        if not self.awake or BODY_LOOP == 0.0 or expect is None:
+        if expect is None:
+            return None
+        return max(0.0, self._body_signal() - expect[int(self.hour * 12) % 288])
+
+    def body_felt(self, inp):
+        """the body-awareness loop (change 22): how far his body runs above what it normally runs at this hour, less
+        what the last minutes have taught him to expect (change 29), x attention to the body (his gene, a reminder from
+        outside, and how vigilant his own tonic LC is), comes back as a felt threat, capped smoothly"""
+        surplus = self.body_surplus()
+        if not self.awake or BODY_LOOP == 0.0 or surplus is None:
             return 0.0
-        body = max(0.0, self._body_signal() - expect[int(self.hour * 12) % 288])
+        body = max(0.0, surplus - self.__dict__.get("body_adapt", 0.0))
         vigilance = self.raw["f"] / self.cal["scale"]["f"]
         x = BODY_LOOP * self.g["body_attention"] * (1.0 + inp.get("body_reminded", 0.0)) * vigilance * body
         return BODY_CEIL * math.tanh(x / BODY_CEIL)
@@ -441,6 +453,10 @@ class Chem:
         inp["threat_eff"] = inp.get("threat", 0.0) * g["stress_gain"] * (0.7 if inp.get("controllable") else 1.0)
         inp["body_eff"] = self.body_felt(inp)                # what his body is doing, noticed, comes back as threat
         inp["threat_eff"] += inp["body_eff"]
+        surplus = self.body_surplus()                        # and the expectation catches up with it (change 29)
+        if surplus is not None:
+            self.body_adapt = self.__dict__.get("body_adapt", 0.0)
+            self.body_adapt += (surplus - self.body_adapt) * (1 - math.exp(-dt / BODY_HAB))
         # being judged is a social threat: it reaches the LC through the amygdala as well as through CRH
         inp["judged_eff"] = judged = 0.8 * inp.get("judged", 0.0) * g["stress_gain"]
         self.inp = inp

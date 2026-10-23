@@ -469,13 +469,31 @@ def body_loop():
         finally:
             E.BODY_LOOP = keep
 
+    def spiral():
+        """report-only (change 29): in the strong case, minutes from the felt body threat's peak until it is under 10%
+        of that peak (typical panic attacks last 25-45 min, the longest ambulatory one 30: Meuret 2011)"""
+        keep = E.BODY_LOOP
+        E.BODY_LOOP = 4 * keep
+        try:
+            e = lived_egg("average", hour=10, body_attention=2.0)
+            felt = []
+            for i in range(12 * 60):
+                e.step(1 / 60, awake=True, threat=0.5 if i < 30 else 0.0, body_reminded=1.0)
+                felt.append(e.inp["body_eff"])
+            top = max(range(len(felt)), key=felt.__getitem__)
+            below = next((i for i in range(top, len(felt)) if felt[i] < 0.1 * felt[top]), None)
+            return dict(peak=felt[top], peak_minute=top + 1, minutes_peak_to_10pct=None if below is None else below - top)
+        finally:
+            E.BODY_LOOP = keep
+
     plain, reminded = settle(0.0, 1.0), settle(1.0, 1.0)
     plain2, reminded2 = settle(0.0, 2.0), settle(1.0, 2.0)
     strong = settle(1.0, 2.0, loop=4 * E.BODY_LOOP)
     ok = reminded > plain and (reminded2 - plain2) > (reminded - plain) and strong < 12 * 60
     return ok, dict(minutes=dict(plain=plain, reminded=reminded, attention2_plain=plain2, attention2_reminded=reminded2,
                                  four_times_loop_attention2_reminded=strong), extra_minutes_attention1=reminded - plain,
-                    extra_minutes_attention2=reminded2 - plain2, body_loop=E.BODY_LOOP)
+                    extra_minutes_attention2=reminded2 - plain2, body_loop=E.BODY_LOOP,
+                    report_only_strong_spiral=spiral())
 
 
 @test("bio", "Disrupted clock: a body clock running 4 h late on a normal schedule shows dysregulation that follows the "
