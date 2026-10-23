@@ -185,12 +185,21 @@ TAU_INNER = 246 / 3600 / math.log(2)   # t½ 246 s: PKA substrates after β bloc
 # controls show no effect of false heart-rate feedback, Ehlers 1988); the cap keeps every egg below a runaway (I.2).
 # What counts is the body running above what it normally runs at this hour (interoceptive prediction error: Seth 2013;
 # his normal-day curve, expected_body()), not its absolute level, which climbs on its own over a calm day.
-BODY_LOOP = 0.11    # sized in ENGINE-CHANGES.md change 22: the average egg settles 10% later (loop gain ~0.1)
+BODY_LOOP = 2.49    # sized in ENGINE-CHANGES.md change 30 (run 18): 9.5% of control eggs panic on a 20-minute
+                    # isoproterenol-like heart jolt (Pohl 1988: 9%); panic-prone eggs then panic 64.5% (observed 66%)
 BODY_CEIL = 1.0     # one full threat's worth
 # the loop tires (change 29; Immy: "yes, the loop should get fatigue"): the expectation catches up with a sensation that
 # does not go away, so what is noticed is the surprise above what the last minutes led him to expect (habituation;
 # panic attacks end on their own, median 8 min, longest 30 in ambulatory monitoring: Meuret 2011). Theory tau: 10 min.
 BODY_HAB = 10 / 60
+
+# three ways to calm down (change 30; Immy: deep breaths, distracting yourself, "no, it's okay"), inputs 0..1, each on
+# its own part of the loop: distract turns attention away (from the body and from the threat; only while he does it:
+# Kroeze 1996, McRae 2010, Thiruchselvam 2011), breathe slows the body itself (Shao 2024; Fincham 2023), reappraise
+# lowers what a sensation or a threat is worth as danger and the new meaning stays for a while (McRae 2010; Clark 1986;
+# Thiruchselvam 2011). COPE: full, skilled use halves what that part passes on (theory).
+COPE = 0.5
+TAU_REFRAME_UP, TAU_REFRAME_DOWN = 2 / 60, 1.0   # the new meaning forms in minutes, fades over an hour (theory)
 
 # the raphe's own serotonin (change 24): an acute SSRI raises extracellular 5-HT about +400% in the dorsal raphe against
 # about +200% in forebrain (Invernizzi 1992; also fluoxetine raphe > hippocampus > cortex: Malagie 1995; local infusion
@@ -251,6 +260,7 @@ class Chem:
         self.inner = {}                                      # inside-the-cell tubs (INNER), filled at the first step
         self.expect = None                                   # what his body normally runs at each hour (set below)
         self.body_adapt = 0.0                                # what the last minutes taught him to expect on top
+        self.reframe = 0.0                                   # how much he has talked himself down (reappraisal)
         self.shift, self.light_phase = 0.0, 0.0              # body clock behind the wall clock (h); where light is pulling it
         self.abs_t, self.sleep_start = 0.0, -99.0            # hours lived; when the last sleep began
         self.expect_ox = None                                # and what his orexin blood-pressure route normally reads
@@ -291,23 +301,28 @@ class Chem:
         hour, so only a surprise in the body is noticed; it is not the blood-pressure read-out (see _sympathetic)"""
         return self.eff("a1_symp") + 3.0 * max(0.0, self.eff("ox_rvlm") - self.cal["rest"].get("ox_rvlm", 1.0) - 0.03)
 
-    def body_surplus(self):
-        """how far his body runs above what it normally runs at this hour (None before his normal day is known)"""
+    def body_surplus(self, inp=None):
+        """how far his body runs above what it normally runs at this hour, plus any outside push on his heart (input
+        heart_push: isoproterenol, change 30); None before his normal day is known"""
         expect = getattr(self, "expect", None)
         if expect is None:
             return None
-        return max(0.0, self._body_signal() - expect[int(self.hour * 12) % 288])
+        inp = inp or {}
+        surplus = max(0.0, self._body_signal() - expect[int(self.hour * 12) % 288] + inp.get("heart_push", 0.0))
+        return surplus * (1 - COPE * inp.get("breathe", 0.0))      # slow breathing slows the heart he feels (change 30)
 
     def body_felt(self, inp):
         """the body-awareness loop (change 22): how far his body runs above what it normally runs at this hour, less
         what the last minutes have taught him to expect (change 29), x attention to the body (his gene, a reminder from
-        outside, and how vigilant his own tonic LC is), comes back as a felt threat, capped smoothly"""
-        surplus = self.body_surplus()
+        outside, and how vigilant his own tonic LC is, less what distraction takes away), comes back as a felt threat,
+        worth less once he has talked himself down (change 30), capped smoothly"""
+        surplus = self.body_surplus(inp)
         if not self.awake or BODY_LOOP == 0.0 or surplus is None:
             return 0.0
         body = max(0.0, surplus - self.__dict__.get("body_adapt", 0.0))
         vigilance = self.raw["f"] / self.cal["scale"]["f"]
-        x = BODY_LOOP * self.g["body_attention"] * (1.0 + inp.get("body_reminded", 0.0)) * vigilance * body
+        attention = self.g["body_attention"] * (1.0 + inp.get("body_reminded", 0.0)) * (1 - COPE * inp.get("distract", 0.0))
+        x = BODY_LOOP * attention * vigilance * body * (1 - COPE * self.__dict__.get("reframe", 0.0))
         return BODY_CEIL * math.tanh(x / BODY_CEIL)
 
     def amy_out(self):
@@ -432,7 +447,7 @@ class Chem:
         """advance dt hours. inputs (appraisals, all optional): awake, threat (0..1), controllable, surprise,
         company (0/1), touch, rejection, judged, novelty, exercise, machine_sick (0..1), endotoxin (pulse size),
         light, safe_cue (the conditioned cue shown with nothing bad: extinction), body_reminded (0..1: his body is
-        pointed out to him)"""
+        pointed out to him), heart_push (an outside push on his heart the loop can feel)"""
         g, dev = self.g, self.dev
         was = self.awake
         self.awake = inp.get("awake", True)
@@ -450,10 +465,16 @@ class Chem:
         if err:
             self.shift += max(-CLOCK_ADVANCE, min(CLOCK_DELAY, err)) / 24.0 * dt
         body_hour = (self.hour - self.shift) % 24            # what time it is for his body
-        inp["threat_eff"] = inp.get("threat", 0.0) * g["stress_gain"] * (0.7 if inp.get("controllable") else 1.0)
+        # talking himself down (change 30): the new meaning forms while he reappraises and fades slowly after
+        re = inp.get("reappraise", 0.0)
+        tau = TAU_REFRAME_UP if re > self.__dict__.get("reframe", 0.0) else TAU_REFRAME_DOWN
+        self.reframe = self.__dict__.get("reframe", 0.0)
+        self.reframe += (re - self.reframe) * (1 - math.exp(-dt / tau))
+        inp["threat_eff"] = (inp.get("threat", 0.0) * g["stress_gain"] * (0.7 if inp.get("controllable") else 1.0)
+                             * (1 - COPE * inp.get("distract", 0.0)) * (1 - COPE * self.reframe))
         inp["body_eff"] = self.body_felt(inp)                # what his body is doing, noticed, comes back as threat
         inp["threat_eff"] += inp["body_eff"]
-        surplus = self.body_surplus()                        # and the expectation catches up with it (change 29)
+        surplus = self.body_surplus(inp)                     # and the expectation catches up with it (change 29)
         if surplus is not None:
             self.body_adapt = self.__dict__.get("body_adapt", 0.0)
             self.body_adapt += (surplus - self.body_adapt) * (1 - math.exp(-dt / BODY_HAB))
@@ -704,7 +725,7 @@ class Chem:
         k["liking"] = s("mor") + 0.5 * s("cb1")
         k["noise"] = noise
         k["sick"] = s("cytr")
-        k["sympathetic"] = self._sympathetic()
+        k["sympathetic"] = self._sympathetic() * (1 - COPE * self.inp.get("breathe", 0.0))   # slow breathing (change 30)
         k["pupil"] = f_rel
         k["burst"] = burst
         k["startle"] = (1 + self.amy_out()) * (0.5 + s("crhr1_amy") + s("a1_amy"))

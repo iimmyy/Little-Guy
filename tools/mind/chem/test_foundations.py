@@ -16,6 +16,7 @@ import copy
 import json
 import math
 import os
+import random
 import sys
 import time
 
@@ -113,6 +114,58 @@ def lived_egg(kind="average", hour=8.0, **genes):
         _scheduled_minutes(e, 7 * 60 + previous, minute - previous)
         cached[minute] = e
     return copy.deepcopy(cached[minute])
+
+
+# the isoproterenol infusion (change 30; Pohl 1988: panic in 66% of 86 patients, 9% of 45 controls, 20 min at 1 µg/min)
+ISO_N, ISO_SEED, ISO_SD = 200, 30, 9.4                 # eggs per group; ASI spread (normative 8.8 at mean 17.8, scaled)
+ISO_ASI = dict(average=19.0, panic_prone=33.3)         # mean ASI: controls, panic disorder (Taylor, Koch & McNally 1992)
+_ISO = {}
+
+
+def iso_jolt():
+    """the jolt's size: the average egg's peak body surplus during 15 minutes of being judged at 10:00 (the engine's
+    TSST; a TSST and 1 µg/min isoproterenol both raise heart rate about 20-30 bpm), with the loop off so the jolt does
+    not depend on the loop it is used to size"""
+    if "jolt" not in _ISO:
+        keep, E.BODY_LOOP = E.BODY_LOOP, 0.0
+        try:
+            e = lived_egg("average", hour=10)
+            top = 0.0
+            for _ in range(15):
+                e.step(1 / 60, awake=True, judged=1.0)
+                top = max(top, e.body_surplus())
+        finally:
+            E.BODY_LOOP = keep
+        _ISO["jolt"] = top
+    return _ISO["jolt"]
+
+
+def iso_panics(e, jolt, minutes=20):
+    """panic: at some minute of the infusion the loop-made part of his body surplus is bigger than the jolt-made part,
+    i.e. his surplus is more than twice his own loop-off twin's (Clark 1986: the alarm mostly feeding itself)"""
+    twin, keep, push = copy.deepcopy(e), E.BODY_LOOP, dict(heart_push=jolt)
+    for _ in range(minutes):
+        e.step(1 / 60, awake=True, **push)
+        E.BODY_LOOP = 0.0
+        try:
+            twin.step(1 / 60, awake=True, **push)
+        finally:
+            E.BODY_LOOP = keep
+        if e.body_surplus(push) > 2 * twin.body_surplus(push):
+            return True
+    return False
+
+
+def iso_rate(kind, n=ISO_N):
+    """the share of a group that panics: copies of the kind's lived egg at 10:00, each with body_attention = ASI / 19.0,
+    ASI drawn with a fixed seed and clipped to the scale's 0-64 (attention acts only through the loop, silent at calm)"""
+    rng, base, jolt = random.Random(ISO_SEED + (kind == "panic_prone")), lived_egg(kind, hour=10), iso_jolt()
+    hits = 0
+    for _ in range(n):
+        e = copy.deepcopy(base)
+        e.g["body_attention"] = min(64.0, max(0.0, rng.gauss(ISO_ASI[kind], ISO_SD))) / 19.0
+        hits += iso_panics(e, jolt)
+    return hits / n
 
 
 def r3(x):
@@ -494,6 +547,89 @@ def body_loop():
                                  four_times_loop_attention2_reminded=strong), extra_minutes_attention1=reminded - plain,
                     extra_minutes_attention2=reminded2 - plain2, body_loop=E.BODY_LOOP,
                     report_only_strong_spiral=spiral())
+
+
+def _jolted(kind, tool=None, minutes=60, start=5):
+    """the 20-minute heart jolt at 10:00 (change 30); `tool` (distract / breathe / reappraise) at full use from minute
+    `start` to the end. Returns the felt body threat for each minute"""
+    e, jolt, felt = lived_egg(kind, hour=10), iso_jolt(), []
+    for i in range(minutes):
+        inp = dict(heart_push=jolt if i < 20 else 0.0)
+        if tool and i >= start:
+            inp[tool] = 1.0
+        e.step(1 / 60, awake=True, **inp)
+        felt.append(e.inp["body_eff"])
+    return felt
+
+
+@test("bio", "Calming down breaks the spiral: in a panic-prone egg's heart-jolt spiral, distracting himself, slow "
+      "breathing and talking himself down (each at full use from minute 5) each lower the peak felt body threat and "
+      "end the spiral sooner (under 10% of its own peak) than doing nothing",
+      "theory (Immy 2026-10-23; Kroeze 1996, McRae 2010, Shao 2024, Clark 1986) / mechanism test, change 30")
+def coping_breaks_spiral():
+    def shape(felt):
+        top = max(range(len(felt)), key=felt.__getitem__)
+        end = next((i for i in range(top, len(felt)) if felt[i] < 0.1 * felt[top]), len(felt))
+        return dict(peak=felt[top], peak_minute=top + 1, over_by_minute=end + 1)
+
+    none = shape(_jolted("panic_prone"))
+    tools = {t: shape(_jolted("panic_prone", t)) for t in ("distract", "breathe", "reappraise")}
+    ok = all(s["peak"] < none["peak"] and s["over_by_minute"] < none["over_by_minute"] for s in tools.values())
+    return ok, dict(nothing=none, **tools)
+
+
+@test("bio", "Turning attention away helps the panic-prone more: during the heart jolt, distraction lowers the felt "
+      "body threat more (absolute) in a panic-prone egg than in an average egg",
+      "checked (Kroeze 1996: diverting attention cut reported sensations more in panic patients than controls) / change 30")
+def distraction_panic_more():
+    drop = {}
+    for kind in ("average", "panic_prone"):
+        plain, away = _jolted(kind, minutes=20, start=0), _jolted(kind, "distract", minutes=20, start=0)
+        drop[kind] = (sum(plain) - sum(away)) / 20
+    return drop["panic_prone"] > drop["average"], dict(mean_felt_drop=drop)
+
+
+@test("bio", "Slow breathing lowers blood pressure within minutes: during a 30-minute threat 0.5 at 10:00, slow "
+      "breathing for the last 5 minutes lowers the sympathetic read-out by at least 10% of the threat's rise",
+      "checked (Shao 2024, 31 studies: immediate systolic drop SMD -0.45; Magnon 2021: one 5-minute session) / change 30")
+def breathing_bp():
+    calm, scared, breathing = (lived_egg("average", hour=10) for _ in range(3))
+    for i in range(30):
+        calm.step(1 / 60, awake=True)
+        scared.step(1 / 60, awake=True, threat=0.5)
+        breathing.step(1 / 60, awake=True, threat=0.5, breathe=1.0 if i >= 25 else 0.0)
+    rest, up, down = (x.knobs()["sympathetic"] for x in (calm, scared, breathing))
+    rise = up - rest
+    return rise > 0 and up - down >= 0.1 * rise, dict(rest=rest, scared=up, scared_breathing=down, rise=rise,
+                                                       drop_share_of_rise=(up - down) / rise if rise else None)
+
+
+@test("bio", "Talking himself down lasts, distraction does not: a 10-minute threat 0.5 while regulating (distracting or "
+      "reappraising) gives a smaller anxious rise than doing nothing; after 30 calm minutes the same threat comes back "
+      "with no regulating, and the egg that reappraised rises less than the one that distracted",
+      "checked (Thiruchselvam 2011: distraction's relief does not carry over to re-exposure, reappraisal's does; McRae "
+      "2010) / mechanism test (the persistence is built in), change 30")
+def reappraisal_lasts():
+    eggs = {k: lived_egg("average", hour=10) for k in ("calm", "nothing", "distract", "reappraise")}
+
+    def minutes(n, threat, regulate):
+        for k, e in eggs.items():
+            inp = dict(awake=True)
+            if k != "calm":
+                inp["threat"] = threat
+                if regulate and k in ("distract", "reappraise"):
+                    inp[k] = 1.0
+            for _ in range(n):
+                e.step(1 / 60, **inp)
+        base = eggs["calm"].knobs()["anxious"]
+        return {k: e.knobs()["anxious"] - base for k, e in eggs.items() if k != "calm"}
+
+    first = minutes(10, 0.5, True)
+    minutes(30, 0.0, False)
+    again = minutes(10, 0.5, False)
+    ok = (first["distract"] < first["nothing"] and first["reappraise"] < first["nothing"]
+          and again["reappraise"] < again["distract"])
+    return ok, dict(first_rise=first, second_rise=again)
 
 
 @test("bio", "Disrupted clock: a body clock running 4 h late on a normal schedule shows dysregulation that follows the "
@@ -1073,6 +1209,16 @@ def flumazenil():
         _, k0, k, _ = _with(kind, "flumazenil")
         out[kind] = k["anxious"] - k0["anxious"]
     return abs(out["average"]) < 0.01 and out["panic_prone"] > 0.05, dict(anxious_change=out)
+
+
+@test("drug", "Isoproterenol (a heart-racing infusion for 20 minutes): panic-prone eggs panic at least 40% of the time "
+      "and at least 4x as often as average eggs. The average eggs' rate is what the loop was sized on (report-only)",
+      "checked (Pohl 1988: 66% of 86 panic-disorder patients, 9% of 45 controls) / change 30")
+def isoproterenol():
+    controls, patients = iso_rate("average"), iso_rate("panic_prone")
+    return patients >= 0.40 and patients >= 4 * controls, dict(
+        patients=patients, report_only_controls=controls, ratio=patients / controls if controls else None,
+        jolt=iso_jolt(), body_loop=E.BODY_LOOP)
 
 
 # ======================================================================== run
