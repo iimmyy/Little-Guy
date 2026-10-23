@@ -931,6 +931,56 @@ def propranolol():
     return ok, dict(strong_moment_boost=(boost0, boost1), deliberate=(d0, d1))
 
 
+def _beta_pair(kind):
+    """twins at 10:00, one an hour into a dose of propranolol (as the studies give it 60-90 min before)"""
+    off = lived_egg(kind, hour=9.0)
+    on = copy.deepcopy(off)
+    on.give("propranolol", 1.0)
+    live(off, 1.0)
+    live(on, 1.0)
+    return off, on
+
+
+def _peaks(e, minutes, inp):
+    """peak heart-rate rise (bpm) and peak anxious rise over `minutes` of `inp`, from the minute before"""
+    hr0, a0 = e.heart_rate(), e.knobs()["anxious"]
+    hr, an = 0.0, 0.0
+    for _ in range(minutes):
+        k = e.step(1 / 60, awake=True, **inp)
+        hr, an = max(hr, e.heart_rate(inp) - hr0), max(an, k["anxious"] - a0)
+    return hr, an
+
+
+@test("drug", "propranolol and stress (the heart's β1, change 33): 15 minutes of being judged; the heart rise on "
+      "propranolol is smaller but not gone (0.15-0.85 of off: the vagal half stays) and felt anxiety rises at least "
+      "0.65 as much", "checked (Taylor 1981; Andrews & Pruessner 2013; MacCormack 2021; Gorman 1983)")
+def propranolol_heart():
+    off, on = _beta_pair("average")
+    rest = (off.heart_rate(), on.heart_rate())
+    (h0, a0), (h1, a1) = _peaks(off, 15, dict(judged=1.0)), _peaks(on, 15, dict(judged=1.0))
+    ok = 0.15 <= h1 / h0 <= 0.85 and a1 >= 0.65 * a0
+    return ok, dict(heart_rise=(h0, h1), heart_ratio=h1 / h0, anxious_rise=(a0, a1), anxious_ratio=a1 / a0,
+                    report_only_rest_heart=rest)
+
+
+@test("drug", "propranolol blocks isoproterenol: the jolt's heart rise on propranolol is at most 0.25 of off",
+      "checked (isoprenaline dose ratios 10-30 at clinical levels: Coltart & Shand 1970; Cubeddu 1985)")
+def propranolol_iso():
+    off, on = _beta_pair("average")
+    push = dict(heart_push=iso_jolt())
+    (h0, _), (h1, _) = _peaks(off, 20, push), _peaks(on, 20, push)
+    return h1 <= 0.25 * h0, dict(heart_rise=(h0, h1), ratio=h1 / h0)
+
+
+@test("drug", "propranolol does not stop panic: a panic-prone egg's anxious peak in a strong fright (threat 1.0 for 10 "
+      "minutes; a stand-in for lactate) on propranolol is at least 0.75 of off; heart rise report-only",
+      "checked (Gorman 1983: IV propranolol, panic, anxiety and tachycardia all still came in 6 of 6)")
+def propranolol_panic():
+    off, on = _beta_pair("panic_prone")
+    (h0, a0), (h1, a1) = _peaks(off, 10, dict(threat=1.0)), _peaks(on, 10, dict(threat=1.0))
+    return a1 >= 0.75 * a0, dict(anxious_peak_rise=(a0, a1), ratio=a1 / a0, report_only_heart_rise=(h0, h1))
+
+
 @test("drug", "guanfacine (α2A agonist): calmer, better deliberate control (under a mild stress)", "checked (Arnsten)")
 def guanfacine():
     e0, e1 = egg(), egg()
