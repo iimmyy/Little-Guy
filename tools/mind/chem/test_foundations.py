@@ -128,9 +128,9 @@ def iso_jolt():
     TSST; a TSST and 1 µg/min isoproterenol both raise heart rate about 20-30 bpm), with the loop off so the jolt does
     not depend on the loop it is used to size"""
     if "jolt" not in _ISO:
+        e = lived_egg("average", hour=10)          # its lived day first: caches must never be filled with loops off
         keep, E.BODY_LOOP, E.WORRY_W = (E.BODY_LOOP, E.WORRY_W), 0.0, 0.0     # both self-feeding loops off
         try:
-            e = lived_egg("average", hour=10)
             top = 0.0
             for _ in range(15):
                 e.step(1 / 60, awake=True, judged=1.0)
@@ -507,11 +507,11 @@ def wired_persists():
       "theory (Immy 2026-10-22; Clark 1986; Ehlers & Breuer 1992) / mechanism test, written before the run")
 def body_loop():
     def settle(reminded=0.0, attention=1.0, loop=None):
+        e = lived_egg("average", hour=10, body_attention=attention)    # before the loop changes (cached day)
         keep = E.BODY_LOOP
         if loop is not None:
             E.BODY_LOOP = loop
         try:
-            e = lived_egg("average", hour=10, body_attention=attention)
             twin = copy.deepcopy(e)
             for _ in range(30):
                 e.step(1 / 60, awake=True, threat=0.5, body_reminded=reminded)
@@ -529,10 +529,10 @@ def body_loop():
     def spiral():
         """report-only (change 29): in the strong case, minutes from the felt body threat's peak until it is under 10%
         of that peak (typical panic attacks last 25-45 min, the longest ambulatory one 30: Meuret 2011)"""
+        e = lived_egg("average", hour=10, body_attention=2.0)           # before the loop changes (cached day)
         keep = E.BODY_LOOP
         E.BODY_LOOP = 4 * keep
         try:
-            e = lived_egg("average", hour=10, body_attention=2.0)
             felt = []
             for i in range(12 * 60):
                 e.step(1 / 60, awake=True, threat=0.5 if i < 30 else 0.0, body_reminded=1.0)
@@ -1276,11 +1276,12 @@ def isoproterenol():
 
 
 # ======================================================================== run
-def main(out_dir):
-    os.makedirs(out_dir, exist_ok=True)
-    E.calibrate()
+def run_tests(indices=None):
+    """run the tests at these positions in TESTS (all by default) on a calibrated engine; returns their rows"""
     rows = []
-    for t in TESTS:
+    for i, t in enumerate(TESTS):
+        if indices is not None and i not in indices:
+            continue
         t0 = time.time()
         try:
             ok, nums = t["fn"]()
@@ -1291,6 +1292,17 @@ def main(out_dir):
                          passed=bool(ok), numbers=r3(nums), error=err, seconds=round(time.time() - t0, 1)))
         print(f"{'PASS' if ok else 'FAIL'}  {t['group']:5s} {t['name']:24s} {json.dumps(r3(nums))[:220]}"
               + (f"  ERROR {err}" if err else ""), flush=True)
+    return rows
+
+
+def main(out_dir):
+    os.makedirs(out_dir, exist_ok=True)
+    E.calibrate()
+    write_results(out_dir, run_tests())
+
+
+def write_results(out_dir, rows):
+    """results.json and report.md for these rows, in TESTS order"""
     json.dump(dict(rest_knobs=r3(E.CAL["knobs"]), tests=rows), open(os.path.join(out_dir, "results.json"), "w"), indent=1)
     n_pass = sum(r["passed"] for r in rows)
     L = [f"# Chemistry foundations: section F tests ({time.strftime('%Y-%m-%d %H:%M')})", "",
