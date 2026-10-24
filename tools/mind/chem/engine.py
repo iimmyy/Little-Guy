@@ -323,6 +323,7 @@ class Chem(RB.ReceptorBody):
         self.worry_adapt = 0.0                               # the heart rise he has got used to (step 3b addendum 2)
         self.shift, self.light_phase = 0.0, 0.0              # body clock behind the wall clock (h); where light is pulling it
         self.abs_t, self.sleep_start = 0.0, -99.0            # hours lived; when the last sleep began
+        self.woke_abs_t = None                              # synthetic waking history during constructor settling
         self.expect_ox = None                                # and what his orexin blood-pressure route normally reads
         self.inp, self.raw = {}, {k: 1.0 for k in FAST}
         self.drive, self.brake = 1.0, 0.0
@@ -331,6 +332,7 @@ class Chem(RB.ReceptorBody):
         self.init_receptor_body()
         for _ in range(240):                                 # settle at rest for the 4 hours before `hour`
             self.step(1 / 60, awake=True)
+        self.woke_abs_t = self.abs_t - ((self.hour - self.woke_at) % 24)
         if not _calibrating and not _no_adapt:
             # receptors adapt against THIS egg's own normal day (sleeping 23-7), never against one moment of it
             self.ref_occ = normal_day_occupancy(genes, max_step=self.max_step)
@@ -372,6 +374,14 @@ class Chem(RB.ReceptorBody):
     def sleep_loss(self):
         """awake past his usual bedtime pressure: 0 through a normal day, 1 by 04:00 on a night kept awake"""
         return min(1.0, max(0.0, (self.S - 0.62) / 0.1))
+
+    def cortisol_waking_rise(self):
+        """Existing awakening-pulse hypothesis, separate from the circadian cortisol rhythm."""
+        if not self.awake:
+            return 0.0
+        wake = self.__dict__.get('woke_abs_t')
+        since = (self.hour - self.woke_at) % 24 if wake is None else self.abs_t - wake
+        return 0.6 * math.exp(-((since - 0.6) / 0.35) ** 2)
 
     def worry_brake(self):
         """how hard the prefrontal cortex is braking the worry (1 = an average egg, rested, at rest; change 32)"""
@@ -674,11 +684,14 @@ class Chem(RB.ReceptorBody):
         self.awake = inp.get("awake", True)
         if "shift" not in self.__dict__:                     # a body saved before change 27
             self.shift, self.light_phase, self.abs_t, self.sleep_start = 0.0, 0.0, 0.0, -99.0
+        if 'woke_abs_t' not in self.__dict__:                # old saves retain only a clock time, not wake history
+            self.woke_abs_t = self.abs_t - ((self.hour - self.woke_at) % 24)
         self.abs_t += dt
         if was and not self.awake:
             self.sleep_start = self.abs_t
         if self.awake and not was:
             self.woke_at = self.hour
+            self.woke_abs_t = self.abs_t - dt
             if self.abs_t - self.sleep_start >= 4.0:         # waking after a night's sleep: light reaches him now
                 self.light_phase = round((((self.hour - 7.0) + 12.0) % 24.0 - 12.0) * 2) / 2   # to the half hour
         self.hour = (self.hour + dt) % 24
@@ -758,8 +771,7 @@ class Chem(RB.ReceptorBody):
         # cortisol: low around sleep onset, rising through the night to a peak at waking, + the waking rise + CRH
         h = body_hour
         circ = 0.3 + 1.3 * ((h / 7.5) ** 2 if h < 7.5 else ((24 - h) / 16.5) ** 1.5)
-        since = (self.hour - self.woke_at) % 24
-        car = 0.6 * math.exp(-((since - 0.6) / 0.35) ** 2) if self.awake else 0.0
+        car = self.cortisol_waking_rise()
         # CRH -> ACTH -> cortisol, sized so 15 minutes of being judged adds ~40% of the waking peak (TSST
         # responders roughly double their cortisol; Kirschbaum 1993, Dickerson & Kemeny 2004)
         toward("cort", circ + car + 3.5 * max(0.0, self.c["crh"] - 1), TAU["cort"])
