@@ -25,6 +25,7 @@ pays it twice while a burst (driven, too fast for its own brake) pays it once.
 """
 import math
 import numpy as np
+import receptor_body as RB
 
 # ---------------------------------------------------------------- genes (G): resting tone, gains, brakes, amounts
 GENES = {
@@ -146,12 +147,16 @@ DRUGS = {
     # ketamine: t_half is the effect-site half-life of a 40-minute infusion (distribution ~10 min, elimination 2-3 h;
     # dissociation gone ~2 h after the end; Zarate 2006)
     "ketamine":        dict(t_half=0.75, nmda=dict(k_on=0.8, k_off=0.05, trap=0.95, mg_rest=0.6)),
-    "benzodiazepine":  dict(t_half=None, targets=[("gabaa_syn", "pam", 1.0, 2.5)]),
-    "zuranolone":      dict(t_half=None, targets=[("gabaa_ex", "pam", 1.0, 2.5), ("gabaa_syn", "pam", 3.0, 1.5)]),
+    "benzodiazepine":  dict(t_half=None, pam_site="benzodiazepine", targets=[("gabaa_syn", "pam", 1.0, 2.5)]),
+    "zuranolone":      dict(t_half=None, pam_site="neurosteroid", targets=[("gabaa_ex", "pam", 1.0, 2.5), ("gabaa_syn", "pam", 3.0, 1.5)]),
     "rimonabant":      dict(t_half=None, targets=[("cb1", "antagonist", 0.1, 0)]),
     "yohimbine":       dict(t_half=None, targets=[("a2a_auto", "antagonist", 0.15, 0), ("a2a_pfc", "antagonist", 0.15, 0)]),
     "flumazenil":      dict(t_half=None, benzo_site_block=True),
 }
+
+# The complete 34-series inventory is installed together before calibration.
+# Affinity provenance and explicit missing-data assumptions are kept in its table.
+RB.install(RECEPTORS, DRUGS)
 
 # ---------------------------------------------------------------- half-lives of the slow systems (hours, as τ)
 TAU = dict(crh=10 / 60, cort=95 / 60, oxa=2.0, oxb=0.1, dyn=20 / 60, mel=0.75, mor=0.5, ot=20 / 60, avp=20 / 60,
@@ -192,6 +197,9 @@ INNER = ("b1", "b1_pfc", "d1", "d1_pfc", "crhr1_lc", "crhr1_amy", "crhr1_vta", "
          "a2a_pfc")
 TAU_INNER = 246 / 3600 / math.log(2)   # t½ 246 s: PKA substrates after β blockade, limited by PDE (Saucerman 2006);
                                        # the PKC route uses the same clock (theory: no PKC number found)
+INNER = tuple(dict.fromkeys(INNER + RB.messenger_receptors() + tuple(RB.slow_receptors())))
+INNER_TAU = {r: TAU_INNER for r in INNER}
+INNER_TAU.update(RB.slow_receptors())
 
 # the body-awareness loop (change 22; Immy 2026-10-22: noticing a racing heart makes the heart race and the noticing
 # stronger). What his body is doing above rest, times how much attention he gives it, comes back as a felt threat, one
@@ -258,7 +266,9 @@ VAGAL_W = 0.18          # sized: at minute 15 of the engine's TSST the brake's s
 # IV prazosin 1 mg lowered lying pressure 18/17 mmHg with supine heart rate unchanged, and dose 1 blocks 91% of the seats
 MAP_REST, VESSEL_A1 = 91.0, 0.21
 
-CAL = None          # filled by calibrate(): scales of the fast systems, rest signals, rest knobs
+DEFAULT_MAX_STEP = 3.75 / 3600  # numerical resolution, hours; not a physiological parameter
+CAL = None          # default-resolution calibration, retained for existing callers
+_CALIBRATIONS = {}
 
 
 def soma_5ht(ht):
@@ -271,17 +281,24 @@ def sat(x, k=1.0):
     return x / (x + k) if x > 0 else 0.0
 
 
-class Chem:
+class Chem(RB.ReceptorBody):
     """one egg's chemistry. genes: dict overriding GENES (and rx_<receptor> amounts)."""
 
-    def __init__(self, genes=None, hour=8.0, _calibrating=False, _no_adapt=False):
-        if CAL is None and not _calibrating:
-            calibrate()
-        self.cal = CAL if not _calibrating else _calibrating
+    receptor_definitions = RECEPTORS
+    vessel_alpha1_weight = VESSEL_A1
+
+    def __init__(self, genes=None, hour=8.0, _calibrating=False, _no_adapt=False, max_step=None):
+        self.max_step = DEFAULT_MAX_STEP if max_step is None else max_step
+        if not math.isfinite(self.max_step) or self.max_step <= 0:
+            raise ValueError('max_step must be positive finite hours')
+        if not _calibrating and self.max_step not in _CALIBRATIONS:
+            calibrate(max_step=self.max_step)
+        self.cal = _CALIBRATIONS[self.max_step] if not _calibrating else _calibrating
         self.g = dict(GENES); self.g.update(genes or {})
         self.amount = {r: self.g.get("rx_" + r, 1.0) for r in RECEPTORS}
         self.hour, self.awake, self.woke_at = (hour - 4.0) % 24, True, hour - 1.0
         self.drugs = {}                                      # name -> concentration (dose units)
+        self.drug_clamps = {}                                # explicitly held local experiment concentrations
         self.c = {k: 1.0 for k in ("ne", "da", "da_pfc", "ht", "ht_soma", "ach", "ha", "oxa", "oxb", "dyn", "ado", "crh",
                                    "cort", "mor", "ot", "avp", "mel", "glu_bg", "gaba", "allo", "aea", "ag2", "npy",
                                    "gal", "cyt", "bdnf", "ne_heart", "ach_heart", "ne_vessel")}
@@ -311,25 +328,28 @@ class Chem:
         self.drive, self.brake = 1.0, 0.0
         self.ref_occ, self.occ_avg = {}, {}                  # empty = receptors don't adapt (settling, reference)
         self._nm = dict(syn=0.0, int=0.0, ex=0.0)
+        self.init_receptor_body()
         for _ in range(240):                                 # settle at rest for the 4 hours before `hour`
             self.step(1 / 60, awake=True)
         if not _calibrating and not _no_adapt:
             # receptors adapt against THIS egg's own normal day (sleeping 23-7), never against one moment of it
-            self.ref_occ = normal_day_occupancy(genes)
+            self.ref_occ = normal_day_occupancy(genes, max_step=self.max_step)
             self.occ_avg = dict(self.ref_occ)
-            self.expect, self.expect_ox = expected_body(genes)
-            self.expect_hr = expected_heart(genes)
+            self.expect, self.expect_ox = expected_body(genes, max_step=self.max_step)
+            self.expect_hr = expected_heart(genes, max_step=self.max_step)
 
     # ------------------------------------------------------------ helpers
     def dev(self, r):
         """how far what receptor r does is from an average egg at rest (through its inner tub, if it has one)"""
-        return self.eff(r) - self.cal["rest"].get(r, self.sig(r))
+        reference = self.cal["rest"].get(r)
+        return self.eff(r) - (self.sig(r) if reference is None else reference)
 
     def eff(self, r):
         """what receptor r is doing inside its cells: its inner tub if it acts through a second messenger (INNER),
         else its signal now"""
         inner = self.__dict__.get("inner")
-        return inner[r] if inner and r in inner else self.sig(r)
+        signal = inner[r] if inner and r in inner else self.sig(r)
+        return signal * self.nic_available.get(r, 1.0)
 
     def _sympathetic(self):
         """how hard his body is running its alarm (the sympathetic read-out): peripheral α1 plus the orexin route above
@@ -357,40 +377,48 @@ class Chem:
         """how hard the prefrontal cortex is braking the worry (1 = an average egg, rested, at rest; change 32)"""
         return max(1e-3, self.pfc_ne() * (1 - SLEEP_PFC * self.sleep_loss()))
 
-    def heart_rate(self, inp=None):
-        """beats per minute: intrinsic x gas x brake (change 31). The gas is the brain's sympathetic command (the body
-        signal) plus any outside push on the heart's β1 receptors (heart_push: a drug acts at the heart, not through the
-        brain), relative to the command at rest"""
-        rest = self.cal["rest"].get("a1_symp") or self.eff("a1_symp")          # during calibration: now is rest
-        drive = (self._body_signal() + (inp or {}).get("heart_push", 0.0)) / rest
-        gas = drive * self.organ_pass("b1_heart", drive)
-        vagal = self.vagal_tone()
-        brake = vagal * self.organ_pass("m2_heart", vagal)
-        return HEART_IHR * (1 + (HEART_M - 1) * gas) * (1 - (1 - HEART_N) * brake)
+    def heart_rate(self, inp=None, *, commanded=False):
+        """Current heart rate from stored sympathetic effects and direct vagal activation.
 
-    def blood_pressure(self, inp=None):
+        The legacy inp argument does not advance or override state. Apply an
+        intervention with step(); heart_push enters the delayed receptor input.
+        """
+        gas = self.cardiac_gas(commanded=commanded)
+        vagal = self.body_vagal(commanded=commanded)
+        brake = self.organ_drive('m2_heart', {'ach_heart': vagal}, nodrug=commanded)
+        # The old expression applies through ordinary 0..1 vagal drive. Above
+        # resting tone, a smooth continuation preserves value/slope without ever
+        # producing a negative heart rate under the newly modeled baroreflex.
+        vagal_factor = (1 - (1 - HEART_N) * brake) if brake <= 1 else (
+            HEART_N * math.exp(-(1 - HEART_N) / HEART_N * (brake - 1)))
+        thyroid = math.exp(RB.COUPLING_SCALE * .1 * self.dev('tr_alpha'))
+        return HEART_IHR * thyroid * (1 + (HEART_M - 1) * gas) * vagal_factor
+
+    def blood_pressure(self, inp=None, *, commanded=False):
         """mean arterial pressure in mmHg (change 34b): rest x heart rate over the resting rate x vessel tightness"""
-        drive = self._sympathetic() / (self.cal["rest"].get("a1_symp") or self.eff("a1_symp"))
-        tight = 1 - VESSEL_A1 + VESSEL_A1 * drive * self.organ_pass("a1_vessel", drive)
-        return MAP_REST * self.heart_rate(inp) / (HEART_IHR * HEART_M * HEART_N) * tight
+        tight = self.vascular_tightness(VESSEL_A1, commanded=commanded)
+        return MAP_REST * self.heart_rate(inp, commanded=commanded) / (HEART_IHR * HEART_M * HEART_N) * tight
 
     def organ_pass(self, r, drive):
-        """the share of a drive that gets through receptor r's seats in an organ with the drugs on board (changes 33,
-        34): the receptor's signal with drugs over without, at the same drive; exactly 1 with no drug"""
-        if not self.drugs or drive <= 0:
-            return 1.0
+        """Legacy quotient: fixed-reference organ activation divided by input drive.
+
+        This is not a drug/no-drug ratio and need not equal one without drugs.
+        Use organ_drive directly, including for zero endogenous ligand.
+        """
+        if drive <= 0:
+            raise ValueError('organ_pass is undefined at zero drive; use organ_drive for agonist-only conditions')
         lig = RECEPTORS[r][0][0]
-        return self.sig(r, {lig: drive}) / self.sig(r, {lig: drive}, nodrug=True)
+        return self.organ_drive(r, {lig: drive}) / drive
 
     def heart_felt(self, inp=None):
         """the report line (change 31 step 2): what reaches the insula of his heart, through vagal and spinal afferents
-        and the NTS, within the minute: his actual heart rate"""
+        and the NTS: his current heart rate, including the evolved organ delays"""
         return self.heart_rate(inp)
 
     def heart_expected(self):
         """the copy (efference copy / interoceptive prediction; Barrett & Simmons 2015): the heart rate his own commands
         (gas and brake) produce, with no outside push; a drug on the heart is not something he ordered"""
-        return self.heart_rate(None)
+        return self.heart_rate(None, commanded=True)
 
     def heart_surprise(self, inp=None):
         """felt - copy, in bpm (interoceptive prediction error)"""
@@ -452,14 +480,27 @@ class Chem:
 
     def stop(self, name):
         self.drugs.pop(name, None)
+        self.drug_clamps.pop(name, None)
 
-    def _block(self, which):
+    def clamp_drug(self, name, concentration):
+        """Hold a relative drug concentration until released; distinct from a bolus."""
+        if name not in DRUGS or not math.isfinite(concentration) or concentration < 0:
+            raise ValueError('drug clamp requires a known drug and finite nonnegative concentration')
+        self.drug_clamps[name] = concentration
+        self.drugs[name] = concentration
+
+    def release_drug(self, name):
+        """End a concentration clamp; the remaining drug then follows its half-life."""
+        self.drug_clamps.pop(name, None)
+
+    def _block(self, which, *, compartment='brain'):
         """transporter block fraction from all drugs (0..1)"""
         b = 0.0
         for d, c in self.drugs.items():
             if which in DRUGS[d]:
                 kd, mx = DRUGS[d][which]
-                b = 1 - (1 - b) * (1 - mx * sat(c, kd))
+                exposure = self.drug_exposure.get(d, {}).get(compartment, DRUGS[d].get('exposure', {}).get(compartment, 1.))
+                b = 1 - (1 - b) * (1 - mx * sat(c * exposure, kd))
         return b
 
     def sig(self, r, conc=None, nodrug=False):
@@ -467,26 +508,46 @@ class Chem:
         conc: optional override of ligand concentrations (burst / dip events). nodrug: as if no drug were on board."""
         cc = self.c if conc is None else dict(self.c, **conc)
         terms, alpha = [], 1.0
-        site_blocked = False
-        for d, dose in ({} if nodrug else self.drugs).items():
+        active = {} if nodrug else self.drugs
+        # Site identity matters: a benzodiazepine-site blocker does not erase
+        # a neurosteroid PAM merely because both modulate synaptic GABA-A.
+        site_blocked = r == 'gabaa_syn' and any(
+            DRUGS[d].get('benzo_site_block') and dose * self.receptor_exposure(d, r, DRUGS[d]) > 0
+            for d, dose in active.items())
+        for d, dose in active.items():
             spec = DRUGS[d]
-            site_blocked |= bool(spec.get("benzo_site_block"))
             for (rr, kind, kd, eff) in spec.get("targets", ()):
                 if rr != r:
                     continue
                 if kind == "pam":
-                    alpha *= 1 + (eff - 1) * sat(dose, kd)
+                    if not (site_blocked and spec.get('pam_site') == 'benzodiazepine'):
+                        alpha *= 1 + (eff - 1) * sat(dose * self.receptor_exposure(d, r, spec), kd)
                 else:
-                    terms.append((dose / kd, eff))
-        if r == "gabaa_syn":
-            if site_blocked:
-                alpha = 1.0                                  # flumazenil empties the benzodiazepine site
-            elif self.g["endozepine"]:
-                alpha *= 1 + self.g["endozepine"]            # (theory) a compensating endozepine
+                    terms.append((dose * self.receptor_exposure(d, r, spec) / kd, eff))
+        if r == 'gabaa_syn' and self.g['endozepine'] and not site_blocked:
+            alpha *= 1 + self.g['endozepine']  # inherited benzodiazepine-site hypothesis
         for key, kd in RECEPTORS[r]:
             terms.append((cc[key] * alpha / kd, 1.0))
         x = sum(t for t, _ in terms)
-        return self.amount[r] * sum(t * e for t, e in terms) / (1 + x)
+        signal = self.amount[r] * sum(t * e for t, e in terms) / (1 + x)
+        return self.receptor_gate(r, signal, cc, nodrug=nodrug)
+
+    def drug_occupancy(self, r, *, agonists_only=False):
+        """Orthosteric drug binding fraction; distinct from efficacy, availability and organ output."""
+        total = sum(max(0., self.c[key]) / kd for key, kd in RECEPTORS[r])
+        selected = 0.
+        for drug, dose in self.drugs.items():
+            spec = DRUGS[drug]
+            for target, kind, kd, efficacy in spec.get('targets', ()):
+                if target == r and kind != 'pam':
+                    bound = dose * self.receptor_exposure(drug, r, spec) / kd
+                    total += bound
+                    if not agonists_only or (kind == 'agonist' and efficacy > 0):
+                        selected += bound
+        return selected / (1 + total)
+
+    def exogenous_agonist_occupancy(self, r):
+        return self.drug_occupancy(r, agonists_only=True)
 
     def nmda_state(self):
         """block of NMDA channels by all blockers: brief synaptic, repeated interneuron, sustained background"""
@@ -496,69 +557,114 @@ class Chem:
         for d, c in self.drugs.items():
             if "nmda" in DRUGS[d]:
                 p = DRUGS[d]["nmda"]
+                exposure = self.drug_exposure.get(d, {}).get('brain', DRUGS[d].get('exposure', {}).get('brain', 1.))
                 for mode, p_open, mg in (("syn", 0.02, p["mg_rest"]), ("int", 0.3, p["mg_rest"]), ("ex", p_ex, mg_ex)):
-                    b = nmda_block(c, p["k_on"], p["k_off"], p["trap"], p_open, mg)
+                    b = nmda_block(c * exposure, p["k_on"], p["k_off"], p["trap"], p_open, mg)
                     out[mode] = 1 - (1 - out[mode]) * (1 - b)
         return out
 
     # ------------------------------------------------------------ the fast systems at balance
     def _fast(self):
-        g, i, dev, cal = self.g, self.inp, self.dev, self.cal["scale"]
-        awake = 1.0 if self.awake else 0.15                  # the LC and VTA nearly stop in sleep
-        threat = i.get("threat_eff", 0.0)
-        net, dat, sert = (g["net"] * (1 - self._block("net")), g["dat"] * (1 - self._block("dat")),
-                          g["sert"] * (1 - self._block("sert")))
-        # only spontaneously active DA cells can burst; long stress silences about half of them through the
-        # amygdala (Chang & Grace 2014; Moreines 2017), and they come back as the amygdala calms
-        self.vta_pop = 1 / (1 + 2.0 * self.cea_slow * min(1.5, max(0.0, 1 - 2.0 * dev("gabaa_ex"))))
-        self.c.setdefault("ht_soma", self.c["ht"])           # a body saved before change 24
-        # raphe 5-HT with its 5-HT1A brake, which can silence the cell (why SSRIs take weeks). Solved on its own and
-        # exactly (change 24): with a blocked transporter the brake is strong enough that the damped sweep below flips
-        # between on and off. Firing allowed by the brake falls as firing rises, so there is one balance, found by bisection.
-        fh_cap = g["ht_tone"] * (1.0 if self.awake else 0.4)
+        """Solve the ordered inhibitory balances at fixed slow/messenger state."""
+        g, i, dev, cal = self.g, self.inp, self.dev, self.cal['scale']
+        awake = 1.0 if self.awake else 0.15
+        threat = i.get('threat_eff', 0.0)
+        net, dat, sert = (g['net'] * (1 - self._block('net')),
+                          g['dat'] * (1 - self._block('dat')),
+                          g['sert'] * (1 - self._block('sert')))
+        if min(net, dat, sert, g['eaat']) <= 0:
+            raise ArithmeticError('fast balance requires positive clearance')
+        self.c['gaba'] = g['gaba_tone'] * (1 - 0.7 * self.nmda_state()['int'])
+        self.vta_pop = 1 / (1 + 2.0 * self.cea_slow * min(1.5, max(0.0, 1 - 2.0 * dev('gabaa_ex'))))
+        residuals, evaluations = {}, {}
 
-        def allowed(fh):
-            return fh_cap * max(0.0, 1 - 2.0 * self.sig("ht1a_auto", {"ht_soma": soma_5ht(fh / cal["fh"] / sert)}))
+        def solve(key, target):
+            old, calls = self.c[key], 0
 
-        lo, hi = 0.0, fh_cap
-        for _ in range(40):
-            mid = 0.5 * (lo + hi)
-            lo, hi = (mid, hi) if allowed(mid) > mid else (lo, mid)
-        fh = 0.5 * (lo + hi)
-        ht_now = fh / cal["fh"] / sert
-        for _ in range(40):                                  # solve the brakes at balance
-            # LC: excited by threat, CRH (CRHR1), orexin (OX1R), surprise; braked by its own α2A (C.2 r1), galanin
-            # (high firing only), NPY, and the learned top-down brake
-            drive = (g["lc_drive"] * awake * (1 - self.calm_skill)
-                     * max(0.0, 1 + 1.5 * dev("crhr1_lc") + 0.8 * dev("ox1r") + 0.8 * (threat + i.get("judged_eff", 0.0))
-                           + 0.3 * i.get("surprise", 0.0)))
-            brake = min(0.95, 3.0 * self.sig("a2a_auto") + 0.5 * self.sig("galr1") + 0.2 * self.sig("y1"))
-            f = drive * (1 - brake)                          # firing: the brake hyperpolarizes the cell
-            ne_out = f * (1 - brake)                         # release per spike: the same brake on its terminals
-            # VTA DA: excited by orexin; damped by KOR (dynorphin), CRH in the VTA, cytokines, its own D2 brake
-            fd = (g["da_tone"] * awake * self.vta_pop * max(0.0, 1 + 0.5 * dev("ox1r")) * max(0.0, 1 - 0.5 * dev("kor"))
-                  * max(0.0, 1 - 0.4 * dev("crhr1_vta")) * max(0.0, 1 - 0.6 * dev("cytr"))
-                  * (1 - 0.6 * self.sig("d2_auto")))
-            ha = g["ha_tone"] * awake * max(0.0, 1 + 0.8 * dev("ox2r")) * (1 - 0.5 * self.sig("h3_auto"))
-            ach = g["ach_tone"] * awake * max(0.0, 1 + 0.3 * dev("ox2r")) * max(0.0, 1 - 0.5 * dev("a1r"))
-            self.raw.update(f=f, ne_out=ne_out, fd=fd, fh=fh, ha=ha, ach=ach)
-            new = dict(ne=ne_out / cal["ne_out"] / net, da=fd / cal["fd"] / dat,
-                       da_pfc=fd / cal["fd"] / (0.3 * dat + 0.7 * net),     # prefrontal DA is cleared mostly by NET
-                       ht=ht_now, ha=ha / cal["ha"], ach=ach / cal["ach"])
-            for k, v in new.items():
-                self.c[k] = 0.5 * self.c[k] + 0.5 * v
-        self.c["ht_soma"] = soma_5ht(self.c["ht"])
-        self.drive, self.brake = drive, brake
-        # background glutamate: firing + stress, cleared by EAAT, damped by CB1 (retrograde brake on release)
-        glu = (g["glu_tone"] * max(0.0, 1 + 0.2 * (self.c["ne"] - 1) + 0.3 * max(0.0, self.c["crh"] - 1))
-               * max(0.0, 1 - 0.3 * dev("cb1")) / g["eaat"])
-        self.raw["glu_bg"] = glu
-        self.c["glu_bg"] = glu / cal["glu_bg"]
-        # synaptic GABA from interneurons; NMDA blockers that hold interneuron channels shut cut it (ketamine)
-        self.c["gaba"] = g["gaba_tone"] * (1 - 0.7 * self.nmda_state()["int"])
+            def residual(value):
+                nonlocal calls
+                calls += 1
+                self.c[key] = value
+                goal = target()
+                if not math.isfinite(goal) or goal < 0:
+                    raise ArithmeticError(f'invalid fast balance target {key}={goal}')
+                return (value - goal) / max(1., abs(value), abs(goal))
+
+            try:
+                self.c[key] = 0.
+                upper = target()  # inhibitory feedback makes this a finite upper bound
+                if not math.isfinite(upper) or upper < 0:
+                    raise ArithmeticError(f'invalid fast balance bracket {key}={upper}')
+                value = RB.bracketed_root(residual, 0., upper, tolerance=1e-12)
+                error = abs(residual(value))
+                if error > 1e-10:
+                    raise ArithmeticError(f'fast equilibrium did not converge: {key} residual {error:g}')
+            except Exception:
+                self.c[key] = old
+                raise
+            self.c[key] = value
+            residuals[key], evaluations[key] = error, calls
+            return value
+
+        ach_drive = (g['ach_tone'] * awake * max(0., 1 + 0.3 * dev('ox2r'))
+                     * max(0., 1 - 0.5 * dev('a1r')) / cal['ach'])
+        solve('ach', lambda: ach_drive * self.receptor_factor('ach'))
+        fh_cap = g['ht_tone'] * (1.0 if self.awake else 0.4)
+
+        ht1b_reference = self.cal['rest'].get('ht1b', self.sig('ht1b'))
+
+        def serotonin_target():
+            terminal = self.sig('ht1b') - ht1b_reference
+            firing = (fh_cap * max(0., 1 - 2.0 * self.sig('ht1a_auto', {'ht_soma': soma_5ht(self.c['ht'])}))
+                      * math.exp(-RB.COUPLING_SCALE * .5 * terminal))
+            return firing / cal['fh'] / sert
+
+        solve('ht', serotonin_target)
+        self.c['ht_soma'] = soma_5ht(self.c['ht'])
+        ha_drive = g['ha_tone'] * awake * max(0., 1 + 0.8 * dev('ox2r')) / cal['ha']
+        solve('ha', lambda: ha_drive * (1 - 0.5 * self.sig('h3_auto')))
+        da_drive = (g['da_tone'] * awake * self.vta_pop * max(0., 1 + 0.5 * dev('ox1r'))
+                    * max(0., 1 - 0.5 * dev('kor')) * max(0., 1 - 0.4 * dev('crhr1_vta'))
+                    * max(0., 1 - 0.6 * dev('cytr')) * self.receptor_factor('da') / cal['fd'] / dat)
+        solve('da', lambda: da_drive * (1 - 0.6 * self.sig('d2_auto')))
+        self.c['da_pfc'] = self.c['da'] * dat / (0.3 * dat + 0.7 * net)
+        drive = (g['lc_drive'] * awake * (1 - self.calm_skill)
+                 * max(0., 1 + 1.5 * dev('crhr1_lc') + 0.8 * dev('ox1r')
+                       + 0.8 * (threat + i.get('judged_eff', 0.)) + 0.3 * i.get('surprise', 0.))
+                 * self.receptor_factor('lc'))
+
+        def ne_brake():
+            return min(0.95, 3.0 * self.sig('a2a_auto') + 0.5 * self.sig('galr1') + 0.2 * self.sig('y1'))
+
+        solve('ne', lambda: drive * (1 - ne_brake())**2 * self.receptor_factor('ne_release') / cal['ne_out'] / net)
+        self.drive, self.brake = drive, ne_brake()
+        self.raw.update(f=drive * (1 - self.brake), ne_out=self.c['ne'] * cal['ne_out'] * net,
+                        fd=self.c['da'] * cal['fd'] * dat, fh=self.c['ht'] * cal['fh'] * sert,
+                        ha=self.c['ha'] * cal['ha'], ach=self.c['ach'] * cal['ach'])
+        glu_drive = (g['glu_tone'] * max(0., 1 + 0.2 * (self.c['ne'] - 1) + 0.3 * max(0., self.c['crh'] - 1))
+                     * max(0., 1 - 0.3 * dev('cb1')) / g['eaat'] / cal['glu_bg'])
+        solve('glu_bg', lambda: glu_drive * self.receptor_factor('glu'))
+        self.raw['glu_bg'] = self.c['glu_bg'] * cal['glu_bg']
+        self.fast_residuals, self.fast_evaluations = residuals, evaluations
+        self.fast_residual = max(residuals.values())
 
     # ------------------------------------------------------------ one step
     def step(self, dt=1 / 60, **inp):
+        """Advance elapsed hours using a bounded internal resolution.
+
+        Continuous inputs are held across subdivisions; endotoxin is one pulse
+        per caller event. A caller's reporting interval does not set solver accuracy.
+        """
+        if not math.isfinite(dt) or dt <= 0:
+            raise ValueError('dt must be positive finite hours')
+        count = max(1, math.ceil(dt / self.max_step - 1e-12))
+        delta = dt / count
+        for index in range(count):
+            values = inp if index == 0 or 'endotoxin' not in inp else {k: v for k, v in inp.items() if k != 'endotoxin'}
+            self._step(delta, **values)
+        return self.knobs()
+
+    def _step(self, dt, **inp):
         """advance dt hours. inputs (appraisals, all optional): awake, threat (0..1), controllable, surprise,
         company (0/1), touch, rejection, judged, novelty, exercise, machine_sick (0..1), endotoxin (pulse size),
         light, safe_cue (the conditioned cue shown with nothing bad: extinction), body_reminded (0..1: his body is
@@ -578,7 +684,7 @@ class Chem:
         self.hour = (self.hour + dt) % 24
         err = (self.light_phase - self.shift + 12.0) % 24.0 - 12.0
         if err:
-            self.shift += max(-CLOCK_ADVANCE, min(CLOCK_DELAY, err)) / 24.0 * dt
+            self.shift += max(-CLOCK_ADVANCE, min(CLOCK_DELAY, err)) / 24.0 * dt * self.receptor_factor('clock')
         body_hour = (self.hour - self.shift) % 24            # what time it is for his body
         # talking himself down (change 30): the new meaning forms while he reappraises and fades slowly after
         re = inp.get("reappraise", 0.0)
@@ -617,11 +723,17 @@ class Chem:
 
         # drug levels (pharmacokinetics)
         for d in list(self.drugs):
+            if d in self.drug_clamps:
+                self.drugs[d] = self.drug_clamps[d]
+                continue
             th = DRUGS[d]["t_half"]
             if th:
                 self.drugs[d] *= 0.5 ** (dt / th)
                 if self.drugs[d] < 1e-3:
                     del self.drugs[d]
+
+        self.body_update(dt, inp)
+        inp['threat_eff'] += max(0., self.receptor_effect('threat')) + .25 * max(0., self.receptor_effect('pain'))
 
         # sleep pressure (process S) and the clock
         if self.awake:
@@ -660,8 +772,9 @@ class Chem:
             x = (g["ox_cells"] * (0.5 + 0.5 * day)
                  * max(0.0, 1 + 3.0 * g["ne_ox_link"] * dev("a1_ox") + 0.3 * max(0.0, self.c["crh"] - 1)
                        + 0.3 * inp.get("novelty", 0.0) - 1.5 * sleep_loss * self.sig("a2_ox"))
-                 * max(0.0, 1 - 0.5 * dev("a1r")))
-            x += g["ox_cells"] * sum(DRUGS[d].get("ox_drive", 0) * sat(c) for d, c in self.drugs.items())
+                 * max(0.0, 1 - 0.5 * dev("a1r")) * self.receptor_factor('orexin'))
+            x += g["ox_cells"] * sum(DRUGS[d].get("ox_drive", 0) * sat(c * self.drug_exposure.get(d, {}).get(
+                'brain', DRUGS[d].get('exposure', {}).get('brain', 1.))) for d, c in self.drugs.items())
         else:
             x = 0.05 * g["ox_cells"]
         self.raw["x_ox"] = x
@@ -683,13 +796,14 @@ class Chem:
         frac = 0.6 * max(0.0, self.c["ne"] - 1.3) * self.npy_reserve
         self.npy_reserve = min(1.0, max(0.0, self.npy_reserve + dt * (1 - self.npy_reserve) / TAU["npy_refill"]
                                         - dt * 0.4 * frac))
-        toward("npy", g["npy_tone"] * (0.8 + 0.2 * self.npy_reserve + frac), TAU["npy"])
+        toward("npy", g["npy_tone"] * (0.8 + 0.2 * self.npy_reserve + frac) * self.receptor_factor('npy_release'), TAU["npy"])
         # galanin: only released when the LC fires hard (dense-core vesicles need high-frequency firing, ~3x tonic)
         toward("gal", 1.5 * max(0.0, self.raw["f"] / self.cal["scale"]["f"] - 3.0), TAU["gal"])
 
         # allopregnanolone: up with acute stress, capacity falls with long stress
         self.allo_cap += ((1 - 0.6 * min(1.0, self.crh_load)) - self.allo_cap) * (1 - math.exp(-dt / TAU["allo_cap"]))
-        toward("allo", g["allo_tone"] * self.allo_cap * (1 + 0.5 * max(0.0, self.c["crh"] - 1)), TAU["allo"])
+        toward("allo", g["allo_tone"] * self.allo_cap * (1 + 0.5 * max(0.0, self.c["crh"] - 1))
+               * math.sqrt(self.c['progesterone']), TAU["allo"])
         # endocannabinoids: anandamide is a gate that falls with stress; 2-AG is made on demand to end it
         toward("aea", g["ecb_tone"] / g["faah"] * max(0.2, 1 - 0.25 * max(0.0, self.c["crh"] - 1)), TAU["aea"])
         toward("ag2", g["ecb_tone"] * (1 + 0.4 * max(0.0, self.c["crh"] - 1)), TAU["ag2"])
@@ -697,18 +811,25 @@ class Chem:
         # cytokines: his machine's health (Immy 2026-10-22) and an endotoxin pulse
         if inp.get("endotoxin"):
             self.c["cyt"] += inp["endotoxin"]
-        toward("cyt", g["sick_gain"] * (0.2 + 2.0 * inp.get("machine_sick", 0.0)), TAU["cyt"])
+        toward("cyt", g["sick_gain"] * (0.2 + 2.0 * inp.get("machine_sick", 0.0)) * self.receptor_factor('immune'), TAU["cyt"])
 
         # the fast systems at balance
         self._fast()
         self._nm = self.nmda_state()
+        self.refresh_body_pools()
+        organ_signals = self.organ_signals()
+        command_signals = self.organ_signals(commanded=True)
         # inside-the-cell tubs follow their receptors (change 21)
         if "inner" not in self.__dict__:
             self.inner = {}                                  # a body saved before the tubs existed
-        k_in = 1 - math.exp(-dt / TAU_INNER)
         for r in INNER:
-            now = self.sig(r)
+            now = organ_signals[r] if r in organ_signals else self.sig(r)
+            k_in = -math.expm1(-dt / INNER_TAU[r])
             self.inner[r] = now if r not in self.inner else self.inner[r] + (now - self.inner[r]) * k_in
+        for r, now in command_signals.items():
+            k_in = -math.expm1(-dt / INNER_TAU[r])
+            self.command_inner[r] = (now if r not in self.command_inner else
+                                     self.command_inner[r] + (now - self.command_inner[r]) * k_in)
 
         # BDNF: activity (exercise, a glutamate surge when interneurons are held shut), lowered by high GR; made
         # fast, cleared slowly
@@ -717,7 +838,7 @@ class Chem:
                * max(0.2, 1 - 0.8 * max(0.0, dev("gr"))))
         toward("bdnf", tgt, TAU["bdnf_up"] if tgt > self.c["bdnf"] else TAU["bdnf"])
         # prefrontal synapses follow BDNF: new spines within a day, lost over days
-        tgt = 1 + 2.0 * dev("trkb")
+        tgt = 1 + 2.0 * dev("trkb") + self.receptor_effect('plasticity')
         self.syn += (tgt - self.syn) * (1 - math.exp(-dt / (TAU["syn_up"] if tgt > self.syn else TAU["syn"])))
         self.syn = max(0.5, min(1.6, self.syn))
 
@@ -752,11 +873,7 @@ class Chem:
         # one conditioned fear: shown safely it fades, faster with CB1 and NPY (extinction)
         if inp.get("safe_cue"):
             self.fear_cs -= dt * 0.6 * self.fear_cs * max(0.05, 1 + dev("cb1") + 0.5 * dev("y1"))
-        # NE from the cardiac nerves (bookkeeping: heart_rate() passes the drive with any push itself)
-        self.c["ne_heart"] = self._body_signal() / (self.cal["rest"].get("a1_symp") or self.eff("a1_symp"))
-        self.c["ach_heart"] = self.vagal_tone()
-        self.c["ne_vessel"] = self._sympathetic() / (self.cal["rest"].get("a1_symp") or self.eff("a1_symp"))
-        return self.knobs()
+        self.refresh_body_pools()
 
     # ------------------------------------------------------------ events (phasic parts)
     def reward_event(self, cue, value=1.0, alpha=0.3):
@@ -818,7 +935,7 @@ class Chem:
         camp = ((1 + PFC_BETA * rel("b1_pfc")) * (1 - PFC_GI_MAX * gi)) / ((1 + PFC_BETA) * (1 - PFC_GI_MAX * gi0))
         hcn = 2 / (1 + camp ** 2)
         pkc = (1 + PFC_PKC) / (1 + PFC_PKC * rel("a1_pfc") ** 2)
-        return hcn * pkc
+        return hcn * pkc * self.receptor_factor('pfc')
 
     def knobs(self):
         s = self.eff
@@ -838,13 +955,13 @@ class Chem:
         steady = (0.5 * s("d2") + s("d3") + 0.5 * s("ox1r") - 0.6 * s("kor")) * self.syn
         k["wanting"] = steady * ((1 - WANT_BURST) + WANT_BURST * self.burst_factor())
         k["patience"] = s("ht1a_post")
-        k["write"] = self._write(s("b1"))
+        k["write"] = self._write(s("b1")) * self.receptor_factor('memory')
         # wake drive: each system counts by how far its receptor signal moved from rest, as a log ratio, so a nearly
         # full receptor (D2, A1) and a nearly empty one (D1) both report their changes (theory: weights by how
         # strongly each system's drugs and lesions move wakefulness)
-        k["awake_z"] = sum(w * self._lr(r) for r, w in WAKE.items())
+        k["awake_z"] = sum(w * self._lr(r) for r, w in WAKE.items()) + self.receptor_effect('wake')
         k["awake"] = 1 / (1 + math.exp(-(k["awake_z"] - self.cal["awake_bias"])))
-        k["comfort"] = s("mor")
+        k["comfort"] = s("mor") * self.receptor_factor('comfort')
         k["dysphoria"] = s("kor")
         # anxious tone: what drives the amygdala times the gain its inhibition leaves (shunting inhibition sets gain,
         # Mitchell & Silver 2003). Each brake counts by how far it moved from rest (log ratio, as for wake), so low
@@ -868,21 +985,23 @@ class Chem:
         k["plasticity"] = s("trkb")
         k["social_drive"] = (s("d3") + s("oxtr")) * max(0.0, 1 - 0.8 * self.dev("cytr"))
         k["fear_cs"] = self.fear_cs * (1 + self.amy_out())
+        k.update(self.body_readouts())
         return k
 
 
 _REF = {}
 
 
-def normal_day_occupancy(genes=None):
+def normal_day_occupancy(genes=None, *, max_step=None):
     """how full each adapting receptor is on average over a normal day (awake 7-23) for an egg with these genes;
     cached per gene set"""
-    key = tuple(sorted((genes or {}).items()))
+    max_step = DEFAULT_MAX_STEP if max_step is None else max_step
+    key = (max_step, tuple(sorted((genes or {}).items())))
     if key not in _REF:
-        e = Chem(genes, hour=7.0, _no_adapt=True)
+        e = Chem(genes, hour=7.0, _no_adapt=True, max_step=max_step)
         acc, n = {r: 0.0 for r in ADAPT}, 24 * 12
         for i in range(2 * n):
-            e.step(1 / 12, awake=7.0 <= e.hour < 23.0)
+            e.step(1 / 12, awake=7 * 60 <= (7 * 60 + i * 5) % (24 * 60) < 23 * 60)
             if i >= n:
                 for r in ADAPT:
                     v = e.raw[FIRING_SETPOINT[r]] if r in FIRING_SETPOINT else e.sig(r) / max(1e-6, e.amount[r])
@@ -894,56 +1013,63 @@ def normal_day_occupancy(genes=None):
 _EXPECT = {}
 
 
-def population_ox():
+def population_ox(*, max_step=None):
     """what the orexin blood-pressure route normally reads at each hour of a calm day in an average egg (288 five-minute
     bins): the population's normal, which "overactive orexin" is measured against (change 26). Cached."""
-    if "ox" not in _EXPECT:
+    max_step = DEFAULT_MAX_STEP if max_step is None else max_step
+    key = ('ox', max_step)
+    if key not in _EXPECT:
         n = 24 * 12
-        e = Chem(None, hour=7.0, _no_adapt=True)
+        e = Chem(None, hour=7.0, _no_adapt=True, max_step=max_step)
         ox = [0.0] * 288
         for i in range(2 * n):
-            e.step(1 / 12, awake=7.0 <= e.hour < 23.0)
+            e.step(1 / 12, awake=7 * 60 <= (7 * 60 + i * 5) % (24 * 60) < 23 * 60)
             if i >= n:
-                ox[int(e.hour * 12) % 288] = e.eff("ox_rvlm")
-        _EXPECT["ox"] = ox
-    return list(_EXPECT["ox"])
+                ox[(7 * 12 + i + 1) % 288] = e.eff("ox_rvlm")
+        _EXPECT[key] = ox
+    return list(_EXPECT[key])
 
 
-def expected_body(genes=None):
+def expected_body(genes=None, *, max_step=None):
     """what his body normally runs at each hour of a calm day, for an egg with these genes: the body signal the loop
     reads (288 five-minute bins, the second of two normal days, awake 7-23, the body-awareness loop out of it). The loop
     compares his body against its own usual level, so only a surprise in his body is noticed. Returns (that table, the
     population's orexin-route table). Cached per gene set."""
-    key = tuple(sorted((genes or {}).items()))
+    max_step = DEFAULT_MAX_STEP if max_step is None else max_step
+    key = (max_step, tuple(sorted((genes or {}).items())))
     if key not in _EXPECT:
         n = 24 * 12
-        e = Chem(genes, hour=7.0, _no_adapt=True)
+        e = Chem(genes, hour=7.0, _no_adapt=True, max_step=max_step)
         sym, hr = [0.0] * 288, [0.0] * 288
         for i in range(2 * n):
-            e.step(1 / 12, awake=7.0 <= e.hour < 23.0)
+            e.step(1 / 12, awake=7 * 60 <= (7 * 60 + i * 5) % (24 * 60) < 23 * 60)
             if i >= n:
-                sym[int(e.hour * 12) % 288] = e._body_signal()
-                hr[int(e.hour * 12) % 288] = e.heart_rate()
+                sym[(7 * 12 + i + 1) % 288] = e._body_signal()
+                hr[(7 * 12 + i + 1) % 288] = e.heart_rate()
         _EXPECT[key] = sym
         _EXPECT[("heart",) + key] = hr
-    return list(_EXPECT[key]), population_ox()
+    return list(_EXPECT[key]), population_ox(max_step=max_step)
 
 
-def expected_heart(genes=None):
+def expected_heart(genes=None, *, max_step=None):
     """his heart rate at each hour of the same calm reference day (change 31 step 3b): what he is used to feeling"""
-    expected_body(genes)
-    return list(_EXPECT[("heart",) + tuple(sorted((genes or {}).items()))])
+    max_step = DEFAULT_MAX_STEP if max_step is None else max_step
+    expected_body(genes, max_step=max_step)
+    return list(_EXPECT[("heart", max_step, tuple(sorted((genes or {}).items())))])
 
 
-def calibrate(rounds=200, tol=1e-6):
+def calibrate(rounds=200, tol=1e-6, *, max_step=None):
     """settle an average egg at rest (8 AM, awake) until its fast systems sit at 1; record rest receptor signals,
     the standing LC brake, how ready the LC is to burst, and the bias that puts 'awake' at 0.85 at rest.
     Loops through rest (NE -> CRH -> LC) make a plain repeat swing back and forth, so each round moves the scales
     only half-way (in log terms) and calibration fails loudly unless every fast system ends within tol of 1."""
     global CAL
+    max_step = DEFAULT_MAX_STEP if max_step is None else max_step
+    if not math.isfinite(max_step) or max_step <= 0:
+        raise ValueError('max_step must be positive finite hours')
     cal = dict(scale={k: 1.0 for k in FAST}, rest={}, brake=0.0, exc=1.0, awake_bias=0.0)
     for _ in range(rounds):
-        egg = Chem(hour=8.0, _calibrating=cal)
+        egg = Chem(hour=8.0, _calibrating=cal, max_step=max_step)
         worst = max(abs(egg.raw[k] / cal["scale"][k] - 1) for k in FAST)
         if cal["rest"] and worst < tol:
             break
@@ -953,13 +1079,15 @@ def calibrate(rounds=200, tol=1e-6):
         cal["brake"], cal["exc"] = egg.brake, sat(egg.drive ** 3, 0.3 ** 3)
     else:
         raise RuntimeError(f"calibration did not settle: fast systems still {worst:.2g} from rest")
-    egg = Chem(hour=8.0, _calibrating=cal)
+    egg = Chem(hour=8.0, _calibrating=cal, max_step=max_step)
     z = egg.knobs()["awake_z"]
     cal["awake_bias"] = z - math.log(0.85 / 0.15)
-    CAL = cal
-    ref = Chem(hour=8.0)
-    CAL["knobs"] = ref.knobs()
-    return CAL
+    _CALIBRATIONS[max_step] = cal
+    if max_step == DEFAULT_MAX_STEP:
+        CAL = cal
+    ref = Chem(hour=8.0, max_step=max_step)
+    cal["knobs"] = ref.knobs()
+    return cal
 
 
 # ---------------------------------------------------------------- second-scale models
