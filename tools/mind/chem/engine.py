@@ -24,6 +24,7 @@ The minute-scale LC follows lc_spikes(): the brake slows firing AND cuts the NE 
 pays it twice while a burst (driven, too fast for its own brake) pays it once.
 """
 import math
+import copy
 import numpy as np
 import receptor_body as RB
 
@@ -287,7 +288,7 @@ class Chem(RB.ReceptorBody):
     receptor_definitions = RECEPTORS
     vessel_alpha1_weight = VESSEL_A1
 
-    def __init__(self, genes=None, hour=8.0, _calibrating=False, _no_adapt=False, max_step=None):
+    def __init__(self, genes=None, hour=8.0, _calibrating=False, _no_adapt=False, max_step=None, _reference=False):
         self.max_step = DEFAULT_MAX_STEP if max_step is None else max_step
         if not math.isfinite(self.max_step) or self.max_step <= 0:
             raise ValueError('max_step must be positive finite hours')
@@ -325,6 +326,7 @@ class Chem(RB.ReceptorBody):
         self.abs_t, self.sleep_start = 0.0, -99.0            # hours lived; when the last sleep began
         self.woke_abs_t = None                              # synthetic waking history during constructor settling
         self.expect_ox = None                                # and what his orexin blood-pressure route normally reads
+        self._ox_reference_role = 'disabled'                 # settling/calibration never spawns another body
         self.inp, self.raw = {}, {k: 1.0 for k in FAST}
         self.drive, self.brake = 1.0, 0.0
         self.ref_occ, self.occ_avg = {}, {}                  # empty = receptors don't adapt (settling, reference)
@@ -333,12 +335,15 @@ class Chem(RB.ReceptorBody):
         for _ in range(240):                                 # settle at rest for the 4 hours before `hour`
             self.step(1 / 60, awake=True)
         self.woke_abs_t = self.abs_t - ((self.hour - self.woke_at) % 24)
+        if _reference:
+            self._ox_reference_role = 'reference'
         if not _calibrating and not _no_adapt:
             # receptors adapt against THIS egg's own normal day (sleeping 23-7), never against one moment of it
             self.ref_occ = normal_day_occupancy(genes, max_step=self.max_step)
             self.occ_avg = dict(self.ref_occ)
             self.expect, self.expect_ox = expected_body(genes, max_step=self.max_step)
             self.expect_hr = expected_heart(genes, max_step=self.max_step)
+            self._attach_ox_reference('constructor_prior')
 
     # ------------------------------------------------------------ helpers
     def dev(self, r):
@@ -354,12 +359,51 @@ class Chem(RB.ReceptorBody):
         return signal * self.nic_available.get(r, 1.0)
 
     def _sympathetic(self):
-        """how hard his body is running its alarm (the sympathetic read-out): peripheral α1 plus the orexin route above
-        what it normally reads at this hour (change 26: orexin normally rises through the day; the route is not active in
-        normal animals, only where orexin is overactive: Huang 2010, Li 2013), else above its resting level"""
-        table = getattr(self, "expect_ox", None)
-        normal = table[int(self.hour * 12) % 288] if table else self.cal["rest"].get("ox_rvlm", 1.0)
+        """Peripheral α1 plus OX above an independent normal reference under actual sleep/light history.
+
+        The reference keeps the population's fixed receptor abundances. Its own
+        excess is zero by definition. Calibration/quiet fixtures retain the rest
+        comparison; usual-day tables still serve familiarity and adaptation.
+        """
+        if self.__dict__.get('_ox_reference_role') == 'reference':
+            return self.eff('a1_symp')
+        normal = self.__dict__.get('ox_reference_value', self.cal['rest'].get('ox_rvlm', 1.0))
+        if '_ox_reference_role' not in self.__dict__ and self.__dict__.get('expect_ox'):
+            normal = self.expect_ox[int(self.hour * 12) % 288]  # old saved readout until first-step migration
         return self.eff("a1_symp") + 3.0 * max(0.0, self.eff("ox_rvlm") - normal - 0.03)
+
+    def _attach_ox_reference(self, origin):
+        """Attach a normal prior without overwriting any subject physiology.
+
+        Old JSON saves contain no input history to replay. Their reference prior
+        is explicitly uncertain; copying subject S or phase would import its
+        genes/drug effects into the normal comparison.
+        """
+        state = _normal_ox_start(self.hour, self.max_step)
+        if origin == 'legacy_unknown_history':
+            state['awake'] = self.awake
+            if not self.awake:
+                state['sleep_start'] = state['abs_t']
+        self.ox_reference = state
+        self._ox_reference_role = 'subject'
+        self.ox_reference_value = state['inner']['ox_rvlm']
+        self.ox_reference_meta = dict(version=1, origin=origin, attached_abs_t=self.abs_t,
+                                      attached_hour=self.hour, history_hours=0.0)
+
+    def _advance_ox_reference(self, dt, inp):
+        if '_ox_reference_role' not in self.__dict__:
+            if self.__dict__.get('ref_occ'):
+                self._attach_ox_reference('legacy_unknown_history')
+            else:
+                self._ox_reference_role = 'disabled'
+        if self._ox_reference_role != 'subject':
+            return None
+        reference = object.__new__(Chem)
+        reference.__dict__ = self.ox_reference             # scalars and nested state both persist as plain JSON
+        self.ox_reference_value = reference.eff('ox_rvlm')  # old/old during body and organ-target updates
+        reference._step(dt, **{k: inp[k] for k in ('awake', 'light') if k in inp})
+        self.ox_reference_meta['history_hours'] += dt
+        return reference.eff('ox_rvlm')
 
     def _body_signal(self):
         """the body's alarm output as the body-awareness loop reads it (the read-out change 22 sized the loop on): peripheral
@@ -372,7 +416,7 @@ class Chem(RB.ReceptorBody):
         return max(0.0, 1 - VAGAL_W * max(0.0, self.raw["f"] / self.cal["scale"]["f"] - 1))
 
     def sleep_loss(self):
-        """awake past his usual bedtime pressure: 0 through a normal day, 1 by 04:00 on a night kept awake"""
+        """Existing sleep-loss response to accumulated process S, independent of wall-clock bedtime."""
         return min(1.0, max(0.0, (self.S - 0.62) / 0.1))
 
     def cortisol_waking_rise(self):
@@ -679,13 +723,14 @@ class Chem(RB.ReceptorBody):
         company (0/1), touch, rejection, judged, novelty, exercise, machine_sick (0..1), endotoxin (pulse size),
         light, safe_cue (the conditioned cue shown with nothing bad: extinction), body_reminded (0..1: his body is
         pointed out to him), heart_push (an outside push on his heart the loop can feel)"""
-        g, dev = self.g, self.dev
-        was = self.awake
-        self.awake = inp.get("awake", True)
         if "shift" not in self.__dict__:                     # a body saved before change 27
             self.shift, self.light_phase, self.abs_t, self.sleep_start = 0.0, 0.0, 0.0, -99.0
         if 'woke_abs_t' not in self.__dict__:                # old saves retain only a clock time, not wake history
             self.woke_abs_t = self.abs_t - ((self.hour - self.woke_at) % 24)
+        next_normal_ox = self._advance_ox_reference(dt, inp)
+        g, dev = self.g, self.dev
+        was = self.awake
+        self.awake = inp.get("awake", True)
         self.abs_t += dt
         if was and not self.awake:
             self.sleep_start = self.abs_t
@@ -838,6 +883,8 @@ class Chem(RB.ReceptorBody):
             now = organ_signals[r] if r in organ_signals else self.sig(r)
             k_in = -math.expm1(-dt / INNER_TAU[r])
             self.inner[r] = now if r not in self.inner else self.inner[r] + (now - self.inner[r]) * k_in
+        if next_normal_ox is not None:
+            self.ox_reference_value = next_normal_ox       # new/new for subsequent pools and final readouts
         for r, now in command_signals.items():
             k_in = -math.expm1(-dt / INNER_TAU[r])
             self.command_inner[r] = (now if r not in self.command_inner else
@@ -999,6 +1046,21 @@ class Chem(RB.ReceptorBody):
         k["fear_cs"] = self.fear_cs * (1 + self.amy_out())
         k.update(self.body_readouts())
         return k
+
+
+_OX_STARTS = {}
+
+
+def _normal_ox_start(hour, max_step):
+    """Copy only identical synthetic initial priors; never cache a lived trajectory by clock hour."""
+    key = (hour, max_step)
+    cal = _CALIBRATIONS.get(max_step)
+    cached = _OX_STARTS.get(key)
+    if cached is None or cached[0] is not cal:
+        reference = Chem(hour=hour, _no_adapt=True, max_step=max_step, _reference=True)
+        cached = (reference.cal, copy.deepcopy(vars(reference)))
+        _OX_STARTS[key] = cached
+    return copy.deepcopy(cached[1])
 
 
 _REF = {}
