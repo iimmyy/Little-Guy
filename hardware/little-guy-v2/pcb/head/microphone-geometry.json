@@ -1,0 +1,166 @@
+{
+  "geometry_id": "head-A-diamond-frozen-2026-10-25-v1",
+  "owner_frozen": true,
+  "release": false,
+  "hardware_validated": false,
+  "source": {
+    "scene": ".run/results/mind/body-v2/CURRENT.xml",
+    "scene_sha256": "299eba25aa0d393f2975f79cc67abf634a2540a0b7e7326e3403f30bba066743",
+    "generator": "tools/body/head_a.py",
+    "generator_sha256": "d768a234aec28d028a1afd64d81d4ce26cfcd87ef614cdfb097f50db6e0ddce8",
+    "selector": "four same-body mic marker centers with rgba 0.25 0.25 0.27 1, in i1_shellI1 mesh frame",
+    "read_only": true,
+    "brief": "hardware/little-guy-v2/PCB-BRIEF.md",
+    "brief_sha256": "5540479b48d70ef623aa03a49d33871f32ba8b517be1da465288bbf9766870fc",
+    "fit_check_script": "tools/body/mic_diamond.py",
+    "fit_check_script_sha256": "23b10d7ac263db1a11d907c03c1265f4e5408e03c1101ae0b8aee80a512e85f8",
+    "fit_report": ".run/results/mind/body-v2/mic-diamond-1025b/mic-diamond.json",
+    "fit_report_sha256": "e70af5685518219c40b1cbb706569e091a6261f72068784609d9c781cf90eb99"
+  },
+  "plane_origin_head_mm": [
+    0.0,
+    0.0,
+    37.333349999999996
+  ],
+  "array_axes_in_head_frame": {
+    "x_right": [
+      -1.0,
+      0.0,
+      0.0
+    ],
+    "y_front": [
+      0.0,
+      -0.9804024769271225,
+      0.19700503352747875
+    ],
+    "z_normal": [
+      0.0,
+      0.19700503352747875,
+      0.9804024769271225
+    ]
+  },
+  "tilt_front_up_deg": 11.361875931633605,
+  "maximum_normal_residual_mm": 0.3356874064754658,
+  "front_back_head_horizontal_mm": 58.0,
+  "front_above_back_mm": 11.651600000000002,
+  "front_back_board_plane_mm": 59.15876751042187,
+  "left_right_board_plane_mm": 100.0,
+  "array_frame": "right-handed: +X robot right, +Y robot front/up along plane, +Z outward normal; origin at target centroid",
+  "kicad_frame": "acoustic target X=array X, Y=-array Y; origin local and arbitrary until layout; no PCB plane height specified",
+  "firmware_status": "generated geometry fragment only; logical MIC0..3 must be mapped to stated physical PDM inputs; no firmware built or flashed",
+  "microphones": [
+    {
+      "logical_index": 0,
+      "location": "front",
+      "reference": "MK501",
+      "pdm_net": "PDM_DATA0",
+      "xvf3800_pin": 46,
+      "target_head_mm": [
+        0.0,
+        -29.0,
+        43.5
+      ],
+      "array_plane_mm": [
+        0.0,
+        29.646532920888777,
+        0.0
+      ],
+      "kicad_acoustic_target_mm": [
+        0.0,
+        -29.646532920888777
+      ],
+      "signed_normal_residual_mm": 0.3326529620457599,
+      "projected_head_mm": [
+        0.0,
+        -29.065534307940837,
+        43.17386621205319
+      ]
+    },
+    {
+      "logical_index": 1,
+      "location": "back",
+      "reference": "MK502",
+      "pdm_net": "PDM_DATA1",
+      "xvf3800_pin": 50,
+      "target_head_mm": [
+        0.0,
+        29.0,
+        31.848399999999998
+      ],
+      "array_plane_mm": [
+        0.0,
+        -29.512234589533094,
+        0.0
+      ],
+      "kicad_acoustic_target_mm": [
+        0.0,
+        29.512234589533094
+      ],
+      "signed_normal_residual_mm": 0.3356874064754658,
+      "projected_head_mm": [
+        0.0,
+        28.933867891232545,
+        31.519291235218212
+      ]
+    },
+    {
+      "logical_index": 2,
+      "location": "left",
+      "reference": "MK503",
+      "pdm_net": "PDM_DATA2",
+      "xvf3800_pin": 48,
+      "target_head_mm": [
+        50.0,
+        0.0,
+        36.9925
+      ],
+      "array_plane_mm": [
+        -50.0,
+        -0.06714916567784036,
+        0.0
+      ],
+      "kicad_acoustic_target_mm": [
+        -50.0,
+        0.06714916567784036
+      ],
+      "signed_normal_residual_mm": -0.33417018426060585,
+      "projected_head_mm": [
+        50.0,
+        0.06583320835414441,
+        37.32012127636429
+      ]
+    },
+    {
+      "logical_index": 3,
+      "location": "right",
+      "reference": "MK504",
+      "pdm_net": "PDM_DATA3",
+      "xvf3800_pin": 51,
+      "target_head_mm": [
+        -50.0,
+        0.0,
+        36.9925
+      ],
+      "array_plane_mm": [
+        50.0,
+        -0.06714916567784036,
+        0.0
+      ],
+      "kicad_acoustic_target_mm": [
+        50.0,
+        0.06714916567784036
+      ],
+      "signed_normal_residual_mm": -0.33417018426060585,
+      "projected_head_mm": [
+        -50.0,
+        0.06583320835414441,
+        37.32012127636429
+      ]
+    }
+  ],
+  "release_limits": [
+    "acoustic target points are not package placement origins",
+    "board copper plane offset, package rotation, gasket, outline and mounts remain to be engineered",
+    "target coordinates do not release a fabricated PCB or validate acoustic performance"
+  ]
+}

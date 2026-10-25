@@ -1,0 +1,222 @@
+board,ref,function,pin,net,connector_mpn,cable_released
+power,J101,Front-door USB-C power/CC interface,1,USB_VBUS,PENDING,False
+power,J101,Front-door USB-C power/CC interface,2,GND,PENDING,False
+power,J101,Front-door USB-C power/CC interface,3,USB_CC1,PENDING,False
+power,J101,Front-door USB-C power/CC interface,4,USB_CC2,PENDING,False
+power,J102,PD EEPROM programmer / no second controller during use,1,PD_3V3,PENDING,False
+power,J102,PD EEPROM programmer / no second controller during use,2,GND,PENDING,False
+power,J102,PD EEPROM programmer / no second controller during use,3,PD_SCL,PENDING,False
+power,J102,PD EEPROM programmer / no second controller during use,4,PD_SDA,PENDING,False
+power,J102,PD EEPROM programmer / no second controller during use,5,PD_EE_WP,PENDING,False
+power,J103,Spinal-cord host / charging supervision,1,AON_5V,PENDING,False
+power,J103,Spinal-cord host / charging supervision,2,GND,PENDING,False
+power,J103,Spinal-cord host / charging supervision,3,HOST_SCL,PENDING,False
+power,J103,Spinal-cord host / charging supervision,4,HOST_SDA,PENDING,False
+power,J103,Spinal-cord host / charging supervision,5,PD_IRQ_N,PENDING,False
+power,J103,Spinal-cord host / charging supervision,6,CHG_ALLOW,PENDING,False
+power,J103,Spinal-cord host / charging supervision,7,PACK_TEMP_STATUS,PENDING,False
+power,J201,Pack primary 103AT-2 NTC (must touch cells),1,PACK_NTC_MAIN,PENDING,False
+power,J201,Pack primary 103AT-2 NTC (must touch cells),2,GND,PENDING,False
+power,J202,Wireless receiver DC; select matched receiver/coil,1,WIRELESS_DC,PENDING,False
+power,J202,Wireless receiver DC; select matched receiver/coil,2,GND,PENDING,False
+power,J203,Fused/protected 3S pack / NOT bare cells,1,PACK_FROM_BMS,PENDING,False
+power,J203,Fused/protected 3S pack / NOT bare cells,2,GND,PENDING,False
+power,J401,Regulator enable / independent motor-cut gate,1,MOTOR_REG_EN,PENDING,False
+power,J401,Regulator enable / independent motor-cut gate,2,GND,PENDING,False
+power,J401,Regulator enable / independent motor-cut gate,3,MOTOR_REG_PG,PENDING,False
+power,J601,External input damping test point,1,PACK_PROTECTED,PENDING,False
+power,J601,External input damping test point,2,GND,PENDING,False
+power,J701,Jetson carrier power / connector selection pending,1,JETSON_12V,PENDING,False
+power,J701,Jetson carrier power / connector selection pending,2,GND,PENDING,False
+power,J702,Spinal-cord power sequencing,1,JETSON_EN,PENDING,False
+power,J702,Spinal-cord power sequencing,2,JETSON_PG_N,PENDING,False
+power,J702,Spinal-cord power sequencing,3,JETSON_CC_N,PENDING,False
+power,J702,Spinal-cord power sequencing,4,GND,PENDING,False
+power,J801,Power output / branch and cable protection pending,1,HAND_LEFT_5V7,PENDING,False
+power,J801,Power output / branch and cable protection pending,2,GND,PENDING,False
+power,J802,Hardware-gated enable and power-good,1,HAND_LEFT_ENABLE,PENDING,False
+power,J802,Hardware-gated enable and power-good,2,HAND_LEFT_PG_N,PENDING,False
+power,J802,Hardware-gated enable and power-good,3,GND,PENDING,False
+power,J901,Power output / branch and cable protection pending,1,HAND_RIGHT_5V7,PENDING,False
+power,J901,Power output / branch and cable protection pending,2,GND,PENDING,False
+power,J902,Hardware-gated enable and power-good,1,HAND_RIGHT_ENABLE,PENDING,False
+power,J902,Hardware-gated enable and power-good,2,HAND_RIGHT_PG_N,PENDING,False
+power,J902,Hardware-gated enable and power-good,3,GND,PENDING,False
+power,J1401,Power output / branch and cable protection pending,1,PERIPHERAL_5V0,PENDING,False
+power,J1401,Power output / branch and cable protection pending,2,GND,PENDING,False
+power,J1402,Hardware-gated enable and power-good,1,PERIPHERAL_ENABLE,PENDING,False
+power,J1402,Hardware-gated enable and power-good,2,PERIPHERAL_PG_N,PENDING,False
+power,J1402,Hardware-gated enable and power-good,3,GND,PENDING,False
+power,J1001,Normally-closed cut loop / opens to clear,1,CUT_LOOP_FEED,PENDING,False
+power,J1001,Normally-closed cut loop / opens to clear,2,MOTOR_CLEAR_N,PENDING,False
+power,J1002,Spinal-cord arm and rail requests,1,GND,PENDING,False
+power,J1002,Spinal-cord arm and rail requests,2,MOTOR_ARM,PENDING,False
+power,J1002,Spinal-cord arm and rail requests,3,MOTOR_REG_REQUEST,PENDING,False
+power,J1002,Spinal-cord arm and rail requests,4,HAND_LEFT_REQUEST,PENDING,False
+power,J1002,Spinal-cord arm and rail requests,5,HAND_RIGHT_REQUEST,PENDING,False
+power,J1002,Spinal-cord arm and rail requests,6,LEG_REQUEST,PENDING,False
+power,J1002,Spinal-cord arm and rail requests,7,MOTOR_ARMED,PENDING,False
+power,J1002,Spinal-cord arm and rail requests,8,UPPER_REQUEST,PENDING,False
+power,J1002,Spinal-cord arm and rail requests,9,MOTOR_CLEAR_N,PENDING,False
+power,J1002,Spinal-cord arm and rail requests,10,JETSON_EN,PENDING,False
+power,J1002,Spinal-cord arm and rail requests,11,PERIPHERAL_ENABLE,PENDING,False
+power,J1002,Spinal-cord arm and rail requests,12,PACK_ALERT_N,PENDING,False
+power,J1101,Controller metering interrupt,1,PACK_ALERT_N,PENDING,False
+power,J1101,Controller metering interrupt,2,GND,PENDING,False
+power,J1201,103AT-2 segment 1,1,NTC_SEG1,PENDING,False
+power,J1201,103AT-2 segment 1,2,GND,PENDING,False
+power,J1202,103AT-2 segment 2,1,NTC_SEG2,PENDING,False
+power,J1202,103AT-2 segment 2,2,GND,PENDING,False
+power,J1203,103AT-2 segment 3,1,NTC_SEG3,PENDING,False
+power,J1203,103AT-2 segment 3,2,GND,PENDING,False
+power,J1301,LEG power to protected harness,1,LEG_11V3,PENDING,False
+power,J1301,LEG power to protected harness,2,GND,PENDING,False
+power,J1351,UPPER power to protected harness,1,UPPER_11V3,PENDING,False
+power,J1351,UPPER power to protected harness,2,GND,PENDING,False
+spinal,J101,To power J103 / charging and always-on power,1,AON_5V,PENDING,False
+spinal,J101,To power J103 / charging and always-on power,2,GND,PENDING,False
+spinal,J101,To power J103 / charging and always-on power,3,HOST_SCL,PENDING,False
+spinal,J101,To power J103 / charging and always-on power,4,HOST_SDA,PENDING,False
+spinal,J101,To power J103 / charging and always-on power,5,PD_IRQ_N,PENDING,False
+spinal,J101,To power J103 / charging and always-on power,6,CHG_ALLOW,PENDING,False
+spinal,J101,To power J103 / charging and always-on power,7,PACK_TEMP_STATUS,PENDING,False
+spinal,J102,To power J1002 / motor control and watchdog clear,1,GND,PENDING,False
+spinal,J102,To power J1002 / motor control and watchdog clear,2,MOTOR_ARM,PENDING,False
+spinal,J102,To power J1002 / motor control and watchdog clear,3,MOTOR_REG_REQUEST,PENDING,False
+spinal,J102,To power J1002 / motor control and watchdog clear,4,HAND_LEFT_REQUEST,PENDING,False
+spinal,J102,To power J1002 / motor control and watchdog clear,5,HAND_RIGHT_REQUEST,PENDING,False
+spinal,J102,To power J1002 / motor control and watchdog clear,6,LEG_REQUEST,PENDING,False
+spinal,J102,To power J1002 / motor control and watchdog clear,7,MOTOR_ARMED,PENDING,False
+spinal,J102,To power J1002 / motor control and watchdog clear,8,UPPER_REQUEST,PENDING,False
+spinal,J102,To power J1002 / motor control and watchdog clear,9,WATCHDOG_FAULT_N,PENDING,False
+spinal,J102,To power J1002 / motor control and watchdog clear,10,JETSON_EN,PENDING,False
+spinal,J102,To power J1002 / motor control and watchdog clear,11,PERIPHERAL_ENABLE,PENDING,False
+spinal,J102,To power J1002 / motor control and watchdog clear,12,PACK_ALERT_N,PENDING,False
+spinal,J103,Power-board logic enables / connector interface pending,1,GND,PENDING,False
+spinal,J103,Power-board logic enables / connector interface pending,2,JETSON_EN,PENDING,False
+spinal,J103,Power-board logic enables / connector interface pending,3,PERIPHERAL_ENABLE,PENDING,False
+spinal,J103,Power-board logic enables / connector interface pending,4,PACK_ALERT_N,PENDING,False
+spinal,J104,Front-door button and LED / no motor current here,1,GND,PENDING,False
+spinal,J104,Front-door button and LED / no motor current here,2,POWER_BUTTON_N,PENDING,False
+spinal,J104,Front-door button and LED / no motor current here,3,AON_5V,PENDING,False
+spinal,J104,Front-door button and LED / no motor current here,4,LED_CATHODE,PENDING,False
+spinal,J201,LEG data to powered servo harness,1,LEG_DATA,PENDING,False
+spinal,J201,LEG data to powered servo harness,2,GND,PENDING,False
+spinal,J241,UPPER data to powered servo harness,1,UPPER_DATA,PENDING,False
+spinal,J241,UPPER data to powered servo harness,2,GND,PENDING,False
+spinal,J301,LEFT data to powered servo harness,1,LEFT_DATA,PENDING,False
+spinal,J301,LEFT data to powered servo harness,2,GND,PENDING,False
+spinal,J341,RIGHT data to powered servo harness,1,RIGHT_DATA,PENDING,False
+spinal,J341,RIGHT data to powered servo harness,2,GND,PENDING,False
+spinal,J401,LEFT foot / mates foot J101 pin for pin,1,LEFT_FOOT_5V,PENDING,False
+spinal,J401,LEFT foot / mates foot J101 pin for pin,2,GND,PENDING,False
+spinal,J401,LEFT foot / mates foot J101 pin for pin,3,SENSOR0_SCL,PENDING,False
+spinal,J401,LEFT foot / mates foot J101 pin for pin,4,SENSOR0_SDA,PENDING,False
+spinal,J401,LEFT foot / mates foot J101 pin for pin,5,LEFT_READY_N,PENDING,False
+spinal,J401,LEFT foot / mates foot J101 pin for pin,6,LEFT_XSHUT,PENDING,False
+spinal,J402,RIGHT foot / mates foot J101 pin for pin,1,RIGHT_FOOT_5V,PENDING,False
+spinal,J402,RIGHT foot / mates foot J101 pin for pin,2,GND,PENDING,False
+spinal,J402,RIGHT foot / mates foot J101 pin for pin,3,SENSOR1_SCL,PENDING,False
+spinal,J402,RIGHT foot / mates foot J101 pin for pin,4,SENSOR1_SDA,PENDING,False
+spinal,J402,RIGHT foot / mates foot J101 pin for pin,5,RIGHT_READY_N,PENDING,False
+spinal,J402,RIGHT foot / mates foot J101 pin for pin,6,RIGHT_XSHUT,PENDING,False
+spinal,J403,BME688 module,1,AON_5V,PENDING,False
+spinal,J403,BME688 module,2,GND,PENDING,False
+spinal,J403,BME688 module,3,SENSOR2_SCL,PENDING,False
+spinal,J403,BME688 module,4,SENSOR2_SDA,PENDING,False
+spinal,J404,Edge sensor A,1,AON_5V,PENDING,False
+spinal,J404,Edge sensor A,2,GND,PENDING,False
+spinal,J404,Edge sensor A,3,SENSOR3_SCL,PENDING,False
+spinal,J404,Edge sensor A,4,SENSOR3_SDA,PENDING,False
+spinal,J405,Edge sensor B,1,AON_5V,PENDING,False
+spinal,J405,Edge sensor B,2,GND,PENDING,False
+spinal,J405,Edge sensor B,3,SENSOR4_SCL,PENDING,False
+spinal,J405,Edge sensor B,4,SENSOR4_SDA,PENDING,False
+spinal,J501,Watchdog test points / fault goes to power J1002.9,1,WATCHDOG_KICK,PENDING,False
+spinal,J501,Watchdog test points / fault goes to power J1002.9,2,WATCHDOG_FAULT_N,PENDING,False
+spinal,J501,Watchdog test points / fault goes to power J1002.9,3,GND,PENDING,False
+spinal,J601,12 shell electrodes plus ground / no shield over sensing pads,1,TOUCH_PAD_01,PENDING,False
+spinal,J601,12 shell electrodes plus ground / no shield over sensing pads,2,TOUCH_PAD_02,PENDING,False
+spinal,J601,12 shell electrodes plus ground / no shield over sensing pads,3,TOUCH_PAD_03,PENDING,False
+spinal,J601,12 shell electrodes plus ground / no shield over sensing pads,4,TOUCH_PAD_04,PENDING,False
+spinal,J601,12 shell electrodes plus ground / no shield over sensing pads,5,TOUCH_PAD_05,PENDING,False
+spinal,J601,12 shell electrodes plus ground / no shield over sensing pads,6,TOUCH_PAD_06,PENDING,False
+spinal,J601,12 shell electrodes plus ground / no shield over sensing pads,7,TOUCH_PAD_07,PENDING,False
+spinal,J601,12 shell electrodes plus ground / no shield over sensing pads,8,TOUCH_PAD_08,PENDING,False
+spinal,J601,12 shell electrodes plus ground / no shield over sensing pads,9,TOUCH_PAD_09,PENDING,False
+spinal,J601,12 shell electrodes plus ground / no shield over sensing pads,10,TOUCH_PAD_10,PENDING,False
+spinal,J601,12 shell electrodes plus ground / no shield over sensing pads,11,TOUCH_PAD_11,PENDING,False
+spinal,J601,12 shell electrodes plus ground / no shield over sensing pads,12,TOUCH_PAD_12,PENDING,False
+spinal,J601,12 shell electrodes plus ground / no shield over sensing pads,13,GND,PENDING,False
+spinal,J701,12 shell electrodes plus ground / no shield over sensing pads,1,TOUCH_PAD_13,PENDING,False
+spinal,J701,12 shell electrodes plus ground / no shield over sensing pads,2,TOUCH_PAD_14,PENDING,False
+spinal,J701,12 shell electrodes plus ground / no shield over sensing pads,3,TOUCH_PAD_15,PENDING,False
+spinal,J701,12 shell electrodes plus ground / no shield over sensing pads,4,TOUCH_PAD_16,PENDING,False
+spinal,J701,12 shell electrodes plus ground / no shield over sensing pads,5,TOUCH_PAD_17,PENDING,False
+spinal,J701,12 shell electrodes plus ground / no shield over sensing pads,6,TOUCH_PAD_18,PENDING,False
+spinal,J701,12 shell electrodes plus ground / no shield over sensing pads,7,TOUCH_PAD_19,PENDING,False
+spinal,J701,12 shell electrodes plus ground / no shield over sensing pads,8,TOUCH_PAD_20,PENDING,False
+spinal,J701,12 shell electrodes plus ground / no shield over sensing pads,9,TOUCH_PAD_21,PENDING,False
+spinal,J701,12 shell electrodes plus ground / no shield over sensing pads,10,TOUCH_PAD_22,PENDING,False
+spinal,J701,12 shell electrodes plus ground / no shield over sensing pads,11,TOUCH_PAD_23,PENDING,False
+spinal,J701,12 shell electrodes plus ground / no shield over sensing pads,12,TOUCH_PAD_24,PENDING,False
+spinal,J701,12 shell electrodes plus ground / no shield over sensing pads,13,GND,PENDING,False
+spinal,J801,12 shell electrodes plus ground / no shield over sensing pads,1,TOUCH_PAD_25,PENDING,False
+spinal,J801,12 shell electrodes plus ground / no shield over sensing pads,2,TOUCH_PAD_26,PENDING,False
+spinal,J801,12 shell electrodes plus ground / no shield over sensing pads,3,TOUCH_PAD_27,PENDING,False
+spinal,J801,12 shell electrodes plus ground / no shield over sensing pads,4,TOUCH_PAD_28,PENDING,False
+spinal,J801,12 shell electrodes plus ground / no shield over sensing pads,5,TOUCH_PAD_29,PENDING,False
+spinal,J801,12 shell electrodes plus ground / no shield over sensing pads,6,TOUCH_PAD_30,PENDING,False
+spinal,J801,12 shell electrodes plus ground / no shield over sensing pads,7,TOUCH_PAD_31,PENDING,False
+spinal,J801,12 shell electrodes plus ground / no shield over sensing pads,8,TOUCH_PAD_32,PENDING,False
+spinal,J801,12 shell electrodes plus ground / no shield over sensing pads,9,TOUCH_PAD_33,PENDING,False
+spinal,J801,12 shell electrodes plus ground / no shield over sensing pads,10,TOUCH_PAD_34,PENDING,False
+spinal,J801,12 shell electrodes plus ground / no shield over sensing pads,11,TOUCH_PAD_35,PENDING,False
+spinal,J801,12 shell electrodes plus ground / no shield over sensing pads,12,TOUCH_PAD_36,PENDING,False
+spinal,J801,12 shell electrodes plus ground / no shield over sensing pads,13,GND,PENDING,False
+spinal,J901,12 shell electrodes plus ground / no shield over sensing pads,1,TOUCH_PAD_37,PENDING,False
+spinal,J901,12 shell electrodes plus ground / no shield over sensing pads,2,TOUCH_PAD_38,PENDING,False
+spinal,J901,12 shell electrodes plus ground / no shield over sensing pads,3,TOUCH_PAD_39,PENDING,False
+spinal,J901,12 shell electrodes plus ground / no shield over sensing pads,4,TOUCH_PAD_40,PENDING,False
+spinal,J901,12 shell electrodes plus ground / no shield over sensing pads,5,TOUCH_PAD_41,PENDING,False
+spinal,J901,12 shell electrodes plus ground / no shield over sensing pads,6,TOUCH_PAD_42,PENDING,False
+spinal,J901,12 shell electrodes plus ground / no shield over sensing pads,7,TOUCH_PAD_43,PENDING,False
+spinal,J901,12 shell electrodes plus ground / no shield over sensing pads,8,TOUCH_PAD_44,PENDING,False
+spinal,J901,12 shell electrodes plus ground / no shield over sensing pads,9,TOUCH_PAD_45,PENDING,False
+spinal,J901,12 shell electrodes plus ground / no shield over sensing pads,10,TOUCH_PAD_46,PENDING,False
+spinal,J901,12 shell electrodes plus ground / no shield over sensing pads,11,TOUCH_PAD_47,PENDING,False
+spinal,J901,12 shell electrodes plus ground / no shield over sensing pads,12,TOUCH_PAD_48,PENDING,False
+spinal,J901,12 shell electrodes plus ground / no shield over sensing pads,13,GND,PENDING,False
+foot,J101,Spinal to foot / 6 conductors,1,FOOT_5V,PENDING,False
+foot,J101,Spinal to foot / 6 conductors,2,GND,PENDING,False
+foot,J101,Spinal to foot / 6 conductors,3,FOOT_SCL,PENDING,False
+foot,J101,Spinal to foot / 6 conductors,4,FOOT_SDA,PENDING,False
+foot,J101,Spinal to foot / 6 conductors,5,FOOT_READY_N,PENDING,False
+foot,J101,Spinal to foot / 6 conductors,6,TOE_XSHUT,PENDING,False
+foot,J201,Load cell 1 / full bridge,1,BRIDGE_3V3,PENDING,False
+foot,J201,Load cell 1 / full bridge,2,GND,PENDING,False
+foot,J201,Load cell 1 / full bridge,3,CELL1_P,PENDING,False
+foot,J201,Load cell 1 / full bridge,4,CELL1_N,PENDING,False
+foot,J202,Load cell 2 / full bridge,1,BRIDGE_3V3,PENDING,False
+foot,J202,Load cell 2 / full bridge,2,GND,PENDING,False
+foot,J202,Load cell 2 / full bridge,3,CELL2_P,PENDING,False
+foot,J202,Load cell 2 / full bridge,4,CELL2_N,PENDING,False
+foot,J301,Load cell 3 / full bridge,1,BRIDGE_3V3,PENDING,False
+foot,J301,Load cell 3 / full bridge,2,GND,PENDING,False
+foot,J301,Load cell 3 / full bridge,3,CELL3_P,PENDING,False
+foot,J301,Load cell 3 / full bridge,4,CELL3_N,PENDING,False
+foot,J302,Load cell 4 / full bridge,1,BRIDGE_3V3,PENDING,False
+foot,J302,Load cell 4 / full bridge,2,GND,PENDING,False
+foot,J302,Load cell 4 / full bridge,3,CELL4_P,PENDING,False
+foot,J302,Load cell 4 / full bridge,4,CELL4_N,PENDING,False
+head,J101,Internal USB 2 device / ESD network pending,1,HEAD_USB_5V,PENDING,False
+head,J101,Internal USB 2 device / ESD network pending,2,HEAD_USB_DM,PENDING,False
+head,J101,Internal USB 2 device / ESD network pending,3,HEAD_USB_DP,PENDING,False
+head,J101,Internal USB 2 device / ESD network pending,4,GND,PENDING,False
+head,J102,JTAG breakout / NOT an XSYS2 pin-compatible header,1,HEAD_1V8,PENDING,False
+head,J102,JTAG breakout / NOT an XSYS2 pin-compatible header,2,GND,PENDING,False
+head,J102,JTAG breakout / NOT an XSYS2 pin-compatible header,3,HEAD_TCK,PENDING,False
+head,J102,JTAG breakout / NOT an XSYS2 pin-compatible header,4,HEAD_TMS,PENDING,False
+head,J102,JTAG breakout / NOT an XSYS2 pin-compatible header,5,HEAD_TDI,PENDING,False
+head,J102,JTAG breakout / NOT an XSYS2 pin-compatible header,6,HEAD_TDO,PENDING,False
+head,J102,JTAG breakout / NOT an XSYS2 pin-compatible header,7,HEAD_RESET_N,PENDING,False

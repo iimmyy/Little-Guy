@@ -1,0 +1,806 @@
+{
+  "status": "Static tipping sensitivity of a partial assumed mass model; not a stand release",
+  "modeled_mass_kg": 1.14,
+  "mass_ledger_kg": {
+    "two_moving_arms_including_six_servos": 0.69,
+    "five_other_servos": 0.275,
+    "bare_jetson_kit": 0.175
+  },
+  "jetson_fixed_horizontal_first_moment_kg_m": [
+    0.0,
+    -0.0175
+  ],
+  "analytical_arm_bound": {
+    "a_xyz_kg_m": [
+      0.001035,
+      0.017595,
+      -0.0006875
+    ],
+    "b_xyz_kg_m": [
+      0.011600000000000001,
+      0.0,
+      -0.040075
+    ],
+    "two_arm_horizontal_first_moment_bound_kg_m": 0.11871780950770222,
+    "one_arm_modeled_mass_kg": 0.345
+  },
+  "sampled_pair_crosscheck": {
+    "per_arm_samples": 475,
+    "pair_count": 225625,
+    "largest_sampled_horizontal_first_moment_kg_m": 0.11595836064413012,
+    "right_side_forward_deg": [
+      5,
+      90
+    ],
+    "left_side_forward_deg": [
+      90,
+      90
+    ],
+    "meaning": "Independent mirrored arm combinations, including unresolved collisions; not usable motion limits. Waist yaw can rotate this vector but not change its norm."
+  },
+  "support_sensitivity": [
+    {
+      "support": {
+        "name": "platform_size_comparison",
+        "label": "180 \u00d7 240 mm, rear shifted",
+        "size_xy_mm": [
+          180,
+          240
+        ],
+        "center_xy_mm": [
+          0,
+          -40
+        ],
+        "note": "Hypothetical floor contact rectangle matching the assembly shelf outline; the shelf is not a floor base."
+      },
+      "force_cases": [
+        {
+          "horizontal_force_n": 0,
+          "centered_added_mass_for_nonnegative_bound_kg": 0.17908677230780265,
+          "governing_edge_by_added_mass": "right",
+          "edges": [
+            {
+              "edge": "right",
+              "edge_distance_from_waist_axis_m": 0.09,
+              "added_centered_mass_lever_m": 0.09,
+              "gravity_com_edge_distance_lower_bound_m": -0.014138429392721263,
+              "gravity_restoring_moment_lower_bound_nm": -0.15806171660870816,
+              "net_restoring_moment_lower_bound_nm": -0.15806171660870816,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.17908677230780265
+            },
+            {
+              "edge": "left",
+              "edge_distance_from_waist_axis_m": 0.09,
+              "added_centered_mass_lever_m": 0.09,
+              "gravity_com_edge_distance_lower_bound_m": -0.014138429392721263,
+              "gravity_restoring_moment_lower_bound_nm": -0.15806171660870816,
+              "net_restoring_moment_lower_bound_nm": -0.15806171660870816,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.17908677230780265
+            },
+            {
+              "edge": "front",
+              "edge_distance_from_waist_axis_m": 0.07999999999999999,
+              "added_centered_mass_lever_m": 0.12,
+              "gravity_com_edge_distance_lower_bound_m": -0.008787552199738811,
+              "gravity_restoring_moment_lower_bound_nm": -0.09824115160870821,
+              "net_restoring_moment_lower_bound_nm": -0.09824115160870821,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.08348174589751871
+            },
+            {
+              "edge": "rear",
+              "edge_distance_from_waist_axis_m": 0.16,
+              "added_centered_mass_lever_m": 0.12,
+              "gravity_com_edge_distance_lower_bound_m": 0.04051069341429629,
+              "gravity_restoring_moment_lower_bound_nm": 0.4528925783912919,
+              "net_restoring_moment_lower_bound_nm": 0.4528925783912919,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.0
+            }
+          ]
+        },
+        {
+          "horizontal_force_n": 2,
+          "centered_added_mass_for_nonnegative_bound_kg": 1.425406588169715,
+          "governing_edge_by_added_mass": "right",
+          "edges": [
+            {
+              "edge": "right",
+              "edge_distance_from_waist_axis_m": 0.09,
+              "added_centered_mass_lever_m": 0.09,
+              "gravity_com_edge_distance_lower_bound_m": -0.014138429392721263,
+              "gravity_restoring_moment_lower_bound_nm": -0.15806171660870816,
+              "net_restoring_moment_lower_bound_nm": -1.2580617166087082,
+              "centered_added_mass_for_nonnegative_bound_kg": 1.425406588169715
+            },
+            {
+              "edge": "left",
+              "edge_distance_from_waist_axis_m": 0.09,
+              "added_centered_mass_lever_m": 0.09,
+              "gravity_com_edge_distance_lower_bound_m": -0.014138429392721263,
+              "gravity_restoring_moment_lower_bound_nm": -0.15806171660870816,
+              "net_restoring_moment_lower_bound_nm": -1.2580617166087082,
+              "centered_added_mass_for_nonnegative_bound_kg": 1.425406588169715
+            },
+            {
+              "edge": "front",
+              "edge_distance_from_waist_axis_m": 0.07999999999999999,
+              "added_centered_mass_lever_m": 0.12,
+              "gravity_com_edge_distance_lower_bound_m": -0.008787552199738811,
+              "gravity_restoring_moment_lower_bound_nm": -0.09824115160870821,
+              "net_restoring_moment_lower_bound_nm": -1.1982411516087084,
+              "centered_added_mass_for_nonnegative_bound_kg": 1.0182216077939532
+            },
+            {
+              "edge": "rear",
+              "edge_distance_from_waist_axis_m": 0.16,
+              "added_centered_mass_lever_m": 0.12,
+              "gravity_com_edge_distance_lower_bound_m": 0.04051069341429629,
+              "gravity_restoring_moment_lower_bound_nm": 0.4528925783912919,
+              "net_restoring_moment_lower_bound_nm": -0.6471074216087083,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.5498882744606197
+            }
+          ]
+        },
+        {
+          "horizontal_force_n": 5,
+          "centered_added_mass_for_nonnegative_bound_kg": 3.2948863119625837,
+          "governing_edge_by_added_mass": "right",
+          "edges": [
+            {
+              "edge": "right",
+              "edge_distance_from_waist_axis_m": 0.09,
+              "added_centered_mass_lever_m": 0.09,
+              "gravity_com_edge_distance_lower_bound_m": -0.014138429392721263,
+              "gravity_restoring_moment_lower_bound_nm": -0.15806171660870816,
+              "net_restoring_moment_lower_bound_nm": -2.9080617166087084,
+              "centered_added_mass_for_nonnegative_bound_kg": 3.2948863119625837
+            },
+            {
+              "edge": "left",
+              "edge_distance_from_waist_axis_m": 0.09,
+              "added_centered_mass_lever_m": 0.09,
+              "gravity_com_edge_distance_lower_bound_m": -0.014138429392721263,
+              "gravity_restoring_moment_lower_bound_nm": -0.15806171660870816,
+              "net_restoring_moment_lower_bound_nm": -2.9080617166087084,
+              "centered_added_mass_for_nonnegative_bound_kg": 3.2948863119625837
+            },
+            {
+              "edge": "front",
+              "edge_distance_from_waist_axis_m": 0.07999999999999999,
+              "added_centered_mass_lever_m": 0.12,
+              "gravity_com_edge_distance_lower_bound_m": -0.008787552199738811,
+              "gravity_restoring_moment_lower_bound_nm": -0.09824115160870821,
+              "net_restoring_moment_lower_bound_nm": -2.848241151608708,
+              "centered_added_mass_for_nonnegative_bound_kg": 2.4203314006386045
+            },
+            {
+              "edge": "rear",
+              "edge_distance_from_waist_axis_m": 0.16,
+              "added_centered_mass_lever_m": 0.12,
+              "gravity_com_edge_distance_lower_bound_m": 0.04051069341429629,
+              "gravity_restoring_moment_lower_bound_nm": 0.4528925783912919,
+              "net_restoring_moment_lower_bound_nm": -2.297107421608708,
+              "centered_added_mass_for_nonnegative_bound_kg": 1.951998067305271
+            }
+          ]
+        },
+        {
+          "horizontal_force_n": 10,
+          "centered_added_mass_for_nonnegative_bound_kg": 6.410685851617365,
+          "governing_edge_by_added_mass": "right",
+          "edges": [
+            {
+              "edge": "right",
+              "edge_distance_from_waist_axis_m": 0.09,
+              "added_centered_mass_lever_m": 0.09,
+              "gravity_com_edge_distance_lower_bound_m": -0.014138429392721263,
+              "gravity_restoring_moment_lower_bound_nm": -0.15806171660870816,
+              "net_restoring_moment_lower_bound_nm": -5.658061716608708,
+              "centered_added_mass_for_nonnegative_bound_kg": 6.410685851617365
+            },
+            {
+              "edge": "left",
+              "edge_distance_from_waist_axis_m": 0.09,
+              "added_centered_mass_lever_m": 0.09,
+              "gravity_com_edge_distance_lower_bound_m": -0.014138429392721263,
+              "gravity_restoring_moment_lower_bound_nm": -0.15806171660870816,
+              "net_restoring_moment_lower_bound_nm": -5.658061716608708,
+              "centered_added_mass_for_nonnegative_bound_kg": 6.410685851617365
+            },
+            {
+              "edge": "front",
+              "edge_distance_from_waist_axis_m": 0.07999999999999999,
+              "added_centered_mass_lever_m": 0.12,
+              "gravity_com_edge_distance_lower_bound_m": -0.008787552199738811,
+              "gravity_restoring_moment_lower_bound_nm": -0.09824115160870821,
+              "net_restoring_moment_lower_bound_nm": -5.5982411516087085,
+              "centered_added_mass_for_nonnegative_bound_kg": 4.757181055379691
+            },
+            {
+              "edge": "rear",
+              "edge_distance_from_waist_axis_m": 0.16,
+              "added_centered_mass_lever_m": 0.12,
+              "gravity_com_edge_distance_lower_bound_m": 0.04051069341429629,
+              "gravity_restoring_moment_lower_bound_nm": 0.4528925783912919,
+              "net_restoring_moment_lower_bound_nm": -5.047107421608708,
+              "centered_added_mass_for_nonnegative_bound_kg": 4.2888477220463574
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "support": {
+        "name": "240x300",
+        "label": "240 \u00d7 300 mm",
+        "size_xy_mm": [
+          240,
+          300
+        ],
+        "center_xy_mm": [
+          0,
+          0
+        ]
+      },
+      "force_cases": [
+        {
+          "horizontal_force_n": 0,
+          "centered_added_mass_for_nonnegative_bound_kg": 0.0,
+          "governing_edge_by_added_mass": "right",
+          "edges": [
+            {
+              "edge": "right",
+              "edge_distance_from_waist_axis_m": 0.12,
+              "added_centered_mass_lever_m": 0.12,
+              "gravity_com_edge_distance_lower_bound_m": 0.015861570607278733,
+              "gravity_restoring_moment_lower_bound_nm": 0.17732571339129177,
+              "net_restoring_moment_lower_bound_nm": 0.17732571339129177,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.0
+            },
+            {
+              "edge": "left",
+              "edge_distance_from_waist_axis_m": 0.12,
+              "added_centered_mass_lever_m": 0.12,
+              "gravity_com_edge_distance_lower_bound_m": 0.015861570607278733,
+              "gravity_restoring_moment_lower_bound_nm": 0.17732571339129177,
+              "net_restoring_moment_lower_bound_nm": 0.17732571339129177,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.0
+            },
+            {
+              "edge": "front",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.061212447800261215,
+              "gravity_restoring_moment_lower_bound_nm": 0.684329518391292,
+              "net_restoring_moment_lower_bound_nm": 0.684329518391292,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.0
+            },
+            {
+              "edge": "rear",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.030510693414296273,
+              "gravity_restoring_moment_lower_bound_nm": 0.3410967683912917,
+              "net_restoring_moment_lower_bound_nm": 0.3410967683912917,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.0
+            }
+          ]
+        },
+        {
+          "horizontal_force_n": 2,
+          "centered_added_mass_for_nonnegative_bound_kg": 0.7840549411272865,
+          "governing_edge_by_added_mass": "right",
+          "edges": [
+            {
+              "edge": "right",
+              "edge_distance_from_waist_axis_m": 0.12,
+              "added_centered_mass_lever_m": 0.12,
+              "gravity_com_edge_distance_lower_bound_m": 0.015861570607278733,
+              "gravity_restoring_moment_lower_bound_nm": 0.17732571339129177,
+              "net_restoring_moment_lower_bound_nm": -0.9226742866087083,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.7840549411272865
+            },
+            {
+              "edge": "left",
+              "edge_distance_from_waist_axis_m": 0.12,
+              "added_centered_mass_lever_m": 0.12,
+              "gravity_com_edge_distance_lower_bound_m": 0.015861570607278733,
+              "gravity_restoring_moment_lower_bound_nm": 0.17732571339129177,
+              "net_restoring_moment_lower_bound_nm": -0.9226742866087083,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.7840549411272865
+            },
+            {
+              "edge": "front",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.061212447800261215,
+              "gravity_restoring_moment_lower_bound_nm": 0.684329518391292,
+              "net_restoring_moment_lower_bound_nm": -0.4156704816087081,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.28257728623516226
+            },
+            {
+              "edge": "rear",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.030510693414296273,
+              "gravity_restoring_moment_lower_bound_nm": 0.3410967683912917,
+              "net_restoring_moment_lower_bound_nm": -0.7589032316087083,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.5159106195684957
+            }
+          ]
+        },
+        {
+          "horizontal_force_n": 5,
+          "centered_added_mass_for_nonnegative_bound_kg": 2.186164733971938,
+          "governing_edge_by_added_mass": "right",
+          "edges": [
+            {
+              "edge": "right",
+              "edge_distance_from_waist_axis_m": 0.12,
+              "added_centered_mass_lever_m": 0.12,
+              "gravity_com_edge_distance_lower_bound_m": 0.015861570607278733,
+              "gravity_restoring_moment_lower_bound_nm": 0.17732571339129177,
+              "net_restoring_moment_lower_bound_nm": -2.5726742866087084,
+              "centered_added_mass_for_nonnegative_bound_kg": 2.186164733971938
+            },
+            {
+              "edge": "left",
+              "edge_distance_from_waist_axis_m": 0.12,
+              "added_centered_mass_lever_m": 0.12,
+              "gravity_com_edge_distance_lower_bound_m": 0.015861570607278733,
+              "gravity_restoring_moment_lower_bound_nm": 0.17732571339129177,
+              "net_restoring_moment_lower_bound_nm": -2.5726742866087084,
+              "centered_added_mass_for_nonnegative_bound_kg": 2.186164733971938
+            },
+            {
+              "edge": "front",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.061212447800261215,
+              "gravity_restoring_moment_lower_bound_nm": 0.684329518391292,
+              "net_restoring_moment_lower_bound_nm": -2.065670481608708,
+              "centered_added_mass_for_nonnegative_bound_kg": 1.4042651205108831
+            },
+            {
+              "edge": "rear",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.030510693414296273,
+              "gravity_restoring_moment_lower_bound_nm": 0.3410967683912917,
+              "net_restoring_moment_lower_bound_nm": -2.4089032316087082,
+              "centered_added_mass_for_nonnegative_bound_kg": 1.6375984538442168
+            }
+          ]
+        },
+        {
+          "horizontal_force_n": 10,
+          "centered_added_mass_for_nonnegative_bound_kg": 4.523014388713024,
+          "governing_edge_by_added_mass": "right",
+          "edges": [
+            {
+              "edge": "right",
+              "edge_distance_from_waist_axis_m": 0.12,
+              "added_centered_mass_lever_m": 0.12,
+              "gravity_com_edge_distance_lower_bound_m": 0.015861570607278733,
+              "gravity_restoring_moment_lower_bound_nm": 0.17732571339129177,
+              "net_restoring_moment_lower_bound_nm": -5.3226742866087084,
+              "centered_added_mass_for_nonnegative_bound_kg": 4.523014388713024
+            },
+            {
+              "edge": "left",
+              "edge_distance_from_waist_axis_m": 0.12,
+              "added_centered_mass_lever_m": 0.12,
+              "gravity_com_edge_distance_lower_bound_m": 0.015861570607278733,
+              "gravity_restoring_moment_lower_bound_nm": 0.17732571339129177,
+              "net_restoring_moment_lower_bound_nm": -5.3226742866087084,
+              "centered_added_mass_for_nonnegative_bound_kg": 4.523014388713024
+            },
+            {
+              "edge": "front",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.061212447800261215,
+              "gravity_restoring_moment_lower_bound_nm": 0.684329518391292,
+              "net_restoring_moment_lower_bound_nm": -4.815670481608708,
+              "centered_added_mass_for_nonnegative_bound_kg": 3.273744844303752
+            },
+            {
+              "edge": "rear",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.030510693414296273,
+              "gravity_restoring_moment_lower_bound_nm": 0.3410967683912917,
+              "net_restoring_moment_lower_bound_nm": -5.158903231608709,
+              "centered_added_mass_for_nonnegative_bound_kg": 3.5070781776370854
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "support": {
+        "name": "300x300",
+        "label": "300 \u00d7 300 mm",
+        "size_xy_mm": [
+          300,
+          300
+        ],
+        "center_xy_mm": [
+          0,
+          0
+        ]
+      },
+      "force_cases": [
+        {
+          "horizontal_force_n": 0,
+          "centered_added_mass_for_nonnegative_bound_kg": 0.0,
+          "governing_edge_by_added_mass": "rear",
+          "edges": [
+            {
+              "edge": "right",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.04586157060727874,
+              "gravity_restoring_moment_lower_bound_nm": 0.5127131433912918,
+              "net_restoring_moment_lower_bound_nm": 0.5127131433912918,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.0
+            },
+            {
+              "edge": "left",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.04586157060727874,
+              "gravity_restoring_moment_lower_bound_nm": 0.5127131433912918,
+              "net_restoring_moment_lower_bound_nm": 0.5127131433912918,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.0
+            },
+            {
+              "edge": "front",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.061212447800261215,
+              "gravity_restoring_moment_lower_bound_nm": 0.684329518391292,
+              "net_restoring_moment_lower_bound_nm": 0.684329518391292,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.0
+            },
+            {
+              "edge": "rear",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.030510693414296273,
+              "gravity_restoring_moment_lower_bound_nm": 0.3410967683912917,
+              "net_restoring_moment_lower_bound_nm": 0.3410967683912917,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.0
+            }
+          ]
+        },
+        {
+          "horizontal_force_n": 2,
+          "centered_added_mass_for_nonnegative_bound_kg": 0.5159106195684957,
+          "governing_edge_by_added_mass": "rear",
+          "edges": [
+            {
+              "edge": "right",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.04586157060727874,
+              "gravity_restoring_moment_lower_bound_nm": 0.5127131433912918,
+              "net_restoring_moment_lower_bound_nm": -0.5872868566087083,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.39924395290182907
+            },
+            {
+              "edge": "left",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.04586157060727874,
+              "gravity_restoring_moment_lower_bound_nm": 0.5127131433912918,
+              "net_restoring_moment_lower_bound_nm": -0.5872868566087083,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.39924395290182907
+            },
+            {
+              "edge": "front",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.061212447800261215,
+              "gravity_restoring_moment_lower_bound_nm": 0.684329518391292,
+              "net_restoring_moment_lower_bound_nm": -0.4156704816087081,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.28257728623516226
+            },
+            {
+              "edge": "rear",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.030510693414296273,
+              "gravity_restoring_moment_lower_bound_nm": 0.3410967683912917,
+              "net_restoring_moment_lower_bound_nm": -0.7589032316087083,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.5159106195684957
+            }
+          ]
+        },
+        {
+          "horizontal_force_n": 5,
+          "centered_added_mass_for_nonnegative_bound_kg": 1.6375984538442168,
+          "governing_edge_by_added_mass": "rear",
+          "edges": [
+            {
+              "edge": "right",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.04586157060727874,
+              "gravity_restoring_moment_lower_bound_nm": 0.5127131433912918,
+              "net_restoring_moment_lower_bound_nm": -2.237286856608708,
+              "centered_added_mass_for_nonnegative_bound_kg": 1.52093178717755
+            },
+            {
+              "edge": "left",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.04586157060727874,
+              "gravity_restoring_moment_lower_bound_nm": 0.5127131433912918,
+              "net_restoring_moment_lower_bound_nm": -2.237286856608708,
+              "centered_added_mass_for_nonnegative_bound_kg": 1.52093178717755
+            },
+            {
+              "edge": "front",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.061212447800261215,
+              "gravity_restoring_moment_lower_bound_nm": 0.684329518391292,
+              "net_restoring_moment_lower_bound_nm": -2.065670481608708,
+              "centered_added_mass_for_nonnegative_bound_kg": 1.4042651205108831
+            },
+            {
+              "edge": "rear",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.030510693414296273,
+              "gravity_restoring_moment_lower_bound_nm": 0.3410967683912917,
+              "net_restoring_moment_lower_bound_nm": -2.4089032316087082,
+              "centered_added_mass_for_nonnegative_bound_kg": 1.6375984538442168
+            }
+          ]
+        },
+        {
+          "horizontal_force_n": 10,
+          "centered_added_mass_for_nonnegative_bound_kg": 3.5070781776370854,
+          "governing_edge_by_added_mass": "rear",
+          "edges": [
+            {
+              "edge": "right",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.04586157060727874,
+              "gravity_restoring_moment_lower_bound_nm": 0.5127131433912918,
+              "net_restoring_moment_lower_bound_nm": -4.9872868566087085,
+              "centered_added_mass_for_nonnegative_bound_kg": 3.3904115109704187
+            },
+            {
+              "edge": "left",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.04586157060727874,
+              "gravity_restoring_moment_lower_bound_nm": 0.5127131433912918,
+              "net_restoring_moment_lower_bound_nm": -4.9872868566087085,
+              "centered_added_mass_for_nonnegative_bound_kg": 3.3904115109704187
+            },
+            {
+              "edge": "front",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.061212447800261215,
+              "gravity_restoring_moment_lower_bound_nm": 0.684329518391292,
+              "net_restoring_moment_lower_bound_nm": -4.815670481608708,
+              "centered_added_mass_for_nonnegative_bound_kg": 3.273744844303752
+            },
+            {
+              "edge": "rear",
+              "edge_distance_from_waist_axis_m": 0.15,
+              "added_centered_mass_lever_m": 0.15,
+              "gravity_com_edge_distance_lower_bound_m": 0.030510693414296273,
+              "gravity_restoring_moment_lower_bound_nm": 0.3410967683912917,
+              "net_restoring_moment_lower_bound_nm": -5.158903231608709,
+              "centered_added_mass_for_nonnegative_bound_kg": 3.5070781776370854
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "support": {
+        "name": "360x360",
+        "label": "360 \u00d7 360 mm",
+        "size_xy_mm": [
+          360,
+          360
+        ],
+        "center_xy_mm": [
+          0,
+          0
+        ]
+      },
+      "force_cases": [
+        {
+          "horizontal_force_n": 0,
+          "centered_added_mass_for_nonnegative_bound_kg": 0.0,
+          "governing_edge_by_added_mass": "rear",
+          "edges": [
+            {
+              "edge": "right",
+              "edge_distance_from_waist_axis_m": 0.18,
+              "added_centered_mass_lever_m": 0.18,
+              "gravity_com_edge_distance_lower_bound_m": 0.07586157060727873,
+              "gravity_restoring_moment_lower_bound_nm": 0.8481005733912916,
+              "net_restoring_moment_lower_bound_nm": 0.8481005733912916,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.0
+            },
+            {
+              "edge": "left",
+              "edge_distance_from_waist_axis_m": 0.18,
+              "added_centered_mass_lever_m": 0.18,
+              "gravity_com_edge_distance_lower_bound_m": 0.07586157060727873,
+              "gravity_restoring_moment_lower_bound_nm": 0.8481005733912916,
+              "net_restoring_moment_lower_bound_nm": 0.8481005733912916,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.0
+            },
+            {
+              "edge": "front",
+              "edge_distance_from_waist_axis_m": 0.18,
+              "added_centered_mass_lever_m": 0.18,
+              "gravity_com_edge_distance_lower_bound_m": 0.09121244780026118,
+              "gravity_restoring_moment_lower_bound_nm": 1.0197169483912916,
+              "net_restoring_moment_lower_bound_nm": 1.0197169483912916,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.0
+            },
+            {
+              "edge": "rear",
+              "edge_distance_from_waist_axis_m": 0.18,
+              "added_centered_mass_lever_m": 0.18,
+              "gravity_com_edge_distance_lower_bound_m": 0.06051069341429628,
+              "gravity_restoring_moment_lower_bound_nm": 0.6764841983912918,
+              "net_restoring_moment_lower_bound_nm": 0.6764841983912918,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.0
+            }
+          ]
+        },
+        {
+          "horizontal_force_n": 2,
+          "centered_added_mass_for_nonnegative_bound_kg": 0.23992551630707978,
+          "governing_edge_by_added_mass": "rear",
+          "edges": [
+            {
+              "edge": "right",
+              "edge_distance_from_waist_axis_m": 0.18,
+              "added_centered_mass_lever_m": 0.18,
+              "gravity_com_edge_distance_lower_bound_m": 0.07586157060727873,
+              "gravity_restoring_moment_lower_bound_nm": 0.8481005733912916,
+              "net_restoring_moment_lower_bound_nm": -0.25189942660870845,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.14270329408485766
+            },
+            {
+              "edge": "left",
+              "edge_distance_from_waist_axis_m": 0.18,
+              "added_centered_mass_lever_m": 0.18,
+              "gravity_com_edge_distance_lower_bound_m": 0.07586157060727873,
+              "gravity_restoring_moment_lower_bound_nm": 0.8481005733912916,
+              "net_restoring_moment_lower_bound_nm": -0.25189942660870845,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.14270329408485766
+            },
+            {
+              "edge": "front",
+              "edge_distance_from_waist_axis_m": 0.18,
+              "added_centered_mass_lever_m": 0.18,
+              "gravity_com_edge_distance_lower_bound_m": 0.09121244780026118,
+              "gravity_restoring_moment_lower_bound_nm": 1.0197169483912916,
+              "net_restoring_moment_lower_bound_nm": -0.08028305160870852,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.04548107186263546
+            },
+            {
+              "edge": "rear",
+              "edge_distance_from_waist_axis_m": 0.18,
+              "added_centered_mass_lever_m": 0.18,
+              "gravity_com_edge_distance_lower_bound_m": 0.06051069341429628,
+              "gravity_restoring_moment_lower_bound_nm": 0.6764841983912918,
+              "net_restoring_moment_lower_bound_nm": -0.4235158016087083,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.23992551630707978
+            }
+          ]
+        },
+        {
+          "horizontal_force_n": 5,
+          "centered_added_mass_for_nonnegative_bound_kg": 1.1746653782035141,
+          "governing_edge_by_added_mass": "rear",
+          "edges": [
+            {
+              "edge": "right",
+              "edge_distance_from_waist_axis_m": 0.18,
+              "added_centered_mass_lever_m": 0.18,
+              "gravity_com_edge_distance_lower_bound_m": 0.07586157060727873,
+              "gravity_restoring_moment_lower_bound_nm": 0.8481005733912916,
+              "net_restoring_moment_lower_bound_nm": -1.9018994266087084,
+              "centered_added_mass_for_nonnegative_bound_kg": 1.0774431559812918
+            },
+            {
+              "edge": "left",
+              "edge_distance_from_waist_axis_m": 0.18,
+              "added_centered_mass_lever_m": 0.18,
+              "gravity_com_edge_distance_lower_bound_m": 0.07586157060727873,
+              "gravity_restoring_moment_lower_bound_nm": 0.8481005733912916,
+              "net_restoring_moment_lower_bound_nm": -1.9018994266087084,
+              "centered_added_mass_for_nonnegative_bound_kg": 1.0774431559812918
+            },
+            {
+              "edge": "front",
+              "edge_distance_from_waist_axis_m": 0.18,
+              "added_centered_mass_lever_m": 0.18,
+              "gravity_com_edge_distance_lower_bound_m": 0.09121244780026118,
+              "gravity_restoring_moment_lower_bound_nm": 1.0197169483912916,
+              "net_restoring_moment_lower_bound_nm": -1.7302830516087084,
+              "centered_added_mass_for_nonnegative_bound_kg": 0.9802209337590697
+            },
+            {
+              "edge": "rear",
+              "edge_distance_from_waist_axis_m": 0.18,
+              "added_centered_mass_lever_m": 0.18,
+              "gravity_com_edge_distance_lower_bound_m": 0.06051069341429628,
+              "gravity_restoring_moment_lower_bound_nm": 0.6764841983912918,
+              "net_restoring_moment_lower_bound_nm": -2.0735158016087083,
+              "centered_added_mass_for_nonnegative_bound_kg": 1.1746653782035141
+            }
+          ]
+        },
+        {
+          "horizontal_force_n": 10,
+          "centered_added_mass_for_nonnegative_bound_kg": 2.732565148030904,
+          "governing_edge_by_added_mass": "rear",
+          "edges": [
+            {
+              "edge": "right",
+              "edge_distance_from_waist_axis_m": 0.18,
+              "added_centered_mass_lever_m": 0.18,
+              "gravity_com_edge_distance_lower_bound_m": 0.07586157060727873,
+              "gravity_restoring_moment_lower_bound_nm": 0.8481005733912916,
+              "net_restoring_moment_lower_bound_nm": -4.651899426608709,
+              "centered_added_mass_for_nonnegative_bound_kg": 2.6353429258086822
+            },
+            {
+              "edge": "left",
+              "edge_distance_from_waist_axis_m": 0.18,
+              "added_centered_mass_lever_m": 0.18,
+              "gravity_com_edge_distance_lower_bound_m": 0.07586157060727873,
+              "gravity_restoring_moment_lower_bound_nm": 0.8481005733912916,
+              "net_restoring_moment_lower_bound_nm": -4.651899426608709,
+              "centered_added_mass_for_nonnegative_bound_kg": 2.6353429258086822
+            },
+            {
+              "edge": "front",
+              "edge_distance_from_waist_axis_m": 0.18,
+              "added_centered_mass_lever_m": 0.18,
+              "gravity_com_edge_distance_lower_bound_m": 0.09121244780026118,
+              "gravity_restoring_moment_lower_bound_nm": 1.0197169483912916,
+              "net_restoring_moment_lower_bound_nm": -4.480283051608708,
+              "centered_added_mass_for_nonnegative_bound_kg": 2.5381207035864604
+            },
+            {
+              "edge": "rear",
+              "edge_distance_from_waist_axis_m": 0.18,
+              "added_centered_mass_lever_m": 0.18,
+              "gravity_com_edge_distance_lower_bound_m": 0.06051069341429628,
+              "gravity_restoring_moment_lower_bound_nm": 0.6764841983912918,
+              "net_restoring_moment_lower_bound_nm": -4.823515801608708,
+              "centered_added_mass_for_nonnegative_bound_kg": 2.732565148030904
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "unmodeled_masses": [
+    "Head shell, user speaker, cameras and other head payload",
+    "Torso shell, structural frame, waist/neck bearings and fittings",
+    "Stand base, feet, post and assembly shelf",
+    "Jetson tray, storage accessories and extra cables",
+    "Power hub, protection, trunk and harness beyond the assumed arm budgets"
+  ],
+  "scope": "Static, rigid, level contact rectangle; no sliding/structure/dynamics validation. Nonnegative mathematical moment has zero design margin at the boundary. Added mass assumed at support center; unknown masses are not automatically centered ballast.",
+  "physical_stability_verified": false,
+  "stand_selected_for_manufacture": false
+}

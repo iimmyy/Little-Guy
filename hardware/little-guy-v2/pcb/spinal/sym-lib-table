@@ -1,0 +1,1 @@
+(sym_lib_table (lib (name "LGV2") (type "KiCad") (uri "${KIPRJMOD}/LGV2.kicad_sym") (options "") (descr "V2 circuit symbols; pin maps from linked manufacturer documentation")))

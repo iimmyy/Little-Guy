@@ -1,0 +1,2156 @@
+(kicad_sch
+  (version 20260306)
+  (generator eeschema)
+  (generator_version "10.0")
+  (uuid "1cb6d0cc-b1e7-5ec2-b8f6-a1c4466baff2")
+  (paper "A3")
+  (title_block
+    (title "Touch electrodes 13-24")
+    (date "2026-10-25")
+    (rev "A0.2-WIP")
+    (comment 1 "DESIGN IN PROGRESS - NOT FOR FABRICATION")
+  )
+  (lib_symbols
+    (symbol "LGV2:MPR121_QFN20"
+      (pin_names
+        (offset 0.762)
+      )
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "U"
+        (at 0 22.86 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Value" "MPR121_QFN20"
+        (at 0 20.32 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (symbol "MPR121_QFN20_0_1"
+        (rectangle
+          (start -12.7 17.78)
+          (end 12.7 -17.78)
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type background)
+          )
+        )
+      )
+      (symbol "MPR121_QFN20_1_1"
+        (pin open_collector line
+          (at -17.78 7.62 0)
+          (length 5.08)
+          (name "~{IRQ}"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin input line
+          (at -17.78 5.08 0)
+          (length 5.08)
+          (name "SCL"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin bidirectional line
+          (at -17.78 2.54 0)
+          (length 5.08)
+          (name "SDA"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "3"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin input line
+          (at -17.78 0.0 0)
+          (length 5.08)
+          (name "ADDR"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "4"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin power_out line
+          (at -17.78 -2.54 0)
+          (length 5.08)
+          (name "VREG"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "5"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin power_in line
+          (at -17.78 -5.079999999999999 0)
+          (length 5.08)
+          (name "VSS"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "6"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -17.78 -7.62 0)
+          (length 5.08)
+          (name "REXT"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "7"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 17.78 15.24 180)
+          (length 5.08)
+          (name "ELE0"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "8"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 17.78 12.7 180)
+          (length 5.08)
+          (name "ELE1"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "9"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 17.78 10.16 180)
+          (length 5.08)
+          (name "ELE2"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "10"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 17.78 7.62 180)
+          (length 5.08)
+          (name "ELE3"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "11"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 17.78 5.08 180)
+          (length 5.08)
+          (name "ELE4"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "12"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 17.78 2.540000000000001 180)
+          (length 5.08)
+          (name "ELE5"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "13"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 17.78 0.0 180)
+          (length 5.08)
+          (name "ELE6"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "14"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 17.78 -2.540000000000001 180)
+          (length 5.08)
+          (name "ELE7"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "15"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 17.78 -5.08 180)
+          (length 5.08)
+          (name "ELE8"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "16"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 17.78 -7.619999999999999 180)
+          (length 5.08)
+          (name "ELE9"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "17"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 17.78 -10.159999999999998 180)
+          (length 5.08)
+          (name "ELE10"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "18"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 17.78 -12.700000000000001 180)
+          (length 5.08)
+          (name "ELE11"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "19"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin power_in line
+          (at 17.78 -15.24 180)
+          (length 5.08)
+          (name "VDD"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "20"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+      )
+    )
+    (symbol "LGV2:R"
+      (pin_names hide
+        (offset 0)
+      )
+      (pin_numbers hide)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "R"
+        (at 3.81 1.27 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Value" "R"
+        (at 3.81 -1.27 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (symbol "R_0_1"
+        (rectangle
+          (start -1.016 2.54)
+          (end 1.016 -2.54)
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+      )
+      (symbol "R_1_1"
+        (pin passive line
+          (at 0 5.08 270)
+          (length 2.54)
+          (name "~"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 0 -5.08 90)
+          (length 2.54)
+          (name "~"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+        )
+      )
+    )
+    (symbol "LGV2:C"
+      (pin_names hide
+        (offset 0)
+      )
+      (pin_numbers hide)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "C"
+        (at 3.81 1.27 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Value" "C"
+        (at 3.81 -1.27 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (symbol "C_0_1"
+        (polyline
+          (pts
+            (xy -2.032 0.762)
+            (xy 2.032 0.762)
+          )
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy -2.032 -0.762)
+            (xy 2.032 -0.762)
+          )
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+      )
+      (symbol "C_1_1"
+        (pin passive line
+          (at 0 5.08 270)
+          (length 4.318)
+          (name "~"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 0 -5.08 90)
+          (length 4.318)
+          (name "~"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+        )
+      )
+    )
+    (symbol "LGV2:Header_13"
+      (pin_names
+        (offset 0.762)
+      )
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "U"
+        (at 0 22.86 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Value" "Header_13"
+        (at 0 20.32 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (symbol "Header_13_0_1"
+        (rectangle
+          (start -3.81 17.78)
+          (end 3.81 -17.78)
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type background)
+          )
+        )
+      )
+      (symbol "Header_13_1_1"
+        (pin passive line
+          (at -8.89 15.24 0)
+          (length 5.08)
+          (name "1"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -8.89 12.7 0)
+          (length 5.08)
+          (name "2"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -8.89 10.16 0)
+          (length 5.08)
+          (name "3"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "3"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -8.89 7.62 0)
+          (length 5.08)
+          (name "4"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "4"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -8.89 5.08 0)
+          (length 5.08)
+          (name "5"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "5"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -8.89 2.540000000000001 0)
+          (length 5.08)
+          (name "6"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "6"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -8.89 0.0 0)
+          (length 5.08)
+          (name "7"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "7"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -8.89 -2.540000000000001 0)
+          (length 5.08)
+          (name "8"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "8"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -8.89 -5.08 0)
+          (length 5.08)
+          (name "9"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "9"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -8.89 -7.619999999999999 0)
+          (length 5.08)
+          (name "10"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "10"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -8.89 -10.159999999999998 0)
+          (length 5.08)
+          (name "11"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "11"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -8.89 -12.700000000000001 0)
+          (length 5.08)
+          (name "12"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "12"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -8.89 -15.24 0)
+          (length 5.08)
+          (name "13"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "13"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+  (text "TOUCH / MPR121 address 0x5b; 12 electrodes of 48"
+    (at 15 15 0)
+    (effects
+      (font
+        (size 1.8 1.8)
+      )
+      (justify left)
+    )
+    (uuid "1298b166-54ee-5097-ac24-e85d5ec75689")
+  )
+  (text "75k 1% REXT and independent 100n VREG bypass per NXP datasheet. IRQ outputs share a wired-OR line.\nRun electrode wires away from motor cables. Pad sizes, shell thickness and wire capacitance need actual-shell tuning.\nNo electrodes or copper over the charging coil, screen or antenna keep-outs."
+    (at 15 24 0)
+    (effects
+      (font
+        (size 1.2 1.2)
+      )
+      (justify left)
+    )
+    (uuid "451c2169-0964-538d-b969-eaa8377c2c97")
+  )
+  (symbol
+    (lib_id "LGV2:MPR121_QFN20")
+    (at 95.25 105.41 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "e2ba9eca-a640-5f10-8f2c-3cc30212ae33")
+    (property "Reference" "U701"
+      (at 95.25 82.55 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "MPR121QR2 / 0x5b"
+      (at 95.25 85.09 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Package_DFN_QFN:UQFN-20_3x3mm_P0.4mm"
+      (at 95.25 105.41 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" "https://www.nxp.com/docs/en/data-sheet/MPR121.pdf"
+      (at 95.25 105.41 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" "MPR121QR2"
+      (at 95.25 105.41 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "candidate"
+      (at 95.25 105.41 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167/1cb6d0cc-b1e7-5ec2-b8f6-a1c4466baff2"
+          (reference "U701")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 77.47 97.79)
+      (xy 69.85 97.79)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "7950f72d-6d8b-5714-80c6-0b1932ed32b3")
+  )
+  (global_label "TOUCH_IRQ_N"
+    (shape bidirectional)
+    (at 69.85 97.79 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "3c98fc4f-e287-566b-9103-1ec8f0c93afc")
+  )
+  (wire
+    (pts
+      (xy 77.47 100.33)
+      (xy 69.85 100.33)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "884092f6-3937-5c7a-b337-e85b3838758c")
+  )
+  (global_label "HOST_SCL"
+    (shape bidirectional)
+    (at 69.85 100.33 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "cc2888ff-4b12-5a3d-a1ef-37d118093b76")
+  )
+  (wire
+    (pts
+      (xy 77.47 102.87)
+      (xy 69.85 102.87)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "f8197284-255a-57e7-b344-ac3c66cf5ca1")
+  )
+  (global_label "HOST_SDA"
+    (shape bidirectional)
+    (at 69.85 102.87 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "33c7a8cd-abb2-5e38-a38a-483ea92c781c")
+  )
+  (wire
+    (pts
+      (xy 77.47 105.41)
+      (xy 69.85 105.41)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "0966bc51-c5f9-5a28-8755-e12aa1653749")
+  )
+  (global_label "MCU_3V3"
+    (shape bidirectional)
+    (at 69.85 105.41 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "3f6c85af-cdf9-5a3d-8a1d-11d172d6ff2c")
+  )
+  (wire
+    (pts
+      (xy 77.47 107.95)
+      (xy 69.85 107.95)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "67d4e7e9-a417-5c79-9b0c-0c170c45f51f")
+  )
+  (global_label "TOUCH1_VREG"
+    (shape bidirectional)
+    (at 69.85 107.95 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "f70a2537-e5b6-507b-ba89-3555e4edd0d3")
+  )
+  (wire
+    (pts
+      (xy 77.47 110.49)
+      (xy 69.85 110.49)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "9d46ff34-94e7-5a43-a7a7-6a31d6629188")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 69.85 110.49 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "c9cae708-dab6-5b40-a63a-2896af56f512")
+  )
+  (wire
+    (pts
+      (xy 77.47 113.03)
+      (xy 69.85 113.03)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "4100e1b0-0d69-57d3-b3dd-0c73630ef156")
+  )
+  (global_label "TOUCH1_REXT"
+    (shape bidirectional)
+    (at 69.85 113.03 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "dc7509cf-aa9e-5244-b127-db39b45748c3")
+  )
+  (wire
+    (pts
+      (xy 113.03 90.17)
+      (xy 120.65 90.17)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "ead0dfae-5b5f-5c7e-8fd7-4c2948b59e8a")
+  )
+  (global_label "TOUCH_PAD_13"
+    (shape bidirectional)
+    (at 120.65 90.17 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "16bb297b-e8b2-5d44-a183-5210bdec5257")
+  )
+  (wire
+    (pts
+      (xy 113.03 92.71)
+      (xy 120.65 92.71)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "0d8986ae-e273-53d4-bf52-7d1dea0e5d49")
+  )
+  (global_label "TOUCH_PAD_14"
+    (shape bidirectional)
+    (at 120.65 92.71 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "efd0eb52-2593-5b7d-94fb-7addeb589923")
+  )
+  (wire
+    (pts
+      (xy 113.03 95.25)
+      (xy 120.65 95.25)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "3a934811-5be7-5158-872f-82cf3d54edff")
+  )
+  (global_label "TOUCH_PAD_15"
+    (shape bidirectional)
+    (at 120.65 95.25 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "697f4837-eb32-5439-bd46-1f23c05149b8")
+  )
+  (wire
+    (pts
+      (xy 113.03 97.79)
+      (xy 120.65 97.79)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "3decd95b-ed65-59b6-be94-a17edb9e450d")
+  )
+  (global_label "TOUCH_PAD_16"
+    (shape bidirectional)
+    (at 120.65 97.79 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "f0f874e4-5b12-52a4-b6bb-54b5e9fa3e5f")
+  )
+  (wire
+    (pts
+      (xy 113.03 100.33)
+      (xy 120.65 100.33)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "aade10c8-0623-5c3c-9051-47faee0f0955")
+  )
+  (global_label "TOUCH_PAD_17"
+    (shape bidirectional)
+    (at 120.65 100.33 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "7ea68645-513b-510d-9919-76358e8eb481")
+  )
+  (wire
+    (pts
+      (xy 113.03 102.87)
+      (xy 120.65 102.87)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "c899c651-f877-50ff-822d-e6aae3cdcd5d")
+  )
+  (global_label "TOUCH_PAD_18"
+    (shape bidirectional)
+    (at 120.65 102.87 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "91c086f0-e766-53e1-b520-3de115f57798")
+  )
+  (wire
+    (pts
+      (xy 113.03 105.41)
+      (xy 120.65 105.41)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "9a169fbf-feb5-5570-803c-4b3a6ca39aa8")
+  )
+  (global_label "TOUCH_PAD_19"
+    (shape bidirectional)
+    (at 120.65 105.41 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "e0b9e832-3f05-5803-a087-84e1fa09f58d")
+  )
+  (wire
+    (pts
+      (xy 113.03 107.95)
+      (xy 120.65 107.95)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "2f113ffc-8603-5eb2-83bb-46a6f89c9794")
+  )
+  (global_label "TOUCH_PAD_20"
+    (shape bidirectional)
+    (at 120.65 107.95 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "7524222e-cd39-54c4-89a6-5dd1c74ea4db")
+  )
+  (wire
+    (pts
+      (xy 113.03 110.49)
+      (xy 120.65 110.49)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "ae28770b-417e-5c9c-b3e6-d11478c21678")
+  )
+  (global_label "TOUCH_PAD_21"
+    (shape bidirectional)
+    (at 120.65 110.49 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "81f4d1c9-65db-5820-83d0-e8adea6b894e")
+  )
+  (wire
+    (pts
+      (xy 113.03 113.03)
+      (xy 120.65 113.03)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "21b18bb3-ba8b-573e-bb15-1c9dbfdc51db")
+  )
+  (global_label "TOUCH_PAD_22"
+    (shape bidirectional)
+    (at 120.65 113.03 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "1031e07f-718f-52bc-b74a-d4d0a7c72497")
+  )
+  (wire
+    (pts
+      (xy 113.03 115.57)
+      (xy 120.65 115.57)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "74c792a3-3608-543b-bf90-578051d1fda5")
+  )
+  (global_label "TOUCH_PAD_23"
+    (shape bidirectional)
+    (at 120.65 115.57 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "879624da-1ff9-5f6c-a939-e4666c950e3e")
+  )
+  (wire
+    (pts
+      (xy 113.03 118.11)
+      (xy 120.65 118.11)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "81ce68de-46d8-53b1-91c9-ca907abc04a4")
+  )
+  (global_label "TOUCH_PAD_24"
+    (shape bidirectional)
+    (at 120.65 118.11 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "f7a8d855-54c3-5b84-93c8-8b15934438ca")
+  )
+  (wire
+    (pts
+      (xy 113.03 120.65)
+      (xy 120.65 120.65)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "827bc4ac-50fd-577b-ac5e-5f7b69d7fe9b")
+  )
+  (global_label "MCU_3V3"
+    (shape bidirectional)
+    (at 120.65 120.65 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "f4a67e72-97a4-5e3f-a3a4-e16dd935966b")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 214.63 74.93 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "24cccd72-3297-5153-a53d-9476f1e6d579")
+    (property "Reference" "R701"
+      (at 220.98 73.66000000000001 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "75k 1%"
+      (at 220.98 76.2 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 214.63 74.93 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 214.63 74.93 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 214.63 74.93 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 214.63 74.93 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167/1cb6d0cc-b1e7-5ec2-b8f6-a1c4466baff2"
+          (reference "R701")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 214.63 69.85)
+      (xy 214.63 66.04)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "ebe4721c-74ae-5c2b-8f6c-4650231d29cf")
+  )
+  (global_label "TOUCH1_REXT"
+    (shape bidirectional)
+    (at 214.63 66.04 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "34dd8a76-f231-56f5-9527-c917d9e043f8")
+  )
+  (wire
+    (pts
+      (xy 214.63 80.01)
+      (xy 214.63 83.82)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "0b9c3ebe-8cda-5dcf-ad69-de5fa8ff839d")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 214.63 83.82 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "0d3c1fa9-4835-5f9c-85fc-61b440a63e4f")
+  )
+  (symbol
+    (lib_id "LGV2:C")
+    (at 284.48 74.93 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "00cda1df-7663-5db3-aa16-492290ffc549")
+    (property "Reference" "C701"
+      (at 290.83000000000004 73.66000000000001 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "100n 16V"
+      (at 290.83000000000004 76.2 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+      (at 284.48 74.93 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 284.48 74.93 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 284.48 74.93 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 284.48 74.93 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167/1cb6d0cc-b1e7-5ec2-b8f6-a1c4466baff2"
+          (reference "C701")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 284.48 69.85)
+      (xy 284.48 66.04)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "3d41cafb-fc9e-548c-b583-ef3ea4a0ca2f")
+  )
+  (global_label "MCU_3V3"
+    (shape bidirectional)
+    (at 284.48 66.04 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "b46f42a8-ce80-5678-bd6d-f1c81688c78c")
+  )
+  (wire
+    (pts
+      (xy 284.48 80.01)
+      (xy 284.48 83.82)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "6bd48bed-9f7a-5568-8cae-89e431f4fe70")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 284.48 83.82 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "4ef71183-f551-5393-a456-41eb92edbada")
+  )
+  (symbol
+    (lib_id "LGV2:C")
+    (at 355.6 74.93 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "eb073459-d802-5ff4-ae7e-dc098008bfaa")
+    (property "Reference" "C702"
+      (at 361.95000000000005 73.66000000000001 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "100n 16V"
+      (at 361.95000000000005 76.2 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+      (at 355.6 74.93 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 355.6 74.93 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 355.6 74.93 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 355.6 74.93 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167/1cb6d0cc-b1e7-5ec2-b8f6-a1c4466baff2"
+          (reference "C702")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 355.6 69.85)
+      (xy 355.6 66.04)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "f29f2ffb-f3d5-5b41-aa02-e4f1b80a920b")
+  )
+  (global_label "TOUCH1_VREG"
+    (shape bidirectional)
+    (at 355.6 66.04 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "619f94a3-f083-5e1e-ae8d-93caec571095")
+  )
+  (wire
+    (pts
+      (xy 355.6 80.01)
+      (xy 355.6 83.82)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "a41132c2-4b9e-522a-88a8-8e7181c31512")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 355.6 83.82 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "f7f984d4-a433-5427-8f9d-766db0c1d8e0")
+  )
+  (symbol
+    (lib_id "LGV2:Header_13")
+    (at 270.51 165.1 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "c56af32f-869d-594a-8350-516346c40219")
+    (property "Reference" "J701"
+      (at 270.51 142.24 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "12 shell electrodes plus ground / no shield over sensing pads"
+      (at 270.51 144.78 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 270.51 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 270.51 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 270.51 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 270.51 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167/1cb6d0cc-b1e7-5ec2-b8f6-a1c4466baff2"
+          (reference "J701")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 261.62 149.86)
+      (xy 254.0 149.86)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "2bbdb1dc-991b-5965-a2a4-234c2230861e")
+  )
+  (global_label "TOUCH_PAD_13"
+    (shape bidirectional)
+    (at 254.0 149.86 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "2d2ac620-116e-551b-baa5-2afc7329ef9e")
+  )
+  (wire
+    (pts
+      (xy 261.62 152.4)
+      (xy 254.0 152.4)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "c42e9a18-85c9-57da-b292-f4cdc1341007")
+  )
+  (global_label "TOUCH_PAD_14"
+    (shape bidirectional)
+    (at 254.0 152.4 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "d6fe0f8b-2aab-53b0-b05b-5a2290be2395")
+  )
+  (wire
+    (pts
+      (xy 261.62 154.94)
+      (xy 254.0 154.94)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "cd994805-d924-5431-8ead-24ee45fc7604")
+  )
+  (global_label "TOUCH_PAD_15"
+    (shape bidirectional)
+    (at 254.0 154.94 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "a262e7ff-f185-5654-bd42-37a39669ad05")
+  )
+  (wire
+    (pts
+      (xy 261.62 157.48)
+      (xy 254.0 157.48)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "ae5e6d68-87d7-5aab-9411-6da8cfcc2c15")
+  )
+  (global_label "TOUCH_PAD_16"
+    (shape bidirectional)
+    (at 254.0 157.48 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "c62f6eea-9b50-5c46-acb0-33824686af35")
+  )
+  (wire
+    (pts
+      (xy 261.62 160.02)
+      (xy 254.0 160.02)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "787f3d2a-e6c5-52a8-b201-0358aedf7a22")
+  )
+  (global_label "TOUCH_PAD_17"
+    (shape bidirectional)
+    (at 254.0 160.02 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "4dfc7ab8-b5fb-504c-b674-13e0ecc2e028")
+  )
+  (wire
+    (pts
+      (xy 261.62 162.56)
+      (xy 254.0 162.56)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "dd9d63ae-c2ee-5d1b-bc1c-8d9bd34edb4c")
+  )
+  (global_label "TOUCH_PAD_18"
+    (shape bidirectional)
+    (at 254.0 162.56 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "408bb953-5c81-5708-9aa7-bd165b0003ae")
+  )
+  (wire
+    (pts
+      (xy 261.62 165.1)
+      (xy 254.0 165.1)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "78ada853-bc6b-5a26-9315-101b7470b5ba")
+  )
+  (global_label "TOUCH_PAD_19"
+    (shape bidirectional)
+    (at 254.0 165.1 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "f0ebec50-fb4e-5e90-8bbc-522440ed0b8b")
+  )
+  (wire
+    (pts
+      (xy 261.62 167.64)
+      (xy 254.0 167.64)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "e1cdbb69-65ca-5f9d-98b9-bc714cce555b")
+  )
+  (global_label "TOUCH_PAD_20"
+    (shape bidirectional)
+    (at 254.0 167.64 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "5cbf337c-95d7-581c-bbd1-7f8857e36384")
+  )
+  (wire
+    (pts
+      (xy 261.62 170.18)
+      (xy 254.0 170.18)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "05b71d77-a113-555e-8afa-f3445fd95f3a")
+  )
+  (global_label "TOUCH_PAD_21"
+    (shape bidirectional)
+    (at 254.0 170.18 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "c6737ff5-c31b-5f42-873a-e107c0b3a1db")
+  )
+  (wire
+    (pts
+      (xy 261.62 172.72)
+      (xy 254.0 172.72)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "25e3e8c0-c51a-5c07-8c8b-b8482b47b184")
+  )
+  (global_label "TOUCH_PAD_22"
+    (shape bidirectional)
+    (at 254.0 172.72 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "8b4236df-7bf5-5d37-9c95-4d500202f501")
+  )
+  (wire
+    (pts
+      (xy 261.62 175.26)
+      (xy 254.0 175.26)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "5c79014d-48b0-5832-bc3e-fbe63e43f241")
+  )
+  (global_label "TOUCH_PAD_23"
+    (shape bidirectional)
+    (at 254.0 175.26 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "278ad225-3bb7-5af3-9a14-ce111b588e59")
+  )
+  (wire
+    (pts
+      (xy 261.62 177.8)
+      (xy 254.0 177.8)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "4c45676a-6190-5e31-9873-bace5a239f23")
+  )
+  (global_label "TOUCH_PAD_24"
+    (shape bidirectional)
+    (at 254.0 177.8 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "dadcd7e7-dbcf-519b-a396-dc807ddc5fcb")
+  )
+  (wire
+    (pts
+      (xy 261.62 180.34)
+      (xy 254.0 180.34)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "07641f4d-49da-56bd-bfaf-ea44198215e4")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 254.0 180.34 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "df97a45f-fb6f-5360-82e9-40ebbc3952b6")
+  )
+  (text "Electrode-to-body map is defined in BOM-full-robot.md. Final harness labels must name the actual body locations.\nParts are procurement candidates; MPR121 lifecycle/assembly availability and alternate sourcing need confirmation."
+    (at 15 270 0)
+    (effects
+      (font
+        (size 1.2 1.2)
+      )
+      (justify left)
+    )
+    (uuid "64555ef5-8166-5841-80c1-ac1b927b121f")
+  )
+  (embedded_fonts no)
+)

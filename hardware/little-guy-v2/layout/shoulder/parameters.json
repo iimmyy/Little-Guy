@@ -1,0 +1,29 @@
+{
+  "status": "right shoulder kinematic screening; no hardware limits or mount release",
+  "case_center_to_output_axis_longitudinal_mm": 12.5,
+  "axis_note": "Both motor long directions point vertically in the rest pose, with output axes above their box centres. Case and envelope long-axis centres agree in the inspected source.",
+  "parent_axis": "Y: side lift (roll), torso-fixed motor",
+  "child_axis": "X at rest: forward lift (pitch), carried motor",
+  "mapping_note": "No assignment to servo IDs. Proposed names in joints.json are not a verified physical chain order.",
+  "parent_side_lift_degrees": [
+    0,
+    90
+  ],
+  "child_forward_lift_degrees": [
+    -30,
+    90
+  ],
+  "sample_step_degrees": 5,
+  "screening_padding_each_box_mm": 3,
+  "padding_note": "Analyst-selected screening expansion, not a designed bracket, tolerance or certified clearance.",
+  "servo_mass_kg": 0.055,
+  "upper_structure_mass_kg": 0.08,
+  "forearm_structure_mass_kg": 0.06,
+  "hand_structure_mass_kg": 0.04,
+  "mass_note": "Unweighed compact-arm assumptions from arm-scenarios.json. Structure includes proposed fittings/cables/clothes. COM at reference box centres; no payload or dynamics.",
+  "spacing_candidate": {
+    "arm_outboard_shift_mm": 5,
+    "child_and_arm_forward_shift_mm": 1,
+    "note": "Exploratory alternative predicted to clear separate 3 mm expansions at the arm/case and bay/case interfaces; not a selected bracket arrangement."
+  }
+}

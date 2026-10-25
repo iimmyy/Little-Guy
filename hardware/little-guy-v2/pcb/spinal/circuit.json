@@ -1,0 +1,1632 @@
+{
+  "revision": "A0.2-WIP",
+  "release": false,
+  "parts": [
+    {
+      "ref": "U101",
+      "value": "Teensy 4.1 / VUSB-VIN link cut",
+      "footprint": "LGV2_Footprints:Teensy41_Socket_GPIO_ID",
+      "mpn": "TEENSY41",
+      "datasheet": "https://www.pjrc.com/store/teensy41.html",
+      "pins": {
+        "GPIO0": "LEG_RX",
+        "GPIO1": "LEG_TX",
+        "GPIO2": "LEG_DE",
+        "GPIO3": "UPPER_DE",
+        "GPIO4": "LEFT_DE",
+        "GPIO5": "RIGHT_DE",
+        "GPIO6": "IMU_INT",
+        "GPIO7": "UPPER_RX",
+        "GPIO8": "UPPER_TX",
+        "GPIO9": "WATCHDOG_KICK",
+        "GPIO10": "IMU_CS_N",
+        "GPIO11": "IMU_MOSI",
+        "GPIO12": "IMU_MISO",
+        "GPIO13": "IMU_SCK",
+        "GPIO14": "LEFT_TX",
+        "GPIO15": "LEFT_RX",
+        "GPIO16": "RIGHT_RX",
+        "GPIO17": "RIGHT_TX",
+        "GPIO18": "HOST_SDA",
+        "GPIO19": "HOST_SCL",
+        "GPIO20": "MOTOR_ARM",
+        "GPIO21": "MOTOR_REG_REQUEST",
+        "GPIO22": "HAND_LEFT_REQUEST",
+        "GPIO23": "HAND_RIGHT_REQUEST",
+        "GPIO24": "LEG_REQUEST",
+        "GPIO25": "UPPER_REQUEST",
+        "GPIO26": "JETSON_EN",
+        "GPIO27": "PERIPHERAL_ENABLE",
+        "GPIO28": "CHG_ALLOW",
+        "GPIO29": "PACK_TEMP_STATUS",
+        "GPIO30": "MOTOR_ARMED",
+        "GPIO31": "PD_IRQ_N",
+        "GPIO32": "PACK_ALERT_N",
+        "GPIO33": "SENSOR_MUX_RESET_N",
+        "GPIO34": "LEFT_READY_N",
+        "GPIO35": "RIGHT_READY_N",
+        "GPIO36": "POWER_BUTTON_N",
+        "GPIO37": "POWER_LED_DRIVE",
+        "GPIO38": null,
+        "GPIO39": "TOUCH_IRQ_N",
+        "GPIO40": "LEFT_XSHUT",
+        "GPIO41": "RIGHT_XSHUT",
+        "VIN": "AON_5V",
+        "GND0": "GND",
+        "GND1": "GND",
+        "GND2": "GND",
+        "3V3A": "MCU_3V3",
+        "3V3B": "MCU_3V3"
+      },
+      "sheet": "01-controller",
+      "dnp": false
+    },
+    {
+      "ref": "J101",
+      "value": "To power J103 / charging and always-on power",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_5V",
+        "2": "GND",
+        "3": "HOST_SCL",
+        "4": "HOST_SDA",
+        "5": "PD_IRQ_N",
+        "6": "CHG_ALLOW",
+        "7": "PACK_TEMP_STATUS"
+      },
+      "sheet": "01-controller",
+      "dnp": false
+    },
+    {
+      "ref": "J102",
+      "value": "To power J1002 / motor control and watchdog clear",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "GND",
+        "2": "MOTOR_ARM",
+        "3": "MOTOR_REG_REQUEST",
+        "4": "HAND_LEFT_REQUEST",
+        "5": "HAND_RIGHT_REQUEST",
+        "6": "LEG_REQUEST",
+        "7": "MOTOR_ARMED",
+        "8": "UPPER_REQUEST",
+        "9": "WATCHDOG_FAULT_N",
+        "10": "JETSON_EN",
+        "11": "PERIPHERAL_ENABLE",
+        "12": "PACK_ALERT_N"
+      },
+      "sheet": "01-controller",
+      "dnp": false
+    },
+    {
+      "ref": "J103",
+      "value": "Power-board logic enables / connector interface pending",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "GND",
+        "2": "JETSON_EN",
+        "3": "PERIPHERAL_ENABLE",
+        "4": "PACK_ALERT_N"
+      },
+      "sheet": "01-controller",
+      "dnp": false
+    },
+    {
+      "ref": "J104",
+      "value": "Front-door button and LED / no motor current here",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "GND",
+        "2": "POWER_BUTTON_N",
+        "3": "AON_5V",
+        "4": "LED_CATHODE"
+      },
+      "sheet": "01-controller",
+      "dnp": false
+    },
+    {
+      "ref": "R101",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "POWER_BUTTON_N"
+      },
+      "sheet": "01-controller",
+      "dnp": false
+    },
+    {
+      "ref": "R102",
+      "value": "1k 1% / initial LED current",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LED_CATHODE",
+        "2": "BUTTON_LED_C"
+      },
+      "sheet": "01-controller",
+      "dnp": false
+    },
+    {
+      "ref": "Q101",
+      "value": "MMBT3904-7-F",
+      "footprint": "Package_TO_SOT_SMD:SOT-23",
+      "mpn": "MMBT3904-7-F",
+      "datasheet": "https://www.diodes.com/assets/Datasheets/MMBT3904.pdf",
+      "pins": {
+        "1": "BUTTON_LED_B",
+        "2": "GND",
+        "3": "BUTTON_LED_C"
+      },
+      "sheet": "01-controller",
+      "dnp": false
+    },
+    {
+      "ref": "R103",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "POWER_LED_DRIVE",
+        "2": "BUTTON_LED_B"
+      },
+      "sheet": "01-controller",
+      "dnp": false
+    },
+    {
+      "ref": "R104",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "BUTTON_LED_B",
+        "2": "GND"
+      },
+      "sheet": "01-controller",
+      "dnp": false
+    },
+    {
+      "ref": "C101",
+      "value": "10u 10V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_5V",
+        "2": "GND"
+      },
+      "sheet": "01-controller",
+      "dnp": false
+    },
+    {
+      "ref": "C102",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "GND"
+      },
+      "sheet": "01-controller",
+      "dnp": false
+    },
+    {
+      "ref": "#FLG212",
+      "value": "AON_5V",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_5V"
+      },
+      "sheet": "01-controller",
+      "dnp": false,
+      "annotation": true
+    },
+    {
+      "ref": "#FLG213",
+      "value": "GND",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "GND"
+      },
+      "sheet": "01-controller",
+      "dnp": false,
+      "annotation": true
+    },
+    {
+      "ref": "U201",
+      "value": "SN74AHCT1G126DBVR",
+      "footprint": "Package_TO_SOT_SMD:SOT-23-5",
+      "mpn": "SN74AHCT1G126DBVR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/sn74ahct1g126.pdf",
+      "pins": {
+        "1": "LEG_TX_ENABLE",
+        "2": "LEG_TX",
+        "3": "GND",
+        "4": "LEG_TX_DRV",
+        "5": "AON_5V"
+      },
+      "sheet": "02-servo-buses-1",
+      "dnp": false
+    },
+    {
+      "ref": "R201",
+      "value": "47 1% / source damping",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LEG_TX_DRV",
+        "2": "LEG_DATA"
+      },
+      "sheet": "02-servo-buses-1",
+      "dnp": false
+    },
+    {
+      "ref": "U202",
+      "value": "SN74LVC1G125DBVR",
+      "footprint": "Package_TO_SOT_SMD:SOT-23-5",
+      "mpn": "SN74LVC1G125DBVR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/sn74lvc1g125.pdf",
+      "pins": {
+        "1": "GND",
+        "2": "LEG_DATA",
+        "3": "GND",
+        "4": "LEG_RX",
+        "5": "MCU_3V3"
+      },
+      "sheet": "02-servo-buses-1",
+      "dnp": false
+    },
+    {
+      "ref": "J201",
+      "value": "LEG data to powered servo harness",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LEG_DATA",
+        "2": "GND"
+      },
+      "sheet": "02-servo-buses-1",
+      "dnp": false
+    },
+    {
+      "ref": "R202",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LEG_DE",
+        "2": "GND"
+      },
+      "sheet": "02-servo-buses-1",
+      "dnp": false
+    },
+    {
+      "ref": "R203",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "LEG_TX"
+      },
+      "sheet": "02-servo-buses-1",
+      "dnp": false
+    },
+    {
+      "ref": "C201",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_5V",
+        "2": "GND"
+      },
+      "sheet": "02-servo-buses-1",
+      "dnp": false
+    },
+    {
+      "ref": "C202",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "GND"
+      },
+      "sheet": "02-servo-buses-1",
+      "dnp": false
+    },
+    {
+      "ref": "U241",
+      "value": "SN74AHCT1G126DBVR",
+      "footprint": "Package_TO_SOT_SMD:SOT-23-5",
+      "mpn": "SN74AHCT1G126DBVR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/sn74ahct1g126.pdf",
+      "pins": {
+        "1": "UPPER_TX_ENABLE",
+        "2": "UPPER_TX",
+        "3": "GND",
+        "4": "UPPER_TX_DRV",
+        "5": "AON_5V"
+      },
+      "sheet": "02-servo-buses-1",
+      "dnp": false
+    },
+    {
+      "ref": "R241",
+      "value": "47 1% / source damping",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "UPPER_TX_DRV",
+        "2": "UPPER_DATA"
+      },
+      "sheet": "02-servo-buses-1",
+      "dnp": false
+    },
+    {
+      "ref": "U242",
+      "value": "SN74LVC1G125DBVR",
+      "footprint": "Package_TO_SOT_SMD:SOT-23-5",
+      "mpn": "SN74LVC1G125DBVR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/sn74lvc1g125.pdf",
+      "pins": {
+        "1": "GND",
+        "2": "UPPER_DATA",
+        "3": "GND",
+        "4": "UPPER_RX",
+        "5": "MCU_3V3"
+      },
+      "sheet": "02-servo-buses-1",
+      "dnp": false
+    },
+    {
+      "ref": "J241",
+      "value": "UPPER data to powered servo harness",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "UPPER_DATA",
+        "2": "GND"
+      },
+      "sheet": "02-servo-buses-1",
+      "dnp": false
+    },
+    {
+      "ref": "R242",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "UPPER_DE",
+        "2": "GND"
+      },
+      "sheet": "02-servo-buses-1",
+      "dnp": false
+    },
+    {
+      "ref": "R243",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "UPPER_TX"
+      },
+      "sheet": "02-servo-buses-1",
+      "dnp": false
+    },
+    {
+      "ref": "C241",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_5V",
+        "2": "GND"
+      },
+      "sheet": "02-servo-buses-1",
+      "dnp": false
+    },
+    {
+      "ref": "C242",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "GND"
+      },
+      "sheet": "02-servo-buses-1",
+      "dnp": false
+    },
+    {
+      "ref": "U301",
+      "value": "SN74AHCT1G126DBVR",
+      "footprint": "Package_TO_SOT_SMD:SOT-23-5",
+      "mpn": "SN74AHCT1G126DBVR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/sn74ahct1g126.pdf",
+      "pins": {
+        "1": "LEFT_TX_ENABLE",
+        "2": "LEFT_TX",
+        "3": "GND",
+        "4": "LEFT_TX_DRV",
+        "5": "AON_5V"
+      },
+      "sheet": "03-servo-buses-2",
+      "dnp": false
+    },
+    {
+      "ref": "R301",
+      "value": "47 1% / source damping",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LEFT_TX_DRV",
+        "2": "LEFT_DATA"
+      },
+      "sheet": "03-servo-buses-2",
+      "dnp": false
+    },
+    {
+      "ref": "U302",
+      "value": "SN74LVC1G125DBVR",
+      "footprint": "Package_TO_SOT_SMD:SOT-23-5",
+      "mpn": "SN74LVC1G125DBVR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/sn74lvc1g125.pdf",
+      "pins": {
+        "1": "GND",
+        "2": "LEFT_DATA",
+        "3": "GND",
+        "4": "LEFT_RX",
+        "5": "MCU_3V3"
+      },
+      "sheet": "03-servo-buses-2",
+      "dnp": false
+    },
+    {
+      "ref": "J301",
+      "value": "LEFT data to powered servo harness",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LEFT_DATA",
+        "2": "GND"
+      },
+      "sheet": "03-servo-buses-2",
+      "dnp": false
+    },
+    {
+      "ref": "R302",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LEFT_DE",
+        "2": "GND"
+      },
+      "sheet": "03-servo-buses-2",
+      "dnp": false
+    },
+    {
+      "ref": "R303",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "LEFT_TX"
+      },
+      "sheet": "03-servo-buses-2",
+      "dnp": false
+    },
+    {
+      "ref": "C301",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_5V",
+        "2": "GND"
+      },
+      "sheet": "03-servo-buses-2",
+      "dnp": false
+    },
+    {
+      "ref": "C302",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "GND"
+      },
+      "sheet": "03-servo-buses-2",
+      "dnp": false
+    },
+    {
+      "ref": "U341",
+      "value": "SN74AHCT1G126DBVR",
+      "footprint": "Package_TO_SOT_SMD:SOT-23-5",
+      "mpn": "SN74AHCT1G126DBVR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/sn74ahct1g126.pdf",
+      "pins": {
+        "1": "RIGHT_TX_ENABLE",
+        "2": "RIGHT_TX",
+        "3": "GND",
+        "4": "RIGHT_TX_DRV",
+        "5": "AON_5V"
+      },
+      "sheet": "03-servo-buses-2",
+      "dnp": false
+    },
+    {
+      "ref": "R341",
+      "value": "47 1% / source damping",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "RIGHT_TX_DRV",
+        "2": "RIGHT_DATA"
+      },
+      "sheet": "03-servo-buses-2",
+      "dnp": false
+    },
+    {
+      "ref": "U342",
+      "value": "SN74LVC1G125DBVR",
+      "footprint": "Package_TO_SOT_SMD:SOT-23-5",
+      "mpn": "SN74LVC1G125DBVR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/sn74lvc1g125.pdf",
+      "pins": {
+        "1": "GND",
+        "2": "RIGHT_DATA",
+        "3": "GND",
+        "4": "RIGHT_RX",
+        "5": "MCU_3V3"
+      },
+      "sheet": "03-servo-buses-2",
+      "dnp": false
+    },
+    {
+      "ref": "J341",
+      "value": "RIGHT data to powered servo harness",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "RIGHT_DATA",
+        "2": "GND"
+      },
+      "sheet": "03-servo-buses-2",
+      "dnp": false
+    },
+    {
+      "ref": "R342",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "RIGHT_DE",
+        "2": "GND"
+      },
+      "sheet": "03-servo-buses-2",
+      "dnp": false
+    },
+    {
+      "ref": "R343",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "RIGHT_TX"
+      },
+      "sheet": "03-servo-buses-2",
+      "dnp": false
+    },
+    {
+      "ref": "C341",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_5V",
+        "2": "GND"
+      },
+      "sheet": "03-servo-buses-2",
+      "dnp": false
+    },
+    {
+      "ref": "C342",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "GND"
+      },
+      "sheet": "03-servo-buses-2",
+      "dnp": false
+    },
+    {
+      "ref": "U401",
+      "value": "TCA9548APWR",
+      "footprint": "Package_SO:TSSOP-24_4.4x7.8mm_P0.65mm",
+      "mpn": "TCA9548APWR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/tca9548a.pdf",
+      "pins": {
+        "1": "GND",
+        "2": "GND",
+        "3": "SENSOR_MUX_RESET_N",
+        "12": "GND",
+        "21": "GND",
+        "22": "HOST_SCL",
+        "23": "HOST_SDA",
+        "24": "MCU_3V3",
+        "4": "SENSOR0_SDA",
+        "5": "SENSOR0_SCL",
+        "6": "SENSOR1_SDA",
+        "7": "SENSOR1_SCL",
+        "8": "SENSOR2_SDA",
+        "9": "SENSOR2_SCL",
+        "10": "SENSOR3_SDA",
+        "11": "SENSOR3_SCL",
+        "13": "SENSOR4_SDA",
+        "14": "SENSOR4_SCL",
+        "15": null,
+        "16": null,
+        "17": null,
+        "18": null,
+        "19": null,
+        "20": null
+      },
+      "sheet": "04-sensor-buses",
+      "dnp": false
+    },
+    {
+      "ref": "R401",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "SENSOR_MUX_RESET_N"
+      },
+      "sheet": "04-sensor-buses",
+      "dnp": false
+    },
+    {
+      "ref": "F401",
+      "value": "MF-MSMF020-2 / verify trip coordination",
+      "footprint": "Fuse:Fuse_1812_4532Metric",
+      "mpn": "MF-MSMF020-2",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_5V",
+        "2": "LEFT_FOOT_5V"
+      },
+      "sheet": "04-sensor-buses",
+      "dnp": false
+    },
+    {
+      "ref": "J401",
+      "value": "LEFT foot / mates foot J101 pin for pin",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LEFT_FOOT_5V",
+        "2": "GND",
+        "3": "SENSOR0_SCL",
+        "4": "SENSOR0_SDA",
+        "5": "LEFT_READY_N",
+        "6": "LEFT_XSHUT"
+      },
+      "sheet": "04-sensor-buses",
+      "dnp": false
+    },
+    {
+      "ref": "F402",
+      "value": "MF-MSMF020-2 / verify trip coordination",
+      "footprint": "Fuse:Fuse_1812_4532Metric",
+      "mpn": "MF-MSMF020-2",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_5V",
+        "2": "RIGHT_FOOT_5V"
+      },
+      "sheet": "04-sensor-buses",
+      "dnp": false
+    },
+    {
+      "ref": "J402",
+      "value": "RIGHT foot / mates foot J101 pin for pin",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "RIGHT_FOOT_5V",
+        "2": "GND",
+        "3": "SENSOR1_SCL",
+        "4": "SENSOR1_SDA",
+        "5": "RIGHT_READY_N",
+        "6": "RIGHT_XSHUT"
+      },
+      "sheet": "04-sensor-buses",
+      "dnp": false
+    },
+    {
+      "ref": "J403",
+      "value": "BME688 module",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_5V",
+        "2": "GND",
+        "3": "SENSOR2_SCL",
+        "4": "SENSOR2_SDA"
+      },
+      "sheet": "04-sensor-buses",
+      "dnp": false
+    },
+    {
+      "ref": "J404",
+      "value": "Edge sensor A",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_5V",
+        "2": "GND",
+        "3": "SENSOR3_SCL",
+        "4": "SENSOR3_SDA"
+      },
+      "sheet": "04-sensor-buses",
+      "dnp": false
+    },
+    {
+      "ref": "J405",
+      "value": "Edge sensor B",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_5V",
+        "2": "GND",
+        "3": "SENSOR4_SCL",
+        "4": "SENSOR4_SDA"
+      },
+      "sheet": "04-sensor-buses",
+      "dnp": false
+    },
+    {
+      "ref": "C401",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "GND"
+      },
+      "sheet": "04-sensor-buses",
+      "dnp": false
+    },
+    {
+      "ref": "R402",
+      "value": "4k7 1% / fitting option",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "SENSOR0_SCL"
+      },
+      "sheet": "10-sensor-pullups",
+      "dnp": false
+    },
+    {
+      "ref": "R403",
+      "value": "4k7 1% / fitting option",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "SENSOR0_SDA"
+      },
+      "sheet": "10-sensor-pullups",
+      "dnp": false
+    },
+    {
+      "ref": "R404",
+      "value": "4k7 1% / fitting option",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "SENSOR1_SCL"
+      },
+      "sheet": "10-sensor-pullups",
+      "dnp": false
+    },
+    {
+      "ref": "R405",
+      "value": "4k7 1% / fitting option",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "SENSOR1_SDA"
+      },
+      "sheet": "10-sensor-pullups",
+      "dnp": false
+    },
+    {
+      "ref": "R406",
+      "value": "4k7 1% / fitting option",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "SENSOR2_SCL"
+      },
+      "sheet": "10-sensor-pullups",
+      "dnp": false
+    },
+    {
+      "ref": "R407",
+      "value": "4k7 1% / fitting option",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "SENSOR2_SDA"
+      },
+      "sheet": "10-sensor-pullups",
+      "dnp": false
+    },
+    {
+      "ref": "R408",
+      "value": "4k7 1% / fitting option",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "SENSOR3_SCL"
+      },
+      "sheet": "10-sensor-pullups",
+      "dnp": false
+    },
+    {
+      "ref": "R409",
+      "value": "4k7 1% / fitting option",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "SENSOR3_SDA"
+      },
+      "sheet": "10-sensor-pullups",
+      "dnp": false
+    },
+    {
+      "ref": "R410",
+      "value": "4k7 1% / fitting option",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "SENSOR4_SCL"
+      },
+      "sheet": "10-sensor-pullups",
+      "dnp": false
+    },
+    {
+      "ref": "R411",
+      "value": "4k7 1% / fitting option",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "SENSOR4_SDA"
+      },
+      "sheet": "10-sensor-pullups",
+      "dnp": false
+    },
+    {
+      "ref": "U501",
+      "value": "LSM6DSOXTR",
+      "footprint": "",
+      "mpn": "LSM6DSOXTR",
+      "datasheet": "https://www.st.com/resource/en/datasheet/lsm6dsox.pdf",
+      "pins": {
+        "1": "IMU_MISO",
+        "2": "GND",
+        "3": "GND",
+        "4": "IMU_INT",
+        "5": "MCU_3V3",
+        "6": "GND",
+        "7": "GND",
+        "8": "MCU_3V3",
+        "9": null,
+        "10": null,
+        "11": null,
+        "12": "IMU_CS_N",
+        "13": "IMU_SCK",
+        "14": "IMU_MOSI"
+      },
+      "sheet": "05-imu-watchdog",
+      "dnp": false
+    },
+    {
+      "ref": "C501",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "GND"
+      },
+      "sheet": "05-imu-watchdog",
+      "dnp": false
+    },
+    {
+      "ref": "C502",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "GND"
+      },
+      "sheet": "05-imu-watchdog",
+      "dnp": false
+    },
+    {
+      "ref": "R501",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "IMU_CS_N"
+      },
+      "sheet": "05-imu-watchdog",
+      "dnp": false
+    },
+    {
+      "ref": "U502",
+      "value": "TPS3431SDRBR",
+      "footprint": "",
+      "mpn": "TPS3431SDRBR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/tps3431.pdf",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "WD_CWD",
+        "3": "MCU_3V3",
+        "4": "GND",
+        "5": "MCU_3V3",
+        "6": "WATCHDOG_KICK",
+        "7": "WATCHDOG_FAULT_N",
+        "8": null,
+        "9": "GND"
+      },
+      "sheet": "05-imu-watchdog",
+      "dnp": false
+    },
+    {
+      "ref": "R502",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "WD_CWD"
+      },
+      "sheet": "05-imu-watchdog",
+      "dnp": false
+    },
+    {
+      "ref": "R503",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "WATCHDOG_FAULT_N"
+      },
+      "sheet": "05-imu-watchdog",
+      "dnp": false
+    },
+    {
+      "ref": "R504",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "WATCHDOG_KICK",
+        "2": "GND"
+      },
+      "sheet": "05-imu-watchdog",
+      "dnp": false
+    },
+    {
+      "ref": "C503",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "GND"
+      },
+      "sheet": "05-imu-watchdog",
+      "dnp": false
+    },
+    {
+      "ref": "J501",
+      "value": "Watchdog test points / fault goes to power J1002.9",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "WATCHDOG_KICK",
+        "2": "WATCHDOG_FAULT_N",
+        "3": "GND"
+      },
+      "sheet": "05-imu-watchdog",
+      "dnp": false
+    },
+    {
+      "ref": "U601",
+      "value": "MPR121QR2 / 0x5a",
+      "footprint": "Package_DFN_QFN:UQFN-20_3x3mm_P0.4mm",
+      "mpn": "MPR121QR2",
+      "datasheet": "https://www.nxp.com/docs/en/data-sheet/MPR121.pdf",
+      "pins": {
+        "1": "TOUCH_IRQ_N",
+        "2": "HOST_SCL",
+        "3": "HOST_SDA",
+        "4": "GND",
+        "5": "TOUCH0_VREG",
+        "6": "GND",
+        "7": "TOUCH0_REXT",
+        "20": "MCU_3V3",
+        "8": "TOUCH_PAD_01",
+        "9": "TOUCH_PAD_02",
+        "10": "TOUCH_PAD_03",
+        "11": "TOUCH_PAD_04",
+        "12": "TOUCH_PAD_05",
+        "13": "TOUCH_PAD_06",
+        "14": "TOUCH_PAD_07",
+        "15": "TOUCH_PAD_08",
+        "16": "TOUCH_PAD_09",
+        "17": "TOUCH_PAD_10",
+        "18": "TOUCH_PAD_11",
+        "19": "TOUCH_PAD_12"
+      },
+      "sheet": "06-touch-1",
+      "dnp": false
+    },
+    {
+      "ref": "R601",
+      "value": "75k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "TOUCH0_REXT",
+        "2": "GND"
+      },
+      "sheet": "06-touch-1",
+      "dnp": false
+    },
+    {
+      "ref": "C601",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "GND"
+      },
+      "sheet": "06-touch-1",
+      "dnp": false
+    },
+    {
+      "ref": "C602",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "TOUCH0_VREG",
+        "2": "GND"
+      },
+      "sheet": "06-touch-1",
+      "dnp": false
+    },
+    {
+      "ref": "J601",
+      "value": "12 shell electrodes plus ground / no shield over sensing pads",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "TOUCH_PAD_01",
+        "2": "TOUCH_PAD_02",
+        "3": "TOUCH_PAD_03",
+        "4": "TOUCH_PAD_04",
+        "5": "TOUCH_PAD_05",
+        "6": "TOUCH_PAD_06",
+        "7": "TOUCH_PAD_07",
+        "8": "TOUCH_PAD_08",
+        "9": "TOUCH_PAD_09",
+        "10": "TOUCH_PAD_10",
+        "11": "TOUCH_PAD_11",
+        "12": "TOUCH_PAD_12",
+        "13": "GND"
+      },
+      "sheet": "06-touch-1",
+      "dnp": false
+    },
+    {
+      "ref": "R602",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "TOUCH_IRQ_N"
+      },
+      "sheet": "06-touch-1",
+      "dnp": false
+    },
+    {
+      "ref": "U701",
+      "value": "MPR121QR2 / 0x5b",
+      "footprint": "Package_DFN_QFN:UQFN-20_3x3mm_P0.4mm",
+      "mpn": "MPR121QR2",
+      "datasheet": "https://www.nxp.com/docs/en/data-sheet/MPR121.pdf",
+      "pins": {
+        "1": "TOUCH_IRQ_N",
+        "2": "HOST_SCL",
+        "3": "HOST_SDA",
+        "4": "MCU_3V3",
+        "5": "TOUCH1_VREG",
+        "6": "GND",
+        "7": "TOUCH1_REXT",
+        "20": "MCU_3V3",
+        "8": "TOUCH_PAD_13",
+        "9": "TOUCH_PAD_14",
+        "10": "TOUCH_PAD_15",
+        "11": "TOUCH_PAD_16",
+        "12": "TOUCH_PAD_17",
+        "13": "TOUCH_PAD_18",
+        "14": "TOUCH_PAD_19",
+        "15": "TOUCH_PAD_20",
+        "16": "TOUCH_PAD_21",
+        "17": "TOUCH_PAD_22",
+        "18": "TOUCH_PAD_23",
+        "19": "TOUCH_PAD_24"
+      },
+      "sheet": "07-touch-2",
+      "dnp": false
+    },
+    {
+      "ref": "R701",
+      "value": "75k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "TOUCH1_REXT",
+        "2": "GND"
+      },
+      "sheet": "07-touch-2",
+      "dnp": false
+    },
+    {
+      "ref": "C701",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "GND"
+      },
+      "sheet": "07-touch-2",
+      "dnp": false
+    },
+    {
+      "ref": "C702",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "TOUCH1_VREG",
+        "2": "GND"
+      },
+      "sheet": "07-touch-2",
+      "dnp": false
+    },
+    {
+      "ref": "J701",
+      "value": "12 shell electrodes plus ground / no shield over sensing pads",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "TOUCH_PAD_13",
+        "2": "TOUCH_PAD_14",
+        "3": "TOUCH_PAD_15",
+        "4": "TOUCH_PAD_16",
+        "5": "TOUCH_PAD_17",
+        "6": "TOUCH_PAD_18",
+        "7": "TOUCH_PAD_19",
+        "8": "TOUCH_PAD_20",
+        "9": "TOUCH_PAD_21",
+        "10": "TOUCH_PAD_22",
+        "11": "TOUCH_PAD_23",
+        "12": "TOUCH_PAD_24",
+        "13": "GND"
+      },
+      "sheet": "07-touch-2",
+      "dnp": false
+    },
+    {
+      "ref": "U801",
+      "value": "MPR121QR2 / 0x5c",
+      "footprint": "Package_DFN_QFN:UQFN-20_3x3mm_P0.4mm",
+      "mpn": "MPR121QR2",
+      "datasheet": "https://www.nxp.com/docs/en/data-sheet/MPR121.pdf",
+      "pins": {
+        "1": "TOUCH_IRQ_N",
+        "2": "HOST_SCL",
+        "3": "HOST_SDA",
+        "4": "HOST_SDA",
+        "5": "TOUCH2_VREG",
+        "6": "GND",
+        "7": "TOUCH2_REXT",
+        "20": "MCU_3V3",
+        "8": "TOUCH_PAD_25",
+        "9": "TOUCH_PAD_26",
+        "10": "TOUCH_PAD_27",
+        "11": "TOUCH_PAD_28",
+        "12": "TOUCH_PAD_29",
+        "13": "TOUCH_PAD_30",
+        "14": "TOUCH_PAD_31",
+        "15": "TOUCH_PAD_32",
+        "16": "TOUCH_PAD_33",
+        "17": "TOUCH_PAD_34",
+        "18": "TOUCH_PAD_35",
+        "19": "TOUCH_PAD_36"
+      },
+      "sheet": "08-touch-3",
+      "dnp": false
+    },
+    {
+      "ref": "R801",
+      "value": "75k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "TOUCH2_REXT",
+        "2": "GND"
+      },
+      "sheet": "08-touch-3",
+      "dnp": false
+    },
+    {
+      "ref": "C801",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "GND"
+      },
+      "sheet": "08-touch-3",
+      "dnp": false
+    },
+    {
+      "ref": "C802",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "TOUCH2_VREG",
+        "2": "GND"
+      },
+      "sheet": "08-touch-3",
+      "dnp": false
+    },
+    {
+      "ref": "J801",
+      "value": "12 shell electrodes plus ground / no shield over sensing pads",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "TOUCH_PAD_25",
+        "2": "TOUCH_PAD_26",
+        "3": "TOUCH_PAD_27",
+        "4": "TOUCH_PAD_28",
+        "5": "TOUCH_PAD_29",
+        "6": "TOUCH_PAD_30",
+        "7": "TOUCH_PAD_31",
+        "8": "TOUCH_PAD_32",
+        "9": "TOUCH_PAD_33",
+        "10": "TOUCH_PAD_34",
+        "11": "TOUCH_PAD_35",
+        "12": "TOUCH_PAD_36",
+        "13": "GND"
+      },
+      "sheet": "08-touch-3",
+      "dnp": false
+    },
+    {
+      "ref": "U901",
+      "value": "MPR121QR2 / 0x5d",
+      "footprint": "Package_DFN_QFN:UQFN-20_3x3mm_P0.4mm",
+      "mpn": "MPR121QR2",
+      "datasheet": "https://www.nxp.com/docs/en/data-sheet/MPR121.pdf",
+      "pins": {
+        "1": "TOUCH_IRQ_N",
+        "2": "HOST_SCL",
+        "3": "HOST_SDA",
+        "4": "HOST_SCL",
+        "5": "TOUCH3_VREG",
+        "6": "GND",
+        "7": "TOUCH3_REXT",
+        "20": "MCU_3V3",
+        "8": "TOUCH_PAD_37",
+        "9": "TOUCH_PAD_38",
+        "10": "TOUCH_PAD_39",
+        "11": "TOUCH_PAD_40",
+        "12": "TOUCH_PAD_41",
+        "13": "TOUCH_PAD_42",
+        "14": "TOUCH_PAD_43",
+        "15": "TOUCH_PAD_44",
+        "16": "TOUCH_PAD_45",
+        "17": "TOUCH_PAD_46",
+        "18": "TOUCH_PAD_47",
+        "19": "TOUCH_PAD_48"
+      },
+      "sheet": "09-touch-4",
+      "dnp": false
+    },
+    {
+      "ref": "R901",
+      "value": "75k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "TOUCH3_REXT",
+        "2": "GND"
+      },
+      "sheet": "09-touch-4",
+      "dnp": false
+    },
+    {
+      "ref": "C901",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "GND"
+      },
+      "sheet": "09-touch-4",
+      "dnp": false
+    },
+    {
+      "ref": "C902",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "TOUCH3_VREG",
+        "2": "GND"
+      },
+      "sheet": "09-touch-4",
+      "dnp": false
+    },
+    {
+      "ref": "J901",
+      "value": "12 shell electrodes plus ground / no shield over sensing pads",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "TOUCH_PAD_37",
+        "2": "TOUCH_PAD_38",
+        "3": "TOUCH_PAD_39",
+        "4": "TOUCH_PAD_40",
+        "5": "TOUCH_PAD_41",
+        "6": "TOUCH_PAD_42",
+        "7": "TOUCH_PAD_43",
+        "8": "TOUCH_PAD_44",
+        "9": "TOUCH_PAD_45",
+        "10": "TOUCH_PAD_46",
+        "11": "TOUCH_PAD_47",
+        "12": "TOUCH_PAD_48",
+        "13": "GND"
+      },
+      "sheet": "09-touch-4",
+      "dnp": false
+    },
+    {
+      "ref": "U1101",
+      "value": "SN74LVC08APWR",
+      "footprint": "Package_SO:TSSOP-14_4.4x5mm_P0.65mm",
+      "mpn": "SN74LVC08APWR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/sn74lvc08a.pdf",
+      "pins": {
+        "7": "GND",
+        "14": "MCU_3V3",
+        "1": "LEG_DE",
+        "2": "MOTOR_ARMED",
+        "3": "LEG_TX_ENABLE",
+        "4": "UPPER_DE",
+        "5": "MOTOR_ARMED",
+        "6": "UPPER_TX_ENABLE",
+        "9": "LEFT_DE",
+        "10": "MOTOR_ARMED",
+        "8": "LEFT_TX_ENABLE",
+        "12": "RIGHT_DE",
+        "13": "MOTOR_ARMED",
+        "11": "RIGHT_TX_ENABLE"
+      },
+      "sheet": "11-transmit-cut",
+      "dnp": false
+    },
+    {
+      "ref": "R1101",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LEG_TX_ENABLE",
+        "2": "GND"
+      },
+      "sheet": "11-transmit-cut",
+      "dnp": false
+    },
+    {
+      "ref": "R1102",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "UPPER_TX_ENABLE",
+        "2": "GND"
+      },
+      "sheet": "11-transmit-cut",
+      "dnp": false
+    },
+    {
+      "ref": "R1103",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LEFT_TX_ENABLE",
+        "2": "GND"
+      },
+      "sheet": "11-transmit-cut",
+      "dnp": false
+    },
+    {
+      "ref": "R1104",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "RIGHT_TX_ENABLE",
+        "2": "GND"
+      },
+      "sheet": "11-transmit-cut",
+      "dnp": false
+    },
+    {
+      "ref": "R1105",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MOTOR_ARMED",
+        "2": "GND"
+      },
+      "sheet": "11-transmit-cut",
+      "dnp": false
+    },
+    {
+      "ref": "C1101",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MCU_3V3",
+        "2": "GND"
+      },
+      "sheet": "11-transmit-cut",
+      "dnp": false
+    }
+  ]
+}

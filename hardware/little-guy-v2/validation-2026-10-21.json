@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-21",
+  "scope": "Local host controller and optional schema-v2 outbox integration with receiver-session replay rejection; scripted devices only",
+  "sdk_commit": "cbcfa64674d592f7e5028ae72af42580f60500b4",
+  "sdk_unmodified_files_verified": 10,
+  "tests": {
+    "command": ".run/servo-venv/bin/python -m unittest tools.servo.test_servo tools.servo.test_actions -v",
+    "passed": 44,
+    "failed": 0,
+    "independent_rerun_passed": 44
+  },
+  "checks": [
+    "Synthetic demo ran and kept sent target separate from feedback",
+    "Map check reports eleven uncalibrated joints",
+    "Source modules compile",
+    "Two independent review findings corrected: receive deadline under continuous noise; coordinate offset and hardware limits bound to calibration",
+    "Optional outbox handler locally exercised; normal guard run() supplies no handler",
+    "Independent review corrections verified: expiry checked immediately before bus write; uncertain write errors reported as failed with delivery/motion unconfirmed",
+    "Fresh receiver sessions reject both attempted and untouched old queue entries; fault reset retains consumed IDs; subprocess restart and uncertain writes covered",
+    "Existing say, mood and reply paths exercised in temporary directories",
+    "Independent implementation review found no blocking findings; trusted producer/session handoff and deployment remain unfinished"
+  ],
+  "hardware_accessed": false,
+  "jetson_tested": false,
+  "physical_motion_verified": false,
+  "files_sha256": {
+    "tools/servo/control.py": "ce8135740af9ad0f5c05f080147fc3a0494a4a26e16e66cbcbe3658fe9922cdd",
+    "tools/servo/bus.py": "6561f4f2bc19fe2ea666e7c5e7993905b7e849c070f541500408db9c9c89574d",
+    "tools/servo/__main__.py": "5bffa6c7f8b24793d7454d5f2fc8c06195b3a05c03cc1aa61b414ccd3fb8ad3e",
+    "tools/servo/test_servo.py": "a0df01508ca82398241bf6d5e38aebda2d1a23ee6e2b41b8ce6e2240d4cc9cbf",
+    "hardware/little-guy-v2/joints.json": "00d49a357e8027593be8ec4916aaf6b13eb005b57672cc61c169fb2cc278d4d1",
+    "tools/servo/actions.py": "a71d65ce2784abd0580d2218f88ac19cdcef76d3d7218c66370929c6f2cef7ba",
+    "tools/servo/test_actions.py": "33465bc23de5ab00b8efcf36d489b41156fe654d9c50d9f9425f4ddc1b2ea4db",
+    "tools/servo/README.md": "35909fbf37dfd63555b2c85786b0bf80069e578551b4f79c1807eb4e0dcd9107",
+    "tools/room/guard.py": "d48bb23a978e2c030ac723c972a0dda3bc4a83901e93188e5af22bd9f4edfbc0",
+    "hardware/little-guy-v2/README.md": "496323ed72d978bf4cb2c074316f2bcd14c5d220045edaf3b1633a54691bd15f"
+  },
+  "live_guard_deployed": false
+}

@@ -1,0 +1,361 @@
+{
+  "$schema": "https://schemas.kicad.org/erc.v1.json",
+  "coordinate_units": "mm",
+  "date": "2026-10-25T14:32:25",
+  "ignored_checks": [
+    {
+      "description": "Global label only appears once in the schematic",
+      "key": "single_global_label"
+    },
+    {
+      "description": "Four connection points are joined together",
+      "key": "four_way_junction"
+    },
+    {
+      "description": "SPICE model issue",
+      "key": "simulation_model_issue"
+    },
+    {
+      "description": "Assigned footprint doesn't match footprint filters",
+      "key": "footprint_filter"
+    }
+  ],
+  "included_severities": [
+    "error",
+    "warning"
+  ],
+  "kicad_version": "10.0.6",
+  "sheets": [
+    {
+      "path": "/",
+      "uuid_path": "/12612dcf-3c73-5552-b7a9-b2b0965e2412",
+      "violations": []
+    },
+    {
+      "path": "/USB-C PD / configuration/",
+      "uuid_path": "/12612dcf-3c73-5552-b7a9-b2b0965e2412/f572369e-b478-59f1-8747-6730237996d5",
+      "violations": [
+        {
+          "description": "Pins of type Bidirectional and Power output are connected",
+          "items": [
+            {
+              "description": "Symbol U101 Pin 5 [GPIO0, Bidirectional, Line]",
+              "pos": {
+                "x": 1.651,
+                "y": 0.9906
+              },
+              "uuid": "1541ba80-6977-4020-a3c2-1dd50295107f"
+            },
+            {
+              "description": "Symbol #FLG223 Pin 1 [SOURCE, Power output, Line]",
+              "pos": {
+                "x": 0.3175,
+                "y": 0.3937
+              },
+              "uuid": "daf67bd2-e084-4e78-b776-923020340666"
+            }
+          ],
+          "severity": "warning",
+          "type": "pin_to_pin"
+        },
+        {
+          "description": "Pins of type Bidirectional and Power output are connected",
+          "items": [
+            {
+              "description": "Symbol U101 Pin 6 [GPIO1, Bidirectional, Line]",
+              "pos": {
+                "x": 1.651,
+                "y": 1.016
+              },
+              "uuid": "7bb7ec20-c957-4207-96ee-7b352caf9575"
+            },
+            {
+              "description": "Symbol #FLG223 Pin 1 [SOURCE, Power output, Line]",
+              "pos": {
+                "x": 0.3175,
+                "y": 0.3937
+              },
+              "uuid": "daf67bd2-e084-4e78-b776-923020340666"
+            }
+          ],
+          "severity": "warning",
+          "type": "pin_to_pin"
+        },
+        {
+          "description": "Pins of type Bidirectional and Power output are connected",
+          "items": [
+            {
+              "description": "Symbol U101 Pin 7 [GPIO2, Bidirectional, Line]",
+              "pos": {
+                "x": 1.651,
+                "y": 1.0414
+              },
+              "uuid": "42f24247-187c-47ce-b942-8d12c56edfcf"
+            },
+            {
+              "description": "Symbol #FLG223 Pin 1 [SOURCE, Power output, Line]",
+              "pos": {
+                "x": 0.3175,
+                "y": 0.3937
+              },
+              "uuid": "daf67bd2-e084-4e78-b776-923020340666"
+            }
+          ],
+          "severity": "warning",
+          "type": "pin_to_pin"
+        },
+        {
+          "description": "Pins of type Bidirectional and Power output are connected",
+          "items": [
+            {
+              "description": "Symbol U101 Pin 19 [GPIO3, Bidirectional, Line]",
+              "pos": {
+                "x": 1.651,
+                "y": 1.0668
+              },
+              "uuid": "50692ee3-2078-4168-8c8e-1fcf19c50a5c"
+            },
+            {
+              "description": "Symbol #FLG223 Pin 1 [SOURCE, Power output, Line]",
+              "pos": {
+                "x": 0.3175,
+                "y": 0.3937
+              },
+              "uuid": "daf67bd2-e084-4e78-b776-923020340666"
+            }
+          ],
+          "severity": "warning",
+          "type": "pin_to_pin"
+        },
+        {
+          "description": "Pins of type Bidirectional and Power output are connected",
+          "items": [
+            {
+              "description": "Symbol U101 Pin 26 [GPIO4, Bidirectional, Line]",
+              "pos": {
+                "x": 1.651,
+                "y": 1.0922
+              },
+              "uuid": "f81e5840-0a5e-494b-8f7b-668bdd402581"
+            },
+            {
+              "description": "Symbol #FLG223 Pin 1 [SOURCE, Power output, Line]",
+              "pos": {
+                "x": 0.3175,
+                "y": 0.3937
+              },
+              "uuid": "daf67bd2-e084-4e78-b776-923020340666"
+            }
+          ],
+          "severity": "warning",
+          "type": "pin_to_pin"
+        },
+        {
+          "description": "Pins of type Bidirectional and Power output are connected",
+          "items": [
+            {
+              "description": "Symbol U101 Pin 27 [GPIO5, Bidirectional, Line]",
+              "pos": {
+                "x": 1.651,
+                "y": 1.1176
+              },
+              "uuid": "93ce38cf-a31f-4780-908b-367e3c763c1d"
+            },
+            {
+              "description": "Symbol #FLG223 Pin 1 [SOURCE, Power output, Line]",
+              "pos": {
+                "x": 0.3175,
+                "y": 0.3937
+              },
+              "uuid": "daf67bd2-e084-4e78-b776-923020340666"
+            }
+          ],
+          "severity": "warning",
+          "type": "pin_to_pin"
+        },
+        {
+          "description": "Pins of type Bidirectional and Power output are connected",
+          "items": [
+            {
+              "description": "Symbol U101 Pin 37 [GPIO6, Bidirectional, Line]",
+              "pos": {
+                "x": 1.651,
+                "y": 1.143
+              },
+              "uuid": "afa695e2-c327-4e27-a336-03d6e360f001"
+            },
+            {
+              "description": "Symbol #FLG223 Pin 1 [SOURCE, Power output, Line]",
+              "pos": {
+                "x": 0.3175,
+                "y": 0.3937
+              },
+              "uuid": "daf67bd2-e084-4e78-b776-923020340666"
+            }
+          ],
+          "severity": "warning",
+          "type": "pin_to_pin"
+        },
+        {
+          "description": "Pins of type Bidirectional and Power output are connected",
+          "items": [
+            {
+              "description": "Symbol U101 Pin 36 [GPIO7, Bidirectional, Line]",
+              "pos": {
+                "x": 1.651,
+                "y": 1.1684
+              },
+              "uuid": "8d10c231-a6a9-4d49-935e-b0e092753630"
+            },
+            {
+              "description": "Symbol #FLG223 Pin 1 [SOURCE, Power output, Line]",
+              "pos": {
+                "x": 0.3175,
+                "y": 0.3937
+              },
+              "uuid": "daf67bd2-e084-4e78-b776-923020340666"
+            }
+          ],
+          "severity": "warning",
+          "type": "pin_to_pin"
+        },
+        {
+          "description": "Pins of type Bidirectional and Power output are connected",
+          "items": [
+            {
+              "description": "Symbol U101 Pin 13 [GPIO11, Bidirectional, Line]",
+              "pos": {
+                "x": 1.651,
+                "y": 1.1938
+              },
+              "uuid": "753ccb1a-b101-4e46-bcc7-02ba162d8b3e"
+            },
+            {
+              "description": "Symbol #FLG223 Pin 1 [SOURCE, Power output, Line]",
+              "pos": {
+                "x": 0.3175,
+                "y": 0.3937
+              },
+              "uuid": "daf67bd2-e084-4e78-b776-923020340666"
+            }
+          ],
+          "severity": "warning",
+          "type": "pin_to_pin"
+        }
+      ]
+    },
+    {
+      "path": "/3S charger / dual input/",
+      "uuid_path": "/12612dcf-3c73-5552-b7a9-b2b0965e2412/631850ac-6dbe-553b-8c22-9ef8e138fbb7",
+      "violations": [
+        {
+          "description": "Pins of type Bidirectional and Power output are connected",
+          "items": [
+            {
+              "description": "Symbol U201 Pin 6 [D+, Bidirectional, Line]",
+              "pos": {
+                "x": 1.2446,
+                "y": 1.0033
+              },
+              "uuid": "581594fc-fc54-4dd8-bcb2-b3c33a2147e6"
+            },
+            {
+              "description": "Symbol #FLG223 Pin 1 [SOURCE, Power output, Line]",
+              "pos": {
+                "x": 0.3175,
+                "y": 0.3937
+              },
+              "uuid": "daf67bd2-e084-4e78-b776-923020340666"
+            }
+          ],
+          "severity": "warning",
+          "type": "pin_to_pin"
+        },
+        {
+          "description": "Pins of type Bidirectional and Power output are connected",
+          "items": [
+            {
+              "description": "Symbol U201 Pin 7 [D-, Bidirectional, Line]",
+              "pos": {
+                "x": 1.2446,
+                "y": 1.0287
+              },
+              "uuid": "1fabf1b2-946e-4963-9796-61973622280f"
+            },
+            {
+              "description": "Symbol #FLG223 Pin 1 [SOURCE, Power output, Line]",
+              "pos": {
+                "x": 0.3175,
+                "y": 0.3937
+              },
+              "uuid": "daf67bd2-e084-4e78-b776-923020340666"
+            }
+          ],
+          "severity": "warning",
+          "type": "pin_to_pin"
+        }
+      ]
+    },
+    {
+      "path": "/Always-on 5 V / charge permission/",
+      "uuid_path": "/12612dcf-3c73-5552-b7a9-b2b0965e2412/1c3502b9-e28a-5420-a6bb-6d8ed5c417ca",
+      "violations": []
+    },
+    {
+      "path": "/Motor buck-boost control/",
+      "uuid_path": "/12612dcf-3c73-5552-b7a9-b2b0965e2412/a6f75144-c4e7-524a-a9cc-1ea1e19a5da5",
+      "violations": []
+    },
+    {
+      "path": "/Motor buck-boost bridge/",
+      "uuid_path": "/12612dcf-3c73-5552-b7a9-b2b0965e2412/28ae0a1d-062e-581f-bc89-a9c916a58d9a",
+      "violations": []
+    },
+    {
+      "path": "/Motor reservoir / damping/",
+      "uuid_path": "/12612dcf-3c73-5552-b7a9-b2b0965e2412/2154d6b2-33a2-5233-93bd-6f8d02384eb9",
+      "violations": []
+    },
+    {
+      "path": "/Regulated Jetson supply/",
+      "uuid_path": "/12612dcf-3c73-5552-b7a9-b2b0965e2412/6e0abae6-5505-50c8-8e7c-863b44f259f7",
+      "violations": []
+    },
+    {
+      "path": "/Left hand supply/",
+      "uuid_path": "/12612dcf-3c73-5552-b7a9-b2b0965e2412/b43e6ebb-9d2c-59b7-a65d-583db89fa71a",
+      "violations": []
+    },
+    {
+      "path": "/Right hand supply/",
+      "uuid_path": "/12612dcf-3c73-5552-b7a9-b2b0965e2412/ad824a65-0268-517b-9f7a-17727853d04b",
+      "violations": []
+    },
+    {
+      "path": "/Peripheral 5 V supply/",
+      "uuid_path": "/12612dcf-3c73-5552-b7a9-b2b0965e2412/c184df9b-1f81-5e8c-b6a4-5d678b0b93e7",
+      "violations": []
+    },
+    {
+      "path": "/Motor-cut latch / control/",
+      "uuid_path": "/12612dcf-3c73-5552-b7a9-b2b0965e2412/351c7def-6fbf-5ae3-979a-36f29dd7bf67",
+      "violations": []
+    },
+    {
+      "path": "/Pack current / energy meter/",
+      "uuid_path": "/12612dcf-3c73-5552-b7a9-b2b0965e2412/42b6c877-7e1d-5dd8-9852-d96fe4168c5a",
+      "violations": []
+    },
+    {
+      "path": "/Three-segment charge temperature interlock/",
+      "uuid_path": "/12612dcf-3c73-5552-b7a9-b2b0965e2412/eacb4240-6c9b-5bf0-b734-ae929175eb78",
+      "violations": []
+    },
+    {
+      "path": "/Leg and upper-body switching/",
+      "uuid_path": "/12612dcf-3c73-5552-b7a9-b2b0965e2412/3a25305b-086e-576b-8e19-73bba6ef3d7f",
+      "violations": []
+    }
+  ],
+  "source": "little-guy-power.kicad_sch"
+}

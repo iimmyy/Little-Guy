@@ -1,0 +1,2856 @@
+<?xml version='1.0' encoding='utf-8'?>
+<export version="E">
+  <design>
+    <source>little-guy-head.kicad_sch</source>
+    <date>2026-10-25T14:32:24</date>
+    <tool>Eeschema 10.0.6</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title>Little Guy V2 - head microphone board</title>
+        <company />
+        <rev>A0.2-WIP</rev>
+        <date>2026-10-25</date>
+        <source>little-guy-head.kicad_sch</source>
+        <comment number="1" value="INCOMPLETE - NOT FOR FABRICATION" />
+        <comment number="2" value="" />
+        <comment number="3" value="" />
+        <comment number="4" value="" />
+        <comment number="5" value="" />
+        <comment number="6" value="" />
+        <comment number="7" value="" />
+        <comment number="8" value="" />
+        <comment number="9" value="" />
+      </title_block>
+    </sheet>
+    <sheet number="2" name="/XVF3800 / QSPI / USB / clock/" tstamps="/07541710-96da-5d00-9e2c-b4f420a37fa4/">
+      <title_block>
+        <title>XVF3800 / QSPI / USB / clock</title>
+        <company />
+        <rev>A0.2-WIP</rev>
+        <date>2026-10-25</date>
+        <source>01-voice-processor.kicad_sch</source>
+        <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
+        <comment number="2" value="" />
+        <comment number="3" value="" />
+        <comment number="4" value="" />
+        <comment number="5" value="" />
+        <comment number="6" value="" />
+        <comment number="7" value="" />
+        <comment number="8" value="" />
+        <comment number="9" value="" />
+      </title_block>
+    </sheet>
+    <sheet number="3" name="/Audio supplies / core buck / PLL filtering/" tstamps="/28fefa3f-85d1-5494-8a82-ee9f79bf0512/">
+      <title_block>
+        <title>Audio supplies / core buck / PLL filtering</title>
+        <company />
+        <rev>A0.2-WIP</rev>
+        <date>2026-10-25</date>
+        <source>02-supplies.kicad_sch</source>
+        <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
+        <comment number="2" value="" />
+        <comment number="3" value="" />
+        <comment number="4" value="" />
+        <comment number="5" value="" />
+        <comment number="6" value="" />
+        <comment number="7" value="" />
+        <comment number="8" value="" />
+        <comment number="9" value="" />
+      </title_block>
+    </sheet>
+    <sheet number="4" name="/Three-rail supervision / reset logic/" tstamps="/f59aec01-4de1-5f1d-8074-27d8166d5777/">
+      <title_block>
+        <title>Three-rail supervision / reset logic</title>
+        <company />
+        <rev>A0.2-WIP</rev>
+        <date>2026-10-25</date>
+        <source>03-power-supervision.kicad_sch</source>
+        <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
+        <comment number="2" value="" />
+        <comment number="3" value="" />
+        <comment number="4" value="" />
+        <comment number="5" value="" />
+        <comment number="6" value="" />
+        <comment number="7" value="" />
+        <comment number="8" value="" />
+        <comment number="9" value="" />
+      </title_block>
+    </sheet>
+    <sheet number="5" name="/Processor local decoupling / PLL filter/" tstamps="/972ee935-d527-5688-bdbf-7c097185f6a8/">
+      <title_block>
+        <title>Processor local decoupling / PLL filter</title>
+        <company />
+        <rev>A0.2-WIP</rev>
+        <date>2026-10-25</date>
+        <source>04-decoupling.kicad_sch</source>
+        <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
+        <comment number="2" value="" />
+        <comment number="3" value="" />
+        <comment number="4" value="" />
+        <comment number="5" value="" />
+        <comment number="6" value="" />
+        <comment number="7" value="" />
+        <comment number="8" value="" />
+        <comment number="9" value="" />
+      </title_block>
+    </sheet>
+    <sheet number="6" name="/Four PDM microphones / head-A geometry targets/" tstamps="/02e8b362-1c24-5eed-93b1-5d17ce5ffbdd/">
+      <title_block>
+        <title>Four PDM microphones / head-A geometry targets</title>
+        <company />
+        <rev>A0.2-WIP</rev>
+        <date>2026-10-25</date>
+        <source>05-microphones.kicad_sch</source>
+        <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
+        <comment number="2" value="" />
+        <comment number="3" value="" />
+        <comment number="4" value="" />
+        <comment number="5" value="" />
+        <comment number="6" value="" />
+        <comment number="7" value="" />
+        <comment number="8" value="" />
+        <comment number="9" value="" />
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="C101">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="XVF3800 / QSPI / USB / clock" />
+      <property name="Sheetfile" value="01-voice-processor.kicad_sch" />
+      <sheetpath names="/XVF3800 / QSPI / USB / clock/" tstamps="/07541710-96da-5d00-9e2c-b4f420a37fa4/" />
+      <tstamps>86c90359-5097-553a-aa21-cf0db82703c2</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C102">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="XVF3800 / QSPI / USB / clock" />
+      <property name="Sheetfile" value="01-voice-processor.kicad_sch" />
+      <sheetpath names="/XVF3800 / QSPI / USB / clock/" tstamps="/07541710-96da-5d00-9e2c-b4f420a37fa4/" />
+      <tstamps>45c921ba-d38c-5e94-8e1e-87917e28d771</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J101">
+      <value>Internal USB 2 device / ESD network pending</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_4" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="XVF3800 / QSPI / USB / clock" />
+      <property name="Sheetfile" value="01-voice-processor.kicad_sch" />
+      <sheetpath names="/XVF3800 / QSPI / USB / clock/" tstamps="/07541710-96da-5d00-9e2c-b4f420a37fa4/" />
+      <tstamps>5f7d0882-af73-560a-9e54-41676b874f78</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J102">
+      <value>JTAG breakout / NOT an XSYS2 pin-compatible header</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_7" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="XVF3800 / QSPI / USB / clock" />
+      <property name="Sheetfile" value="01-voice-processor.kicad_sch" />
+      <sheetpath names="/XVF3800 / QSPI / USB / clock/" tstamps="/07541710-96da-5d00-9e2c-b4f420a37fa4/" />
+      <tstamps>917cd838-082f-5038-a3ee-ae46fd3503fc</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+            <pin num="7" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R101">
+      <value>33 1% / source tuning</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="XVF3800 / QSPI / USB / clock" />
+      <property name="Sheetfile" value="01-voice-processor.kicad_sch" />
+      <sheetpath names="/XVF3800 / QSPI / USB / clock/" tstamps="/07541710-96da-5d00-9e2c-b4f420a37fa4/" />
+      <tstamps>52b1158c-49c8-511a-a47e-7b7ea575a645</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R102">
+      <value>4k7 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="XVF3800 / QSPI / USB / clock" />
+      <property name="Sheetfile" value="01-voice-processor.kicad_sch" />
+      <sheetpath names="/XVF3800 / QSPI / USB / clock/" tstamps="/07541710-96da-5d00-9e2c-b4f420a37fa4/" />
+      <tstamps>3b17cb4b-9d99-5491-b8fc-d41f28299e4c</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R103">
+      <value>4k7 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="XVF3800 / QSPI / USB / clock" />
+      <property name="Sheetfile" value="01-voice-processor.kicad_sch" />
+      <sheetpath names="/XVF3800 / QSPI / USB / clock/" tstamps="/07541710-96da-5d00-9e2c-b4f420a37fa4/" />
+      <tstamps>fff11492-d6e5-50ca-9235-659c538d29c7</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R104">
+      <value>10k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="XVF3800 / QSPI / USB / clock" />
+      <property name="Sheetfile" value="01-voice-processor.kicad_sch" />
+      <sheetpath names="/XVF3800 / QSPI / USB / clock/" tstamps="/07541710-96da-5d00-9e2c-b4f420a37fa4/" />
+      <tstamps>40e44e2b-fab1-582f-a14d-1aa033a9a352</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R105">
+      <value>10k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="XVF3800 / QSPI / USB / clock" />
+      <property name="Sheetfile" value="01-voice-processor.kicad_sch" />
+      <sheetpath names="/XVF3800 / QSPI / USB / clock/" tstamps="/07541710-96da-5d00-9e2c-b4f420a37fa4/" />
+      <tstamps>c78412b4-ae86-5db7-9e79-13672f1bb794</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R106">
+      <value>10k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="XVF3800 / QSPI / USB / clock" />
+      <property name="Sheetfile" value="01-voice-processor.kicad_sch" />
+      <sheetpath names="/XVF3800 / QSPI / USB / clock/" tstamps="/07541710-96da-5d00-9e2c-b4f420a37fa4/" />
+      <tstamps>d422d571-356e-5f0e-aa2e-be67e0e12fea</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R107">
+      <value>10k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="XVF3800 / QSPI / USB / clock" />
+      <property name="Sheetfile" value="01-voice-processor.kicad_sch" />
+      <sheetpath names="/XVF3800 / QSPI / USB / clock/" tstamps="/07541710-96da-5d00-9e2c-b4f420a37fa4/" />
+      <tstamps>1aba6585-240e-53cc-a180-0cc5af3652f0</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R108">
+      <value>100k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="XVF3800 / QSPI / USB / clock" />
+      <property name="Sheetfile" value="01-voice-processor.kicad_sch" />
+      <sheetpath names="/XVF3800 / QSPI / USB / clock/" tstamps="/07541710-96da-5d00-9e2c-b4f420a37fa4/" />
+      <tstamps>5fb17dc2-74e9-57e4-9056-ec97bd485eb0</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U101">
+      <value>XVF3800-QF60B-C</value>
+      <footprint>LGV2_Footprints:XMOS_QF60B_7x7mm_P0.4mm_5Paddle</footprint>
+      <datasheet>https://www.xmos.com/documentation/XM-014888-PC/pdf/xvf3800_datasheet_v3.2.1.pdf</datasheet>
+      <fields>
+        <field name="MPN">XVF3800-QF60B-C</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">LGV2_Footprints:XMOS_QF60B_7x7mm_P0.4mm_5Paddle</field>
+        <field name="Datasheet">https://www.xmos.com/documentation/XM-014888-PC/pdf/xvf3800_datasheet_v3.2.1.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="XVF3800_QF60B_5PADDLE" description="" />
+      <property name="MPN" value="XVF3800-QF60B-C" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="XVF3800 / QSPI / USB / clock" />
+      <property name="Sheetfile" value="01-voice-processor.kicad_sch" />
+      <sheetpath names="/XVF3800 / QSPI / USB / clock/" tstamps="/07541710-96da-5d00-9e2c-b4f420a37fa4/" />
+      <tstamps>bcc2f989-89f4-5bac-b033-be94ace7c47d</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+            <pin num="7" />
+            <pin num="8" />
+            <pin num="9" />
+            <pin num="10" />
+            <pin num="11" />
+            <pin num="12" />
+            <pin num="13" />
+            <pin num="14" />
+            <pin num="15" />
+            <pin num="16" />
+            <pin num="17" />
+            <pin num="18" />
+            <pin num="19" />
+            <pin num="20" />
+            <pin num="21" />
+            <pin num="22" />
+            <pin num="23" />
+            <pin num="24" />
+            <pin num="25" />
+            <pin num="26" />
+            <pin num="27" />
+            <pin num="28" />
+            <pin num="29" />
+            <pin num="30" />
+            <pin num="31" />
+            <pin num="32" />
+            <pin num="33" />
+            <pin num="34" />
+            <pin num="35" />
+            <pin num="36" />
+            <pin num="37" />
+            <pin num="38" />
+            <pin num="39" />
+            <pin num="40" />
+            <pin num="41" />
+            <pin num="42" />
+            <pin num="43" />
+            <pin num="44" />
+            <pin num="45" />
+            <pin num="46" />
+            <pin num="47" />
+            <pin num="48" />
+            <pin num="49" />
+            <pin num="50" />
+            <pin num="51" />
+            <pin num="52" />
+            <pin num="53" />
+            <pin num="54" />
+            <pin num="55" />
+            <pin num="56" />
+            <pin num="57" />
+            <pin num="58" />
+            <pin num="59" />
+            <pin num="60" />
+            <pin num="61" />
+            <pin num="62" />
+            <pin num="63" />
+            <pin num="64" />
+            <pin num="65" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U102">
+      <value>W25Q32JVSSIQ</value>
+      <footprint>Package_SO:SOIC-8_5.3x5.3mm_P1.27mm</footprint>
+      <datasheet>https://www.winbond.com/hq/product/code-storage-flash-memory/serial-nor-flash/?partNo=W25Q32JV</datasheet>
+      <fields>
+        <field name="MPN">W25Q32JVSSIQ</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_SO:SOIC-8_5.3x5.3mm_P1.27mm</field>
+        <field name="Datasheet">https://www.winbond.com/hq/product/code-storage-flash-memory/serial-nor-flash/?partNo=W25Q32JV</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="W25Q32JV_SOIC8" description="" />
+      <property name="MPN" value="W25Q32JVSSIQ" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="XVF3800 / QSPI / USB / clock" />
+      <property name="Sheetfile" value="01-voice-processor.kicad_sch" />
+      <sheetpath names="/XVF3800 / QSPI / USB / clock/" tstamps="/07541710-96da-5d00-9e2c-b4f420a37fa4/" />
+      <tstamps>1657a612-32f4-5573-8289-0d49daa9fe4a</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="8" />
+            <pin num="7" />
+            <pin num="6" />
+            <pin num="5" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="Y101">
+      <value>SiT8008AI-71-18E-24.000000</value>
+      <datasheet>https://www.sitime.com/parts/sit8008ai-71-18e-24000000</datasheet>
+      <fields>
+        <field name="MPN">SiT8008AI-71-18E-24.000000</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint" />
+        <field name="Datasheet">https://www.sitime.com/parts/sit8008ai-71-18e-24000000</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="LVCMOS_Oscillator4" description="" />
+      <property name="MPN" value="SiT8008AI-71-18E-24.000000" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="XVF3800 / QSPI / USB / clock" />
+      <property name="Sheetfile" value="01-voice-processor.kicad_sch" />
+      <sheetpath names="/XVF3800 / QSPI / USB / clock/" tstamps="/07541710-96da-5d00-9e2c-b4f420a37fa4/" />
+      <tstamps>a8717656-9a10-5939-90aa-97cef37f8de6</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C201">
+      <value>10u 10V X7R</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Audio supplies / core buck / PLL filtering" />
+      <property name="Sheetfile" value="02-supplies.kicad_sch" />
+      <sheetpath names="/Audio supplies / core buck / PLL filtering/" tstamps="/28fefa3f-85d1-5494-8a82-ee9f79bf0512/" />
+      <tstamps>e1753507-9cd6-5eb2-b0e6-6810631e1cad</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C202">
+      <value>10u 10V X7R</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Audio supplies / core buck / PLL filtering" />
+      <property name="Sheetfile" value="02-supplies.kicad_sch" />
+      <sheetpath names="/Audio supplies / core buck / PLL filtering/" tstamps="/28fefa3f-85d1-5494-8a82-ee9f79bf0512/" />
+      <tstamps>9f49f1c9-614a-51ab-a19d-a74c959a0128</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C203">
+      <value>10u 10V X7R</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Audio supplies / core buck / PLL filtering" />
+      <property name="Sheetfile" value="02-supplies.kicad_sch" />
+      <sheetpath names="/Audio supplies / core buck / PLL filtering/" tstamps="/28fefa3f-85d1-5494-8a82-ee9f79bf0512/" />
+      <tstamps>0bf87353-c5c8-5164-9b5f-5dd791a2bef3</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C204">
+      <value>10u 10V X7R</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Audio supplies / core buck / PLL filtering" />
+      <property name="Sheetfile" value="02-supplies.kicad_sch" />
+      <sheetpath names="/Audio supplies / core buck / PLL filtering/" tstamps="/28fefa3f-85d1-5494-8a82-ee9f79bf0512/" />
+      <tstamps>4c35d2a7-64f7-55cf-b9e1-f2a06229bb72</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C205">
+      <value>4u7 10V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Audio supplies / core buck / PLL filtering" />
+      <property name="Sheetfile" value="02-supplies.kicad_sch" />
+      <sheetpath names="/Audio supplies / core buck / PLL filtering/" tstamps="/28fefa3f-85d1-5494-8a82-ee9f79bf0512/" />
+      <tstamps>11b12047-34f9-51dd-aa2d-a24e85cca45c</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C206">
+      <value>10u 6V3 X7R</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Audio supplies / core buck / PLL filtering" />
+      <property name="Sheetfile" value="02-supplies.kicad_sch" />
+      <sheetpath names="/Audio supplies / core buck / PLL filtering/" tstamps="/28fefa3f-85d1-5494-8a82-ee9f79bf0512/" />
+      <tstamps>963b1a4f-ccf7-50c7-a22a-66cc086c5dff</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C207">
+      <value>10u 6V3 X7R</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Audio supplies / core buck / PLL filtering" />
+      <property name="Sheetfile" value="02-supplies.kicad_sch" />
+      <sheetpath names="/Audio supplies / core buck / PLL filtering/" tstamps="/28fefa3f-85d1-5494-8a82-ee9f79bf0512/" />
+      <tstamps>834f1272-8bf7-5791-bcac-93e0f497fb6e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C208">
+      <value>120p C0G / loop check</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Audio supplies / core buck / PLL filtering" />
+      <property name="Sheetfile" value="02-supplies.kicad_sch" />
+      <sheetpath names="/Audio supplies / core buck / PLL filtering/" tstamps="/28fefa3f-85d1-5494-8a82-ee9f79bf0512/" />
+      <tstamps>b9b30452-b522-5554-8131-a9a82c3e788a</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="L201">
+      <value>0u47 / XFL4015-471MEB</value>
+      <fields>
+        <field name="MPN">XFL4015-471MEB</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="L" description="" />
+      <property name="MPN" value="XFL4015-471MEB" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Audio supplies / core buck / PLL filtering" />
+      <property name="Sheetfile" value="02-supplies.kicad_sch" />
+      <sheetpath names="/Audio supplies / core buck / PLL filtering/" tstamps="/28fefa3f-85d1-5494-8a82-ee9f79bf0512/" />
+      <tstamps>450c54b7-413e-5afb-b2e9-d854f1fa4a66</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R201">
+      <value>49k9 0.1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Audio supplies / core buck / PLL filtering" />
+      <property name="Sheetfile" value="02-supplies.kicad_sch" />
+      <sheetpath names="/Audio supplies / core buck / PLL filtering/" tstamps="/28fefa3f-85d1-5494-8a82-ee9f79bf0512/" />
+      <tstamps>d1e10d70-9fb0-5bb3-a126-6b0f9c3c3b35</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R202">
+      <value>100k 0.1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Audio supplies / core buck / PLL filtering" />
+      <property name="Sheetfile" value="02-supplies.kicad_sch" />
+      <sheetpath names="/Audio supplies / core buck / PLL filtering/" tstamps="/28fefa3f-85d1-5494-8a82-ee9f79bf0512/" />
+      <tstamps>68745d79-eaa5-5e9a-a792-0ea3ef556bb7</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R203">
+      <value>100k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Audio supplies / core buck / PLL filtering" />
+      <property name="Sheetfile" value="02-supplies.kicad_sch" />
+      <sheetpath names="/Audio supplies / core buck / PLL filtering/" tstamps="/28fefa3f-85d1-5494-8a82-ee9f79bf0512/" />
+      <tstamps>5d08f582-d4a3-513f-a655-1e63d6e9e9c1</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U201">
+      <value>TLV75533PDBVR</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/tlv755p.pdf</datasheet>
+      <fields>
+        <field name="MPN">TLV75533PDBVR</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/tlv755p.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="TLV755P_DBV" description="" />
+      <property name="MPN" value="TLV75533PDBVR" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Audio supplies / core buck / PLL filtering" />
+      <property name="Sheetfile" value="02-supplies.kicad_sch" />
+      <sheetpath names="/Audio supplies / core buck / PLL filtering/" tstamps="/28fefa3f-85d1-5494-8a82-ee9f79bf0512/" />
+      <tstamps>bc47931c-e14b-574d-9fbf-a32bb07848a8</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U202">
+      <value>TLV75518PDBVR</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/tlv755p.pdf</datasheet>
+      <fields>
+        <field name="MPN">TLV75518PDBVR</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/tlv755p.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="TLV755P_DBV" description="" />
+      <property name="MPN" value="TLV75518PDBVR" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Audio supplies / core buck / PLL filtering" />
+      <property name="Sheetfile" value="02-supplies.kicad_sch" />
+      <sheetpath names="/Audio supplies / core buck / PLL filtering/" tstamps="/28fefa3f-85d1-5494-8a82-ee9f79bf0512/" />
+      <tstamps>8bba28c1-e413-5b56-ac99-defdaf2e897f</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U203">
+      <value>TPS62825ADMQR</value>
+      <datasheet>https://www.ti.com/lit/ds/symlink/tps62825a.pdf</datasheet>
+      <fields>
+        <field name="MPN">TPS62825ADMQR</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint" />
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/tps62825a.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="TPS62825_DMQ" description="" />
+      <property name="MPN" value="TPS62825ADMQR" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Audio supplies / core buck / PLL filtering" />
+      <property name="Sheetfile" value="02-supplies.kicad_sch" />
+      <sheetpath names="/Audio supplies / core buck / PLL filtering/" tstamps="/28fefa3f-85d1-5494-8a82-ee9f79bf0512/" />
+      <tstamps>333daba4-f866-5b88-b4fc-939384b5cd74</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C301">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Three-rail supervision / reset logic" />
+      <property name="Sheetfile" value="03-power-supervision.kicad_sch" />
+      <sheetpath names="/Three-rail supervision / reset logic/" tstamps="/f59aec01-4de1-5f1d-8074-27d8166d5777/" />
+      <tstamps>43bde8da-a445-5602-82eb-b90889b7c8fa</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C302">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Three-rail supervision / reset logic" />
+      <property name="Sheetfile" value="03-power-supervision.kicad_sch" />
+      <sheetpath names="/Three-rail supervision / reset logic/" tstamps="/f59aec01-4de1-5f1d-8074-27d8166d5777/" />
+      <tstamps>4e89be8a-f50e-5a6f-a024-05b1f0ae019e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C303">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Three-rail supervision / reset logic" />
+      <property name="Sheetfile" value="03-power-supervision.kicad_sch" />
+      <sheetpath names="/Three-rail supervision / reset logic/" tstamps="/f59aec01-4de1-5f1d-8074-27d8166d5777/" />
+      <tstamps>50067214-ffbc-5606-b4e9-217728a0a4ea</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C304">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Three-rail supervision / reset logic" />
+      <property name="Sheetfile" value="03-power-supervision.kicad_sch" />
+      <sheetpath names="/Three-rail supervision / reset logic/" tstamps="/f59aec01-4de1-5f1d-8074-27d8166d5777/" />
+      <tstamps>f213e8d2-e1e3-5def-ae2c-42fc80f3f120</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R301">
+      <value>100k 0.1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Three-rail supervision / reset logic" />
+      <property name="Sheetfile" value="03-power-supervision.kicad_sch" />
+      <sheetpath names="/Three-rail supervision / reset logic/" tstamps="/f59aec01-4de1-5f1d-8074-27d8166d5777/" />
+      <tstamps>334b8f76-62f4-5a2d-8a6a-eabd771a08eb</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R302">
+      <value>31k6 0.1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Three-rail supervision / reset logic" />
+      <property name="Sheetfile" value="03-power-supervision.kicad_sch" />
+      <sheetpath names="/Three-rail supervision / reset logic/" tstamps="/f59aec01-4de1-5f1d-8074-27d8166d5777/" />
+      <tstamps>8ded9b25-19df-5cbf-a64b-3e0acaa7b7a0</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R303">
+      <value>10k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Three-rail supervision / reset logic" />
+      <property name="Sheetfile" value="03-power-supervision.kicad_sch" />
+      <sheetpath names="/Three-rail supervision / reset logic/" tstamps="/f59aec01-4de1-5f1d-8074-27d8166d5777/" />
+      <tstamps>ffd5eb46-45cf-5ba3-a046-36aefadd95a7</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R304">
+      <value>100k 0.1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Three-rail supervision / reset logic" />
+      <property name="Sheetfile" value="03-power-supervision.kicad_sch" />
+      <sheetpath names="/Three-rail supervision / reset logic/" tstamps="/f59aec01-4de1-5f1d-8074-27d8166d5777/" />
+      <tstamps>a8122082-e58e-518c-b66a-6da1a9b10fa9</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R305">
+      <value>15k4 0.1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Three-rail supervision / reset logic" />
+      <property name="Sheetfile" value="03-power-supervision.kicad_sch" />
+      <sheetpath names="/Three-rail supervision / reset logic/" tstamps="/f59aec01-4de1-5f1d-8074-27d8166d5777/" />
+      <tstamps>f59d4d0e-43e7-5b46-94ad-9a2e11688e97</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R306">
+      <value>10k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Three-rail supervision / reset logic" />
+      <property name="Sheetfile" value="03-power-supervision.kicad_sch" />
+      <sheetpath names="/Three-rail supervision / reset logic/" tstamps="/f59aec01-4de1-5f1d-8074-27d8166d5777/" />
+      <tstamps>5469b9a6-3842-5eda-bc47-03aee9c073bd</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R307">
+      <value>11k3 0.1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Three-rail supervision / reset logic" />
+      <property name="Sheetfile" value="03-power-supervision.kicad_sch" />
+      <sheetpath names="/Three-rail supervision / reset logic/" tstamps="/f59aec01-4de1-5f1d-8074-27d8166d5777/" />
+      <tstamps>aa2d63b1-7292-5fdb-91e3-908dfd707932</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R308">
+      <value>10k 0.1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Three-rail supervision / reset logic" />
+      <property name="Sheetfile" value="03-power-supervision.kicad_sch" />
+      <sheetpath names="/Three-rail supervision / reset logic/" tstamps="/f59aec01-4de1-5f1d-8074-27d8166d5777/" />
+      <tstamps>aa76f16f-9197-56cb-b2ac-64f948470073</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R309">
+      <value>10k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Three-rail supervision / reset logic" />
+      <property name="Sheetfile" value="03-power-supervision.kicad_sch" />
+      <sheetpath names="/Three-rail supervision / reset logic/" tstamps="/f59aec01-4de1-5f1d-8074-27d8166d5777/" />
+      <tstamps>6d53a2ca-a3a6-5efa-9489-982cdcb5819f</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R310">
+      <value>100k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Three-rail supervision / reset logic" />
+      <property name="Sheetfile" value="03-power-supervision.kicad_sch" />
+      <sheetpath names="/Three-rail supervision / reset logic/" tstamps="/f59aec01-4de1-5f1d-8074-27d8166d5777/" />
+      <tstamps>5a333bc8-54b3-5638-9de2-3483453a8d8d</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U301">
+      <value>TPS3808G01DBVR</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-6</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/tps3808.pdf</datasheet>
+      <fields>
+        <field name="MPN">TPS3808G01DBVR</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-6</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/tps3808.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="TPS3808_DBV" description="" />
+      <property name="MPN" value="TPS3808G01DBVR" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Three-rail supervision / reset logic" />
+      <property name="Sheetfile" value="03-power-supervision.kicad_sch" />
+      <sheetpath names="/Three-rail supervision / reset logic/" tstamps="/f59aec01-4de1-5f1d-8074-27d8166d5777/" />
+      <tstamps>1a06642c-482b-58db-a325-f593de461f5a</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U302">
+      <value>TPS3808G01DBVR</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-6</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/tps3808.pdf</datasheet>
+      <fields>
+        <field name="MPN">TPS3808G01DBVR</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-6</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/tps3808.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="TPS3808_DBV" description="" />
+      <property name="MPN" value="TPS3808G01DBVR" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Three-rail supervision / reset logic" />
+      <property name="Sheetfile" value="03-power-supervision.kicad_sch" />
+      <sheetpath names="/Three-rail supervision / reset logic/" tstamps="/f59aec01-4de1-5f1d-8074-27d8166d5777/" />
+      <tstamps>9120e374-11b9-5697-b9e1-bf2149285965</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U303">
+      <value>TPS3808G01DBVR</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-6</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/tps3808.pdf</datasheet>
+      <fields>
+        <field name="MPN">TPS3808G01DBVR</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-6</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/tps3808.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="TPS3808_DBV" description="" />
+      <property name="MPN" value="TPS3808G01DBVR" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Three-rail supervision / reset logic" />
+      <property name="Sheetfile" value="03-power-supervision.kicad_sch" />
+      <sheetpath names="/Three-rail supervision / reset logic/" tstamps="/f59aec01-4de1-5f1d-8074-27d8166d5777/" />
+      <tstamps>f248efc8-0b57-597f-b72c-012c599ff096</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U304">
+      <value>SN74LVC08APWR / powered at 1.8 V</value>
+      <footprint>Package_SO:TSSOP-14_4.4x5mm_P0.65mm</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74lvc08a.pdf</datasheet>
+      <fields>
+        <field name="MPN">SN74LVC08APWR</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_SO:TSSOP-14_4.4x5mm_P0.65mm</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc08a.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="SN74LVC08A" description="" />
+      <property name="MPN" value="SN74LVC08APWR" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Three-rail supervision / reset logic" />
+      <property name="Sheetfile" value="03-power-supervision.kicad_sch" />
+      <sheetpath names="/Three-rail supervision / reset logic/" tstamps="/f59aec01-4de1-5f1d-8074-27d8166d5777/" />
+      <tstamps>40a43ceb-1c04-5b4b-8a7f-37a802da72ea</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="9" />
+            <pin num="10" />
+            <pin num="12" />
+            <pin num="13" />
+            <pin num="7" />
+            <pin num="3" />
+            <pin num="6" />
+            <pin num="8" />
+            <pin num="11" />
+            <pin num="14" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C401">
+      <value>100n 10V 0402</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Processor local decoupling / PLL filter" />
+      <property name="Sheetfile" value="04-decoupling.kicad_sch" />
+      <sheetpath names="/Processor local decoupling / PLL filter/" tstamps="/972ee935-d527-5688-bdbf-7c097185f6a8/" />
+      <tstamps>35b58512-8440-5b0d-86d6-e5ef64bb249a</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C402">
+      <value>100n 10V 0402</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Processor local decoupling / PLL filter" />
+      <property name="Sheetfile" value="04-decoupling.kicad_sch" />
+      <sheetpath names="/Processor local decoupling / PLL filter/" tstamps="/972ee935-d527-5688-bdbf-7c097185f6a8/" />
+      <tstamps>4ffbd973-35f7-5684-8881-7e9c1b87b15e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C403">
+      <value>100n 10V 0402</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Processor local decoupling / PLL filter" />
+      <property name="Sheetfile" value="04-decoupling.kicad_sch" />
+      <sheetpath names="/Processor local decoupling / PLL filter/" tstamps="/972ee935-d527-5688-bdbf-7c097185f6a8/" />
+      <tstamps>df4ecdf1-aebf-5be3-b4d8-3ef0585e76a4</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C404">
+      <value>100n 10V 0402</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Processor local decoupling / PLL filter" />
+      <property name="Sheetfile" value="04-decoupling.kicad_sch" />
+      <sheetpath names="/Processor local decoupling / PLL filter/" tstamps="/972ee935-d527-5688-bdbf-7c097185f6a8/" />
+      <tstamps>124f661c-02b5-56e1-85c5-50c62f33c109</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C405">
+      <value>100n 10V 0402</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Processor local decoupling / PLL filter" />
+      <property name="Sheetfile" value="04-decoupling.kicad_sch" />
+      <sheetpath names="/Processor local decoupling / PLL filter/" tstamps="/972ee935-d527-5688-bdbf-7c097185f6a8/" />
+      <tstamps>10f41a85-f3b7-5e23-8130-0a2c807d0b8b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C406">
+      <value>100n 10V 0402</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Processor local decoupling / PLL filter" />
+      <property name="Sheetfile" value="04-decoupling.kicad_sch" />
+      <sheetpath names="/Processor local decoupling / PLL filter/" tstamps="/972ee935-d527-5688-bdbf-7c097185f6a8/" />
+      <tstamps>3ce23607-4feb-5a25-9365-7837f9061136</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C407">
+      <value>100n 10V 0402</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Processor local decoupling / PLL filter" />
+      <property name="Sheetfile" value="04-decoupling.kicad_sch" />
+      <sheetpath names="/Processor local decoupling / PLL filter/" tstamps="/972ee935-d527-5688-bdbf-7c097185f6a8/" />
+      <tstamps>153e70c8-7284-5364-a840-68c48e27bcae</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C408">
+      <value>100n 10V 0402</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Processor local decoupling / PLL filter" />
+      <property name="Sheetfile" value="04-decoupling.kicad_sch" />
+      <sheetpath names="/Processor local decoupling / PLL filter/" tstamps="/972ee935-d527-5688-bdbf-7c097185f6a8/" />
+      <tstamps>3b45752c-2cd3-5ae1-9926-aaee6fffb1ab</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C409">
+      <value>100n 10V 0402</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Processor local decoupling / PLL filter" />
+      <property name="Sheetfile" value="04-decoupling.kicad_sch" />
+      <sheetpath names="/Processor local decoupling / PLL filter/" tstamps="/972ee935-d527-5688-bdbf-7c097185f6a8/" />
+      <tstamps>339bbfd3-c55e-5802-a0bd-3fa9f55a2684</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C410">
+      <value>100n 10V 0402</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Processor local decoupling / PLL filter" />
+      <property name="Sheetfile" value="04-decoupling.kicad_sch" />
+      <sheetpath names="/Processor local decoupling / PLL filter/" tstamps="/972ee935-d527-5688-bdbf-7c097185f6a8/" />
+      <tstamps>62957150-2b7d-5bc1-adaa-72075e395873</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C411">
+      <value>100n 10V 0402</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Processor local decoupling / PLL filter" />
+      <property name="Sheetfile" value="04-decoupling.kicad_sch" />
+      <sheetpath names="/Processor local decoupling / PLL filter/" tstamps="/972ee935-d527-5688-bdbf-7c097185f6a8/" />
+      <tstamps>523ae348-31f1-5b89-b7ed-9b1be0b646b4</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C412">
+      <value>100n 10V 0402</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Processor local decoupling / PLL filter" />
+      <property name="Sheetfile" value="04-decoupling.kicad_sch" />
+      <sheetpath names="/Processor local decoupling / PLL filter/" tstamps="/972ee935-d527-5688-bdbf-7c097185f6a8/" />
+      <tstamps>825dd186-1655-54fb-add7-5561f49fbb03</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C413">
+      <value>100n 10V 0402</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Processor local decoupling / PLL filter" />
+      <property name="Sheetfile" value="04-decoupling.kicad_sch" />
+      <sheetpath names="/Processor local decoupling / PLL filter/" tstamps="/972ee935-d527-5688-bdbf-7c097185f6a8/" />
+      <tstamps>606232c9-b4ad-53fa-97e8-3e6fafd64de6</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C414">
+      <value>100n 10V 0402</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Processor local decoupling / PLL filter" />
+      <property name="Sheetfile" value="04-decoupling.kicad_sch" />
+      <sheetpath names="/Processor local decoupling / PLL filter/" tstamps="/972ee935-d527-5688-bdbf-7c097185f6a8/" />
+      <tstamps>89a4fd52-46f7-52c3-a4af-f735f2cc0188</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C415">
+      <value>100n 10V 0402</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Processor local decoupling / PLL filter" />
+      <property name="Sheetfile" value="04-decoupling.kicad_sch" />
+      <sheetpath names="/Processor local decoupling / PLL filter/" tstamps="/972ee935-d527-5688-bdbf-7c097185f6a8/" />
+      <tstamps>a9b24fde-dbf1-56a2-9e8e-c4ddab72587d</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C416">
+      <value>1u 6V3</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Processor local decoupling / PLL filter" />
+      <property name="Sheetfile" value="04-decoupling.kicad_sch" />
+      <sheetpath names="/Processor local decoupling / PLL filter/" tstamps="/972ee935-d527-5688-bdbf-7c097185f6a8/" />
+      <tstamps>eb2a4e2f-d54b-575e-9df9-a447635f1fa8</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="FB401">
+      <value>BKH1005LM601-T / 600R @100MHz</value>
+      <fields>
+        <field name="MPN">BKH1005LM601-T</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="L" description="" />
+      <property name="MPN" value="BKH1005LM601-T" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Processor local decoupling / PLL filter" />
+      <property name="Sheetfile" value="04-decoupling.kicad_sch" />
+      <sheetpath names="/Processor local decoupling / PLL filter/" tstamps="/972ee935-d527-5688-bdbf-7c097185f6a8/" />
+      <tstamps>f6822f95-4d4a-5cf1-aa62-39cd78b2cb09</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C501">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Four PDM microphones / head-A geometry targets" />
+      <property name="Sheetfile" value="05-microphones.kicad_sch" />
+      <sheetpath names="/Four PDM microphones / head-A geometry targets/" tstamps="/02e8b362-1c24-5eed-93b1-5d17ce5ffbdd/" />
+      <tstamps>9a3dde64-40c4-5e24-8c7c-499c7d3cdc5e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C502">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Four PDM microphones / head-A geometry targets" />
+      <property name="Sheetfile" value="05-microphones.kicad_sch" />
+      <sheetpath names="/Four PDM microphones / head-A geometry targets/" tstamps="/02e8b362-1c24-5eed-93b1-5d17ce5ffbdd/" />
+      <tstamps>aee19f49-c206-56c0-a715-930c4fcc24b2</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C503">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Four PDM microphones / head-A geometry targets" />
+      <property name="Sheetfile" value="05-microphones.kicad_sch" />
+      <sheetpath names="/Four PDM microphones / head-A geometry targets/" tstamps="/02e8b362-1c24-5eed-93b1-5d17ce5ffbdd/" />
+      <tstamps>baa4f997-de6b-5ea0-89ca-dda585c1ca59</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C504">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Four PDM microphones / head-A geometry targets" />
+      <property name="Sheetfile" value="05-microphones.kicad_sch" />
+      <sheetpath names="/Four PDM microphones / head-A geometry targets/" tstamps="/02e8b362-1c24-5eed-93b1-5d17ce5ffbdd/" />
+      <tstamps>516fa9d8-0512-546b-8e1b-e2afd674ce91</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="MK501">
+      <value>IM69D130V01XTSA1 / FRONT</value>
+      <datasheet>https://www.infineon.com/assets/row/public/documents/24/49/infineon-im69d130-datasheet-en.pdf</datasheet>
+      <fields>
+        <field name="MPN">IM69D130V01XTSA1</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint" />
+        <field name="Datasheet">https://www.infineon.com/assets/row/public/documents/24/49/infineon-im69d130-datasheet-en.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="IM69D130" description="" />
+      <property name="MPN" value="IM69D130V01XTSA1" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Four PDM microphones / head-A geometry targets" />
+      <property name="Sheetfile" value="05-microphones.kicad_sch" />
+      <sheetpath names="/Four PDM microphones / head-A geometry targets/" tstamps="/02e8b362-1c24-5eed-93b1-5d17ce5ffbdd/" />
+      <tstamps>af98b731-0d1a-597f-9111-40592cc9ab5a</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="MK502">
+      <value>IM69D130V01XTSA1 / BACK</value>
+      <datasheet>https://www.infineon.com/assets/row/public/documents/24/49/infineon-im69d130-datasheet-en.pdf</datasheet>
+      <fields>
+        <field name="MPN">IM69D130V01XTSA1</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint" />
+        <field name="Datasheet">https://www.infineon.com/assets/row/public/documents/24/49/infineon-im69d130-datasheet-en.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="IM69D130" description="" />
+      <property name="MPN" value="IM69D130V01XTSA1" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Four PDM microphones / head-A geometry targets" />
+      <property name="Sheetfile" value="05-microphones.kicad_sch" />
+      <sheetpath names="/Four PDM microphones / head-A geometry targets/" tstamps="/02e8b362-1c24-5eed-93b1-5d17ce5ffbdd/" />
+      <tstamps>5a6fe4b0-55f0-5a6f-bffc-023916a8e011</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="MK503">
+      <value>IM69D130V01XTSA1 / LEFT</value>
+      <datasheet>https://www.infineon.com/assets/row/public/documents/24/49/infineon-im69d130-datasheet-en.pdf</datasheet>
+      <fields>
+        <field name="MPN">IM69D130V01XTSA1</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint" />
+        <field name="Datasheet">https://www.infineon.com/assets/row/public/documents/24/49/infineon-im69d130-datasheet-en.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="IM69D130" description="" />
+      <property name="MPN" value="IM69D130V01XTSA1" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Four PDM microphones / head-A geometry targets" />
+      <property name="Sheetfile" value="05-microphones.kicad_sch" />
+      <sheetpath names="/Four PDM microphones / head-A geometry targets/" tstamps="/02e8b362-1c24-5eed-93b1-5d17ce5ffbdd/" />
+      <tstamps>d1b1dac2-6a13-578c-bbd0-5768d8be1266</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="MK504">
+      <value>IM69D130V01XTSA1 / RIGHT</value>
+      <datasheet>https://www.infineon.com/assets/row/public/documents/24/49/infineon-im69d130-datasheet-en.pdf</datasheet>
+      <fields>
+        <field name="MPN">IM69D130V01XTSA1</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint" />
+        <field name="Datasheet">https://www.infineon.com/assets/row/public/documents/24/49/infineon-im69d130-datasheet-en.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="IM69D130" description="" />
+      <property name="MPN" value="IM69D130V01XTSA1" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Four PDM microphones / head-A geometry targets" />
+      <property name="Sheetfile" value="05-microphones.kicad_sch" />
+      <sheetpath names="/Four PDM microphones / head-A geometry targets/" tstamps="/02e8b362-1c24-5eed-93b1-5d17ce5ffbdd/" />
+      <tstamps>66ca2d2d-a7cf-537f-be0c-804342289910</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R501">
+      <value>33 1% / scope tuning</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Four PDM microphones / head-A geometry targets" />
+      <property name="Sheetfile" value="05-microphones.kicad_sch" />
+      <sheetpath names="/Four PDM microphones / head-A geometry targets/" tstamps="/02e8b362-1c24-5eed-93b1-5d17ce5ffbdd/" />
+      <tstamps>8675a225-9576-58fe-ac72-5217fd1d693f</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="LGV2" part="C">
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">C</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive" />
+        <pin num="2" name="~" type="passive" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="Header_4">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Header_4</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive" />
+        <pin num="2" name="2" type="passive" />
+        <pin num="3" name="3" type="passive" />
+        <pin num="4" name="4" type="passive" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="Header_7">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Header_7</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive" />
+        <pin num="2" name="2" type="passive" />
+        <pin num="3" name="3" type="passive" />
+        <pin num="4" name="4" type="passive" />
+        <pin num="5" name="5" type="passive" />
+        <pin num="6" name="6" type="passive" />
+        <pin num="7" name="7" type="passive" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="IM69D130">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">IM69D130</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="DATA" type="output" />
+        <pin num="2" name="VDD" type="power_in" />
+        <pin num="3" name="CLOCK" type="input" />
+        <pin num="4" name="SELECT" type="input" />
+        <pin num="5" name="GND" type="power_in" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="L">
+      <fields>
+        <field name="Reference">L</field>
+        <field name="Value">L</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive" />
+        <pin num="2" name="~" type="passive" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="LVCMOS_Oscillator4">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">LVCMOS_Oscillator4</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="OE" type="input" />
+        <pin num="2" name="GND" type="power_in" />
+        <pin num="3" name="OUT" type="output" />
+        <pin num="4" name="VDD" type="power_in" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="R">
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive" />
+        <pin num="2" name="~" type="passive" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="SN74LVC08A">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">SN74LVC08A</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="1A" type="input" />
+        <pin num="2" name="1B" type="input" />
+        <pin num="3" name="1Y" type="output" />
+        <pin num="4" name="2A" type="input" />
+        <pin num="5" name="2B" type="input" />
+        <pin num="6" name="2Y" type="output" />
+        <pin num="7" name="GND" type="power_in" />
+        <pin num="8" name="3Y" type="output" />
+        <pin num="9" name="3A" type="input" />
+        <pin num="10" name="3B" type="input" />
+        <pin num="11" name="4Y" type="output" />
+        <pin num="12" name="4A" type="input" />
+        <pin num="13" name="4B" type="input" />
+        <pin num="14" name="VCC" type="power_in" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="TLV755P_DBV">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">TLV755P_DBV</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="IN" type="power_in" />
+        <pin num="2" name="GND" type="power_in" />
+        <pin num="3" name="EN" type="input" />
+        <pin num="4" name="NC" type="no_connect" />
+        <pin num="5" name="OUT" type="power_out" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="TPS3808_DBV">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">TPS3808_DBV</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="~{RESET}" type="open_collector" />
+        <pin num="2" name="GND" type="power_in" />
+        <pin num="3" name="~{MR}" type="input" />
+        <pin num="4" name="CT" type="input" />
+        <pin num="5" name="SENSE" type="input" />
+        <pin num="6" name="VDD" type="power_in" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="TPS62825_DMQ">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">TPS62825_DMQ</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="EN" type="input" />
+        <pin num="2" name="PG" type="open_collector" />
+        <pin num="3" name="FB" type="input" />
+        <pin num="4" name="GND" type="power_in" />
+        <pin num="5" name="SW" type="output" />
+        <pin num="6" name="VIN" type="power_in" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="W25Q32JV_SOIC8">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">W25Q32JV_SOIC8</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="~{CS}" type="input" />
+        <pin num="2" name="DO_IO1" type="bidirectional" />
+        <pin num="3" name="~{WP}_IO2" type="bidirectional" />
+        <pin num="4" name="GND" type="power_in" />
+        <pin num="5" name="DI_IO0" type="bidirectional" />
+        <pin num="6" name="CLK" type="input" />
+        <pin num="7" name="~{HOLD}_IO3" type="bidirectional" />
+        <pin num="8" name="VCC" type="power_in" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="XVF3800_QF60B_5PADDLE">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">XVF3800_QF60B_5PADDLE</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="QSPI_D1" type="bidirectional" />
+        <pin num="2" name="QSPI_D3" type="bidirectional" />
+        <pin num="3" name="QSPI_CS_N" type="output" />
+        <pin num="4" name="VDD_CORE" type="power_in" />
+        <pin num="5" name="QSPI_CLK" type="output" />
+        <pin num="6" name="SPI_CS_N" type="input" />
+        <pin num="7" name="SPI_MOSI" type="input" />
+        <pin num="8" name="VDDIO_3V3" type="power_in" />
+        <pin num="9" name="I2S_DATA0" type="output" />
+        <pin num="10" name="I2S_LRCK" type="output" />
+        <pin num="11" name="BUTTON0" type="input" />
+        <pin num="12" name="VDD_CORE" type="power_in" />
+        <pin num="13" name="I2S_BCLK" type="output" />
+        <pin num="14" name="MCLK_INOUT" type="output" />
+        <pin num="15" name="XOUT" type="output" />
+        <pin num="16" name="XIN" type="input" />
+        <pin num="17" name="VDDIOB18" type="power_in" />
+        <pin num="18" name="TDI" type="input" />
+        <pin num="19" name="VDD_CORE" type="power_in" />
+        <pin num="20" name="TDO" type="output" />
+        <pin num="21" name="RST_N" type="input" />
+        <pin num="22" name="PLL_AVDD" type="power_in" />
+        <pin num="23" name="TMS" type="input" />
+        <pin num="24" name="TCK" type="input" />
+        <pin num="25" name="NC" type="no_connect" />
+        <pin num="26" name="VDDIOB18" type="power_in" />
+        <pin num="27" name="VDD_CORE" type="power_in" />
+        <pin num="28" name="USB_DM" type="bidirectional" />
+        <pin num="29" name="USB_DP" type="bidirectional" />
+        <pin num="30" name="USB_VDD33A" type="power_in" />
+        <pin num="31" name="USB_VDD18A" type="power_in" />
+        <pin num="32" name="BUTTON1" type="input" />
+        <pin num="33" name="XL_DN1" type="input" />
+        <pin num="34" name="VDD_CORE" type="power_in" />
+        <pin num="35" name="XL_DN0" type="input" />
+        <pin num="36" name="XL_UP0" type="output" />
+        <pin num="37" name="XL_UP1" type="output" />
+        <pin num="38" name="VDDIO_3V3" type="power_in" />
+        <pin num="39" name="I2S_DATA1" type="input" />
+        <pin num="40" name="CODEC_RST_N" type="output" />
+        <pin num="41" name="MCLK" type="input" />
+        <pin num="42" name="VDD_CORE" type="power_in" />
+        <pin num="43" name="MIC_CLK" type="output" />
+        <pin num="44" name="I2C_SCL" type="bidirectional" />
+        <pin num="45" name="I2C_SDA" type="bidirectional" />
+        <pin num="46" name="MIC_DATA0" type="input" />
+        <pin num="47" name="SPI_MISO" type="output" />
+        <pin num="48" name="MIC_DATA2" type="input" />
+        <pin num="49" name="VDD_CORE" type="power_in" />
+        <pin num="50" name="MIC_DATA1" type="input" />
+        <pin num="51" name="MIC_DATA3" type="input" />
+        <pin num="52" name="VDDIO_3V3" type="power_in" />
+        <pin num="53" name="I2S_DATA2" type="output" />
+        <pin num="54" name="SQ_nLIN" type="output" />
+        <pin num="55" name="INT_N" type="output" />
+        <pin num="56" name="LED_R" type="output" />
+        <pin num="57" name="VDD_CORE" type="power_in" />
+        <pin num="58" name="LED_G" type="output" />
+        <pin num="59" name="QSPI_D0" type="bidirectional" />
+        <pin num="60" name="QSPI_D2" type="bidirectional" />
+        <pin num="61" name="VDD_CORE" type="power_in" />
+        <pin num="62" name="VDD_CORE" type="power_in" />
+        <pin num="63" name="VDD_CORE" type="power_in" />
+        <pin num="64" name="VDD_CORE" type="power_in" />
+        <pin num="65" name="GND_PADDLE" type="power_in" />
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="LGV2">
+      <uri>${KIPRJMOD}/LGV2.kicad_sym</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="AUDIO_MCLK" class="Default">
+      <node ref="U101" pin="14" pinfunction="MCLK_INOUT_14" pintype="output" />
+      <node ref="U101" pin="41" pinfunction="MCLK_41" pintype="input" />
+    </net>
+    <net code="2" name="FLASH_CLK" class="Default">
+      <node ref="U101" pin="5" pinfunction="QSPI_CLK_5" pintype="output" />
+      <node ref="U102" pin="6" pinfunction="CLK_6" pintype="input" />
+    </net>
+    <net code="3" name="FLASH_CS_N" class="Default">
+      <node ref="R102" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U101" pin="3" pinfunction="QSPI_CS_N_3" pintype="output" />
+      <node ref="U102" pin="1" pinfunction="~{CS}_1" pintype="input" />
+    </net>
+    <net code="4" name="FLASH_D0" class="Default">
+      <node ref="U101" pin="59" pinfunction="QSPI_D0_59" pintype="bidirectional" />
+      <node ref="U102" pin="5" pinfunction="DI_IO0_5" pintype="bidirectional" />
+    </net>
+    <net code="5" name="FLASH_D1" class="Default">
+      <node ref="U101" pin="1" pinfunction="QSPI_D1_1" pintype="bidirectional" />
+      <node ref="U102" pin="2" pinfunction="DO_IO1_2" pintype="bidirectional" />
+    </net>
+    <net code="6" name="FLASH_D2" class="Default">
+      <node ref="U101" pin="60" pinfunction="QSPI_D2_60" pintype="bidirectional" />
+      <node ref="U102" pin="3" pinfunction="~{WP}_IO2_3" pintype="bidirectional" />
+    </net>
+    <net code="7" name="FLASH_D3" class="Default">
+      <node ref="U101" pin="2" pinfunction="QSPI_D3_2" pintype="bidirectional" />
+      <node ref="U102" pin="7" pinfunction="~{HOLD}_IO3_7" pintype="bidirectional" />
+    </net>
+    <net code="8" name="GND" class="Default">
+      <node ref="C101" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C102" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C201" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C202" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C203" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C204" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C205" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C206" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C207" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C301" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C302" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C303" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C304" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C401" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C402" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C403" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C404" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C405" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C406" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C407" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C408" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C409" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C410" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C411" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C412" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C413" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C414" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C415" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C416" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C501" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C502" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C503" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C504" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="J101" pin="4" pinfunction="4_4" pintype="passive" />
+      <node ref="J102" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="MK501" pin="4" pinfunction="SELECT_4" pintype="input" />
+      <node ref="MK501" pin="5" pinfunction="GND_5" pintype="power_in" />
+      <node ref="MK502" pin="4" pinfunction="SELECT_4" pintype="input" />
+      <node ref="MK502" pin="5" pinfunction="GND_5" pintype="power_in" />
+      <node ref="MK503" pin="4" pinfunction="SELECT_4" pintype="input" />
+      <node ref="MK503" pin="5" pinfunction="GND_5" pintype="power_in" />
+      <node ref="MK504" pin="4" pinfunction="SELECT_4" pintype="input" />
+      <node ref="MK504" pin="5" pinfunction="GND_5" pintype="power_in" />
+      <node ref="R108" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R202" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R203" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R302" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R305" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R308" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R310" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U101" pin="39" pinfunction="I2S_DATA1_39" pintype="input" />
+      <node ref="U101" pin="65" pinfunction="GND_PADDLE_65" pintype="power_in" />
+      <node ref="U101" pin="7" pinfunction="SPI_MOSI_7" pintype="input" />
+      <node ref="U102" pin="4" pinfunction="GND_4" pintype="power_in" />
+      <node ref="U201" pin="2" pinfunction="GND_2" pintype="power_in" />
+      <node ref="U202" pin="2" pinfunction="GND_2" pintype="power_in" />
+      <node ref="U203" pin="4" pinfunction="GND_4" pintype="power_in" />
+      <node ref="U301" pin="2" pinfunction="GND_2" pintype="power_in" />
+      <node ref="U302" pin="2" pinfunction="GND_2" pintype="power_in" />
+      <node ref="U303" pin="2" pinfunction="GND_2" pintype="power_in" />
+      <node ref="U304" pin="10" pinfunction="3B_10" pintype="input" />
+      <node ref="U304" pin="12" pinfunction="4A_12" pintype="input" />
+      <node ref="U304" pin="13" pinfunction="4B_13" pintype="input" />
+      <node ref="U304" pin="7" pinfunction="GND_7" pintype="power_in" />
+      <node ref="U304" pin="9" pinfunction="3A_9" pintype="input" />
+      <node ref="Y101" pin="2" pinfunction="GND_2" pintype="power_in" />
+    </net>
+    <net code="9" name="HEAD_0V9" class="Default">
+      <node ref="C206" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C207" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C208" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C401" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C402" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C403" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C404" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C405" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C406" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C407" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C408" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="FB401" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="L201" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R201" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R307" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U101" pin="12" pinfunction="VDD_CORE_12" pintype="power_in" />
+      <node ref="U101" pin="19" pinfunction="VDD_CORE_19" pintype="power_in" />
+      <node ref="U101" pin="27" pinfunction="VDD_CORE_27" pintype="power_in" />
+      <node ref="U101" pin="34" pinfunction="VDD_CORE_34" pintype="power_in" />
+      <node ref="U101" pin="4" pinfunction="VDD_CORE_4" pintype="power_in" />
+      <node ref="U101" pin="42" pinfunction="VDD_CORE_42" pintype="power_in" />
+      <node ref="U101" pin="49" pinfunction="VDD_CORE_49" pintype="power_in" />
+      <node ref="U101" pin="57" pinfunction="VDD_CORE_57" pintype="power_in" />
+      <node ref="U101" pin="61" pinfunction="VDD_CORE_61" pintype="power_in" />
+      <node ref="U101" pin="62" pinfunction="VDD_CORE_62" pintype="power_in" />
+      <node ref="U101" pin="63" pinfunction="VDD_CORE_63" pintype="power_in" />
+      <node ref="U101" pin="64" pinfunction="VDD_CORE_64" pintype="power_in" />
+    </net>
+    <net code="10" name="HEAD_1V8" class="Default">
+      <node ref="C102" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C204" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C304" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C413" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C414" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C415" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="J102" pin="1" pinfunction="1_1" pintype="passive" />
+      <node ref="R106" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R107" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R301" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R303" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R306" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R309" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U101" pin="17" pinfunction="VDDIOB18_17" pintype="power_in" />
+      <node ref="U101" pin="26" pinfunction="VDDIOB18_26" pintype="power_in" />
+      <node ref="U101" pin="31" pinfunction="USB_VDD18A_31" pintype="power_in" />
+      <node ref="U202" pin="5" pinfunction="OUT_5" pintype="power_out" />
+      <node ref="U304" pin="14" pinfunction="VCC_14" pintype="power_in" />
+      <node ref="Y101" pin="1" pinfunction="OE_1" pintype="input" />
+      <node ref="Y101" pin="4" pinfunction="VDD_4" pintype="power_in" />
+    </net>
+    <net code="11" name="HEAD_3V3" class="Default">
+      <node ref="C101" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C202" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C409" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C410" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C411" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C412" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C501" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C502" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C503" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C504" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="MK501" pin="2" pinfunction="VDD_2" pintype="power_in" />
+      <node ref="MK502" pin="2" pinfunction="VDD_2" pintype="power_in" />
+      <node ref="MK503" pin="2" pinfunction="VDD_2" pintype="power_in" />
+      <node ref="MK504" pin="2" pinfunction="VDD_2" pintype="power_in" />
+      <node ref="R102" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R103" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R104" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R105" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R304" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U101" pin="30" pinfunction="USB_VDD33A_30" pintype="power_in" />
+      <node ref="U101" pin="38" pinfunction="VDDIO_3V3_38" pintype="power_in" />
+      <node ref="U101" pin="52" pinfunction="VDDIO_3V3_52" pintype="power_in" />
+      <node ref="U101" pin="8" pinfunction="VDDIO_3V3_8" pintype="power_in" />
+      <node ref="U102" pin="8" pinfunction="VCC_8" pintype="power_in" />
+      <node ref="U201" pin="5" pinfunction="OUT_5" pintype="power_out" />
+    </net>
+    <net code="12" name="HEAD_BUTTON0" class="Default">
+      <node ref="R104" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U101" pin="11" pinfunction="BUTTON0_11" pintype="input" />
+    </net>
+    <net code="13" name="HEAD_BUTTON1" class="Default">
+      <node ref="R105" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U101" pin="32" pinfunction="BUTTON1_32" pintype="input" />
+    </net>
+    <net code="14" name="HEAD_CLK24_RAW" class="Default">
+      <node ref="R101" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="Y101" pin="3" pinfunction="OUT_3" pintype="output" />
+    </net>
+    <net code="15" name="HEAD_CORE_ENABLE" class="Default">
+      <node ref="R203" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U203" pin="1" pinfunction="EN_1" pintype="input" />
+      <node ref="U304" pin="3" pinfunction="1Y_3" pintype="output" />
+      <node ref="U304" pin="4" pinfunction="2A_4" pintype="input" />
+    </net>
+    <net code="16" name="HEAD_CORE_FB" class="Default">
+      <node ref="C208" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R201" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R202" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U203" pin="3" pinfunction="FB_3" pintype="input" />
+    </net>
+    <net code="17" name="HEAD_CORE_OK" class="Default">
+      <node ref="R309" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U303" pin="1" pinfunction="~{RESET}_1" pintype="open_collector" />
+      <node ref="U304" pin="5" pinfunction="2B_5" pintype="input" />
+    </net>
+    <net code="18" name="HEAD_CORE_SW" class="Default">
+      <node ref="L201" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U203" pin="5" pinfunction="SW_5" pintype="output" />
+    </net>
+    <net code="19" name="HEAD_IO18_OK" class="Default">
+      <node ref="R303" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U301" pin="1" pinfunction="~{RESET}_1" pintype="open_collector" />
+      <node ref="U304" pin="1" pinfunction="1A_1" pintype="input" />
+    </net>
+    <net code="20" name="HEAD_IO33_OK" class="Default">
+      <node ref="R306" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U302" pin="1" pinfunction="~{RESET}_1" pintype="open_collector" />
+      <node ref="U304" pin="2" pinfunction="1B_2" pintype="input" />
+    </net>
+    <net code="21" name="HEAD_PLL_0V9" class="Default">
+      <node ref="C416" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="FB401" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U101" pin="22" pinfunction="PLL_AVDD_22" pintype="power_in" />
+    </net>
+    <net code="22" name="HEAD_RESET_N" class="Default">
+      <node ref="J102" pin="7" pinfunction="7_7" pintype="passive" />
+      <node ref="R310" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U101" pin="21" pinfunction="RST_N_21" pintype="input" />
+      <node ref="U304" pin="6" pinfunction="2Y_6" pintype="output" />
+    </net>
+    <net code="23" name="HEAD_SENSE0" class="Default">
+      <node ref="R301" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R302" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U301" pin="5" pinfunction="SENSE_5" pintype="input" />
+    </net>
+    <net code="24" name="HEAD_SENSE1" class="Default">
+      <node ref="R304" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R305" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U302" pin="5" pinfunction="SENSE_5" pintype="input" />
+    </net>
+    <net code="25" name="HEAD_SENSE2" class="Default">
+      <node ref="R307" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R308" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U303" pin="5" pinfunction="SENSE_5" pintype="input" />
+    </net>
+    <net code="26" name="HEAD_TCK" class="Default">
+      <node ref="J102" pin="3" pinfunction="3_3" pintype="passive" />
+      <node ref="R108" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U101" pin="24" pinfunction="TCK_24" pintype="input" />
+    </net>
+    <net code="27" name="HEAD_TDI" class="Default">
+      <node ref="J102" pin="5" pinfunction="5_5" pintype="passive" />
+      <node ref="R107" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U101" pin="18" pinfunction="TDI_18" pintype="input" />
+    </net>
+    <net code="28" name="HEAD_TDO" class="Default">
+      <node ref="J102" pin="6" pinfunction="6_6" pintype="passive" />
+      <node ref="U101" pin="20" pinfunction="TDO_20" pintype="output" />
+    </net>
+    <net code="29" name="HEAD_TMS" class="Default">
+      <node ref="J102" pin="4" pinfunction="4_4" pintype="passive" />
+      <node ref="R106" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U101" pin="23" pinfunction="TMS_23" pintype="input" />
+    </net>
+    <net code="30" name="HEAD_USB_5V" class="Default">
+      <node ref="C201" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C203" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C205" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C301" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C302" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C303" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="J101" pin="1" pinfunction="1_1" pintype="passive" />
+      <node ref="U201" pin="1" pinfunction="IN_1" pintype="power_in" />
+      <node ref="U201" pin="3" pinfunction="EN_3" pintype="input" />
+      <node ref="U202" pin="1" pinfunction="IN_1" pintype="power_in" />
+      <node ref="U202" pin="3" pinfunction="EN_3" pintype="input" />
+      <node ref="U203" pin="6" pinfunction="VIN_6" pintype="power_in" />
+      <node ref="U301" pin="3" pinfunction="~{MR}_3" pintype="input" />
+      <node ref="U301" pin="6" pinfunction="VDD_6" pintype="power_in" />
+      <node ref="U302" pin="3" pinfunction="~{MR}_3" pintype="input" />
+      <node ref="U302" pin="6" pinfunction="VDD_6" pintype="power_in" />
+      <node ref="U303" pin="3" pinfunction="~{MR}_3" pintype="input" />
+      <node ref="U303" pin="6" pinfunction="VDD_6" pintype="power_in" />
+    </net>
+    <net code="31" name="HEAD_USB_DM" class="Default">
+      <node ref="J101" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="U101" pin="28" pinfunction="USB_DM_28" pintype="bidirectional" />
+    </net>
+    <net code="32" name="HEAD_USB_DP" class="Default">
+      <node ref="J101" pin="3" pinfunction="3_3" pintype="passive" />
+      <node ref="U101" pin="29" pinfunction="USB_DP_29" pintype="bidirectional" />
+    </net>
+    <net code="33" name="HEAD_XIN" class="Default">
+      <node ref="R101" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U101" pin="16" pinfunction="XIN_16" pintype="input" />
+    </net>
+    <net code="34" name="PDM_CLK" class="Default">
+      <node ref="MK501" pin="3" pinfunction="CLOCK_3" pintype="input" />
+      <node ref="MK502" pin="3" pinfunction="CLOCK_3" pintype="input" />
+      <node ref="MK503" pin="3" pinfunction="CLOCK_3" pintype="input" />
+      <node ref="MK504" pin="3" pinfunction="CLOCK_3" pintype="input" />
+      <node ref="R501" pin="2" pinfunction="~_2" pintype="passive" />
+    </net>
+    <net code="35" name="PDM_CLK_RAW" class="Default">
+      <node ref="R501" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U101" pin="43" pinfunction="MIC_CLK_43" pintype="output" />
+    </net>
+    <net code="36" name="PDM_DATA0" class="Default">
+      <node ref="MK501" pin="1" pinfunction="DATA_1" pintype="output" />
+      <node ref="U101" pin="46" pinfunction="MIC_DATA0_46" pintype="input" />
+    </net>
+    <net code="37" name="PDM_DATA1" class="Default">
+      <node ref="MK502" pin="1" pinfunction="DATA_1" pintype="output" />
+      <node ref="U101" pin="50" pinfunction="MIC_DATA1_50" pintype="input" />
+    </net>
+    <net code="38" name="PDM_DATA2" class="Default">
+      <node ref="MK503" pin="1" pinfunction="DATA_1" pintype="output" />
+      <node ref="U101" pin="48" pinfunction="MIC_DATA2_48" pintype="input" />
+    </net>
+    <net code="39" name="PDM_DATA3" class="Default">
+      <node ref="MK504" pin="1" pinfunction="DATA_1" pintype="output" />
+      <node ref="U101" pin="51" pinfunction="MIC_DATA3_51" pintype="input" />
+    </net>
+    <net code="40" name="SPI_BOOT_CS_N" class="Default">
+      <node ref="R103" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U101" pin="6" pinfunction="SPI_CS_N_6" pintype="input" />
+    </net>
+    <net code="41" name="unconnected-(U101-CODEC_RST_N-Pad40)" class="Default">
+      <node ref="U101" pin="40" pinfunction="CODEC_RST_N_40" pintype="output+no_connect" />
+    </net>
+    <net code="42" name="unconnected-(U101-I2C_SCL-Pad44)" class="Default">
+      <node ref="U101" pin="44" pinfunction="I2C_SCL_44" pintype="bidirectional+no_connect" />
+    </net>
+    <net code="43" name="unconnected-(U101-I2C_SDA-Pad45)" class="Default">
+      <node ref="U101" pin="45" pinfunction="I2C_SDA_45" pintype="bidirectional+no_connect" />
+    </net>
+    <net code="44" name="unconnected-(U101-I2S_BCLK-Pad13)" class="Default">
+      <node ref="U101" pin="13" pinfunction="I2S_BCLK_13" pintype="output+no_connect" />
+    </net>
+    <net code="45" name="unconnected-(U101-I2S_DATA0-Pad9)" class="Default">
+      <node ref="U101" pin="9" pinfunction="I2S_DATA0_9" pintype="output+no_connect" />
+    </net>
+    <net code="46" name="unconnected-(U101-I2S_DATA2-Pad53)" class="Default">
+      <node ref="U101" pin="53" pinfunction="I2S_DATA2_53" pintype="output+no_connect" />
+    </net>
+    <net code="47" name="unconnected-(U101-I2S_LRCK-Pad10)" class="Default">
+      <node ref="U101" pin="10" pinfunction="I2S_LRCK_10" pintype="output+no_connect" />
+    </net>
+    <net code="48" name="unconnected-(U101-INT_N-Pad55)" class="Default">
+      <node ref="U101" pin="55" pinfunction="INT_N_55" pintype="output+no_connect" />
+    </net>
+    <net code="49" name="unconnected-(U101-LED_G-Pad58)" class="Default">
+      <node ref="U101" pin="58" pinfunction="LED_G_58" pintype="output+no_connect" />
+    </net>
+    <net code="50" name="unconnected-(U101-LED_R-Pad56)" class="Default">
+      <node ref="U101" pin="56" pinfunction="LED_R_56" pintype="output+no_connect" />
+    </net>
+    <net code="51" name="unconnected-(U101-NC-Pad25)" class="Default">
+      <node ref="U101" pin="25" pinfunction="NC_25" pintype="no_connect" />
+    </net>
+    <net code="52" name="unconnected-(U101-SPI_MISO-Pad47)" class="Default">
+      <node ref="U101" pin="47" pinfunction="SPI_MISO_47" pintype="output+no_connect" />
+    </net>
+    <net code="53" name="unconnected-(U101-SQ_nLIN-Pad54)" class="Default">
+      <node ref="U101" pin="54" pinfunction="SQ_nLIN_54" pintype="output+no_connect" />
+    </net>
+    <net code="54" name="unconnected-(U101-XL_DN0-Pad35)" class="Default">
+      <node ref="U101" pin="35" pinfunction="XL_DN0_35" pintype="input+no_connect" />
+    </net>
+    <net code="55" name="unconnected-(U101-XL_DN1-Pad33)" class="Default">
+      <node ref="U101" pin="33" pinfunction="XL_DN1_33" pintype="input+no_connect" />
+    </net>
+    <net code="56" name="unconnected-(U101-XL_UP0-Pad36)" class="Default">
+      <node ref="U101" pin="36" pinfunction="XL_UP0_36" pintype="output+no_connect" />
+    </net>
+    <net code="57" name="unconnected-(U101-XL_UP1-Pad37)" class="Default">
+      <node ref="U101" pin="37" pinfunction="XL_UP1_37" pintype="output+no_connect" />
+    </net>
+    <net code="58" name="unconnected-(U101-XOUT-Pad15)" class="Default">
+      <node ref="U101" pin="15" pinfunction="XOUT_15" pintype="output+no_connect" />
+    </net>
+    <net code="59" name="unconnected-(U201-NC-Pad4)" class="Default">
+      <node ref="U201" pin="4" pinfunction="NC_4" pintype="no_connect" />
+    </net>
+    <net code="60" name="unconnected-(U202-NC-Pad4)" class="Default">
+      <node ref="U202" pin="4" pinfunction="NC_4" pintype="no_connect" />
+    </net>
+    <net code="61" name="unconnected-(U203-PG-Pad2)" class="Default">
+      <node ref="U203" pin="2" pinfunction="PG_2" pintype="open_collector+no_connect" />
+    </net>
+    <net code="62" name="unconnected-(U301-CT-Pad4)" class="Default">
+      <node ref="U301" pin="4" pinfunction="CT_4" pintype="input+no_connect" />
+    </net>
+    <net code="63" name="unconnected-(U302-CT-Pad4)" class="Default">
+      <node ref="U302" pin="4" pinfunction="CT_4" pintype="input+no_connect" />
+    </net>
+    <net code="64" name="unconnected-(U303-CT-Pad4)" class="Default">
+      <node ref="U303" pin="4" pinfunction="CT_4" pintype="input+no_connect" />
+    </net>
+    <net code="65" name="unconnected-(U304-3Y-Pad8)" class="Default">
+      <node ref="U304" pin="8" pinfunction="3Y_8" pintype="output+no_connect" />
+    </net>
+    <net code="66" name="unconnected-(U304-4Y-Pad11)" class="Default">
+      <node ref="U304" pin="11" pinfunction="4Y_11" pintype="output+no_connect" />
+    </net>
+  </nets>
+</export>

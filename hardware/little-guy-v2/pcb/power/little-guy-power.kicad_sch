@@ -1,0 +1,548 @@
+(kicad_sch
+  (version 20260306)
+  (generator eeschema)
+  (generator_version "10.0")
+  (uuid "12612dcf-3c73-5552-b7a9-b2b0965e2412")
+  (paper "A3")
+  (title_block
+    (title "Little Guy V2 - power board")
+    (date "2026-10-25")
+    (rev "A0.2-WIP")
+    (comment 1 "INCOMPLETE - NOT FOR FABRICATION")
+  )
+  (lib_symbols)
+  (text "POWER BOARD / CIRCUIT CAPTURE IN PROGRESS\nPack protection, transient handling, exact parts and physical tests remain open.\nDo not order, connect a battery pack, or treat ERC as physical validation."
+    (at 20 20 0)
+    (effects
+      (font
+        (size 1.4 1.4)
+      )
+      (justify left)
+    )
+    (uuid "2c326bb7-3882-50ef-a26b-23cdc2c30702")
+  )
+  (sheet
+    (at 15 55)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "f572369e-b478-59f1-8747-6730237996d5")
+    (property "Sheetname" "USB-C PD / configuration"
+      (at 17 53.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "01-usb-pd.kicad_sch"
+      (at 17 87.53999999999999 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412"
+          (page "2")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 115 55)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "631850ac-6dbe-553b-8c22-9ef8e138fbb7")
+    (property "Sheetname" "3S charger / dual input"
+      (at 117 53.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "02-charger.kicad_sch"
+      (at 117 87.53999999999999 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412"
+          (page "3")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 215 55)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "1c3502b9-e28a-5420-a6bb-6d8ed5c417ca")
+    (property "Sheetname" "Always-on 5 V / charge permission"
+      (at 217 53.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "03-housekeeping.kicad_sch"
+      (at 217 87.53999999999999 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412"
+          (page "4")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 315 55)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "a6f75144-c4e7-524a-a9cc-1ea1e19a5da5")
+    (property "Sheetname" "Motor buck-boost control"
+      (at 317 53.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "04-motor-controller.kicad_sch"
+      (at 317 87.53999999999999 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412"
+          (page "5")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 15 110)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "28ae0a1d-062e-581f-bc89-a9c916a58d9a")
+    (property "Sheetname" "Motor buck-boost bridge"
+      (at 17 108.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "05-motor-bridge.kicad_sch"
+      (at 17 142.54 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412"
+          (page "6")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 115 110)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "2154d6b2-33a2-5233-93bd-6f8d02384eb9")
+    (property "Sheetname" "Motor reservoir / damping"
+      (at 117 108.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "06-motor-capacitors.kicad_sch"
+      (at 117 142.54 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412"
+          (page "7")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 215 110)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "6e0abae6-5505-50c8-8e7c-863b44f259f7")
+    (property "Sheetname" "Regulated Jetson supply"
+      (at 217 108.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "07-jetson-feed.kicad_sch"
+      (at 217 142.54 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412"
+          (page "8")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 315 110)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "b43e6ebb-9d2c-59b7-a65d-583db89fa71a")
+    (property "Sheetname" "Left hand supply"
+      (at 317 108.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "08-hand-left.kicad_sch"
+      (at 317 142.54 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412"
+          (page "9")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 15 165)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "ad824a65-0268-517b-9f7a-17727853d04b")
+    (property "Sheetname" "Right hand supply"
+      (at 17 163.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "09-hand-right.kicad_sch"
+      (at 17 197.54 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412"
+          (page "10")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 115 165)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "c184df9b-1f81-5e8c-b6a4-5d678b0b93e7")
+    (property "Sheetname" "Peripheral 5 V supply"
+      (at 117 163.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "14-hand-peripheral.kicad_sch"
+      (at 117 197.54 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412"
+          (page "11")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 215 165)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "351c7def-6fbf-5ae3-979a-36f29dd7bf67")
+    (property "Sheetname" "Motor-cut latch / control"
+      (at 217 163.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "10-motor-cut.kicad_sch"
+      (at 217 197.54 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412"
+          (page "12")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 315 165)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "42b6c877-7e1d-5dd8-9852-d96fe4168c5a")
+    (property "Sheetname" "Pack current / energy meter"
+      (at 317 163.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "11-pack-meter.kicad_sch"
+      (at 317 197.54 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412"
+          (page "13")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 15 220)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "eacb4240-6c9b-5bf0-b734-ae929175eb78")
+    (property "Sheetname" "Three-segment charge temperature interlock"
+      (at 17 218.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "12-pack-temperature.kicad_sch"
+      (at 17 252.54 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412"
+          (page "14")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 115 220)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "3a25305b-086e-576b-8e19-73bba6ef3d7f")
+    (property "Sheetname" "Leg and upper-body switching"
+      (at 117 218.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "13-motor-branches.kicad_sch"
+      (at 117 252.54 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412"
+          (page "15")
+        )
+      )
+    )
+  )
+  (sheet_instances
+    (path "/"
+      (page "1")
+    )
+  )
+  (embedded_fonts no)
+)

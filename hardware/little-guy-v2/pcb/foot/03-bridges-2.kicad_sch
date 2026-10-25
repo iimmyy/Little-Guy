@@ -1,0 +1,2471 @@
+(kicad_sch
+  (version 20260306)
+  (generator eeschema)
+  (generator_version "10.0")
+  (uuid "e8f4fcba-11bf-57ea-b1f4-2828189ad918")
+  (paper "A3")
+  (title_block
+    (title "Bridge pair 2 / ratiometric ADC")
+    (date "2026-10-25")
+    (rev "A0.2-WIP")
+    (comment 1 "DESIGN IN PROGRESS - NOT FOR FABRICATION")
+  )
+  (lib_symbols
+    (symbol "LGV2:ADS122C04_PW"
+      (pin_names
+        (offset 0.762)
+      )
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "U"
+        (at 0 16.509999999999998 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Value" "ADS122C04_PW"
+        (at 0 13.969999999999999 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (symbol "ADS122C04_PW_0_1"
+        (rectangle
+          (start -12.7 11.43)
+          (end 12.7 -11.43)
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type background)
+          )
+        )
+      )
+      (symbol "ADS122C04_PW_1_1"
+        (pin input line
+          (at -17.78 8.89 0)
+          (length 5.08)
+          (name "A0"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin input line
+          (at -17.78 6.3500000000000005 0)
+          (length 5.08)
+          (name "A1"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin input line
+          (at -17.78 3.8100000000000005 0)
+          (length 5.08)
+          (name "~{RESET}"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "3"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin power_in line
+          (at -17.78 1.2700000000000005 0)
+          (length 5.08)
+          (name "DGND"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "4"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin power_in line
+          (at -17.78 -1.2699999999999996 0)
+          (length 5.08)
+          (name "AVSS"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "5"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin input line
+          (at -17.78 -3.8099999999999987 0)
+          (length 5.08)
+          (name "AIN3"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "6"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin input line
+          (at -17.78 -6.35 0)
+          (length 5.08)
+          (name "AIN2"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "7"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin input line
+          (at -17.78 -8.89 0)
+          (length 5.08)
+          (name "REFN"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "8"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin input line
+          (at 17.78 8.89 180)
+          (length 5.08)
+          (name "REFP"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "9"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin input line
+          (at 17.78 6.3500000000000005 180)
+          (length 5.08)
+          (name "AIN1"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "10"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin input line
+          (at 17.78 3.8100000000000005 180)
+          (length 5.08)
+          (name "AIN0"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "11"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin power_in line
+          (at 17.78 1.2700000000000005 180)
+          (length 5.08)
+          (name "AVDD"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "12"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin power_in line
+          (at 17.78 -1.2699999999999996 180)
+          (length 5.08)
+          (name "DVDD"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "13"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin open_collector line
+          (at 17.78 -3.8099999999999987 180)
+          (length 5.08)
+          (name "~{DRDY}"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "14"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin bidirectional line
+          (at 17.78 -6.35 180)
+          (length 5.08)
+          (name "SDA"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "15"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin input line
+          (at 17.78 -8.89 180)
+          (length 5.08)
+          (name "SCL"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "16"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+      )
+    )
+    (symbol "LGV2:Header_4"
+      (pin_names
+        (offset 0.762)
+      )
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "U"
+        (at 0 11.43 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Value" "Header_4"
+        (at 0 8.89 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (symbol "Header_4_0_1"
+        (rectangle
+          (start -3.81 6.35)
+          (end 3.81 -6.35)
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type background)
+          )
+        )
+      )
+      (symbol "Header_4_1_1"
+        (pin passive line
+          (at -8.89 3.81 0)
+          (length 5.08)
+          (name "1"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -8.89 1.27 0)
+          (length 5.08)
+          (name "2"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -8.89 -1.27 0)
+          (length 5.08)
+          (name "3"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "3"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -8.89 -3.81 0)
+          (length 5.08)
+          (name "4"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "4"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+      )
+    )
+    (symbol "LGV2:R"
+      (pin_names hide
+        (offset 0)
+      )
+      (pin_numbers hide)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "R"
+        (at 3.81 1.27 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Value" "R"
+        (at 3.81 -1.27 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (symbol "R_0_1"
+        (rectangle
+          (start -1.016 2.54)
+          (end 1.016 -2.54)
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+      )
+      (symbol "R_1_1"
+        (pin passive line
+          (at 0 5.08 270)
+          (length 2.54)
+          (name "~"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 0 -5.08 90)
+          (length 2.54)
+          (name "~"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+        )
+      )
+    )
+    (symbol "LGV2:C"
+      (pin_names hide
+        (offset 0)
+      )
+      (pin_numbers hide)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "C"
+        (at 3.81 1.27 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Value" "C"
+        (at 3.81 -1.27 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (symbol "C_0_1"
+        (polyline
+          (pts
+            (xy -2.032 0.762)
+            (xy 2.032 0.762)
+          )
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy -2.032 -0.762)
+            (xy 2.032 -0.762)
+          )
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+      )
+      (symbol "C_1_1"
+        (pin passive line
+          (at 0 5.08 270)
+          (length 4.318)
+          (name "~"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 0 -5.08 90)
+          (length 4.318)
+          (name "~"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+  (text "TWO FULL-BRIDGE CELLS / ADS122C04 uses excitation as external voltage reference"
+    (at 15 15 0)
+    (effects
+      (font
+        (size 1.8 1.8)
+      )
+      (justify left)
+    )
+    (uuid "f61f09ab-9ad1-5e4a-9a09-78cb371079fb")
+  )
+  (text "TSSOP-16 pin map: ADS122C04 SBAS751B Table 5. A1=GND, A0=DVDD.\nSelect external reference, PGA gain 128 initially; alternate AIN0-AIN1 and AIN2-AIN3 after single-cycle settling.\nTarget >=100 settled samples/s/cell; resolution, conversion rate and I2C timing must be measured with the actual cells."
+    (at 15 24 0)
+    (effects
+      (font
+        (size 1.2 1.2)
+      )
+      (justify left)
+    )
+    (uuid "10866ba4-e551-5ef8-b8db-3b824ab87542")
+  )
+  (symbol
+    (lib_id "LGV2:ADS122C04_PW")
+    (at 95.25 95.25 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "3b44d256-694b-5b78-b78f-769b455f4ba4")
+    (property "Reference" "U301"
+      (at 95.25 78.74 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "ADS122C04IPWR / 0x41"
+      (at 95.25 81.28 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Package_SO:TSSOP-16_4.4x5mm_P0.65mm"
+      (at 95.25 95.25 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" "https://www.ti.com/lit/ds/symlink/ads122c04.pdf"
+      (at 95.25 95.25 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" "ADS122C04IPWR"
+      (at 95.25 95.25 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "candidate"
+      (at 95.25 95.25 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-foot"
+        (path "/f5f7aad3-e052-5c56-8a3b-7832fd38b8ec/e8f4fcba-11bf-57ea-b1f4-2828189ad918"
+          (reference "U301")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 77.47 86.36)
+      (xy 69.85 86.36)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "ddc62db8-02b9-5a33-8d12-118ee4288753")
+  )
+  (global_label "BRIDGE_3V3"
+    (shape bidirectional)
+    (at 69.85 86.36 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "56a2d760-d2a3-57ac-a56d-9397fc8b4e54")
+  )
+  (wire
+    (pts
+      (xy 77.47 88.9)
+      (xy 69.85 88.9)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "ce188313-5833-51be-8d68-3826149acf3c")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 69.85 88.9 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "6587064a-45bf-5db9-a1c5-c7e1d11ebfea")
+  )
+  (wire
+    (pts
+      (xy 77.47 91.44)
+      (xy 69.85 91.44)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "9dd5278d-0a64-5110-8d08-6eeff0f4f1b2")
+  )
+  (global_label "BRIDGE_3V3"
+    (shape bidirectional)
+    (at 69.85 91.44 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "7bf2b818-d4e3-5d41-855c-7b66fcb2f8e8")
+  )
+  (wire
+    (pts
+      (xy 77.47 93.98)
+      (xy 69.85 93.98)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "08a14c35-db87-55aa-a2aa-f741c20f0881")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 69.85 93.98 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "be86654d-f03d-50b0-a652-0d9d2be854a7")
+  )
+  (wire
+    (pts
+      (xy 77.47 96.52)
+      (xy 69.85 96.52)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "0ed86c18-4a58-5c28-9c36-1243a091f125")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 69.85 96.52 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "c1a1a2f5-0331-5efa-aa72-f1d01e091717")
+  )
+  (wire
+    (pts
+      (xy 77.47 99.06)
+      (xy 69.85 99.06)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "c1d7bec5-3f40-5401-bd7c-1683009fc7a5")
+  )
+  (global_label "ADC1_AIN3"
+    (shape bidirectional)
+    (at 69.85 99.06 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "f3634146-e4b6-5296-8a23-44d36c43671d")
+  )
+  (wire
+    (pts
+      (xy 77.47 101.6)
+      (xy 69.85 101.6)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "0e0abca0-c541-5fa8-a835-1f3b223066ce")
+  )
+  (global_label "ADC1_AIN2"
+    (shape bidirectional)
+    (at 69.85 101.6 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "3550e922-a620-57d0-8f5e-f43d9e906969")
+  )
+  (wire
+    (pts
+      (xy 77.47 104.14)
+      (xy 69.85 104.14)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "484fd35e-92e0-5504-9c11-604c26018310")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 69.85 104.14 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "15d5019e-11d3-5dd8-948d-bb13b8e6ecb1")
+  )
+  (wire
+    (pts
+      (xy 113.03 86.36)
+      (xy 120.65 86.36)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "bf1777d0-4d0f-5f3b-aa78-b76aa3323fe4")
+  )
+  (global_label "BRIDGE_3V3"
+    (shape bidirectional)
+    (at 120.65 86.36 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "346096cf-30c8-51fb-9d72-632732182888")
+  )
+  (wire
+    (pts
+      (xy 113.03 88.9)
+      (xy 120.65 88.9)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "c8365bc6-8c60-59f1-bf78-d7507608a505")
+  )
+  (global_label "ADC1_AIN1"
+    (shape bidirectional)
+    (at 120.65 88.9 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "acb8810d-29f6-5c68-8360-f852717d4962")
+  )
+  (wire
+    (pts
+      (xy 113.03 91.44)
+      (xy 120.65 91.44)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "367c3cc4-e4e5-51cb-9212-fa87ae87172f")
+  )
+  (global_label "ADC1_AIN0"
+    (shape bidirectional)
+    (at 120.65 91.44 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "6655dc3d-fd0f-59d2-8e0f-ad00c6927dad")
+  )
+  (wire
+    (pts
+      (xy 113.03 93.98)
+      (xy 120.65 93.98)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "770712a6-1365-5bc4-8627-1de42ec94ae6")
+  )
+  (global_label "BRIDGE_3V3"
+    (shape bidirectional)
+    (at 120.65 93.98 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "7e9d9a6b-b7dd-57eb-bb77-8de73b637ceb")
+  )
+  (wire
+    (pts
+      (xy 113.03 96.52)
+      (xy 120.65 96.52)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "bd2d2a12-811e-50c3-a315-d7a3d79783e4")
+  )
+  (global_label "BRIDGE_3V3"
+    (shape bidirectional)
+    (at 120.65 96.52 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "8efb59a1-e73c-539a-89f1-8aa488521adf")
+  )
+  (wire
+    (pts
+      (xy 113.03 99.06)
+      (xy 120.65 99.06)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "0aadd0db-924d-59d0-bc50-2c2456717099")
+  )
+  (global_label "FOOT_READY_N"
+    (shape bidirectional)
+    (at 120.65 99.06 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "85cd1f2c-a599-5f8d-bcfb-f42355b6f64a")
+  )
+  (wire
+    (pts
+      (xy 113.03 101.6)
+      (xy 120.65 101.6)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "e8802667-b61e-5b33-b651-22c8599016ca")
+  )
+  (global_label "FOOT_SDA"
+    (shape bidirectional)
+    (at 120.65 101.6 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "b8328eb2-28a8-5f3f-a280-afe7f8919948")
+  )
+  (wire
+    (pts
+      (xy 113.03 104.14)
+      (xy 120.65 104.14)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "0829422a-fb27-587e-9f29-a97663f785d9")
+  )
+  (global_label "FOOT_SCL"
+    (shape bidirectional)
+    (at 120.65 104.14 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "45099957-ecf1-5400-91d3-9e1b9ae471c1")
+  )
+  (symbol
+    (lib_id "LGV2:Header_4")
+    (at 240.03 80.01 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "31087a40-f032-519c-85d9-663ef3cb1c1b")
+    (property "Reference" "J301"
+      (at 240.03 68.58 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "Load cell 3 / full bridge"
+      (at 240.03 71.12 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 240.03 80.01 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 240.03 80.01 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 240.03 80.01 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 240.03 80.01 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-foot"
+        (path "/f5f7aad3-e052-5c56-8a3b-7832fd38b8ec/e8f4fcba-11bf-57ea-b1f4-2828189ad918"
+          (reference "J301")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 231.14 76.2)
+      (xy 223.52 76.2)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "abdbf731-6772-5011-bf40-0549459f9a2d")
+  )
+  (global_label "BRIDGE_3V3"
+    (shape bidirectional)
+    (at 223.52 76.2 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "4a1c7fde-3bd6-5bf7-b651-04af8b042888")
+  )
+  (wire
+    (pts
+      (xy 231.14 78.74)
+      (xy 223.52 78.74)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "54666606-cc63-50db-8559-db6ad562f0c0")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 223.52 78.74 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "f9282902-b01a-5422-9971-9da86eb5b56f")
+  )
+  (wire
+    (pts
+      (xy 231.14 81.28)
+      (xy 223.52 81.28)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "c8ed539e-323f-51d3-ba4b-07069658efb0")
+  )
+  (global_label "CELL3_P"
+    (shape bidirectional)
+    (at 223.52 81.28 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "1d2dd690-f6dd-5b10-a7c4-30bf390e53c4")
+  )
+  (wire
+    (pts
+      (xy 231.14 83.82)
+      (xy 223.52 83.82)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "ad2d151f-1e0a-537f-b468-ef9bf998eaa5")
+  )
+  (global_label "CELL3_N"
+    (shape bidirectional)
+    (at 223.52 83.82 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "3bd2a9e6-6203-5d11-928a-bbc48802f444")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 224.79 154.94 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "54a036ac-6293-5166-8e14-0ba90d8987a3")
+    (property "Reference" "R301"
+      (at 231.14 153.67 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "1k 0.1%"
+      (at 231.14 156.21 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 224.79 154.94 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 224.79 154.94 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 224.79 154.94 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 224.79 154.94 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-foot"
+        (path "/f5f7aad3-e052-5c56-8a3b-7832fd38b8ec/e8f4fcba-11bf-57ea-b1f4-2828189ad918"
+          (reference "R301")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 224.79 149.86)
+      (xy 224.79 146.05)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "44bc7a70-fe5f-5e62-88d1-771d6a3d7acb")
+  )
+  (global_label "CELL3_P"
+    (shape bidirectional)
+    (at 224.79 146.05 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "50f38820-a1f1-50c1-b5a3-411f2fea9657")
+  )
+  (wire
+    (pts
+      (xy 224.79 160.02)
+      (xy 224.79 163.83)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "fbd04c11-3a39-5d35-a595-e00bb4e18600")
+  )
+  (global_label "ADC1_AIN0"
+    (shape bidirectional)
+    (at 224.79 163.83 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "09410903-77d8-5893-b591-b48f2903662a")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 265.43 154.94 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "5675036a-0420-525a-8ea0-ed8a16e008b8")
+    (property "Reference" "R302"
+      (at 271.78000000000003 153.67 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "1k 0.1%"
+      (at 271.78000000000003 156.21 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 265.43 154.94 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 265.43 154.94 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 265.43 154.94 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 265.43 154.94 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-foot"
+        (path "/f5f7aad3-e052-5c56-8a3b-7832fd38b8ec/e8f4fcba-11bf-57ea-b1f4-2828189ad918"
+          (reference "R302")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 265.43 149.86)
+      (xy 265.43 146.05)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "98e35ec7-926d-581c-87ff-4462f15283c1")
+  )
+  (global_label "CELL3_N"
+    (shape bidirectional)
+    (at 265.43 146.05 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "67fd1548-6a28-5700-a3b3-529a32a18df5")
+  )
+  (wire
+    (pts
+      (xy 265.43 160.02)
+      (xy 265.43 163.83)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "70f7f522-6c21-520d-9c1a-09a2b0e59c53")
+  )
+  (global_label "ADC1_AIN1"
+    (shape bidirectional)
+    (at 265.43 163.83 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "7f192138-b448-5bf1-ad85-fdf9e5c4b302")
+  )
+  (symbol
+    (lib_id "LGV2:C")
+    (at 245.11 214.63 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "f60cc93a-d37f-5fa8-985d-fa219d4f89da")
+    (property "Reference" "C301"
+      (at 251.46 213.35999999999999 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "10n C0G 16V"
+      (at 251.46 215.9 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+      (at 245.11 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 245.11 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 245.11 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 245.11 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-foot"
+        (path "/f5f7aad3-e052-5c56-8a3b-7832fd38b8ec/e8f4fcba-11bf-57ea-b1f4-2828189ad918"
+          (reference "C301")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 245.11 209.55)
+      (xy 245.11 205.74)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "6b19dbcd-f33e-5ef7-9ff8-c711bc0e8822")
+  )
+  (global_label "ADC1_AIN0"
+    (shape bidirectional)
+    (at 245.11 205.74 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "32a530fc-787a-5bc0-8f5c-f254051f7160")
+  )
+  (wire
+    (pts
+      (xy 245.11 219.71)
+      (xy 245.11 223.52)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "ea20be8d-9d97-5f7d-97b3-212a52f662f5")
+  )
+  (global_label "ADC1_AIN1"
+    (shape bidirectional)
+    (at 245.11 223.52 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "26a6498b-2197-557c-8553-3c93dc46a8b9")
+  )
+  (symbol
+    (lib_id "LGV2:Header_4")
+    (at 335.28 80.01 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "ede0655b-f2a1-5aab-ae0e-e5ff828509c1")
+    (property "Reference" "J302"
+      (at 335.28 68.58 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "Load cell 4 / full bridge"
+      (at 335.28 71.12 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 335.28 80.01 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 335.28 80.01 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 335.28 80.01 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 335.28 80.01 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-foot"
+        (path "/f5f7aad3-e052-5c56-8a3b-7832fd38b8ec/e8f4fcba-11bf-57ea-b1f4-2828189ad918"
+          (reference "J302")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 326.39 76.2)
+      (xy 318.77 76.2)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "a02ab6f0-3093-5ec3-b604-e8905eb5aa91")
+  )
+  (global_label "BRIDGE_3V3"
+    (shape bidirectional)
+    (at 318.77 76.2 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "8caf3cd5-660a-56ed-8679-ce6121991ecf")
+  )
+  (wire
+    (pts
+      (xy 326.39 78.74)
+      (xy 318.77 78.74)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "1588e647-4170-5613-812d-12be3b4291f0")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 318.77 78.74 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "b8c7fc57-061e-562e-b54e-6b97da354961")
+  )
+  (wire
+    (pts
+      (xy 326.39 81.28)
+      (xy 318.77 81.28)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "fb304901-9ace-5529-85fe-d104a8e43ee4")
+  )
+  (global_label "CELL4_P"
+    (shape bidirectional)
+    (at 318.77 81.28 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "a251a30f-94da-5015-b272-1c431ab979e3")
+  )
+  (wire
+    (pts
+      (xy 326.39 83.82)
+      (xy 318.77 83.82)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "109a3e4f-1661-5b66-b740-7bcca65a13f1")
+  )
+  (global_label "CELL4_N"
+    (shape bidirectional)
+    (at 318.77 83.82 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "9d00668b-f812-5d39-9a82-999183b00ec5")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 325.12 154.94 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "8ccc45db-07cb-571e-b68a-cc153d7d570d")
+    (property "Reference" "R303"
+      (at 331.47 153.67 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "1k 0.1%"
+      (at 331.47 156.21 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 325.12 154.94 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 325.12 154.94 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 325.12 154.94 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 325.12 154.94 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-foot"
+        (path "/f5f7aad3-e052-5c56-8a3b-7832fd38b8ec/e8f4fcba-11bf-57ea-b1f4-2828189ad918"
+          (reference "R303")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 325.12 149.86)
+      (xy 325.12 146.05)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "083ba475-ad54-5872-98f3-e4d2f45cc4e8")
+  )
+  (global_label "CELL4_P"
+    (shape bidirectional)
+    (at 325.12 146.05 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "e6a9deeb-16f7-58e6-be8f-e7073acb2bce")
+  )
+  (wire
+    (pts
+      (xy 325.12 160.02)
+      (xy 325.12 163.83)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "35212796-963f-52e8-93a5-c061ac5e70da")
+  )
+  (global_label "ADC1_AIN2"
+    (shape bidirectional)
+    (at 325.12 163.83 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "7bc1718b-375a-5ddb-92dd-8b83b6b530e8")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 364.49 154.94 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "1b6e7daa-2bf3-50fb-8aa4-0bc67113e47b")
+    (property "Reference" "R304"
+      (at 370.84000000000003 153.67 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "1k 0.1%"
+      (at 370.84000000000003 156.21 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 364.49 154.94 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 364.49 154.94 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 364.49 154.94 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 364.49 154.94 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-foot"
+        (path "/f5f7aad3-e052-5c56-8a3b-7832fd38b8ec/e8f4fcba-11bf-57ea-b1f4-2828189ad918"
+          (reference "R304")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 364.49 149.86)
+      (xy 364.49 146.05)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "c05c26ec-627d-50ce-9be6-da6ef59492c3")
+  )
+  (global_label "CELL4_N"
+    (shape bidirectional)
+    (at 364.49 146.05 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "dcab9786-0073-506f-af44-c8024cae2a32")
+  )
+  (wire
+    (pts
+      (xy 364.49 160.02)
+      (xy 364.49 163.83)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "e224686c-f27e-5443-ab7a-ad96dab9db60")
+  )
+  (global_label "ADC1_AIN3"
+    (shape bidirectional)
+    (at 364.49 163.83 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "4b19b6c3-756b-56c7-bb3f-0422f5cc062e")
+  )
+  (symbol
+    (lib_id "LGV2:C")
+    (at 345.44 214.63 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "2d6354dc-2fa5-5fd2-b4d5-a04ee5a23493")
+    (property "Reference" "C302"
+      (at 351.79 213.35999999999999 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "10n C0G 16V"
+      (at 351.79 215.9 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+      (at 345.44 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 345.44 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 345.44 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 345.44 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-foot"
+        (path "/f5f7aad3-e052-5c56-8a3b-7832fd38b8ec/e8f4fcba-11bf-57ea-b1f4-2828189ad918"
+          (reference "C302")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 345.44 209.55)
+      (xy 345.44 205.74)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "6f12f041-bca0-52f5-9f11-e8744eacbedf")
+  )
+  (global_label "ADC1_AIN2"
+    (shape bidirectional)
+    (at 345.44 205.74 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "999863b8-051f-52b0-b930-6d55cb375915")
+  )
+  (wire
+    (pts
+      (xy 345.44 219.71)
+      (xy 345.44 223.52)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "f1912c0c-af27-5601-937e-423b7cec1f12")
+  )
+  (global_label "ADC1_AIN3"
+    (shape bidirectional)
+    (at 345.44 223.52 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "8fe7c058-7899-59e7-bb92-ed74573d085a")
+  )
+  (symbol
+    (lib_id "LGV2:C")
+    (at 44.45 214.63 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "022407ee-8845-5775-b559-92cbe5ceceb5")
+    (property "Reference" "C303"
+      (at 50.800000000000004 213.35999999999999 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "100n 16V"
+      (at 50.800000000000004 215.9 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+      (at 44.45 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 44.45 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 44.45 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 44.45 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-foot"
+        (path "/f5f7aad3-e052-5c56-8a3b-7832fd38b8ec/e8f4fcba-11bf-57ea-b1f4-2828189ad918"
+          (reference "C303")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 44.45 209.55)
+      (xy 44.45 205.74)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "3ea529ae-f3be-5678-adcc-05ebe1aaf2e3")
+  )
+  (global_label "BRIDGE_3V3"
+    (shape bidirectional)
+    (at 44.45 205.74 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "4b6adfb9-9d9d-5d69-8a97-14470d0b6075")
+  )
+  (wire
+    (pts
+      (xy 44.45 219.71)
+      (xy 44.45 223.52)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "286731f0-4cec-5dc9-ab7f-01de64116c3e")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 44.45 223.52 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "bea45f78-1409-5dea-8872-d4013c6b114d")
+  )
+  (symbol
+    (lib_id "LGV2:C")
+    (at 95.25 214.63 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "3c009014-c99b-527b-a372-ebf3892ecfe7")
+    (property "Reference" "C304"
+      (at 101.6 213.35999999999999 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "100n 16V"
+      (at 101.6 215.9 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+      (at 95.25 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 95.25 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 95.25 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 95.25 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-foot"
+        (path "/f5f7aad3-e052-5c56-8a3b-7832fd38b8ec/e8f4fcba-11bf-57ea-b1f4-2828189ad918"
+          (reference "C304")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 95.25 209.55)
+      (xy 95.25 205.74)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "acc17589-3f5a-55c8-af9c-0c51e215564d")
+  )
+  (global_label "BRIDGE_3V3"
+    (shape bidirectional)
+    (at 95.25 205.74 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "3b2f0dea-c973-500f-9d44-98d78b589410")
+  )
+  (wire
+    (pts
+      (xy 95.25 219.71)
+      (xy 95.25 223.52)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "1d453887-7f63-51fe-8540-cd9c074f999c")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 95.25 223.52 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "5cccb52a-4d5c-5615-8798-6d56bf671df0")
+  )
+  (symbol
+    (lib_id "LGV2:C")
+    (at 144.78 214.63 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "64a51ef8-09e8-572b-bd47-e277f38fda7e")
+    (property "Reference" "C305"
+      (at 151.13 213.35999999999999 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "100n 16V"
+      (at 151.13 215.9 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+      (at 144.78 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 144.78 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 144.78 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 144.78 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-foot"
+        (path "/f5f7aad3-e052-5c56-8a3b-7832fd38b8ec/e8f4fcba-11bf-57ea-b1f4-2828189ad918"
+          (reference "C305")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 144.78 209.55)
+      (xy 144.78 205.74)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "43625b63-3ed2-5c36-9a13-bad8b83cc7db")
+  )
+  (global_label "BRIDGE_3V3"
+    (shape bidirectional)
+    (at 144.78 205.74 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "14f3be03-f1a2-55cc-9cb2-164521420996")
+  )
+  (wire
+    (pts
+      (xy 144.78 219.71)
+      (xy 144.78 223.52)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "2ffdf0b0-8dc5-58cf-8ac5-32d2498f2c3a")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 144.78 223.52 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "a22cebf6-bd03-5c08-9d6b-0cddaa96ed9c")
+  )
+  (text "REFP/REFN return to the same local excitation star as the cell connector supplies (Kelvin routing).\nEach ADC multiplexes two cells; readings have separate timestamps. Do not claim simultaneous sampling.\n1k + 1k / 10n differential filters are initial values. Bridge impedance, settling and noise require bench validation.\nExact full-bridge load cell, excitation current, connector and overload mounting stops remain selection tasks."
+    (at 15 270 0)
+    (effects
+      (font
+        (size 1.2 1.2)
+      )
+      (justify left)
+    )
+    (uuid "592e935c-dded-5aff-91fa-d849d8cd3723")
+  )
+  (embedded_fonts no)
+)

@@ -1,0 +1,392 @@
+[
+  {
+    "name": "future Jetson bay",
+    "size": [
+      130,
+      65,
+      120
+    ],
+    "center": [
+      0,
+      0,
+      90
+    ],
+    "kind": "bay",
+    "note": ""
+  },
+  {
+    "name": "torso outer reference",
+    "size": [
+      220,
+      140,
+      190
+    ],
+    "center": [
+      0,
+      0,
+      95.0
+    ],
+    "kind": "reference",
+    "note": "No shell thickness allocated"
+  },
+  {
+    "name": "head placeholder",
+    "size": [
+      120,
+      100,
+      100
+    ],
+    "center": [
+      0,
+      0,
+      285
+    ],
+    "kind": "reference",
+    "note": "Speaker dimensions unknown; no fit claim"
+  },
+  {
+    "name": "waist servo",
+    "size": [
+      45.23,
+      24.73,
+      37.8
+    ],
+    "center": [
+      0,
+      0,
+      -24
+    ],
+    "kind": "servo",
+    "note": ""
+  },
+  {
+    "name": "head yaw servo",
+    "size": [
+      45.23,
+      24.73,
+      37.8
+    ],
+    "center": [
+      0,
+      0,
+      195
+    ],
+    "kind": "servo",
+    "note": ""
+  },
+  {
+    "name": "head pitch servo",
+    "size": [
+      45.23,
+      37.8,
+      24.73
+    ],
+    "center": [
+      0,
+      0,
+      230
+    ],
+    "kind": "servo",
+    "note": ""
+  },
+  {
+    "name": "waist support corridor",
+    "size": [
+      60,
+      60,
+      20
+    ],
+    "center": [
+      0,
+      0,
+      10
+    ],
+    "kind": "structure",
+    "note": ""
+  },
+  {
+    "name": "neck support corridor",
+    "size": [
+      60,
+      60,
+      20
+    ],
+    "center": [
+      0,
+      0,
+      165
+    ],
+    "kind": "structure",
+    "note": ""
+  },
+  {
+    "name": "left proximal shoulder",
+    "size": [
+      24.73,
+      37.8,
+      45.23
+    ],
+    "center": [
+      -83,
+      0,
+      160
+    ],
+    "kind": "servo",
+    "note": ""
+  },
+  {
+    "name": "left distal shoulder",
+    "size": [
+      37.8,
+      24.73,
+      45.23
+    ],
+    "center": [
+      -86,
+      50,
+      160
+    ],
+    "kind": "servo",
+    "note": ""
+  },
+  {
+    "name": "left upper arm reference",
+    "size": [
+      30,
+      32,
+      100
+    ],
+    "center": [
+      -121,
+      50,
+      110.0
+    ],
+    "kind": "reference",
+    "note": "No wall thickness, actuator pocket or swept motion model"
+  },
+  {
+    "name": "left elbow",
+    "size": [
+      37.8,
+      24.73,
+      45.23
+    ],
+    "center": [
+      -121,
+      50,
+      60
+    ],
+    "kind": "servo",
+    "note": ""
+  },
+  {
+    "name": "left forearm reference",
+    "size": [
+      30,
+      32,
+      100
+    ],
+    "center": [
+      -121,
+      50,
+      10.0
+    ],
+    "kind": "reference",
+    "note": "No wall thickness, actuator pocket or swept motion model"
+  },
+  {
+    "name": "left wrist",
+    "size": [
+      37.8,
+      24.73,
+      45.23
+    ],
+    "center": [
+      -121,
+      50,
+      -40
+    ],
+    "kind": "servo",
+    "note": ""
+  },
+  {
+    "name": "left hand reference",
+    "size": [
+      30,
+      32,
+      60
+    ],
+    "center": [
+      -121,
+      50,
+      -70.0
+    ],
+    "kind": "reference",
+    "note": "No wall thickness, actuator pocket or swept motion model"
+  },
+  {
+    "name": "left rear torso frame corridor",
+    "size": [
+      10,
+      10,
+      135
+    ],
+    "center": [
+      -60,
+      -43,
+      87.5
+    ],
+    "kind": "structure",
+    "note": "Proposed rear load path; leaves front access to bay; no strength calculation"
+  },
+  {
+    "name": "right proximal shoulder",
+    "size": [
+      24.73,
+      37.8,
+      45.23
+    ],
+    "center": [
+      83,
+      0,
+      160
+    ],
+    "kind": "servo",
+    "note": ""
+  },
+  {
+    "name": "right distal shoulder",
+    "size": [
+      37.8,
+      24.73,
+      45.23
+    ],
+    "center": [
+      86,
+      50,
+      160
+    ],
+    "kind": "servo",
+    "note": ""
+  },
+  {
+    "name": "right upper arm reference",
+    "size": [
+      30,
+      32,
+      100
+    ],
+    "center": [
+      121,
+      50,
+      110.0
+    ],
+    "kind": "reference",
+    "note": "No wall thickness, actuator pocket or swept motion model"
+  },
+  {
+    "name": "right elbow",
+    "size": [
+      37.8,
+      24.73,
+      45.23
+    ],
+    "center": [
+      121,
+      50,
+      60
+    ],
+    "kind": "servo",
+    "note": ""
+  },
+  {
+    "name": "right forearm reference",
+    "size": [
+      30,
+      32,
+      100
+    ],
+    "center": [
+      121,
+      50,
+      10.0
+    ],
+    "kind": "reference",
+    "note": "No wall thickness, actuator pocket or swept motion model"
+  },
+  {
+    "name": "right wrist",
+    "size": [
+      37.8,
+      24.73,
+      45.23
+    ],
+    "center": [
+      121,
+      50,
+      -40
+    ],
+    "kind": "servo",
+    "note": ""
+  },
+  {
+    "name": "right hand reference",
+    "size": [
+      30,
+      32,
+      60
+    ],
+    "center": [
+      121,
+      50,
+      -70.0
+    ],
+    "kind": "reference",
+    "note": "No wall thickness, actuator pocket or swept motion model"
+  },
+  {
+    "name": "right rear torso frame corridor",
+    "size": [
+      10,
+      10,
+      135
+    ],
+    "center": [
+      60,
+      -43,
+      87.5
+    ],
+    "kind": "structure",
+    "note": "Proposed rear load path; leaves front access to bay; no strength calculation"
+  },
+  {
+    "name": "stand assembly platform",
+    "size": [
+      180,
+      240,
+      12
+    ],
+    "center": [
+      0,
+      -40,
+      -70
+    ],
+    "kind": "structure",
+    "note": ""
+  },
+  {
+    "name": "Jetson on stand",
+    "size": [
+      103,
+      90.5,
+      34.77
+    ],
+    "center": [
+      0,
+      -100,
+      -38.615
+    ],
+    "kind": "computer",
+    "note": ""
+  }
+]

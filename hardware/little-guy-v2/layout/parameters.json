@@ -1,0 +1,93 @@
+{
+  "status": "provisional packaging study, not printable mechanical design",
+  "units": "mm",
+  "coordinates": "X left/right, Y forward/back, Z upward; waist reference Z=0",
+  "future_total_height_reference": 550,
+  "torso_envelope": [
+    220,
+    140,
+    190
+  ],
+  "bay_size_xyz": [
+    130,
+    65,
+    120
+  ],
+  "bay_center_xyz": [
+    0,
+    0,
+    90
+  ],
+  "head_placeholder_size": [
+    120,
+    100,
+    100
+  ],
+  "head_placeholder_center": [
+    0,
+    0,
+    285
+  ],
+  "head_note": "Visual volume only, not actual head, camera or user speaker dimensions.",
+  "proximal_shoulder_center_unsigned": [
+    83,
+    0,
+    160
+  ],
+  "distal_shoulder_center_unsigned": [
+    86,
+    50,
+    160
+  ],
+  "arm_center_x_unsigned": 121,
+  "arm_center_y": 50,
+  "shoulder_arm_origin_z": 160,
+  "upper_arm_length": 100,
+  "forearm_length": 100,
+  "hand_length": 60,
+  "arm_structure_width": 30,
+  "arm_structure_depth": 32,
+  "stand_platform_size": [
+    180,
+    240,
+    12
+  ],
+  "stand_platform_center": [
+    0,
+    -40,
+    -70
+  ],
+  "stand_note": "Assembly platform only; floor base, post, ballast and stability not designed.",
+  "jetson_on_stand_center": [
+    0,
+    -100,
+    -38.615
+  ],
+  "jetson_component_size": [
+    103,
+    90.5,
+    34.77
+  ],
+  "future_jetson_orientation_xyz": [
+    103,
+    34.77,
+    90.5
+  ],
+  "future_jetson_upper_tolerance_xyz": [
+    0.2,
+    1.09,
+    0.2
+  ],
+  "future_jetson_orientation_note": "Rotate assembled kit upright; board broad face lies in XZ, cooler projects along Y. Cable and fan clearances unvalidated.",
+  "jetson_note": "Published nominal assembled-kit envelope only, excluding external plugs/accessories.",
+  "servo_note": "Encloses inspected nominal C018 drawing and SCS215-titled STEP references; accessory configuration differs, no physical fit or tolerance allowance established.",
+  "speaker_dimensions": null,
+  "speaker_mount_position": null,
+  "mounting_holes": null,
+  "bearing_part_numbers": null,
+  "servo_reference_envelope": [
+    45.23,
+    24.73,
+    37.8
+  ]
+}

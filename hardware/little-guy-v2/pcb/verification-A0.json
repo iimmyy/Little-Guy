@@ -1,0 +1,237 @@
+{
+  "revision": "A0.2-WIP",
+  "hardware_validated": false,
+  "fabrication_released": false,
+  "checks": [
+    {
+      "requirement": "Charging harness matches power and spinal pin for pin",
+      "passed": true
+    },
+    {
+      "requirement": "Motor and logic control harness matches all 12 pins",
+      "passed": true
+    },
+    {
+      "requirement": "External watchdog can clear power motor latch",
+      "passed": true
+    },
+    {
+      "requirement": "Watchdog is enabled without a firmware enable signal",
+      "passed": true
+    },
+    {
+      "requirement": "LEG servo transmits through a 5 V buffer",
+      "passed": true
+    },
+    {
+      "requirement": "LEG servo receives through a 3.3 V buffer",
+      "passed": true
+    },
+    {
+      "requirement": "LEG UART GPIO mapping matches PJRC Serial pin table",
+      "passed": true
+    },
+    {
+      "requirement": "UPPER servo transmits through a 5 V buffer",
+      "passed": true
+    },
+    {
+      "requirement": "UPPER servo receives through a 3.3 V buffer",
+      "passed": true
+    },
+    {
+      "requirement": "UPPER UART GPIO mapping matches PJRC Serial pin table",
+      "passed": true
+    },
+    {
+      "requirement": "LEFT servo transmits through a 5 V buffer",
+      "passed": true
+    },
+    {
+      "requirement": "LEFT servo receives through a 3.3 V buffer",
+      "passed": true
+    },
+    {
+      "requirement": "LEFT UART GPIO mapping matches PJRC Serial pin table",
+      "passed": true
+    },
+    {
+      "requirement": "RIGHT servo transmits through a 5 V buffer",
+      "passed": true
+    },
+    {
+      "requirement": "RIGHT servo receives through a 3.3 V buffer",
+      "passed": true
+    },
+    {
+      "requirement": "RIGHT UART GPIO mapping matches PJRC Serial pin table",
+      "passed": true
+    },
+    {
+      "requirement": "Touch 1 has twelve separate electrode nets",
+      "passed": true
+    },
+    {
+      "requirement": "Touch 2 has twelve separate electrode nets",
+      "passed": true
+    },
+    {
+      "requirement": "Touch 3 has twelve separate electrode nets",
+      "passed": true
+    },
+    {
+      "requirement": "Touch 4 has twelve separate electrode nets",
+      "passed": true
+    },
+    {
+      "requirement": "LEG transmit enable requires hardware motor arm",
+      "passed": true
+    },
+    {
+      "requirement": "UPPER transmit enable requires hardware motor arm",
+      "passed": true
+    },
+    {
+      "requirement": "LEFT transmit enable requires hardware motor arm",
+      "passed": true
+    },
+    {
+      "requirement": "RIGHT transmit enable requires hardware motor arm",
+      "passed": true
+    },
+    {
+      "requirement": "Four touch addresses are distinct and strapped per NXP table",
+      "passed": true
+    },
+    {
+      "requirement": "Foot ADC 0 is strapped to 0x40",
+      "passed": true
+    },
+    {
+      "requirement": "Foot ADC 1 is strapped to 0x41",
+      "passed": true
+    },
+    {
+      "requirement": "Both foot references observe bridge excitation",
+      "passed": true
+    },
+    {
+      "requirement": "Four cells map to four differential pairs",
+      "passed": true
+    },
+    {
+      "requirement": "Toe do-not-connect pad is not wired",
+      "passed": true
+    },
+    {
+      "requirement": "LEFT foot six-wire harness matches the foot PCB",
+      "passed": true
+    },
+    {
+      "requirement": "RIGHT foot six-wire harness matches the foot PCB",
+      "passed": true
+    },
+    {
+      "requirement": "XVF3800 four core paddles are on 0.9 V",
+      "passed": true
+    },
+    {
+      "requirement": "XVF3800 only ground paddle is pin 65",
+      "passed": true
+    },
+    {
+      "requirement": "XVF3800 NC pin 25 is not wired",
+      "passed": true
+    },
+    {
+      "requirement": "XVF3800 MCLK output is connected to its clock input",
+      "passed": true
+    },
+    {
+      "requirement": "Head core enable requires both I/O supervisors",
+      "passed": true
+    },
+    {
+      "requirement": "Head reset also requires core supervisor",
+      "passed": true
+    },
+    {
+      "requirement": "All supervisors assert reset independently of core firmware",
+      "passed": true
+    },
+    {
+      "requirement": "Four PDM data lines connect to their assigned processor inputs",
+      "passed": true
+    },
+    {
+      "requirement": "power every captured pin matches the exported schematic connectivity",
+      "passed": true
+    },
+    {
+      "requirement": "power exports without ERC errors",
+      "passed": true
+    },
+    {
+      "requirement": "spinal every captured pin matches the exported schematic connectivity",
+      "passed": true
+    },
+    {
+      "requirement": "spinal exports without ERC errors",
+      "passed": true
+    },
+    {
+      "requirement": "foot every captured pin matches the exported schematic connectivity",
+      "passed": true
+    },
+    {
+      "requirement": "foot exports without ERC errors",
+      "passed": true
+    },
+    {
+      "requirement": "head every captured pin matches the exported schematic connectivity",
+      "passed": true
+    },
+    {
+      "requirement": "head exports without ERC errors",
+      "passed": true
+    }
+  ],
+  "boards": {
+    "power": {
+      "circuit_sheets": 14,
+      "physical_components": 315,
+      "quantity_in_robot": 1,
+      "mpn_pending": 282,
+      "footprint_pending": 61,
+      "erc_errors": 0,
+      "erc_warnings": 11
+    },
+    "spinal": {
+      "circuit_sheets": 11,
+      "physical_components": 102,
+      "quantity_in_robot": 1,
+      "mpn_pending": 82,
+      "footprint_pending": 20,
+      "erc_errors": 0,
+      "erc_warnings": 0
+    },
+    "foot": {
+      "circuit_sheets": 3,
+      "physical_components": 36,
+      "quantity_in_robot": 2,
+      "mpn_pending": 31,
+      "footprint_pending": 6,
+      "erc_errors": 0,
+      "erc_warnings": 0
+    },
+    "head": {
+      "circuit_sheets": 5,
+      "physical_components": 74,
+      "quantity_in_robot": 1,
+      "mpn_pending": 58,
+      "footprint_pending": 10,
+      "erc_errors": 0,
+      "erc_warnings": 0
+    }
+  }
+}

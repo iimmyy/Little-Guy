@@ -1,0 +1,512 @@
+{
+  "scope": "Ideal wire graph and published load sums only; external paths and device internals omitted",
+  "topology_checks_passed": true,
+  "errors": [],
+  "load_count": 11,
+  "source_cuts": [
+    {
+      "link": "F_MAIN",
+      "matches_expected": true,
+      "loads_disconnected_from_psu_positive": [
+        "head_pitch",
+        "head_yaw",
+        "left_elbow",
+        "left_shoulder_pitch",
+        "left_shoulder_roll",
+        "left_wrist",
+        "right_elbow",
+        "right_shoulder_pitch",
+        "right_shoulder_roll",
+        "right_wrist",
+        "waist_yaw"
+      ]
+    },
+    {
+      "link": "SW_MAIN",
+      "matches_expected": true,
+      "loads_disconnected_from_psu_positive": [
+        "head_pitch",
+        "head_yaw",
+        "left_elbow",
+        "left_shoulder_pitch",
+        "left_shoulder_roll",
+        "left_wrist",
+        "right_elbow",
+        "right_shoulder_pitch",
+        "right_shoulder_roll",
+        "right_wrist",
+        "waist_yaw"
+      ]
+    },
+    {
+      "link": "F_HEAD_YAW",
+      "matches_expected": true,
+      "loads_disconnected_from_psu_positive": [
+        "head_yaw"
+      ]
+    },
+    {
+      "link": "F_HEAD_PITCH",
+      "matches_expected": true,
+      "loads_disconnected_from_psu_positive": [
+        "head_pitch"
+      ]
+    },
+    {
+      "link": "F_LEFT_SHOULDER_PITCH",
+      "matches_expected": true,
+      "loads_disconnected_from_psu_positive": [
+        "left_shoulder_pitch"
+      ]
+    },
+    {
+      "link": "F_LEFT_SHOULDER_ROLL",
+      "matches_expected": true,
+      "loads_disconnected_from_psu_positive": [
+        "left_shoulder_roll"
+      ]
+    },
+    {
+      "link": "F_LEFT_ELBOW",
+      "matches_expected": true,
+      "loads_disconnected_from_psu_positive": [
+        "left_elbow"
+      ]
+    },
+    {
+      "link": "F_LEFT_WRIST",
+      "matches_expected": true,
+      "loads_disconnected_from_psu_positive": [
+        "left_wrist"
+      ]
+    },
+    {
+      "link": "F_RIGHT_SHOULDER_PITCH",
+      "matches_expected": true,
+      "loads_disconnected_from_psu_positive": [
+        "right_shoulder_pitch"
+      ]
+    },
+    {
+      "link": "F_RIGHT_SHOULDER_ROLL",
+      "matches_expected": true,
+      "loads_disconnected_from_psu_positive": [
+        "right_shoulder_roll"
+      ]
+    },
+    {
+      "link": "F_RIGHT_ELBOW",
+      "matches_expected": true,
+      "loads_disconnected_from_psu_positive": [
+        "right_elbow"
+      ]
+    },
+    {
+      "link": "F_RIGHT_WRIST",
+      "matches_expected": true,
+      "loads_disconnected_from_psu_positive": [
+        "right_wrist"
+      ]
+    },
+    {
+      "link": "F_WAIST_YAW",
+      "matches_expected": true,
+      "loads_disconnected_from_psu_positive": [
+        "waist_yaw"
+      ]
+    }
+  ],
+  "segment_reference_sums_valid_for_radial_graph": true,
+  "segment_reference_sums": [
+    {
+      "link": "F_MAIN",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "head_yaw",
+        "head_pitch",
+        "left_shoulder_pitch",
+        "left_shoulder_roll",
+        "left_elbow",
+        "left_wrist",
+        "right_shoulder_pitch",
+        "right_shoulder_roll",
+        "right_elbow",
+        "right_wrist",
+        "waist_yaw"
+      ],
+      "rated_sum_reference_a": 9.9,
+      "stall_sum_reference_a": 29.7
+    },
+    {
+      "link": "SW_MAIN",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "head_yaw",
+        "head_pitch",
+        "left_shoulder_pitch",
+        "left_shoulder_roll",
+        "left_elbow",
+        "left_wrist",
+        "right_shoulder_pitch",
+        "right_shoulder_roll",
+        "right_elbow",
+        "right_wrist",
+        "waist_yaw"
+      ],
+      "rated_sum_reference_a": 9.9,
+      "stall_sum_reference_a": 29.7
+    },
+    {
+      "link": "TRUNK_P",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "head_yaw",
+        "head_pitch",
+        "left_shoulder_pitch",
+        "left_shoulder_roll",
+        "left_elbow",
+        "left_wrist",
+        "right_shoulder_pitch",
+        "right_shoulder_roll",
+        "right_elbow",
+        "right_wrist",
+        "waist_yaw"
+      ],
+      "rated_sum_reference_a": 9.9,
+      "stall_sum_reference_a": 29.7
+    },
+    {
+      "link": "TRUNK_R",
+      "domain": "return",
+      "loads_on_unique_path": [
+        "head_yaw",
+        "head_pitch",
+        "left_shoulder_pitch",
+        "left_shoulder_roll",
+        "left_elbow",
+        "left_wrist",
+        "right_shoulder_pitch",
+        "right_shoulder_roll",
+        "right_elbow",
+        "right_wrist",
+        "waist_yaw"
+      ],
+      "rated_sum_reference_a": 9.9,
+      "stall_sum_reference_a": 29.7
+    },
+    {
+      "link": "F_HEAD_YAW",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "head_yaw"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "FEED_HEAD_YAW",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "head_yaw"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "RETURN_HEAD_YAW",
+      "domain": "return",
+      "loads_on_unique_path": [
+        "head_yaw"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "F_HEAD_PITCH",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "head_pitch"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "FEED_HEAD_PITCH",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "head_pitch"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "RETURN_HEAD_PITCH",
+      "domain": "return",
+      "loads_on_unique_path": [
+        "head_pitch"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "F_LEFT_SHOULDER_PITCH",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "left_shoulder_pitch"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "FEED_LEFT_SHOULDER_PITCH",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "left_shoulder_pitch"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "RETURN_LEFT_SHOULDER_PITCH",
+      "domain": "return",
+      "loads_on_unique_path": [
+        "left_shoulder_pitch"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "F_LEFT_SHOULDER_ROLL",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "left_shoulder_roll"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "FEED_LEFT_SHOULDER_ROLL",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "left_shoulder_roll"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "RETURN_LEFT_SHOULDER_ROLL",
+      "domain": "return",
+      "loads_on_unique_path": [
+        "left_shoulder_roll"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "F_LEFT_ELBOW",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "left_elbow"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "FEED_LEFT_ELBOW",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "left_elbow"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "RETURN_LEFT_ELBOW",
+      "domain": "return",
+      "loads_on_unique_path": [
+        "left_elbow"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "F_LEFT_WRIST",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "left_wrist"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "FEED_LEFT_WRIST",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "left_wrist"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "RETURN_LEFT_WRIST",
+      "domain": "return",
+      "loads_on_unique_path": [
+        "left_wrist"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "F_RIGHT_SHOULDER_PITCH",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "right_shoulder_pitch"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "FEED_RIGHT_SHOULDER_PITCH",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "right_shoulder_pitch"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "RETURN_RIGHT_SHOULDER_PITCH",
+      "domain": "return",
+      "loads_on_unique_path": [
+        "right_shoulder_pitch"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "F_RIGHT_SHOULDER_ROLL",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "right_shoulder_roll"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "FEED_RIGHT_SHOULDER_ROLL",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "right_shoulder_roll"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "RETURN_RIGHT_SHOULDER_ROLL",
+      "domain": "return",
+      "loads_on_unique_path": [
+        "right_shoulder_roll"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "F_RIGHT_ELBOW",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "right_elbow"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "FEED_RIGHT_ELBOW",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "right_elbow"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "RETURN_RIGHT_ELBOW",
+      "domain": "return",
+      "loads_on_unique_path": [
+        "right_elbow"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "F_RIGHT_WRIST",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "right_wrist"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "FEED_RIGHT_WRIST",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "right_wrist"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "RETURN_RIGHT_WRIST",
+      "domain": "return",
+      "loads_on_unique_path": [
+        "right_wrist"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "F_WAIST_YAW",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "waist_yaw"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "FEED_WAIST_YAW",
+      "domain": "positive",
+      "loads_on_unique_path": [
+        "waist_yaw"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "RETURN_WAIST_YAW",
+      "domain": "return",
+      "loads_on_unique_path": [
+        "waist_yaw"
+      ],
+      "rated_sum_reference_a": 0.9,
+      "stall_sum_reference_a": 2.7
+    },
+    {
+      "link": "ADAPTER_REFERENCE",
+      "domain": "return",
+      "loads_on_unique_path": [],
+      "rated_sum_reference_a": 0,
+      "stall_sum_reference_a": 0
+    },
+    {
+      "link": "USB_GROUND",
+      "domain": "return",
+      "loads_on_unique_path": [],
+      "rated_sum_reference_a": 0,
+      "stall_sum_reference_a": 0
+    }
+  ],
+  "all_parts_and_ratings_selected": false,
+  "electrical_design_validated": false,
+  "physical_harness_verified": false
+}

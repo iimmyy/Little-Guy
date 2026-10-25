@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "geometry_id": "head-A-diamond-frozen-2026-10-25-v1",
+  "status": "owner frozen locations; recaptured from CURRENT markers; no hardware validation",
+  "source": {
+    "scene": ".run/results/mind/body-v2/CURRENT.xml",
+    "scene_sha256": "299eba25aa0d393f2975f79cc67abf634a2540a0b7e7326e3403f30bba066743",
+    "generator": "tools/body/head_a.py",
+    "generator_sha256": "d768a234aec28d028a1afd64d81d4ce26cfcd87ef614cdfb097f50db6e0ddce8",
+    "selector": "four same-body mic marker centers with rgba 0.25 0.25 0.27 1, in i1_shellI1 mesh frame",
+    "read_only": true,
+    "brief": "hardware/little-guy-v2/PCB-BRIEF.md",
+    "brief_sha256": "5540479b48d70ef623aa03a49d33871f32ba8b517be1da465288bbf9766870fc",
+    "fit_check_script": "tools/body/mic_diamond.py",
+    "fit_check_script_sha256": "23b10d7ac263db1a11d907c03c1265f4e5408e03c1101ae0b8aee80a512e85f8",
+    "fit_report": ".run/results/mind/body-v2/mic-diamond-1025b/mic-diamond.json",
+    "fit_report_sha256": "e70af5685518219c40b1cbb706569e091a6261f72068784609d9c781cf90eb99"
+  },
+  "source_frame": {
+    "unit": "mm",
+    "x_positive": "robot left",
+    "y_positive": "robot back",
+    "z_positive": "head up",
+    "origin": "visual head-shell mesh frame, before parent-body transforms"
+  },
+  "owner_dimensions": {
+    "front_back_horizontal_mm": 58.0,
+    "left_right_mm": 100.0,
+    "front_above_back_approx_mm": 11.649999999999999,
+    "front_back_plane_approx_mm": 59.2,
+    "plane_tilt_approx_deg": 11.4,
+    "max_plane_residual_mm": 0.34
+  },
+  "mic_order": [
+    {
+      "logical_index": 0,
+      "location": "front",
+      "reference": "MK501",
+      "pdm_net": "PDM_DATA0",
+      "xvf3800_pin": 46,
+      "target_head_mm": [
+        0.0,
+        -29.0,
+        43.5
+      ]
+    },
+    {
+      "logical_index": 1,
+      "location": "back",
+      "reference": "MK502",
+      "pdm_net": "PDM_DATA1",
+      "xvf3800_pin": 50,
+      "target_head_mm": [
+        0.0,
+        29.0,
+        31.848399999999998
+      ]
+    },
+    {
+      "logical_index": 2,
+      "location": "left",
+      "reference": "MK503",
+      "pdm_net": "PDM_DATA2",
+      "xvf3800_pin": 48,
+      "target_head_mm": [
+        50.0,
+        0.0,
+        36.9925
+      ]
+    },
+    {
+      "logical_index": 3,
+      "location": "right",
+      "reference": "MK504",
+      "pdm_net": "PDM_DATA3",
+      "xvf3800_pin": 51,
+      "target_head_mm": [
+        -50.0,
+        0.0,
+        36.9925
+      ]
+    }
+  ],
+  "release_limits": [
+    "acoustic target points are not package placement origins",
+    "board copper plane offset, package rotation, gasket, outline and mounts remain to be engineered",
+    "target coordinates do not release a fabricated PCB or validate acoustic performance"
+  ],
+  "owner_frozen": true,
+  "frozen_reference_mm": {
+    "front": [
+      0.0,
+      -29.0,
+      43.5
+    ],
+    "back": [
+      0.0,
+      29.0,
+      31.85
+    ],
+    "left": [
+      50.0,
+      0.0,
+      36.99
+    ],
+    "right": [
+      -50.0,
+      0.0,
+      36.99
+    ]
+  },
+  "frozen_rounding_tolerance_mm": 0.0050001,
+  "supersedes_geometry_id": "head-A-diamond-2026-10-25"
+}

@@ -1,0 +1,528 @@
+board,ref,value_and_notes,quantity_per_board,boards_in_robot,mpn,footprint,selection_status,footprint_status,released,dnp,datasheet,sheet
+power,J101,Front-door USB-C power/CC interface,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,01-usb-pd
+power,U101,TPS25751DREFR,1,1,TPS25751DREFR,,candidate,FOOTPRINT_PENDING,False,False,https://www.ti.com/lit/ds/symlink/tps25751.pdf,01-usb-pd
+power,C101,10u 10V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,01-usb-pd
+power,C102,10u 10V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,01-usb-pd
+power,C103,10u 10V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,01-usb-pd
+power,C104,4u7 10V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,01-usb-pd
+power,C105,10u 10V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,01-usb-pd
+power,C106,22u 35V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,01-usb-pd
+power,C107,22u 35V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,01-usb-pd
+power,C108,330p C0G 50V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-usb-pd
+power,C109,330p C0G 50V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-usb-pd
+power,U102,24LC512-I/SN (64 KB),1,1,24LC512-I/SN,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,candidate,candidate,False,False,https://www.microchip.com/en-us/product/24lc512,01-usb-pd
+power,C110,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-usb-pd
+power,R101,2k2 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-usb-pd
+power,R102,2k2 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-usb-pd
+power,R103,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-usb-pd
+power,R104,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-usb-pd
+power,R105,4k7 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-usb-pd
+power,R106,4k7 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-usb-pd
+power,R107,4k7 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-usb-pd
+power,J102,PD EEPROM programmer / no second controller during use,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,01-usb-pd
+power,J103,Spinal-cord host / charging supervision,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,01-usb-pd
+power,R108,10k 1% / isolate status from fault node,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-usb-pd
+power,U201,BQ25798RQMR,1,1,BQ25798RQMR,,candidate,FOOTPRINT_PENDING,False,False,https://www.ti.com/lit/ds/symlink/bq25798.pdf,02-charger
+power,Q201,Input NMOS / select rating,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,02-charger
+power,Q202,Reverse-blocking NMOS / select rating,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,02-charger
+power,Q203,Input NMOS / select rating,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,02-charger
+power,Q204,Reverse-blocking NMOS / select rating,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,02-charger
+power,C201,10u 35V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,C202,10u 35V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,C203,10u 35V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,C204,10u 35V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,C205,10u 25V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,C206,10u 25V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,C207,10u 25V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,C208,10u 25V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,C209,10u 25V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,C210,10u 25V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,C211,10u 25V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,C212,4u7 10V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,C213,100n 50V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,C214,100n 50V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,C215,100n 50V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,C216,100n 50V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,C217,47n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,C218,47n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,C219,1n 50V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,L201,1uH / Isat and DCR selection pending,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,02-charger
+power,R201,100 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,R202,10k5 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,R203,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,R204,5k23 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,R205,30k1 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,J201,Pack primary 103AT-2 NTC (must touch cells),1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,02-charger
+power,J202,Wireless receiver DC; select matched receiver/coil,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,02-charger
+power,J203,Fused/protected 3S pack / NOT bare cells,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,02-charger
+power,R206,2k2 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-charger
+power,D201,Charge status LED,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,02-charger
+power,U301,TPS54531DDAR,1,1,TPS54531DDAR,Package_SO:SOIC-8-1EP_3.9x4.9mm_P1.27mm_EP2.29x3mm,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/tps54531.pdf,03-housekeeping
+power,L301,"4u7 / >=5 A thermal, saturation selection pending",1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,03-housekeeping
+power,D301,CDBC540-G,1,1,CDBC540-G,Diode_SMD:D_SMC,candidate,candidate,False,False,https://www.comchiptech.com/admin/files/product/QW-BB012%20CDBC520-G~5100-G%20RevB522561.pdf,03-housekeeping
+power,R301,665k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-housekeeping
+power,R302,130k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-housekeeping
+power,R303,10k2 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-housekeeping
+power,R304,1k96 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-housekeeping
+power,R305,37k4 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-housekeeping
+power,C301,4u7 50V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,03-housekeeping
+power,C302,4u7 50V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,03-housekeeping
+power,C303,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-housekeeping
+power,C304,10n 50V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-housekeeping
+power,C305,2n2 50V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-housekeeping
+power,C306,22p C0G,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-housekeeping
+power,C307,100u 10V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,03-housekeeping
+power,C308,47u 16V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,03-housekeeping
+power,C309,47u 16V,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,03-housekeeping
+power,U302,TLV75533PDBVR,1,1,TLV75533PDBVR,Package_TO_SOT_SMD:SOT-23-5,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/tlv755p.pdf,03-housekeeping
+power,C310,1u 10V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-housekeeping
+power,C311,1u 10V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-housekeeping
+power,U303,SN74LVC1G00DBVR,1,1,SN74LVC1G00DBVR,Package_TO_SOT_SMD:SOT-23-5,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/sn74lvc1g00.pdf,03-housekeeping
+power,R306,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-housekeeping
+power,R307,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-housekeeping
+power,R308,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-housekeeping
+power,C312,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-housekeeping
+power,U401,LM5176PWPR,1,1,LM5176PWPR,,candidate,FOOTPRINT_PENDING,False,False,https://www.ti.com/lit/ds/symlink/lm5176.pdf,04-motor-controller
+power,R401,2k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,R402,10 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,R403,33k2 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,R404,93k1 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,R405,6k04 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,R406,262k 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,R407,20k 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,R408,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,R409,100 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,R410,100 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,R411,100 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,R412,100 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,R413,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,C401,100n 50V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,C402,4u7 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,C403,150p C0G,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,C404,33n 50V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,C405,1n2 C0G,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,C406,22n 50V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,C407,220p C0G,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,C408,47p C0G,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,C409,330n 50V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,C410,220n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,C411,220n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-motor-controller
+power,D401,Schottky bootstrap / exact selection pending,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,04-motor-controller
+power,D402,Schottky bootstrap / exact selection pending,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,04-motor-controller
+power,D403,Schottky bootstrap / exact selection pending,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,04-motor-controller
+power,J401,Regulator enable / independent motor-cut gate,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,04-motor-controller
+power,Q501,CSD19502Q5B,1,1,CSD19502Q5B,,candidate,FOOTPRINT_PENDING,False,False,https://www.ti.com/product/CSD19502Q5B,05-motor-bridge
+power,R501,0 / gate resistor tuning,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,05-motor-bridge
+power,Q502,CSD19502Q5B,1,1,CSD19502Q5B,,candidate,FOOTPRINT_PENDING,False,False,https://www.ti.com/product/CSD19502Q5B,05-motor-bridge
+power,R502,0 / gate resistor tuning,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,05-motor-bridge
+power,Q503,CSD19502Q5B,1,1,CSD19502Q5B,,candidate,FOOTPRINT_PENDING,False,False,https://www.ti.com/product/CSD19502Q5B,05-motor-bridge
+power,R503,0 / gate resistor tuning,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,05-motor-bridge
+power,Q504,CSD19502Q5B,1,1,CSD19502Q5B,,candidate,FOOTPRINT_PENDING,False,False,https://www.ti.com/product/CSD19502Q5B,05-motor-bridge
+power,R504,0 / gate resistor tuning,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,05-motor-bridge
+power,Q505,CSD17573Q5B,1,1,CSD17573Q5B,,candidate,FOOTPRINT_PENDING,False,False,https://www.ti.com/product/CSD17573Q5B,05-motor-bridge
+power,R505,0 / gate resistor tuning,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,05-motor-bridge
+power,Q506,CSD17573Q5B,1,1,CSD17573Q5B,,candidate,FOOTPRINT_PENDING,False,False,https://www.ti.com/product/CSD17573Q5B,05-motor-bridge
+power,R506,0 / gate resistor tuning,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,05-motor-bridge
+power,Q507,CSD17573Q5B,1,1,CSD17573Q5B,,candidate,FOOTPRINT_PENDING,False,False,https://www.ti.com/product/CSD17573Q5B,05-motor-bridge
+power,R507,0 / gate resistor tuning,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,05-motor-bridge
+power,Q508,CSD17573Q5B,1,1,CSD17573Q5B,,candidate,FOOTPRINT_PENDING,False,False,https://www.ti.com/product/CSD17573Q5B,05-motor-bridge
+power,R508,0 / gate resistor tuning,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,05-motor-bridge
+power,L501,2uH high-current; exact part from BOM review,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,05-motor-bridge
+power,R509,5m 1% / pulse and thermal rating pending,1,1,,Resistor_SMD:R_2512_6332Metric,MPN_PENDING,candidate,False,False,,05-motor-bridge
+power,R510,5m 1% / pulse and thermal rating pending,1,1,,Resistor_SMD:R_2512_6332Metric,MPN_PENDING,candidate,False,False,,05-motor-bridge
+power,R511,"5m 1% / output shunt, 20 A aggregate target",1,1,,Resistor_SMD:R_2512_6332Metric,MPN_PENDING,candidate,False,False,,05-motor-bridge
+power,R512,"5m 1% / output shunt, 20 A aggregate target",1,1,,Resistor_SMD:R_2512_6332Metric,MPN_PENDING,candidate,False,False,,05-motor-bridge
+power,C501,4u7 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,06-motor-capacitors
+power,C502,4u7 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,06-motor-capacitors
+power,C503,4u7 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,06-motor-capacitors
+power,C504,4u7 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,06-motor-capacitors
+power,C505,4u7 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,06-motor-capacitors
+power,C506,4u7 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,06-motor-capacitors
+power,C507,4u7 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,06-motor-capacitors
+power,C508,4u7 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,06-motor-capacitors
+power,C509,4u7 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,06-motor-capacitors
+power,C510,4u7 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,06-motor-capacitors
+power,C511,4u7 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,06-motor-capacitors
+power,C512,4u7 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,06-motor-capacitors
+power,C513,22u 25V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,06-motor-capacitors
+power,C514,22u 25V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,06-motor-capacitors
+power,C515,22u 25V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,06-motor-capacitors
+power,C516,22u 25V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,06-motor-capacitors
+power,C517,22u 25V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,06-motor-capacitors
+power,C518,22u 25V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,06-motor-capacitors
+power,C519,330u 25V polymer / exact ESR pending,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,06-motor-capacitors
+power,C520,330u 25V polymer / exact ESR pending,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,06-motor-capacitors
+power,C521,330u 25V polymer / exact ESR pending,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,06-motor-capacitors
+power,J601,External input damping test point,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,06-motor-capacitors
+power,U701,TPS552892RYQR,1,1,TPS552892RYQR,,candidate,FOOTPRINT_PENDING,False,False,https://www.ti.com/lit/ds/symlink/tps552892.pdf,07-jetson-feed
+power,L701,4u7 / >=10 A saturation target,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,07-jetson-feed
+power,R701,16m5 1% 1W / current limit,1,1,,Resistor_SMD:R_2512_6332Metric,MPN_PENDING,candidate,False,False,,07-jetson-feed
+power,R702,100k 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,07-jetson-feed
+power,R703,11k1 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,07-jetson-feed
+power,R704,49k9 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,07-jetson-feed
+power,R705,4k87 1% / initial,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,07-jetson-feed
+power,R706,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,07-jetson-feed
+power,R707,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,07-jetson-feed
+power,R708,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,07-jetson-feed
+power,C701,22u 25V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,07-jetson-feed
+power,C702,22u 25V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,07-jetson-feed
+power,C703,47u 25V X7R / verify effective capacitance,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,07-jetson-feed
+power,C704,47u 25V X7R / verify effective capacitance,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,07-jetson-feed
+power,C705,47u 25V X7R / verify effective capacitance,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,07-jetson-feed
+power,C706,47u 25V X7R / verify effective capacitance,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,07-jetson-feed
+power,C707,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,07-jetson-feed
+power,C708,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,07-jetson-feed
+power,C709,4u7 10V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,07-jetson-feed
+power,C710,39n 50V / initial,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,07-jetson-feed
+power,C711,220p C0G / initial,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,07-jetson-feed
+power,C712,100n 50V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,07-jetson-feed
+power,J701,Jetson carrier power / connector selection pending,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,07-jetson-feed
+power,J702,Spinal-cord power sequencing,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,07-jetson-feed
+power,U801,LM61495RPHR,1,1,LM61495RPHR,,candidate,FOOTPRINT_PENDING,False,False,https://www.ti.com/lit/ds/symlink/lm61495.pdf,08-hand-left
+power,L801,4u7 / saturation >= switch short-circuit limit,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,08-hand-left
+power,R801,0 / gate slew tuning,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,08-hand-left
+power,R802,100k 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,08-hand-left
+power,R803,21k3 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,08-hand-left
+power,R804,4k99 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,08-hand-left
+power,R805,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,08-hand-left
+power,R806,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,08-hand-left
+power,C801,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,08-hand-left
+power,C802,1u 10V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,08-hand-left
+power,C803,15p C0G / loop check required,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,08-hand-left
+power,C804,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,08-hand-left
+power,C805,470n 50V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,08-hand-left
+power,C806,470n 50V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,08-hand-left
+power,C807,10u 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,08-hand-left
+power,C808,10u 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,08-hand-left
+power,C809,10u 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,08-hand-left
+power,C810,10u 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,08-hand-left
+power,C811,47u 16V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,08-hand-left
+power,C812,47u 16V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,08-hand-left
+power,C813,47u 16V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,08-hand-left
+power,C814,47u 16V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,08-hand-left
+power,J801,Power output / branch and cable protection pending,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,08-hand-left
+power,J802,Hardware-gated enable and power-good,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,08-hand-left
+power,U901,LM61495RPHR,1,1,LM61495RPHR,,candidate,FOOTPRINT_PENDING,False,False,https://www.ti.com/lit/ds/symlink/lm61495.pdf,09-hand-right
+power,L901,4u7 / saturation >= switch short-circuit limit,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,09-hand-right
+power,R901,0 / gate slew tuning,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,09-hand-right
+power,R902,100k 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,09-hand-right
+power,R903,21k3 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,09-hand-right
+power,R904,4k99 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,09-hand-right
+power,R905,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,09-hand-right
+power,R906,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,09-hand-right
+power,C901,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,09-hand-right
+power,C902,1u 10V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,09-hand-right
+power,C903,15p C0G / loop check required,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,09-hand-right
+power,C904,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,09-hand-right
+power,C905,470n 50V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,09-hand-right
+power,C906,470n 50V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,09-hand-right
+power,C907,10u 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,09-hand-right
+power,C908,10u 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,09-hand-right
+power,C909,10u 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,09-hand-right
+power,C910,10u 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,09-hand-right
+power,C911,47u 16V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,09-hand-right
+power,C912,47u 16V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,09-hand-right
+power,C913,47u 16V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,09-hand-right
+power,C914,47u 16V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,09-hand-right
+power,J901,Power output / branch and cable protection pending,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,09-hand-right
+power,J902,Hardware-gated enable and power-good,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,09-hand-right
+power,U1401,LM61495RPHR,1,1,LM61495RPHR,,candidate,FOOTPRINT_PENDING,False,False,https://www.ti.com/lit/ds/symlink/lm61495.pdf,14-hand-peripheral
+power,L1401,4u7 / saturation >= switch short-circuit limit,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,14-hand-peripheral
+power,R1401,0 / gate slew tuning,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,14-hand-peripheral
+power,R1402,100k 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,14-hand-peripheral
+power,R1403,24k9 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,14-hand-peripheral
+power,R1404,4k99 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,14-hand-peripheral
+power,R1405,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,14-hand-peripheral
+power,R1406,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,14-hand-peripheral
+power,C1401,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,14-hand-peripheral
+power,C1402,1u 10V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,14-hand-peripheral
+power,C1403,15p C0G / loop check required,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,14-hand-peripheral
+power,C1404,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,14-hand-peripheral
+power,C1405,470n 50V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,14-hand-peripheral
+power,C1406,470n 50V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,14-hand-peripheral
+power,C1407,10u 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,14-hand-peripheral
+power,C1408,10u 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,14-hand-peripheral
+power,C1409,10u 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,14-hand-peripheral
+power,C1410,10u 50V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,14-hand-peripheral
+power,C1411,47u 16V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,14-hand-peripheral
+power,C1412,47u 16V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,14-hand-peripheral
+power,C1413,47u 16V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,14-hand-peripheral
+power,C1414,47u 16V X7R,1,1,,Capacitor_SMD:C_1206_3216Metric,MPN_PENDING,candidate,False,False,,14-hand-peripheral
+power,J1401,Power output / branch and cable protection pending,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,14-hand-peripheral
+power,J1402,Hardware-gated enable and power-good,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,14-hand-peripheral
+power,U1001,SN74LVC74APWR,1,1,SN74LVC74APWR,Package_SO:TSSOP-14_4.4x5mm_P0.65mm,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/sn74lvc74a.pdf,10-motor-cut
+power,U1002,SN74LVC08APWR,1,1,SN74LVC08APWR,Package_SO:TSSOP-14_4.4x5mm_P0.65mm,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/sn74lvc08a.pdf,10-motor-cut
+power,U1003,TLV803EA30DBZR / verify orderability,1,1,TLV803EA30DBZR,Package_TO_SOT_SMD:SOT-23,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/tlv803e.pdf,10-motor-cut
+power,R1001,3k3 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,10-motor-cut
+power,R1002,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,10-motor-cut
+power,R1003,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,10-motor-cut
+power,R1004,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,10-motor-cut
+power,R1005,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,10-motor-cut
+power,R1006,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,10-motor-cut
+power,R1007,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,10-motor-cut
+power,C1001,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,10-motor-cut
+power,C1002,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,10-motor-cut
+power,C1003,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,10-motor-cut
+power,J1001,Normally-closed cut loop / opens to clear,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,10-motor-cut
+power,J1002,Spinal-cord arm and rail requests,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,10-motor-cut
+power,U1101,INA228AIDGSR,1,1,INA228AIDGSR,Package_SO:MSOP-10_3x3mm_P0.5mm,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/ina228.pdf,11-pack-meter
+power,R1101,"1m 0.5% / >=4 W target, exact part pending",1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,11-pack-meter
+power,R1102,10 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,11-pack-meter
+power,R1103,10 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,11-pack-meter
+power,R1104,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,11-pack-meter
+power,C1101,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,11-pack-meter
+power,C1102,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,11-pack-meter
+power,J1101,Controller metering interrupt,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,11-pack-meter
+power,U1201,TLV1704PWR,1,1,TLV1704PWR,Package_SO:TSSOP-14_4.4x5mm_P0.65mm,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/tlv1704.pdf,12-pack-temperature
+power,U1202,TLV1704PWR,1,1,TLV1704PWR,Package_SO:TSSOP-14_4.4x5mm_P0.65mm,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/tlv1704.pdf,12-pack-temperature
+power,R1201,19k1 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,12-pack-temperature
+power,R1202,10k 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,12-pack-temperature
+power,R1203,10k 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,12-pack-temperature
+power,R1204,26k1 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,12-pack-temperature
+power,R1205,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,12-pack-temperature
+power,R1206,10k 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,12-pack-temperature
+power,C1201,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,12-pack-temperature
+power,J1201,103AT-2 segment 1,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,12-pack-temperature
+power,R1207,10k 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,12-pack-temperature
+power,C1202,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,12-pack-temperature
+power,J1202,103AT-2 segment 2,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,12-pack-temperature
+power,R1208,10k 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,12-pack-temperature
+power,C1203,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,12-pack-temperature
+power,J1203,103AT-2 segment 3,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,12-pack-temperature
+power,C1204,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,12-pack-temperature
+power,C1205,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,12-pack-temperature
+power,Q1301,Si7149DP-T1-GE3,1,1,SI7149DP-T1-GE3,,candidate,FOOTPRINT_PENDING,False,False,https://www.vishay.com/docs/68934/si7149dp.pdf,13-motor-branches
+power,Q1302,Si7149DP-T1-GE3,1,1,SI7149DP-T1-GE3,,candidate,FOOTPRINT_PENDING,False,False,https://www.vishay.com/docs/68934/si7149dp.pdf,13-motor-branches
+power,Q1303,MMBT3904-7-F,1,1,MMBT3904-7-F,Package_TO_SOT_SMD:SOT-23,candidate,candidate,False,False,https://www.diodes.com/assets/Datasheets/MMBT3904.pdf,13-motor-branches
+power,R1301,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,13-motor-branches
+power,R1302,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,13-motor-branches
+power,R1303,4k7 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,13-motor-branches
+power,R1304,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,13-motor-branches
+power,C1301,220n 50V / inrush tuning,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,13-motor-branches
+power,F1301,Branch fuse / rating and holder pending,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,13-motor-branches
+power,J1301,LEG power to protected harness,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,13-motor-branches
+power,Q1351,Si7149DP-T1-GE3,1,1,SI7149DP-T1-GE3,,candidate,FOOTPRINT_PENDING,False,False,https://www.vishay.com/docs/68934/si7149dp.pdf,13-motor-branches
+power,Q1352,Si7149DP-T1-GE3,1,1,SI7149DP-T1-GE3,,candidate,FOOTPRINT_PENDING,False,False,https://www.vishay.com/docs/68934/si7149dp.pdf,13-motor-branches
+power,Q1353,MMBT3904-7-F,1,1,MMBT3904-7-F,Package_TO_SOT_SMD:SOT-23,candidate,candidate,False,False,https://www.diodes.com/assets/Datasheets/MMBT3904.pdf,13-motor-branches
+power,R1351,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,13-motor-branches
+power,R1352,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,13-motor-branches
+power,R1353,4k7 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,13-motor-branches
+power,R1354,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,13-motor-branches
+power,C1351,220n 50V / inrush tuning,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,13-motor-branches
+power,F1351,Branch fuse / rating and holder pending,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,13-motor-branches
+power,J1351,UPPER power to protected harness,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,13-motor-branches
+power,U1301,SN74LVC1G08DBVR,1,1,SN74LVC1G08DBVR,Package_TO_SOT_SMD:SOT-23-5,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/sn74lvc1g08.pdf,13-motor-branches
+power,R1391,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,13-motor-branches
+power,C1391,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,13-motor-branches
+spinal,U101,Teensy 4.1 / VUSB-VIN link cut,1,1,TEENSY41,LGV2_Footprints:Teensy41_Socket_GPIO_ID,candidate,candidate,False,False,https://www.pjrc.com/store/teensy41.html,01-controller
+spinal,J101,To power J103 / charging and always-on power,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,01-controller
+spinal,J102,To power J1002 / motor control and watchdog clear,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,01-controller
+spinal,J103,Power-board logic enables / connector interface pending,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,01-controller
+spinal,J104,Front-door button and LED / no motor current here,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,01-controller
+spinal,R101,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-controller
+spinal,R102,1k 1% / initial LED current,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-controller
+spinal,Q101,MMBT3904-7-F,1,1,MMBT3904-7-F,Package_TO_SOT_SMD:SOT-23,candidate,candidate,False,False,https://www.diodes.com/assets/Datasheets/MMBT3904.pdf,01-controller
+spinal,R103,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-controller
+spinal,R104,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-controller
+spinal,C101,10u 10V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-controller
+spinal,C102,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-controller
+spinal,U201,SN74AHCT1G126DBVR,1,1,SN74AHCT1G126DBVR,Package_TO_SOT_SMD:SOT-23-5,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/sn74ahct1g126.pdf,02-servo-buses-1
+spinal,R201,47 1% / source damping,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-servo-buses-1
+spinal,U202,SN74LVC1G125DBVR,1,1,SN74LVC1G125DBVR,Package_TO_SOT_SMD:SOT-23-5,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/sn74lvc1g125.pdf,02-servo-buses-1
+spinal,J201,LEG data to powered servo harness,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,02-servo-buses-1
+spinal,R202,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-servo-buses-1
+spinal,R203,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-servo-buses-1
+spinal,C201,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-servo-buses-1
+spinal,C202,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-servo-buses-1
+spinal,U241,SN74AHCT1G126DBVR,1,1,SN74AHCT1G126DBVR,Package_TO_SOT_SMD:SOT-23-5,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/sn74ahct1g126.pdf,02-servo-buses-1
+spinal,R241,47 1% / source damping,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-servo-buses-1
+spinal,U242,SN74LVC1G125DBVR,1,1,SN74LVC1G125DBVR,Package_TO_SOT_SMD:SOT-23-5,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/sn74lvc1g125.pdf,02-servo-buses-1
+spinal,J241,UPPER data to powered servo harness,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,02-servo-buses-1
+spinal,R242,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-servo-buses-1
+spinal,R243,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-servo-buses-1
+spinal,C241,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-servo-buses-1
+spinal,C242,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-servo-buses-1
+spinal,U301,SN74AHCT1G126DBVR,1,1,SN74AHCT1G126DBVR,Package_TO_SOT_SMD:SOT-23-5,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/sn74ahct1g126.pdf,03-servo-buses-2
+spinal,R301,47 1% / source damping,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-servo-buses-2
+spinal,U302,SN74LVC1G125DBVR,1,1,SN74LVC1G125DBVR,Package_TO_SOT_SMD:SOT-23-5,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/sn74lvc1g125.pdf,03-servo-buses-2
+spinal,J301,LEFT data to powered servo harness,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,03-servo-buses-2
+spinal,R302,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-servo-buses-2
+spinal,R303,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-servo-buses-2
+spinal,C301,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-servo-buses-2
+spinal,C302,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-servo-buses-2
+spinal,U341,SN74AHCT1G126DBVR,1,1,SN74AHCT1G126DBVR,Package_TO_SOT_SMD:SOT-23-5,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/sn74ahct1g126.pdf,03-servo-buses-2
+spinal,R341,47 1% / source damping,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-servo-buses-2
+spinal,U342,SN74LVC1G125DBVR,1,1,SN74LVC1G125DBVR,Package_TO_SOT_SMD:SOT-23-5,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/sn74lvc1g125.pdf,03-servo-buses-2
+spinal,J341,RIGHT data to powered servo harness,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,03-servo-buses-2
+spinal,R342,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-servo-buses-2
+spinal,R343,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-servo-buses-2
+spinal,C341,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-servo-buses-2
+spinal,C342,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-servo-buses-2
+spinal,U401,TCA9548APWR,1,1,TCA9548APWR,Package_SO:TSSOP-24_4.4x7.8mm_P0.65mm,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/tca9548a.pdf,04-sensor-buses
+spinal,R401,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-sensor-buses
+spinal,F401,MF-MSMF020-2 / verify trip coordination,1,1,MF-MSMF020-2,Fuse:Fuse_1812_4532Metric,candidate,candidate,False,False,,04-sensor-buses
+spinal,J401,LEFT foot / mates foot J101 pin for pin,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,04-sensor-buses
+spinal,F402,MF-MSMF020-2 / verify trip coordination,1,1,MF-MSMF020-2,Fuse:Fuse_1812_4532Metric,candidate,candidate,False,False,,04-sensor-buses
+spinal,J402,RIGHT foot / mates foot J101 pin for pin,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,04-sensor-buses
+spinal,J403,BME688 module,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,04-sensor-buses
+spinal,J404,Edge sensor A,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,04-sensor-buses
+spinal,J405,Edge sensor B,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,04-sensor-buses
+spinal,C401,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-sensor-buses
+spinal,R402,4k7 1% / fitting option,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,10-sensor-pullups
+spinal,R403,4k7 1% / fitting option,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,10-sensor-pullups
+spinal,R404,4k7 1% / fitting option,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,10-sensor-pullups
+spinal,R405,4k7 1% / fitting option,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,10-sensor-pullups
+spinal,R406,4k7 1% / fitting option,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,10-sensor-pullups
+spinal,R407,4k7 1% / fitting option,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,10-sensor-pullups
+spinal,R408,4k7 1% / fitting option,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,10-sensor-pullups
+spinal,R409,4k7 1% / fitting option,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,10-sensor-pullups
+spinal,R410,4k7 1% / fitting option,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,10-sensor-pullups
+spinal,R411,4k7 1% / fitting option,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,10-sensor-pullups
+spinal,U501,LSM6DSOXTR,1,1,LSM6DSOXTR,,candidate,FOOTPRINT_PENDING,False,False,https://www.st.com/resource/en/datasheet/lsm6dsox.pdf,05-imu-watchdog
+spinal,C501,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,05-imu-watchdog
+spinal,C502,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,05-imu-watchdog
+spinal,R501,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,05-imu-watchdog
+spinal,U502,TPS3431SDRBR,1,1,TPS3431SDRBR,,candidate,FOOTPRINT_PENDING,False,False,https://www.ti.com/lit/ds/symlink/tps3431.pdf,05-imu-watchdog
+spinal,R502,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,05-imu-watchdog
+spinal,R503,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,05-imu-watchdog
+spinal,R504,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,05-imu-watchdog
+spinal,C503,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,05-imu-watchdog
+spinal,J501,Watchdog test points / fault goes to power J1002.9,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,05-imu-watchdog
+spinal,U601,MPR121QR2 / 0x5a,1,1,MPR121QR2,Package_DFN_QFN:UQFN-20_3x3mm_P0.4mm,candidate,candidate,False,False,https://www.nxp.com/docs/en/data-sheet/MPR121.pdf,06-touch-1
+spinal,R601,75k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,06-touch-1
+spinal,C601,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,06-touch-1
+spinal,C602,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,06-touch-1
+spinal,J601,12 shell electrodes plus ground / no shield over sensing pads,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,06-touch-1
+spinal,R602,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,06-touch-1
+spinal,U701,MPR121QR2 / 0x5b,1,1,MPR121QR2,Package_DFN_QFN:UQFN-20_3x3mm_P0.4mm,candidate,candidate,False,False,https://www.nxp.com/docs/en/data-sheet/MPR121.pdf,07-touch-2
+spinal,R701,75k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,07-touch-2
+spinal,C701,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,07-touch-2
+spinal,C702,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,07-touch-2
+spinal,J701,12 shell electrodes plus ground / no shield over sensing pads,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,07-touch-2
+spinal,U801,MPR121QR2 / 0x5c,1,1,MPR121QR2,Package_DFN_QFN:UQFN-20_3x3mm_P0.4mm,candidate,candidate,False,False,https://www.nxp.com/docs/en/data-sheet/MPR121.pdf,08-touch-3
+spinal,R801,75k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,08-touch-3
+spinal,C801,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,08-touch-3
+spinal,C802,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,08-touch-3
+spinal,J801,12 shell electrodes plus ground / no shield over sensing pads,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,08-touch-3
+spinal,U901,MPR121QR2 / 0x5d,1,1,MPR121QR2,Package_DFN_QFN:UQFN-20_3x3mm_P0.4mm,candidate,candidate,False,False,https://www.nxp.com/docs/en/data-sheet/MPR121.pdf,09-touch-4
+spinal,R901,75k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,09-touch-4
+spinal,C901,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,09-touch-4
+spinal,C902,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,09-touch-4
+spinal,J901,12 shell electrodes plus ground / no shield over sensing pads,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,09-touch-4
+spinal,U1101,SN74LVC08APWR,1,1,SN74LVC08APWR,Package_SO:TSSOP-14_4.4x5mm_P0.65mm,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/sn74lvc08a.pdf,11-transmit-cut
+spinal,R1101,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,11-transmit-cut
+spinal,R1102,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,11-transmit-cut
+spinal,R1103,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,11-transmit-cut
+spinal,R1104,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,11-transmit-cut
+spinal,R1105,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,11-transmit-cut
+spinal,C1101,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,11-transmit-cut
+foot,J101,Spinal to foot / 6 conductors,1,2,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,01-foot-interface
+foot,U101,TLV75533PDBVR,1,2,TLV75533PDBVR,Package_TO_SOT_SMD:SOT-23-5,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/tlv755p.pdf,01-foot-interface
+foot,U102,TLV75533PDBVR,1,2,TLV75533PDBVR,Package_TO_SOT_SMD:SOT-23-5,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/tlv755p.pdf,01-foot-interface
+foot,C101,4u7 10V X7R / verify effective C,1,2,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-foot-interface
+foot,C102,4u7 10V X7R / verify effective C,1,2,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-foot-interface
+foot,C103,4u7 10V X7R / verify effective C,1,2,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-foot-interface
+foot,C104,4u7 10V X7R / verify effective C,1,2,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-foot-interface
+foot,U103,VL53L4CDV0DH/1,1,2,VL53L4CDV0DH/1,,candidate,FOOTPRINT_PENDING,False,False,https://www.st.com/resource/en/datasheet/vl53l4cd.pdf,01-foot-interface
+foot,C105,100n 16V,1,2,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-foot-interface
+foot,C106,4u7 10V,1,2,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-foot-interface
+foot,R101,10k 1%,1,2,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-foot-interface
+foot,R102,10k 1%,1,2,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-foot-interface
+foot,U201,ADS122C04IPWR / 0x40,1,2,ADS122C04IPWR,Package_SO:TSSOP-16_4.4x5mm_P0.65mm,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/ads122c04.pdf,02-bridges-1
+foot,J201,Load cell 1 / full bridge,1,2,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,02-bridges-1
+foot,R201,1k 0.1%,1,2,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-bridges-1
+foot,R202,1k 0.1%,1,2,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-bridges-1
+foot,C201,10n C0G 16V,1,2,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-bridges-1
+foot,J202,Load cell 2 / full bridge,1,2,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,02-bridges-1
+foot,R203,1k 0.1%,1,2,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-bridges-1
+foot,R204,1k 0.1%,1,2,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-bridges-1
+foot,C202,10n C0G 16V,1,2,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-bridges-1
+foot,C203,100n 16V,1,2,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-bridges-1
+foot,C204,100n 16V,1,2,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-bridges-1
+foot,C205,100n 16V,1,2,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-bridges-1
+foot,U301,ADS122C04IPWR / 0x41,1,2,ADS122C04IPWR,Package_SO:TSSOP-16_4.4x5mm_P0.65mm,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/ads122c04.pdf,03-bridges-2
+foot,J301,Load cell 3 / full bridge,1,2,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,03-bridges-2
+foot,R301,1k 0.1%,1,2,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-bridges-2
+foot,R302,1k 0.1%,1,2,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-bridges-2
+foot,C301,10n C0G 16V,1,2,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-bridges-2
+foot,J302,Load cell 4 / full bridge,1,2,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,03-bridges-2
+foot,R303,1k 0.1%,1,2,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-bridges-2
+foot,R304,1k 0.1%,1,2,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-bridges-2
+foot,C302,10n C0G 16V,1,2,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-bridges-2
+foot,C303,100n 16V,1,2,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-bridges-2
+foot,C304,100n 16V,1,2,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-bridges-2
+foot,C305,100n 16V,1,2,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-bridges-2
+head,U101,XVF3800-QF60B-C,1,1,XVF3800-QF60B-C,LGV2_Footprints:XMOS_QF60B_7x7mm_P0.4mm_5Paddle,candidate,candidate,False,False,https://www.xmos.com/documentation/XM-014888-PC/pdf/xvf3800_datasheet_v3.2.1.pdf,01-voice-processor
+head,U102,W25Q32JVSSIQ,1,1,W25Q32JVSSIQ,Package_SO:SOIC-8_5.3x5.3mm_P1.27mm,candidate,candidate,False,False,https://www.winbond.com/hq/product/code-storage-flash-memory/serial-nor-flash/?partNo=W25Q32JV,01-voice-processor
+head,Y101,SiT8008AI-71-18E-24.000000,1,1,SiT8008AI-71-18E-24.000000,,candidate,FOOTPRINT_PENDING,False,False,https://www.sitime.com/parts/sit8008ai-71-18e-24000000,01-voice-processor
+head,R101,33 1% / source tuning,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-voice-processor
+head,R102,4k7 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-voice-processor
+head,R103,4k7 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-voice-processor
+head,R104,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-voice-processor
+head,R105,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-voice-processor
+head,C101,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-voice-processor
+head,C102,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-voice-processor
+head,J101,Internal USB 2 device / ESD network pending,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,01-voice-processor
+head,J102,JTAG breakout / NOT an XSYS2 pin-compatible header,1,1,,,MPN_PENDING,FOOTPRINT_PENDING,False,False,,01-voice-processor
+head,R106,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-voice-processor
+head,R107,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-voice-processor
+head,R108,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,01-voice-processor
+head,U201,TLV75533PDBVR,1,1,TLV75533PDBVR,Package_TO_SOT_SMD:SOT-23-5,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/tlv755p.pdf,02-supplies
+head,U202,TLV75518PDBVR,1,1,TLV75518PDBVR,Package_TO_SOT_SMD:SOT-23-5,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/tlv755p.pdf,02-supplies
+head,C201,10u 10V X7R,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-supplies
+head,C202,10u 10V X7R,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-supplies
+head,C203,10u 10V X7R,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-supplies
+head,C204,10u 10V X7R,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-supplies
+head,U203,TPS62825ADMQR,1,1,TPS62825ADMQR,,candidate,FOOTPRINT_PENDING,False,False,https://www.ti.com/lit/ds/symlink/tps62825a.pdf,02-supplies
+head,L201,0u47 / XFL4015-471MEB,1,1,XFL4015-471MEB,,candidate,FOOTPRINT_PENDING,False,False,,02-supplies
+head,R201,49k9 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-supplies
+head,R202,100k 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-supplies
+head,R203,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-supplies
+head,C205,4u7 10V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-supplies
+head,C206,10u 6V3 X7R,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-supplies
+head,C207,10u 6V3 X7R,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-supplies
+head,C208,120p C0G / loop check,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,02-supplies
+head,U301,TPS3808G01DBVR,1,1,TPS3808G01DBVR,Package_TO_SOT_SMD:SOT-23-6,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/tps3808.pdf,03-power-supervision
+head,R301,100k 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-power-supervision
+head,R302,31k6 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-power-supervision
+head,R303,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-power-supervision
+head,C301,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-power-supervision
+head,U302,TPS3808G01DBVR,1,1,TPS3808G01DBVR,Package_TO_SOT_SMD:SOT-23-6,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/tps3808.pdf,03-power-supervision
+head,R304,100k 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-power-supervision
+head,R305,15k4 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-power-supervision
+head,R306,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-power-supervision
+head,C302,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-power-supervision
+head,U303,TPS3808G01DBVR,1,1,TPS3808G01DBVR,Package_TO_SOT_SMD:SOT-23-6,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/tps3808.pdf,03-power-supervision
+head,R307,11k3 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-power-supervision
+head,R308,10k 0.1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-power-supervision
+head,R309,10k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-power-supervision
+head,C303,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-power-supervision
+head,U304,SN74LVC08APWR / powered at 1.8 V,1,1,SN74LVC08APWR,Package_SO:TSSOP-14_4.4x5mm_P0.65mm,candidate,candidate,False,False,https://www.ti.com/lit/ds/symlink/sn74lvc08a.pdf,03-power-supervision
+head,C304,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-power-supervision
+head,R310,100k 1%,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,03-power-supervision
+head,C401,100n 10V 0402,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-decoupling
+head,C402,100n 10V 0402,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-decoupling
+head,C403,100n 10V 0402,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-decoupling
+head,C404,100n 10V 0402,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-decoupling
+head,C405,100n 10V 0402,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-decoupling
+head,C406,100n 10V 0402,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-decoupling
+head,C407,100n 10V 0402,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-decoupling
+head,C408,100n 10V 0402,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-decoupling
+head,C409,100n 10V 0402,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-decoupling
+head,C410,100n 10V 0402,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-decoupling
+head,C411,100n 10V 0402,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-decoupling
+head,C412,100n 10V 0402,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-decoupling
+head,C413,100n 10V 0402,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-decoupling
+head,C414,100n 10V 0402,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-decoupling
+head,C415,100n 10V 0402,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-decoupling
+head,FB401,BKH1005LM601-T / 600R @100MHz,1,1,BKH1005LM601-T,,candidate,FOOTPRINT_PENDING,False,False,,04-decoupling
+head,C416,1u 6V3,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,04-decoupling
+head,R501,33 1% / scope tuning,1,1,,Resistor_SMD:R_0603_1608Metric,MPN_PENDING,candidate,False,False,,05-microphones
+head,MK501,IM69D130V01XTSA1 / FRONT,1,1,IM69D130V01XTSA1,,candidate,FOOTPRINT_PENDING,False,False,https://www.infineon.com/assets/row/public/documents/24/49/infineon-im69d130-datasheet-en.pdf,05-microphones
+head,C501,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,05-microphones
+head,MK502,IM69D130V01XTSA1 / BACK,1,1,IM69D130V01XTSA1,,candidate,FOOTPRINT_PENDING,False,False,https://www.infineon.com/assets/row/public/documents/24/49/infineon-im69d130-datasheet-en.pdf,05-microphones
+head,C502,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,05-microphones
+head,MK503,IM69D130V01XTSA1 / LEFT,1,1,IM69D130V01XTSA1,,candidate,FOOTPRINT_PENDING,False,False,https://www.infineon.com/assets/row/public/documents/24/49/infineon-im69d130-datasheet-en.pdf,05-microphones
+head,C503,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,05-microphones
+head,MK504,IM69D130V01XTSA1 / RIGHT,1,1,IM69D130V01XTSA1,,candidate,FOOTPRINT_PENDING,False,False,https://www.infineon.com/assets/row/public/documents/24/49/infineon-im69d130-datasheet-en.pdf,05-microphones
+head,C504,100n 16V,1,1,,Capacitor_SMD:C_0603_1608Metric,MPN_PENDING,candidate,False,False,,05-microphones

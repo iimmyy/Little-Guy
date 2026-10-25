@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-21",
+  "scope": "Provisional one-pose packaging model; six torso/limb reference intrusions remain unresolved",
+  "checks": [
+    "Eleven servo roles counted",
+    "Generated component list equals fresh in-memory assembly",
+    "Overlap mathematics checked for touching and overlapping cubes",
+    "Independent reviewer confirmed kit envelope, count and platform clearance",
+    "Review findings incorporated: torso intrusions recorded and upright future kit containment checked",
+    "General component check expanded to structural corridors",
+    "Preview images visually inspected",
+    "Local document links resolve",
+    "Servo reference envelope updated from inspected STEP; 11 servos and six torso intrusions retained",
+    "Updated front/side preview visually inspected; generated list and reference containment checked"
+  ],
+  "openscad_compiled": false,
+  "physical_fit_verified": false,
+  "motion_clearance_verified": false,
+  "manufacturing_ready": false,
+  "files_sha256": {
+    "parameters.json": "d0849061e2853b55fd61c2f12699275437439591673b42e8860a9a90f09ec3b6",
+    "build_layout.py": "9788486fa2b655fe5e3689e7b00dbd89e5f3ea5e6f455967c9482faa60db0606",
+    "components.json": "eb3f614ec7735a3c9cad982785c4df97ca5e962edbb49969a90b201540bbd134",
+    "upper-body-layout.scad": "5717e14988e4b63a6ec4a8d424c16db54db36fac26eaaf24d8c65383433f14a0",
+    "layout-check.json": "e7d216782aa21d588b50d4603254c47f7e4aa1cd607031b4215f4de2bd927cd9",
+    "layout-review.png": "3d8c095a28bdb84a1c2ca4e1d720075571ba76c8c401d49077c36730937fe82e",
+    "layout-review.svg": "4f0895b50bbae8039cb5724e8a9af5d1afee45158d89c6e3052fe6e06361db8f",
+    "layout-3d.png": "4410b38c27ee53e121360049d8af29179e456dfc381eab48ab53b9fb2d672449",
+    "README.md": "b5feacafb2152397940eda01c13e4972f08a98b44a3044f79f69852727cb27cc"
+  }
+}

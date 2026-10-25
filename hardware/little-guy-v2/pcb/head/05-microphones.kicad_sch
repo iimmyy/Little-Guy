@@ -1,0 +1,1714 @@
+(kicad_sch
+  (version 20260306)
+  (generator eeschema)
+  (generator_version "10.0")
+  (uuid "02e8b362-1c24-5eed-93b1-5d17ce5ffbdd")
+  (paper "A3")
+  (title_block
+    (title "Four PDM microphones / head-A geometry targets")
+    (date "2026-10-25")
+    (rev "A0.2-WIP")
+    (comment 1 "DESIGN IN PROGRESS - NOT FOR FABRICATION")
+  )
+  (lib_symbols
+    (symbol "LGV2:R"
+      (pin_names hide
+        (offset 0)
+      )
+      (pin_numbers hide)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "R"
+        (at 3.81 1.27 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Value" "R"
+        (at 3.81 -1.27 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (symbol "R_0_1"
+        (rectangle
+          (start -1.016 2.54)
+          (end 1.016 -2.54)
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+      )
+      (symbol "R_1_1"
+        (pin passive line
+          (at 0 5.08 270)
+          (length 2.54)
+          (name "~"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 0 -5.08 90)
+          (length 2.54)
+          (name "~"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+        )
+      )
+    )
+    (symbol "LGV2:IM69D130"
+      (pin_names
+        (offset 0.762)
+      )
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "U"
+        (at 0 10.16 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Value" "IM69D130"
+        (at 0 7.62 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (symbol "IM69D130_0_1"
+        (rectangle
+          (start -10.16 5.08)
+          (end 10.16 -5.08)
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type background)
+          )
+        )
+      )
+      (symbol "IM69D130_1_1"
+        (pin output line
+          (at -15.24 2.54 0)
+          (length 5.08)
+          (name "DATA"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin power_in line
+          (at -15.24 0.0 0)
+          (length 5.08)
+          (name "VDD"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin input line
+          (at -15.24 -2.54 0)
+          (length 5.08)
+          (name "CLOCK"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "3"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin input line
+          (at 15.24 1.27 180)
+          (length 5.08)
+          (name "SELECT"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "4"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin power_in line
+          (at 15.24 -1.27 180)
+          (length 5.08)
+          (name "GND"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "5"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+      )
+    )
+    (symbol "LGV2:C"
+      (pin_names hide
+        (offset 0)
+      )
+      (pin_numbers hide)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "C"
+        (at 3.81 1.27 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Value" "C"
+        (at 3.81 -1.27 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (symbol "C_0_1"
+        (polyline
+          (pts
+            (xy -2.032 0.762)
+            (xy 2.032 0.762)
+          )
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy -2.032 -0.762)
+            (xy 2.032 -0.762)
+          )
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+      )
+      (symbol "C_1_1"
+        (pin passive line
+          (at 0 5.08 270)
+          (length 4.318)
+          (name "~"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 0 -5.08 90)
+          (length 4.318)
+          (name "~"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+  (text "FOUR INDEPENDENT PDM MICROPHONES / IM69D130 / each data line goes to one XVF3800 input"
+    (at 15 15 0)
+    (effects
+      (font
+        (size 1.8 1.8)
+      )
+      (justify left)
+    )
+    (uuid "a35914e9-e6c7-5e92-83d7-7450bf897201")
+  )
+  (text "Shared 3.072 MHz clock; all SELECT pins grounded. Custom firmware must use the channel order below.\nHead-A CAD targets: 100.000 mm left/right, 63.164 mm front/back along an 11.016 deg tilted plane.\nSee microphone-geometry.json and mic_geometries.fragment.yaml. Outline, package offsets and gaskets remain open."
+    (at 15 24 0)
+    (effects
+      (font
+        (size 1.2 1.2)
+      )
+      (justify left)
+    )
+    (uuid "536aa761-e155-558e-9a9a-5b1a145c17ef")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 64.77 64.77 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "8675a225-9576-58fe-ac72-5217fd1d693f")
+    (property "Reference" "R501"
+      (at 71.11999999999999 63.49999999999999 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "33 1% / scope tuning"
+      (at 71.11999999999999 66.03999999999999 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 64.77 64.77 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 64.77 64.77 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 64.77 64.77 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 64.77 64.77 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-head"
+        (path "/925ddf46-9071-5dd9-a853-2bb938d1cbb4/02e8b362-1c24-5eed-93b1-5d17ce5ffbdd"
+          (reference "R501")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 64.77 59.69)
+      (xy 64.77 55.88)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "54b4ea00-11d6-5f25-bd7f-1a998a0a9d59")
+  )
+  (global_label "PDM_CLK_RAW"
+    (shape bidirectional)
+    (at 64.77 55.88 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "33239c3d-4a5e-5d4f-a417-e78b59da35b6")
+  )
+  (wire
+    (pts
+      (xy 64.77 69.85)
+      (xy 64.77 73.66)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "ba5b0728-41b5-5b39-b221-7e9223b77b6c")
+  )
+  (global_label "PDM_CLK"
+    (shape bidirectional)
+    (at 64.77 73.66 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "5d81d3de-28b1-57ba-aa8d-5ce010089e6c")
+  )
+  (text "MIC0: FRONT / array X=0.000, Y=31.627 mm; Z=0"
+    (at 35 95 0)
+    (effects
+      (font
+        (size 1.4 1.4)
+      )
+      (justify left)
+    )
+    (uuid "10253851-415a-527a-b23e-d84293454baa")
+  )
+  (symbol
+    (lib_id "LGV2:IM69D130")
+    (at 64.77 119.38 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "af98b731-0d1a-597f-9111-40592cc9ab5a")
+    (property "Reference" "MK501"
+      (at 64.77 109.21999999999998 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "IM69D130V01XTSA1 / FRONT"
+      (at 64.77 111.75999999999999 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 64.77 119.38 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" "https://www.infineon.com/assets/row/public/documents/24/49/infineon-im69d130-datasheet-en.pdf"
+      (at 64.77 119.38 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" "IM69D130V01XTSA1"
+      (at 64.77 119.38 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "candidate"
+      (at 64.77 119.38 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-head"
+        (path "/925ddf46-9071-5dd9-a853-2bb938d1cbb4/02e8b362-1c24-5eed-93b1-5d17ce5ffbdd"
+          (reference "MK501")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 49.53 116.84)
+      (xy 41.91 116.84)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "40b326e5-b2e6-5082-b9af-62599597f513")
+  )
+  (global_label "PDM_DATA0"
+    (shape bidirectional)
+    (at 41.91 116.84 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "bb33cb59-0a4e-57d9-801e-6a7f9d376343")
+  )
+  (wire
+    (pts
+      (xy 49.53 119.38)
+      (xy 41.91 119.38)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "9de83fb6-245b-5d6f-a1f8-789af3667283")
+  )
+  (global_label "HEAD_3V3"
+    (shape bidirectional)
+    (at 41.91 119.38 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "9f3d5057-74e3-52e1-9136-d3b76fff780c")
+  )
+  (wire
+    (pts
+      (xy 49.53 121.92)
+      (xy 41.91 121.92)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "91ffa1c0-c83a-5369-a8ff-d65f494b9484")
+  )
+  (global_label "PDM_CLK"
+    (shape bidirectional)
+    (at 41.91 121.92 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "65e5da6b-47c2-5a25-803b-a6bf3b03e382")
+  )
+  (wire
+    (pts
+      (xy 80.01 118.11)
+      (xy 87.63 118.11)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "273a3e49-1243-542a-9699-cf6c5521bb74")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 87.63 118.11 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "f0dc1299-c47b-5c5e-b2d0-dd03111b26a7")
+  )
+  (wire
+    (pts
+      (xy 80.01 120.65)
+      (xy 87.63 120.65)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "14c4ed60-22bf-5446-bc28-5a92d27b423f")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 87.63 120.65 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "9e405010-9ea5-585c-aaff-6f1317f7983c")
+  )
+  (symbol
+    (lib_id "LGV2:C")
+    (at 139.7 119.38 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "9a3dde64-40c4-5e24-8c7c-499c7d3cdc5e")
+    (property "Reference" "C501"
+      (at 146.04999999999998 118.11 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "100n 16V"
+      (at 146.04999999999998 120.64999999999999 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+      (at 139.7 119.38 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 139.7 119.38 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 139.7 119.38 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 139.7 119.38 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-head"
+        (path "/925ddf46-9071-5dd9-a853-2bb938d1cbb4/02e8b362-1c24-5eed-93b1-5d17ce5ffbdd"
+          (reference "C501")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 139.7 114.3)
+      (xy 139.7 110.49)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "f0edfffd-90f5-5151-9a78-5dc675f5ee72")
+  )
+  (global_label "HEAD_3V3"
+    (shape bidirectional)
+    (at 139.7 110.49 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "2d25cbe1-f324-5dfe-9dab-ecd8a95be0f4")
+  )
+  (wire
+    (pts
+      (xy 139.7 124.46)
+      (xy 139.7 128.27)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "8b7b10e7-af8b-596b-85aa-b35893f2f743")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 139.7 128.27 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "204f7233-6a4a-59e5-b385-b6a88bb47ff6")
+  )
+  (text "MIC1: BACK / array X=0.000, Y=-31.537 mm; Z=0"
+    (at 225 95 0)
+    (effects
+      (font
+        (size 1.4 1.4)
+      )
+      (justify left)
+    )
+    (uuid "4dd599ce-40ab-5533-b0de-79f2355119fb")
+  )
+  (symbol
+    (lib_id "LGV2:IM69D130")
+    (at 255.27 119.38 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "5a6fe4b0-55f0-5a6f-bffc-023916a8e011")
+    (property "Reference" "MK502"
+      (at 255.27 109.21999999999998 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "IM69D130V01XTSA1 / BACK"
+      (at 255.27 111.75999999999999 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 255.27 119.38 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" "https://www.infineon.com/assets/row/public/documents/24/49/infineon-im69d130-datasheet-en.pdf"
+      (at 255.27 119.38 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" "IM69D130V01XTSA1"
+      (at 255.27 119.38 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "candidate"
+      (at 255.27 119.38 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-head"
+        (path "/925ddf46-9071-5dd9-a853-2bb938d1cbb4/02e8b362-1c24-5eed-93b1-5d17ce5ffbdd"
+          (reference "MK502")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 240.03 116.84)
+      (xy 232.41 116.84)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "3107ec8b-8d08-5b9b-ac17-e05458c21e31")
+  )
+  (global_label "PDM_DATA1"
+    (shape bidirectional)
+    (at 232.41 116.84 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "3380ae2f-1a78-5a4a-b97c-11c1821214ea")
+  )
+  (wire
+    (pts
+      (xy 240.03 119.38)
+      (xy 232.41 119.38)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "a1d4221d-4491-5ae1-a352-7eeda47edad0")
+  )
+  (global_label "HEAD_3V3"
+    (shape bidirectional)
+    (at 232.41 119.38 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "dbb5fa6e-3d35-5678-92a8-ac364cf58743")
+  )
+  (wire
+    (pts
+      (xy 240.03 121.92)
+      (xy 232.41 121.92)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "e137fb88-5ef3-5839-a959-c37b56532e6b")
+  )
+  (global_label "PDM_CLK"
+    (shape bidirectional)
+    (at 232.41 121.92 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "4d5755fb-dd43-55c9-8ba9-bcaac28e2ee3")
+  )
+  (wire
+    (pts
+      (xy 270.51 118.11)
+      (xy 278.13 118.11)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "c2da4191-3775-50a3-a50d-1c2857a47b0f")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 278.13 118.11 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "12d00e94-b8ed-5217-b78a-70e40ca1f63a")
+  )
+  (wire
+    (pts
+      (xy 270.51 120.65)
+      (xy 278.13 120.65)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "1271f92c-7d52-5067-9788-e6aff44a7fd1")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 278.13 120.65 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "95ee5ce9-6f13-5772-ab52-d3ac6fdd9ef7")
+  )
+  (symbol
+    (lib_id "LGV2:C")
+    (at 330.2 119.38 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "aee19f49-c206-56c0-a715-930c4fcc24b2")
+    (property "Reference" "C502"
+      (at 336.55 118.11 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "100n 16V"
+      (at 336.55 120.64999999999999 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+      (at 330.2 119.38 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 330.2 119.38 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 330.2 119.38 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 330.2 119.38 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-head"
+        (path "/925ddf46-9071-5dd9-a853-2bb938d1cbb4/02e8b362-1c24-5eed-93b1-5d17ce5ffbdd"
+          (reference "C502")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 330.2 114.3)
+      (xy 330.2 110.49)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "e1d77a1f-dae2-549d-82ab-3a6ca96bb0d3")
+  )
+  (global_label "HEAD_3V3"
+    (shape bidirectional)
+    (at 330.2 110.49 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "af6a2d1f-92f4-544f-9b2f-f0e6553be9e0")
+  )
+  (wire
+    (pts
+      (xy 330.2 124.46)
+      (xy 330.2 128.27)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "29719f7b-aa5d-5781-af09-aeef1331f321")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 330.2 128.27 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "f5611505-5617-5212-946c-cb66132f8e6e")
+  )
+  (text "MIC2: LEFT / array X=-50.000, Y=-0.045 mm; Z=0"
+    (at 35 190 0)
+    (effects
+      (font
+        (size 1.4 1.4)
+      )
+      (justify left)
+    )
+    (uuid "2e112263-ace0-55c9-b3ef-f6c8f1b35c28")
+  )
+  (symbol
+    (lib_id "LGV2:IM69D130")
+    (at 64.77 214.63 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "d1b1dac2-6a13-578c-bbd0-5768d8be1266")
+    (property "Reference" "MK503"
+      (at 64.77 204.47 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "IM69D130V01XTSA1 / LEFT"
+      (at 64.77 207.01 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 64.77 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" "https://www.infineon.com/assets/row/public/documents/24/49/infineon-im69d130-datasheet-en.pdf"
+      (at 64.77 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" "IM69D130V01XTSA1"
+      (at 64.77 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "candidate"
+      (at 64.77 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-head"
+        (path "/925ddf46-9071-5dd9-a853-2bb938d1cbb4/02e8b362-1c24-5eed-93b1-5d17ce5ffbdd"
+          (reference "MK503")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 49.53 212.09)
+      (xy 41.91 212.09)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "4b27a9b9-4a90-5199-8d79-0572a563a78a")
+  )
+  (global_label "PDM_DATA2"
+    (shape bidirectional)
+    (at 41.91 212.09 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "ff9cfc4b-378d-584b-805f-59f4e24f1b85")
+  )
+  (wire
+    (pts
+      (xy 49.53 214.63)
+      (xy 41.91 214.63)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "58ac3453-340e-56f8-b6b1-dd10c3417b0c")
+  )
+  (global_label "HEAD_3V3"
+    (shape bidirectional)
+    (at 41.91 214.63 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "75adc26c-a6be-5bc8-bdeb-9721ae894299")
+  )
+  (wire
+    (pts
+      (xy 49.53 217.17)
+      (xy 41.91 217.17)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "0f3595a7-e5af-5ac3-a97c-2a4a0f4e6045")
+  )
+  (global_label "PDM_CLK"
+    (shape bidirectional)
+    (at 41.91 217.17 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "e5e42ed4-6308-53c6-8aa9-6a49b2d4271a")
+  )
+  (wire
+    (pts
+      (xy 80.01 213.36)
+      (xy 87.63 213.36)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "bfedeb4b-286c-520e-9ce9-680941989632")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 87.63 213.36 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "437ff74c-d57a-516a-b5aa-17d07c16ce1d")
+  )
+  (wire
+    (pts
+      (xy 80.01 215.9)
+      (xy 87.63 215.9)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "ca81f20b-cc13-51f4-aed8-91e88ccc95b9")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 87.63 215.9 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "293066ab-2d0c-5d4c-a5fd-0098d28ee6d9")
+  )
+  (symbol
+    (lib_id "LGV2:C")
+    (at 139.7 214.63 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "baa4f997-de6b-5ea0-89ca-dda585c1ca59")
+    (property "Reference" "C503"
+      (at 146.04999999999998 213.35999999999999 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "100n 16V"
+      (at 146.04999999999998 215.9 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+      (at 139.7 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 139.7 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 139.7 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 139.7 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-head"
+        (path "/925ddf46-9071-5dd9-a853-2bb938d1cbb4/02e8b362-1c24-5eed-93b1-5d17ce5ffbdd"
+          (reference "C503")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 139.7 209.55)
+      (xy 139.7 205.74)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "b7774480-7993-56c0-abeb-7a37f198e35a")
+  )
+  (global_label "HEAD_3V3"
+    (shape bidirectional)
+    (at 139.7 205.74 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "44fb20c8-fa17-51b9-a182-33f431b1232e")
+  )
+  (wire
+    (pts
+      (xy 139.7 219.71)
+      (xy 139.7 223.52)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "d6c11aed-4368-57d6-9f95-c097a55870c1")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 139.7 223.52 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "380ac554-e741-5562-bc45-3703356468b9")
+  )
+  (text "MIC3: RIGHT / array X=50.000, Y=-0.045 mm; Z=0"
+    (at 225 190 0)
+    (effects
+      (font
+        (size 1.4 1.4)
+      )
+      (justify left)
+    )
+    (uuid "85df72c5-7dd8-59ee-913c-9b1e1b910bb9")
+  )
+  (symbol
+    (lib_id "LGV2:IM69D130")
+    (at 255.27 214.63 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "66ca2d2d-a7cf-537f-be0c-804342289910")
+    (property "Reference" "MK504"
+      (at 255.27 204.47 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "IM69D130V01XTSA1 / RIGHT"
+      (at 255.27 207.01 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 255.27 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" "https://www.infineon.com/assets/row/public/documents/24/49/infineon-im69d130-datasheet-en.pdf"
+      (at 255.27 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" "IM69D130V01XTSA1"
+      (at 255.27 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "candidate"
+      (at 255.27 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-head"
+        (path "/925ddf46-9071-5dd9-a853-2bb938d1cbb4/02e8b362-1c24-5eed-93b1-5d17ce5ffbdd"
+          (reference "MK504")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 240.03 212.09)
+      (xy 232.41 212.09)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "eddb07ec-8fa4-52b9-9e0d-05e8aa238872")
+  )
+  (global_label "PDM_DATA3"
+    (shape bidirectional)
+    (at 232.41 212.09 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "24af9efa-4932-5c72-8326-ad20ac28b455")
+  )
+  (wire
+    (pts
+      (xy 240.03 214.63)
+      (xy 232.41 214.63)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "fa033a98-56db-5c0f-9d1c-3fc1d45964ae")
+  )
+  (global_label "HEAD_3V3"
+    (shape bidirectional)
+    (at 232.41 214.63 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "9acdaa30-6139-50f1-babc-e0482d28bfea")
+  )
+  (wire
+    (pts
+      (xy 240.03 217.17)
+      (xy 232.41 217.17)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "1bea4c4d-0ee8-58f0-b868-09628c279913")
+  )
+  (global_label "PDM_CLK"
+    (shape bidirectional)
+    (at 232.41 217.17 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "c49c5ebb-132f-58ca-92f5-e01c8e72f319")
+  )
+  (wire
+    (pts
+      (xy 270.51 213.36)
+      (xy 278.13 213.36)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "10f6c7ce-5d51-576d-9b85-1f3930ab71f7")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 278.13 213.36 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "0adb2098-3f33-5028-b678-1e1495ad47ca")
+  )
+  (wire
+    (pts
+      (xy 270.51 215.9)
+      (xy 278.13 215.9)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "01d746d3-4e53-5736-b725-b169b877c4ab")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 278.13 215.9 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "00325c3b-82f3-5cbf-ae04-32c778eef031")
+  )
+  (symbol
+    (lib_id "LGV2:C")
+    (at 330.2 214.63 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "516fa9d8-0512-546b-8e1b-e2afd674ce91")
+    (property "Reference" "C504"
+      (at 336.55 213.35999999999999 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "100n 16V"
+      (at 336.55 215.9 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+      (at 330.2 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 330.2 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 330.2 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 330.2 214.63 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-head"
+        (path "/925ddf46-9071-5dd9-a853-2bb938d1cbb4/02e8b362-1c24-5eed-93b1-5d17ce5ffbdd"
+          (reference "C504")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 330.2 209.55)
+      (xy 330.2 205.74)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "48a7c177-22ad-5e9c-9693-439692e219f3")
+  )
+  (global_label "HEAD_3V3"
+    (shape bidirectional)
+    (at 330.2 205.74 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "0f7cbec3-4796-59bd-b49d-d1de6713a044")
+  )
+  (wire
+    (pts
+      (xy 330.2 219.71)
+      (xy 330.2 223.52)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "d1e8f0c4-527a-5ac7-b406-2e3bdaa33dad")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 330.2 223.52 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "054d1bc2-c260-53bb-989a-ee237ef5a93e")
+  )
+  (text "Clock and data must remain clear of switching nodes. Keep all four acoustic openings on the same outside surface.\nBeamforming, voice direction and speaker echo cancellation are untested until custom firmware is loaded and tuned.\nGNSS antenna is not on this draft; determine antenna-module ground-plane/keep-out requirements before adding one."
+    (at 15 275 0)
+    (effects
+      (font
+        (size 1.2 1.2)
+      )
+      (justify left)
+    )
+    (uuid "a3144e11-9853-52ce-99ba-83211f80a9d6")
+  )
+  (embedded_fonts no)
+)

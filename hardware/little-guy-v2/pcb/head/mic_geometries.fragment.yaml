@@ -1,0 +1,10 @@
+# GENERATED from microphone-targets.json. Geometry fragment, NOT a complete product configuration.
+# Merge this block into the custom product mic_geometries.yaml; preserve all other required settings.
+# Units: metres. Board-plane acoustic centers, not unprojected shell markers.
+# Build logical MIC0..3 to match the physical input order below. Verify raw-channel mapping on hardware.
+# Documentation: https://www.xmos.com/documentation/XM-014888-PC/html/modules/fwk_xvf/doc/user_guide/04_tuning_the_application.html
+SQUARECULAR_GEOMETRY:
+  - MIC0: ( 0.000000000f, 0.029646533f, 0.000000000f ) # MK501 front PDM_DATA0
+  - MIC1: ( 0.000000000f, -0.029512235f, 0.000000000f ) # MK502 back PDM_DATA1
+  - MIC2: ( -0.050000000f, -0.000067149f, 0.000000000f ) # MK503 left PDM_DATA2
+  - MIC3: ( 0.050000000f, -0.000067149f, 0.000000000f ) # MK504 right PDM_DATA3

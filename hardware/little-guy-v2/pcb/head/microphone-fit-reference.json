@@ -1,0 +1,75 @@
+{
+  "status": "existing CAD fit study reference; not physical validation or fabrication release",
+  "source": ".run/results/mind/body-v2/mic-diamond-1025b/mic-diamond.json",
+  "source_sha256": "e70af5685518219c40b1cbb706569e091a6261f72068784609d9c781cf90eb99",
+  "reported_result": {
+    "frame": "head: x left, y back (face at -y), z up; mm",
+    "mics": {
+      "front": [
+        0.0,
+        -29.0,
+        43.5
+      ],
+      "back": [
+        0.0,
+        29.0,
+        31.85
+      ],
+      "left": [
+        50.0,
+        0.0,
+        36.99
+      ],
+      "right": [
+        -50.0,
+        0.0,
+        36.99
+      ]
+    },
+    "plane": [
+      37.33335,
+      0.0,
+      -0.20089
+    ],
+    "residual_mm": [
+      0.341,
+      0.341,
+      -0.341,
+      -0.341
+    ],
+    "outline": {
+      "front": [
+        0.0,
+        -32.0
+      ],
+      "left": [
+        53.0,
+        0.0
+      ],
+      "back": [
+        0.0,
+        32.0
+      ],
+      "right": [
+        -53.0,
+        0.0
+      ]
+    },
+    "cover_mm": [
+      -1.22,
+      0.24
+    ],
+    "slab_mm": [
+      -6.42,
+      -3.72
+    ],
+    "wall_gap_mm": {
+      "front": 2.0,
+      "back": 2.0,
+      "left": 5.54,
+      "right": 5.54
+    },
+    "clashes": []
+  },
+  "limits": "Sampled clearance study with assumed wall, gasket, PCB and mic envelope. Its trial outline is not a released PCB perimeter."
+}

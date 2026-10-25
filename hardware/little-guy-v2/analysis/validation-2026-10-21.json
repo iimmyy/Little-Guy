@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-21",
+  "scope": "Preliminary mechanical load cases and functional power architecture; no hardware verification",
+  "checks": [
+    "PDF visually inspected; drawing title SCS215 discrepancy retained",
+    "Manufacturer mass confirmed for ST-3215-C018, 55 +/-1g",
+    "Analytical unit check: 1kg at 10cm gives 10kgf.cm",
+    "Uniform rod inertia check: 1kg,1m about end gives 1/3kg.m2",
+    "Independent reviewer recomputed four torque totals; all matched",
+    "Isolated-joint acceleration boundary corrected after independent review",
+    "Stored JSON exactly matches fresh calculation",
+    "Local Markdown links resolve; text files have no trailing whitespace",
+    "User selected Jetson on stand with future torso reservation; recorded in body layout",
+    "NVIDIA chapter4 assembled dimensions checked in PDF drawing; Super equivalence verified in official FAQ",
+    "C018 drawing and supplied STEP independently compared; reference dimensions and axis offset agree",
+    "STEP imported unchanged: eight solids, one invalid; accessory configuration discrepancy preserved",
+    "Nominal reference envelope enlarged to contain imported model; physical tolerance not established",
+    "Interface document updated to link completed shoulder-axis model and separate SO101 reference assessment; underlying servo reference geometry unchanged",
+    "Power document now marks earlier grouped wiring superseded by separately audited eleven-feed candidate; original group arithmetic retained",
+    "Body layout links separately audited stand sensitivity and aligns hub placement with eleven-feed harness; no geometry or physical fit claim changed"
+  ],
+  "hardware_accessed": false,
+  "manufacturing_ready": false,
+  "power_components_selected": false,
+  "files_sha256": {
+    "mechanical-envelope.md": "56e3fab00ba1a7a34f195f3e09d0c72f0d89abb13bba82c4dd09749cae0fecb4",
+    "power-distribution.md": "4e6a3be3d1977b4a64d9d61e621ecb138a387edeec689007fd9237608ea76c18",
+    "analysis/arm-scenarios.json": "1bb7f02dc6912ddd6c1764d20af17dfe8ad4c4284e2475ba20a210722b5e2b5d",
+    "analysis/arm_loads.py": "fdf75e085531608e82919273854a8e52107c1b0b199e90bf8e8d7e6c766a01d6",
+    "analysis/arm-results.json": "9551a6f78124df46277f7947272f5b07a08ad16c521d745a0360aa455a9b8a93",
+    "reference/mechanical-sources.json": "ef53ba96eaabf1b934ef0d7a4f02984010b4ca276e0f4ee6dbb4c3287249468e",
+    "body-layout.md": "f59673aa6af40b23bf8c867839073c2a07462db60465d2042e7cafeef2f529d5",
+    "servo-interface.md": "2aa429c3572b12941f887cade3a1d679692cfefdfb3516a71bf09955d37a4c93",
+    "analysis/inspect_servo_step.py": "399f9c7b1a7806a366e6c615d1d179a6f60a70e95287f429388b0a1bc0b8f22a",
+    "analysis/render_step_preview.py": "d0a388dd56e609c8f86e50602d868e0ecd4fe17ed9dec66342f1dbe60dad9b5b",
+    "analysis/requirements-cad.txt": "7be673163ef80a2bd3d97830ac1853b2548b84e55d0c11373a7008690e66f74b",
+    "reference/servo-step-inspection.json": "b3a7d5f2ac54c033a0aac0dd3e4a9100d3481bd60177d758a067c9b6c5730bb8",
+    "reference/servo-step-review.png": "417fde8f2a141ee205c104e8ff14af642f11850a9b228143cf10b8841b26df35",
+    "reference/ST-3215-C018-spec-A0.pdf": "3f1dc84e470ac89cbd7b7244183fcc62b7f7a5345aa41a62120280a9b7b26f5e"
+  }
+}

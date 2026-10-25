@@ -1,0 +1,51 @@
+{
+  "$schema": "https://schemas.kicad.org/erc.v1.json",
+  "coordinate_units": "mm",
+  "date": "2026-10-25T14:32:25",
+  "ignored_checks": [
+    {
+      "description": "Global label only appears once in the schematic",
+      "key": "single_global_label"
+    },
+    {
+      "description": "Four connection points are joined together",
+      "key": "four_way_junction"
+    },
+    {
+      "description": "SPICE model issue",
+      "key": "simulation_model_issue"
+    },
+    {
+      "description": "Assigned footprint doesn't match footprint filters",
+      "key": "footprint_filter"
+    }
+  ],
+  "included_severities": [
+    "error",
+    "warning"
+  ],
+  "kicad_version": "10.0.6",
+  "sheets": [
+    {
+      "path": "/",
+      "uuid_path": "/f5f7aad3-e052-5c56-8a3b-7832fd38b8ec",
+      "violations": []
+    },
+    {
+      "path": "/Foot power / single cable / toe ranging/",
+      "uuid_path": "/f5f7aad3-e052-5c56-8a3b-7832fd38b8ec/5770183c-0f49-586f-b956-e8004a512819",
+      "violations": []
+    },
+    {
+      "path": "/Bridge pair 1 / ratiometric ADC/",
+      "uuid_path": "/f5f7aad3-e052-5c56-8a3b-7832fd38b8ec/863cbc3e-9c56-53ec-b5e6-b3e137dfb96f",
+      "violations": []
+    },
+    {
+      "path": "/Bridge pair 2 / ratiometric ADC/",
+      "uuid_path": "/f5f7aad3-e052-5c56-8a3b-7832fd38b8ec/e8f4fcba-11bf-57ea-b1f4-2828189ad918",
+      "violations": []
+    }
+  ],
+  "source": "little-guy-foot.kicad_sch"
+}

@@ -1,0 +1,2266 @@
+{
+  "revision": "A0.2-WIP",
+  "hardware_validated": false,
+  "fabrication_released": false,
+  "scope": "Pad identifiers, one diode polarity anchor, Teensy nominal 2D geometry and XMOS paddle geometry/orientation. Other package dimensions, ratings, assembly, stencil and physical fit remain open.",
+  "assigned_components_checked": 430,
+  "unique_footprint_files_read": 19,
+  "unassigned_components": [
+    {
+      "board": "power",
+      "ref": "J101",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "U101",
+      "mpn": "TPS25751DREFR"
+    },
+    {
+      "board": "power",
+      "ref": "J102",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "J103",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "U201",
+      "mpn": "BQ25798RQMR"
+    },
+    {
+      "board": "power",
+      "ref": "Q201",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "Q202",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "Q203",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "Q204",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "L201",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "J201",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "J202",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "J203",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "D201",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "L301",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "U401",
+      "mpn": "LM5176PWPR"
+    },
+    {
+      "board": "power",
+      "ref": "D401",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "D402",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "D403",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "J401",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "Q501",
+      "mpn": "CSD19502Q5B"
+    },
+    {
+      "board": "power",
+      "ref": "Q502",
+      "mpn": "CSD19502Q5B"
+    },
+    {
+      "board": "power",
+      "ref": "Q503",
+      "mpn": "CSD19502Q5B"
+    },
+    {
+      "board": "power",
+      "ref": "Q504",
+      "mpn": "CSD19502Q5B"
+    },
+    {
+      "board": "power",
+      "ref": "Q505",
+      "mpn": "CSD17573Q5B"
+    },
+    {
+      "board": "power",
+      "ref": "Q506",
+      "mpn": "CSD17573Q5B"
+    },
+    {
+      "board": "power",
+      "ref": "Q507",
+      "mpn": "CSD17573Q5B"
+    },
+    {
+      "board": "power",
+      "ref": "Q508",
+      "mpn": "CSD17573Q5B"
+    },
+    {
+      "board": "power",
+      "ref": "L501",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "J601",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "U701",
+      "mpn": "TPS552892RYQR"
+    },
+    {
+      "board": "power",
+      "ref": "L701",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "J701",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "J702",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "U801",
+      "mpn": "LM61495RPHR"
+    },
+    {
+      "board": "power",
+      "ref": "L801",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "J801",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "J802",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "U901",
+      "mpn": "LM61495RPHR"
+    },
+    {
+      "board": "power",
+      "ref": "L901",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "J901",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "J902",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "U1401",
+      "mpn": "LM61495RPHR"
+    },
+    {
+      "board": "power",
+      "ref": "L1401",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "J1401",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "J1402",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "J1001",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "J1002",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "R1101",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "J1101",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "J1201",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "J1202",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "J1203",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "Q1301",
+      "mpn": "SI7149DP-T1-GE3"
+    },
+    {
+      "board": "power",
+      "ref": "Q1302",
+      "mpn": "SI7149DP-T1-GE3"
+    },
+    {
+      "board": "power",
+      "ref": "F1301",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "J1301",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "Q1351",
+      "mpn": "SI7149DP-T1-GE3"
+    },
+    {
+      "board": "power",
+      "ref": "Q1352",
+      "mpn": "SI7149DP-T1-GE3"
+    },
+    {
+      "board": "power",
+      "ref": "F1351",
+      "mpn": ""
+    },
+    {
+      "board": "power",
+      "ref": "J1351",
+      "mpn": ""
+    },
+    {
+      "board": "spinal",
+      "ref": "J101",
+      "mpn": ""
+    },
+    {
+      "board": "spinal",
+      "ref": "J102",
+      "mpn": ""
+    },
+    {
+      "board": "spinal",
+      "ref": "J103",
+      "mpn": ""
+    },
+    {
+      "board": "spinal",
+      "ref": "J104",
+      "mpn": ""
+    },
+    {
+      "board": "spinal",
+      "ref": "J201",
+      "mpn": ""
+    },
+    {
+      "board": "spinal",
+      "ref": "J241",
+      "mpn": ""
+    },
+    {
+      "board": "spinal",
+      "ref": "J301",
+      "mpn": ""
+    },
+    {
+      "board": "spinal",
+      "ref": "J341",
+      "mpn": ""
+    },
+    {
+      "board": "spinal",
+      "ref": "J401",
+      "mpn": ""
+    },
+    {
+      "board": "spinal",
+      "ref": "J402",
+      "mpn": ""
+    },
+    {
+      "board": "spinal",
+      "ref": "J403",
+      "mpn": ""
+    },
+    {
+      "board": "spinal",
+      "ref": "J404",
+      "mpn": ""
+    },
+    {
+      "board": "spinal",
+      "ref": "J405",
+      "mpn": ""
+    },
+    {
+      "board": "spinal",
+      "ref": "U501",
+      "mpn": "LSM6DSOXTR"
+    },
+    {
+      "board": "spinal",
+      "ref": "U502",
+      "mpn": "TPS3431SDRBR"
+    },
+    {
+      "board": "spinal",
+      "ref": "J501",
+      "mpn": ""
+    },
+    {
+      "board": "spinal",
+      "ref": "J601",
+      "mpn": ""
+    },
+    {
+      "board": "spinal",
+      "ref": "J701",
+      "mpn": ""
+    },
+    {
+      "board": "spinal",
+      "ref": "J801",
+      "mpn": ""
+    },
+    {
+      "board": "spinal",
+      "ref": "J901",
+      "mpn": ""
+    },
+    {
+      "board": "foot",
+      "ref": "J101",
+      "mpn": ""
+    },
+    {
+      "board": "foot",
+      "ref": "U103",
+      "mpn": "VL53L4CDV0DH/1"
+    },
+    {
+      "board": "foot",
+      "ref": "J201",
+      "mpn": ""
+    },
+    {
+      "board": "foot",
+      "ref": "J202",
+      "mpn": ""
+    },
+    {
+      "board": "foot",
+      "ref": "J301",
+      "mpn": ""
+    },
+    {
+      "board": "foot",
+      "ref": "J302",
+      "mpn": ""
+    },
+    {
+      "board": "head",
+      "ref": "Y101",
+      "mpn": "SiT8008AI-71-18E-24.000000"
+    },
+    {
+      "board": "head",
+      "ref": "J101",
+      "mpn": ""
+    },
+    {
+      "board": "head",
+      "ref": "J102",
+      "mpn": ""
+    },
+    {
+      "board": "head",
+      "ref": "U203",
+      "mpn": "TPS62825ADMQR"
+    },
+    {
+      "board": "head",
+      "ref": "L201",
+      "mpn": "XFL4015-471MEB"
+    },
+    {
+      "board": "head",
+      "ref": "FB401",
+      "mpn": "BKH1005LM601-T"
+    },
+    {
+      "board": "head",
+      "ref": "MK501",
+      "mpn": "IM69D130V01XTSA1"
+    },
+    {
+      "board": "head",
+      "ref": "MK502",
+      "mpn": "IM69D130V01XTSA1"
+    },
+    {
+      "board": "head",
+      "ref": "MK503",
+      "mpn": "IM69D130V01XTSA1"
+    },
+    {
+      "board": "head",
+      "ref": "MK504",
+      "mpn": "IM69D130V01XTSA1"
+    }
+  ],
+  "checks": [
+    {
+      "requirement": "power/C101 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C102 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C103 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C104 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C105 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C106 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C107 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C108 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C109 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/U102 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C110 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R101 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R102 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R103 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R104 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R105 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R106 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R107 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R108 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C201 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C202 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C203 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C204 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C205 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C206 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C207 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C208 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C209 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C210 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C211 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C212 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C213 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C214 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C215 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C216 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C217 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C218 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C219 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R201 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R202 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R203 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R204 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R205 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R206 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/U301 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/D301 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R301 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R302 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R303 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R304 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R305 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C301 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C302 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C303 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C304 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C305 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C306 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C307 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C308 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C309 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/U302 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C310 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C311 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/U303 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R306 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R307 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R308 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C312 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R401 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R402 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R403 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R404 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R405 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R406 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R407 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R408 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R409 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R410 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R411 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R412 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R413 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C401 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C402 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C403 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C404 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C405 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C406 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C407 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C408 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C409 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C410 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C411 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R501 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R502 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R503 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R504 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R505 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R506 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R507 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R508 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R509 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R510 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R511 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R512 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C501 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C502 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C503 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C504 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C505 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C506 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C507 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C508 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C509 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C510 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C511 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C512 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C513 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C514 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C515 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C516 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C517 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C518 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C519 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C520 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C521 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R701 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R702 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R703 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R704 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R705 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R706 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R707 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R708 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C701 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C702 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C703 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C704 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C705 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C706 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C707 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C708 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C709 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C710 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C711 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C712 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R801 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R802 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R803 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R804 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R805 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R806 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C801 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C802 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C803 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C804 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C805 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C806 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C807 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C808 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C809 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C810 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C811 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C812 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C813 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C814 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R901 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R902 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R903 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R904 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R905 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R906 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C901 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C902 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C903 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C904 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C905 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C906 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C907 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C908 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C909 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C910 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C911 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C912 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C913 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C914 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1401 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1402 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1403 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1404 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1405 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1406 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1401 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1402 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1403 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1404 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1405 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1406 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1407 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1408 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1409 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1410 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1411 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1412 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1413 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1414 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/U1001 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/U1002 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/U1003 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1001 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1002 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1003 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1004 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1005 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1006 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1007 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1001 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1002 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1003 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/U1101 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1102 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1103 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1104 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1101 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1102 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/U1201 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/U1202 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1201 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1202 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1203 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1204 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1205 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1206 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1201 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1207 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1202 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1208 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1203 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1204 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1205 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/Q1303 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1301 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1302 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1303 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1304 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1301 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/Q1353 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1351 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1352 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1353 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1354 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1351 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/U1301 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/R1391 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "power/C1391 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/U101 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R101 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R102 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/Q101 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R103 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R104 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/C101 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/C102 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/U201 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R201 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/U202 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R202 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R203 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/C201 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/C202 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/U241 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R241 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/U242 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R242 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R243 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/C241 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/C242 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/U301 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R301 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/U302 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R302 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R303 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/C301 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/C302 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/U341 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R341 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/U342 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R342 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R343 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/C341 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/C342 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/U401 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R401 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/F401 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/F402 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/C401 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R402 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R403 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R404 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R405 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R406 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R407 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R408 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R409 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R410 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R411 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/C501 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/C502 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R501 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R502 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R503 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R504 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/C503 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/U601 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R601 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/C601 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/C602 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R602 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/U701 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R701 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/C701 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/C702 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/U801 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R801 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/C801 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/C802 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/U901 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R901 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/C901 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/C902 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/U1101 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R1101 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R1102 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R1103 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R1104 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/R1105 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "spinal/C1101 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "U601 MPR121 has exactly pins 1-20 and no invented exposed pad",
+      "passed": true
+    },
+    {
+      "requirement": "U701 MPR121 has exactly pins 1-20 and no invented exposed pad",
+      "passed": true
+    },
+    {
+      "requirement": "U801 MPR121 has exactly pins 1-20 and no invented exposed pad",
+      "passed": true
+    },
+    {
+      "requirement": "U901 MPR121 has exactly pins 1-20 and no invented exposed pad",
+      "passed": true
+    },
+    {
+      "requirement": "foot/U101 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/U102 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/C101 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/C102 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/C103 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/C104 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/C105 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/C106 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/R101 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/R102 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/U201 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/R201 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/R202 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/C201 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/R203 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/R204 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/C202 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/C203 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/C204 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/C205 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/U301 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/R301 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/R302 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/C301 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/R303 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/R304 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/C302 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/C303 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/C304 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "foot/C305 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/U101 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/U102 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/R101 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/R102 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/R103 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/R104 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/R105 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C101 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C102 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/R106 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/R107 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/R108 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/U201 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/U202 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C201 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C202 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C203 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C204 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/R201 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/R202 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/R203 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C205 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C206 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C207 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C208 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/U301 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/R301 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/R302 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/R303 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C301 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/U302 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/R304 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/R305 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/R306 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C302 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/U303 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/R307 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/R308 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/R309 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C303 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/U304 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C304 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/R310 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C401 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C402 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C403 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C404 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C405 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C406 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C407 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C408 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C409 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C410 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C411 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C412 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C413 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C414 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C415 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C416 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/R501 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C501 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C502 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C503 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "head/C504 footprint exists and numbered pads exactly match schematic pins",
+      "passed": true
+    },
+    {
+      "requirement": "Always-on catch diode cathode pad 1 is on switch node and anode pad 2 is on ground",
+      "passed": true
+    },
+    {
+      "requirement": "Teensy socket has 48 distinct through-hole pads",
+      "passed": true
+    },
+    {
+      "requirement": "Teensy socket key GPIO locations match PJRC top view with USB at negative X",
+      "passed": true
+    },
+    {
+      "requirement": "Teensy rows are 15.24 mm apart with 2.54 mm pitch",
+      "passed": true
+    },
+    {
+      "requirement": "XMOS top-view perimeter numbering matches Fig8.1 bottom-view mirror",
+      "passed": true
+    },
+    {
+      "requirement": "XMOS core paddles are left 61, bottom 62, right 63, top 64 in PCB top view",
+      "passed": true
+    },
+    {
+      "requirement": "XMOS four core paddles match nominal 3.60 by 0.60 mm geometry",
+      "passed": true
+    },
+    {
+      "requirement": "XMOS footprint paddle nets preserve four 0.9 V paddles and one ground paddle",
+      "passed": true
+    }
+  ],
+  "failed_requirements": []
+}

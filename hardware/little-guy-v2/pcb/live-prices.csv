@@ -1,0 +1,2 @@
+checked_date,manufacturer,mpn,supplier,supplier_code,currency,minimum_quantity,unit_price,shown_stock,source,scope
+2026-10-25,Texas Instruments,BQ25798RQMR,LCSC,C2876593,USD,1,2.848,4653,https://www.lcsc.com/product-detail/C2876593.html,Main populated LCSC listing read live; excludes tax freight and assembly

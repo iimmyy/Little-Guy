@@ -1,0 +1,437 @@
+(kicad_sch
+  (version 20260306)
+  (generator eeschema)
+  (generator_version "10.0")
+  (uuid "3766b370-f998-5372-8664-7b6b6b964167")
+  (paper "A3")
+  (title_block
+    (title "Little Guy V2 - spinal-cord board")
+    (date "2026-10-25")
+    (rev "A0.2-WIP")
+    (comment 1 "INCOMPLETE - NOT FOR FABRICATION")
+  )
+  (lib_symbols)
+  (text "SPINAL CORD / CIRCUIT CAPTURE IN PROGRESS\nTeensy carrier, four TTL buses, SPI IMU, 48 touch inputs and isolated sensor branches.\nNo controller firmware, cable timing, stop behaviour or hardware has been validated; no fabrication release."
+    (at 20 20 0)
+    (effects
+      (font
+        (size 1.4 1.4)
+      )
+      (justify left)
+    )
+    (uuid "9858f3ca-2afe-5ad3-8cab-2c36a977372b")
+  )
+  (sheet
+    (at 15 55)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "a6f35da2-d2c1-57a5-b432-7d6275359c78")
+    (property "Sheetname" "Teensy 4.1 / power-board controls"
+      (at 17 53.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "01-controller.kicad_sch"
+      (at 17 87.53999999999999 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167"
+          (page "2")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 115 55)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "5c6a0d3a-a6d6-5d3e-9251-3e321ee206d2")
+    (property "Sheetname" "Half-duplex TTL buses 1"
+      (at 117 53.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "02-servo-buses-1.kicad_sch"
+      (at 117 87.53999999999999 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167"
+          (page "3")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 215 55)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "1ea2a1a1-a46e-5ae1-97a5-83b4e4a3598a")
+    (property "Sheetname" "Half-duplex TTL buses 2"
+      (at 217 53.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "03-servo-buses-2.kicad_sch"
+      (at 217 87.53999999999999 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167"
+          (page "4")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 315 55)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "a1280054-6e7a-509e-9139-2d6d623d7d44")
+    (property "Sheetname" "Sensor mux / IMU / foot cabling"
+      (at 317 53.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "04-sensor-buses.kicad_sch"
+      (at 317 87.53999999999999 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167"
+          (page "5")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 15 110)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "d3eef230-29e0-592f-8b00-975dee557173")
+    (property "Sheetname" "Sensor branch pull-ups / fitting options"
+      (at 17 108.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "10-sensor-pullups.kicad_sch"
+      (at 17 142.54 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167"
+          (page "6")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 115 110)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "72ea3c31-7975-5c19-aae7-c63c7515750e")
+    (property "Sheetname" "SPI IMU / independent watchdog"
+      (at 117 108.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "05-imu-watchdog.kicad_sch"
+      (at 117 142.54 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167"
+          (page "7")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 215 110)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "34bdaf5b-528a-5328-a099-c4241ff5cde4")
+    (property "Sheetname" "Touch electrodes 1-12"
+      (at 217 108.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "06-touch-1.kicad_sch"
+      (at 217 142.54 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167"
+          (page "8")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 315 110)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "1cb6d0cc-b1e7-5ec2-b8f6-a1c4466baff2")
+    (property "Sheetname" "Touch electrodes 13-24"
+      (at 317 108.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "07-touch-2.kicad_sch"
+      (at 317 142.54 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167"
+          (page "9")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 15 165)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "6f770f01-2516-51be-82d3-4fb9011f377a")
+    (property "Sheetname" "Touch electrodes 25-36"
+      (at 17 163.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "08-touch-3.kicad_sch"
+      (at 17 197.54 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167"
+          (page "10")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 115 165)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "22e79236-ba79-5f7c-9816-5f09cb74d55b")
+    (property "Sheetname" "Touch electrodes 37-48"
+      (at 117 163.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "09-touch-4.kicad_sch"
+      (at 117 197.54 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167"
+          (page "11")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 215 165)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "a0c9b2ff-9fa4-54bc-9eb1-88bdb6a437c1")
+    (property "Sheetname" "Hardware-gated servo transmit enables"
+      (at 217 163.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "11-transmit-cut.kicad_sch"
+      (at 217 197.54 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167"
+          (page "12")
+        )
+      )
+    )
+  )
+  (sheet_instances
+    (path "/"
+      (page "1")
+    )
+  )
+  (embedded_fonts no)
+)

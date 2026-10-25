@@ -1,0 +1,1144 @@
+{
+  "revision": "A0.2-WIP",
+  "release": false,
+  "parts": [
+    {
+      "ref": "U101",
+      "value": "XVF3800-QF60B-C",
+      "footprint": "LGV2_Footprints:XMOS_QF60B_7x7mm_P0.4mm_5Paddle",
+      "mpn": "XVF3800-QF60B-C",
+      "datasheet": "https://www.xmos.com/documentation/XM-014888-PC/pdf/xvf3800_datasheet_v3.2.1.pdf",
+      "pins": {
+        "1": "FLASH_D1",
+        "2": "FLASH_D3",
+        "3": "FLASH_CS_N",
+        "5": "FLASH_CLK",
+        "6": "SPI_BOOT_CS_N",
+        "7": "GND",
+        "9": null,
+        "10": null,
+        "11": "HEAD_BUTTON0",
+        "13": null,
+        "14": "AUDIO_MCLK",
+        "15": null,
+        "16": "HEAD_XIN",
+        "18": "HEAD_TDI",
+        "20": "HEAD_TDO",
+        "21": "HEAD_RESET_N",
+        "22": "HEAD_PLL_0V9",
+        "23": "HEAD_TMS",
+        "24": "HEAD_TCK",
+        "25": null,
+        "28": "HEAD_USB_DM",
+        "29": "HEAD_USB_DP",
+        "30": "HEAD_3V3",
+        "31": "HEAD_1V8",
+        "32": "HEAD_BUTTON1",
+        "33": null,
+        "35": null,
+        "36": null,
+        "37": null,
+        "39": "GND",
+        "40": null,
+        "41": "AUDIO_MCLK",
+        "43": "PDM_CLK_RAW",
+        "44": null,
+        "45": null,
+        "46": "PDM_DATA0",
+        "47": null,
+        "48": "PDM_DATA2",
+        "50": "PDM_DATA1",
+        "51": "PDM_DATA3",
+        "53": null,
+        "54": null,
+        "55": null,
+        "56": null,
+        "58": null,
+        "59": "FLASH_D0",
+        "60": "FLASH_D2",
+        "65": "GND",
+        "4": "HEAD_0V9",
+        "12": "HEAD_0V9",
+        "19": "HEAD_0V9",
+        "27": "HEAD_0V9",
+        "34": "HEAD_0V9",
+        "42": "HEAD_0V9",
+        "49": "HEAD_0V9",
+        "57": "HEAD_0V9",
+        "61": "HEAD_0V9",
+        "62": "HEAD_0V9",
+        "63": "HEAD_0V9",
+        "64": "HEAD_0V9",
+        "8": "HEAD_3V3",
+        "38": "HEAD_3V3",
+        "52": "HEAD_3V3",
+        "17": "HEAD_1V8",
+        "26": "HEAD_1V8"
+      },
+      "sheet": "01-voice-processor",
+      "dnp": false
+    },
+    {
+      "ref": "U102",
+      "value": "W25Q32JVSSIQ",
+      "footprint": "Package_SO:SOIC-8_5.3x5.3mm_P1.27mm",
+      "mpn": "W25Q32JVSSIQ",
+      "datasheet": "https://www.winbond.com/hq/product/code-storage-flash-memory/serial-nor-flash/?partNo=W25Q32JV",
+      "pins": {
+        "1": "FLASH_CS_N",
+        "2": "FLASH_D1",
+        "3": "FLASH_D2",
+        "4": "GND",
+        "5": "FLASH_D0",
+        "6": "FLASH_CLK",
+        "7": "FLASH_D3",
+        "8": "HEAD_3V3"
+      },
+      "sheet": "01-voice-processor",
+      "dnp": false
+    },
+    {
+      "ref": "Y101",
+      "value": "SiT8008AI-71-18E-24.000000",
+      "footprint": "",
+      "mpn": "SiT8008AI-71-18E-24.000000",
+      "datasheet": "https://www.sitime.com/parts/sit8008ai-71-18e-24000000",
+      "pins": {
+        "1": "HEAD_1V8",
+        "2": "GND",
+        "3": "HEAD_CLK24_RAW",
+        "4": "HEAD_1V8"
+      },
+      "sheet": "01-voice-processor",
+      "dnp": false
+    },
+    {
+      "ref": "R101",
+      "value": "33 1% / source tuning",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_CLK24_RAW",
+        "2": "HEAD_XIN"
+      },
+      "sheet": "01-voice-processor",
+      "dnp": false
+    },
+    {
+      "ref": "R102",
+      "value": "4k7 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_3V3",
+        "2": "FLASH_CS_N"
+      },
+      "sheet": "01-voice-processor",
+      "dnp": false
+    },
+    {
+      "ref": "R103",
+      "value": "4k7 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_3V3",
+        "2": "SPI_BOOT_CS_N"
+      },
+      "sheet": "01-voice-processor",
+      "dnp": false
+    },
+    {
+      "ref": "R104",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_3V3",
+        "2": "HEAD_BUTTON0"
+      },
+      "sheet": "01-voice-processor",
+      "dnp": false
+    },
+    {
+      "ref": "R105",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_3V3",
+        "2": "HEAD_BUTTON1"
+      },
+      "sheet": "01-voice-processor",
+      "dnp": false
+    },
+    {
+      "ref": "C101",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_3V3",
+        "2": "GND"
+      },
+      "sheet": "01-voice-processor",
+      "dnp": false
+    },
+    {
+      "ref": "C102",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_1V8",
+        "2": "GND"
+      },
+      "sheet": "01-voice-processor",
+      "dnp": false
+    },
+    {
+      "ref": "J101",
+      "value": "Internal USB 2 device / ESD network pending",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_USB_5V",
+        "2": "HEAD_USB_DM",
+        "3": "HEAD_USB_DP",
+        "4": "GND"
+      },
+      "sheet": "01-voice-processor",
+      "dnp": false
+    },
+    {
+      "ref": "J102",
+      "value": "JTAG breakout / NOT an XSYS2 pin-compatible header",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_1V8",
+        "2": "GND",
+        "3": "HEAD_TCK",
+        "4": "HEAD_TMS",
+        "5": "HEAD_TDI",
+        "6": "HEAD_TDO",
+        "7": "HEAD_RESET_N"
+      },
+      "sheet": "01-voice-processor",
+      "dnp": false
+    },
+    {
+      "ref": "R106",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_1V8",
+        "2": "HEAD_TMS"
+      },
+      "sheet": "01-voice-processor",
+      "dnp": false
+    },
+    {
+      "ref": "R107",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_1V8",
+        "2": "HEAD_TDI"
+      },
+      "sheet": "01-voice-processor",
+      "dnp": false
+    },
+    {
+      "ref": "R108",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_TCK",
+        "2": "GND"
+      },
+      "sheet": "01-voice-processor",
+      "dnp": false
+    },
+    {
+      "ref": "U201",
+      "value": "TLV75533PDBVR",
+      "footprint": "Package_TO_SOT_SMD:SOT-23-5",
+      "mpn": "TLV75533PDBVR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/tlv755p.pdf",
+      "pins": {
+        "1": "HEAD_USB_5V",
+        "2": "GND",
+        "3": "HEAD_USB_5V",
+        "4": null,
+        "5": "HEAD_3V3"
+      },
+      "sheet": "02-supplies",
+      "dnp": false
+    },
+    {
+      "ref": "U202",
+      "value": "TLV75518PDBVR",
+      "footprint": "Package_TO_SOT_SMD:SOT-23-5",
+      "mpn": "TLV75518PDBVR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/tlv755p.pdf",
+      "pins": {
+        "1": "HEAD_USB_5V",
+        "2": "GND",
+        "3": "HEAD_USB_5V",
+        "4": null,
+        "5": "HEAD_1V8"
+      },
+      "sheet": "02-supplies",
+      "dnp": false
+    },
+    {
+      "ref": "C201",
+      "value": "10u 10V X7R",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_USB_5V",
+        "2": "GND"
+      },
+      "sheet": "02-supplies",
+      "dnp": false
+    },
+    {
+      "ref": "C202",
+      "value": "10u 10V X7R",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_3V3",
+        "2": "GND"
+      },
+      "sheet": "02-supplies",
+      "dnp": false
+    },
+    {
+      "ref": "C203",
+      "value": "10u 10V X7R",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_USB_5V",
+        "2": "GND"
+      },
+      "sheet": "02-supplies",
+      "dnp": false
+    },
+    {
+      "ref": "C204",
+      "value": "10u 10V X7R",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_1V8",
+        "2": "GND"
+      },
+      "sheet": "02-supplies",
+      "dnp": false
+    },
+    {
+      "ref": "U203",
+      "value": "TPS62825ADMQR",
+      "footprint": "",
+      "mpn": "TPS62825ADMQR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/tps62825a.pdf",
+      "pins": {
+        "1": "HEAD_CORE_ENABLE",
+        "2": null,
+        "3": "HEAD_CORE_FB",
+        "4": "GND",
+        "5": "HEAD_CORE_SW",
+        "6": "HEAD_USB_5V"
+      },
+      "sheet": "02-supplies",
+      "dnp": false
+    },
+    {
+      "ref": "L201",
+      "value": "0u47 / XFL4015-471MEB",
+      "footprint": "",
+      "mpn": "XFL4015-471MEB",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_CORE_SW",
+        "2": "HEAD_0V9"
+      },
+      "sheet": "02-supplies",
+      "dnp": false
+    },
+    {
+      "ref": "R201",
+      "value": "49k9 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_0V9",
+        "2": "HEAD_CORE_FB"
+      },
+      "sheet": "02-supplies",
+      "dnp": false
+    },
+    {
+      "ref": "R202",
+      "value": "100k 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_CORE_FB",
+        "2": "GND"
+      },
+      "sheet": "02-supplies",
+      "dnp": false
+    },
+    {
+      "ref": "R203",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_CORE_ENABLE",
+        "2": "GND"
+      },
+      "sheet": "02-supplies",
+      "dnp": false
+    },
+    {
+      "ref": "C205",
+      "value": "4u7 10V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_USB_5V",
+        "2": "GND"
+      },
+      "sheet": "02-supplies",
+      "dnp": false
+    },
+    {
+      "ref": "C206",
+      "value": "10u 6V3 X7R",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_0V9",
+        "2": "GND"
+      },
+      "sheet": "02-supplies",
+      "dnp": false
+    },
+    {
+      "ref": "C207",
+      "value": "10u 6V3 X7R",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_0V9",
+        "2": "GND"
+      },
+      "sheet": "02-supplies",
+      "dnp": false
+    },
+    {
+      "ref": "C208",
+      "value": "120p C0G / loop check",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_0V9",
+        "2": "HEAD_CORE_FB"
+      },
+      "sheet": "02-supplies",
+      "dnp": false
+    },
+    {
+      "ref": "#FLG315",
+      "value": "HEAD_USB_5V",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_USB_5V"
+      },
+      "sheet": "02-supplies",
+      "dnp": false,
+      "annotation": true
+    },
+    {
+      "ref": "#FLG316",
+      "value": "GND",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "GND"
+      },
+      "sheet": "02-supplies",
+      "dnp": false,
+      "annotation": true
+    },
+    {
+      "ref": "#FLG317",
+      "value": "HEAD_0V9",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_0V9"
+      },
+      "sheet": "02-supplies",
+      "dnp": false,
+      "annotation": true
+    },
+    {
+      "ref": "U301",
+      "value": "TPS3808G01DBVR",
+      "footprint": "Package_TO_SOT_SMD:SOT-23-6",
+      "mpn": "TPS3808G01DBVR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/tps3808.pdf",
+      "pins": {
+        "1": "HEAD_IO18_OK",
+        "2": "GND",
+        "3": "HEAD_USB_5V",
+        "4": null,
+        "5": "HEAD_SENSE0",
+        "6": "HEAD_USB_5V"
+      },
+      "sheet": "03-power-supervision",
+      "dnp": false
+    },
+    {
+      "ref": "R301",
+      "value": "100k 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_1V8",
+        "2": "HEAD_SENSE0"
+      },
+      "sheet": "03-power-supervision",
+      "dnp": false
+    },
+    {
+      "ref": "R302",
+      "value": "31k6 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_SENSE0",
+        "2": "GND"
+      },
+      "sheet": "03-power-supervision",
+      "dnp": false
+    },
+    {
+      "ref": "R303",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_1V8",
+        "2": "HEAD_IO18_OK"
+      },
+      "sheet": "03-power-supervision",
+      "dnp": false
+    },
+    {
+      "ref": "C301",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_USB_5V",
+        "2": "GND"
+      },
+      "sheet": "03-power-supervision",
+      "dnp": false
+    },
+    {
+      "ref": "U302",
+      "value": "TPS3808G01DBVR",
+      "footprint": "Package_TO_SOT_SMD:SOT-23-6",
+      "mpn": "TPS3808G01DBVR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/tps3808.pdf",
+      "pins": {
+        "1": "HEAD_IO33_OK",
+        "2": "GND",
+        "3": "HEAD_USB_5V",
+        "4": null,
+        "5": "HEAD_SENSE1",
+        "6": "HEAD_USB_5V"
+      },
+      "sheet": "03-power-supervision",
+      "dnp": false
+    },
+    {
+      "ref": "R304",
+      "value": "100k 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_3V3",
+        "2": "HEAD_SENSE1"
+      },
+      "sheet": "03-power-supervision",
+      "dnp": false
+    },
+    {
+      "ref": "R305",
+      "value": "15k4 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_SENSE1",
+        "2": "GND"
+      },
+      "sheet": "03-power-supervision",
+      "dnp": false
+    },
+    {
+      "ref": "R306",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_1V8",
+        "2": "HEAD_IO33_OK"
+      },
+      "sheet": "03-power-supervision",
+      "dnp": false
+    },
+    {
+      "ref": "C302",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_USB_5V",
+        "2": "GND"
+      },
+      "sheet": "03-power-supervision",
+      "dnp": false
+    },
+    {
+      "ref": "U303",
+      "value": "TPS3808G01DBVR",
+      "footprint": "Package_TO_SOT_SMD:SOT-23-6",
+      "mpn": "TPS3808G01DBVR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/tps3808.pdf",
+      "pins": {
+        "1": "HEAD_CORE_OK",
+        "2": "GND",
+        "3": "HEAD_USB_5V",
+        "4": null,
+        "5": "HEAD_SENSE2",
+        "6": "HEAD_USB_5V"
+      },
+      "sheet": "03-power-supervision",
+      "dnp": false
+    },
+    {
+      "ref": "R307",
+      "value": "11k3 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_0V9",
+        "2": "HEAD_SENSE2"
+      },
+      "sheet": "03-power-supervision",
+      "dnp": false
+    },
+    {
+      "ref": "R308",
+      "value": "10k 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_SENSE2",
+        "2": "GND"
+      },
+      "sheet": "03-power-supervision",
+      "dnp": false
+    },
+    {
+      "ref": "R309",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_1V8",
+        "2": "HEAD_CORE_OK"
+      },
+      "sheet": "03-power-supervision",
+      "dnp": false
+    },
+    {
+      "ref": "C303",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_USB_5V",
+        "2": "GND"
+      },
+      "sheet": "03-power-supervision",
+      "dnp": false
+    },
+    {
+      "ref": "U304",
+      "value": "SN74LVC08APWR / powered at 1.8 V",
+      "footprint": "Package_SO:TSSOP-14_4.4x5mm_P0.65mm",
+      "mpn": "SN74LVC08APWR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/sn74lvc08a.pdf",
+      "pins": {
+        "1": "HEAD_IO18_OK",
+        "2": "HEAD_IO33_OK",
+        "3": "HEAD_CORE_ENABLE",
+        "4": "HEAD_CORE_ENABLE",
+        "5": "HEAD_CORE_OK",
+        "6": "HEAD_RESET_N",
+        "7": "GND",
+        "8": null,
+        "9": "GND",
+        "10": "GND",
+        "11": null,
+        "12": "GND",
+        "13": "GND",
+        "14": "HEAD_1V8"
+      },
+      "sheet": "03-power-supervision",
+      "dnp": false
+    },
+    {
+      "ref": "C304",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_1V8",
+        "2": "GND"
+      },
+      "sheet": "03-power-supervision",
+      "dnp": false
+    },
+    {
+      "ref": "R310",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_RESET_N",
+        "2": "GND"
+      },
+      "sheet": "03-power-supervision",
+      "dnp": false
+    },
+    {
+      "ref": "C401",
+      "value": "100n 10V 0402",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_0V9",
+        "2": "GND"
+      },
+      "sheet": "04-decoupling",
+      "dnp": false
+    },
+    {
+      "ref": "C402",
+      "value": "100n 10V 0402",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_0V9",
+        "2": "GND"
+      },
+      "sheet": "04-decoupling",
+      "dnp": false
+    },
+    {
+      "ref": "C403",
+      "value": "100n 10V 0402",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_0V9",
+        "2": "GND"
+      },
+      "sheet": "04-decoupling",
+      "dnp": false
+    },
+    {
+      "ref": "C404",
+      "value": "100n 10V 0402",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_0V9",
+        "2": "GND"
+      },
+      "sheet": "04-decoupling",
+      "dnp": false
+    },
+    {
+      "ref": "C405",
+      "value": "100n 10V 0402",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_0V9",
+        "2": "GND"
+      },
+      "sheet": "04-decoupling",
+      "dnp": false
+    },
+    {
+      "ref": "C406",
+      "value": "100n 10V 0402",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_0V9",
+        "2": "GND"
+      },
+      "sheet": "04-decoupling",
+      "dnp": false
+    },
+    {
+      "ref": "C407",
+      "value": "100n 10V 0402",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_0V9",
+        "2": "GND"
+      },
+      "sheet": "04-decoupling",
+      "dnp": false
+    },
+    {
+      "ref": "C408",
+      "value": "100n 10V 0402",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_0V9",
+        "2": "GND"
+      },
+      "sheet": "04-decoupling",
+      "dnp": false
+    },
+    {
+      "ref": "C409",
+      "value": "100n 10V 0402",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_3V3",
+        "2": "GND"
+      },
+      "sheet": "04-decoupling",
+      "dnp": false
+    },
+    {
+      "ref": "C410",
+      "value": "100n 10V 0402",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_3V3",
+        "2": "GND"
+      },
+      "sheet": "04-decoupling",
+      "dnp": false
+    },
+    {
+      "ref": "C411",
+      "value": "100n 10V 0402",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_3V3",
+        "2": "GND"
+      },
+      "sheet": "04-decoupling",
+      "dnp": false
+    },
+    {
+      "ref": "C412",
+      "value": "100n 10V 0402",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_3V3",
+        "2": "GND"
+      },
+      "sheet": "04-decoupling",
+      "dnp": false
+    },
+    {
+      "ref": "C413",
+      "value": "100n 10V 0402",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_1V8",
+        "2": "GND"
+      },
+      "sheet": "04-decoupling",
+      "dnp": false
+    },
+    {
+      "ref": "C414",
+      "value": "100n 10V 0402",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_1V8",
+        "2": "GND"
+      },
+      "sheet": "04-decoupling",
+      "dnp": false
+    },
+    {
+      "ref": "C415",
+      "value": "100n 10V 0402",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_1V8",
+        "2": "GND"
+      },
+      "sheet": "04-decoupling",
+      "dnp": false
+    },
+    {
+      "ref": "FB401",
+      "value": "BKH1005LM601-T / 600R @100MHz",
+      "footprint": "",
+      "mpn": "BKH1005LM601-T",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_0V9",
+        "2": "HEAD_PLL_0V9"
+      },
+      "sheet": "04-decoupling",
+      "dnp": false
+    },
+    {
+      "ref": "C416",
+      "value": "1u 6V3",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_PLL_0V9",
+        "2": "GND"
+      },
+      "sheet": "04-decoupling",
+      "dnp": false
+    },
+    {
+      "ref": "#FLG517",
+      "value": "HEAD_PLL_0V9",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_PLL_0V9"
+      },
+      "sheet": "04-decoupling",
+      "dnp": false,
+      "annotation": true
+    },
+    {
+      "ref": "R501",
+      "value": "33 1% / scope tuning",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PDM_CLK_RAW",
+        "2": "PDM_CLK"
+      },
+      "sheet": "05-microphones",
+      "dnp": false
+    },
+    {
+      "ref": "MK501",
+      "value": "IM69D130V01XTSA1 / FRONT",
+      "footprint": "",
+      "mpn": "IM69D130V01XTSA1",
+      "datasheet": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-im69d130-datasheet-en.pdf",
+      "pins": {
+        "1": "PDM_DATA0",
+        "2": "HEAD_3V3",
+        "3": "PDM_CLK",
+        "4": "GND",
+        "5": "GND"
+      },
+      "sheet": "05-microphones",
+      "dnp": false
+    },
+    {
+      "ref": "C501",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_3V3",
+        "2": "GND"
+      },
+      "sheet": "05-microphones",
+      "dnp": false
+    },
+    {
+      "ref": "MK502",
+      "value": "IM69D130V01XTSA1 / BACK",
+      "footprint": "",
+      "mpn": "IM69D130V01XTSA1",
+      "datasheet": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-im69d130-datasheet-en.pdf",
+      "pins": {
+        "1": "PDM_DATA1",
+        "2": "HEAD_3V3",
+        "3": "PDM_CLK",
+        "4": "GND",
+        "5": "GND"
+      },
+      "sheet": "05-microphones",
+      "dnp": false
+    },
+    {
+      "ref": "C502",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_3V3",
+        "2": "GND"
+      },
+      "sheet": "05-microphones",
+      "dnp": false
+    },
+    {
+      "ref": "MK503",
+      "value": "IM69D130V01XTSA1 / LEFT",
+      "footprint": "",
+      "mpn": "IM69D130V01XTSA1",
+      "datasheet": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-im69d130-datasheet-en.pdf",
+      "pins": {
+        "1": "PDM_DATA2",
+        "2": "HEAD_3V3",
+        "3": "PDM_CLK",
+        "4": "GND",
+        "5": "GND"
+      },
+      "sheet": "05-microphones",
+      "dnp": false
+    },
+    {
+      "ref": "C503",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_3V3",
+        "2": "GND"
+      },
+      "sheet": "05-microphones",
+      "dnp": false
+    },
+    {
+      "ref": "MK504",
+      "value": "IM69D130V01XTSA1 / RIGHT",
+      "footprint": "",
+      "mpn": "IM69D130V01XTSA1",
+      "datasheet": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-im69d130-datasheet-en.pdf",
+      "pins": {
+        "1": "PDM_DATA3",
+        "2": "HEAD_3V3",
+        "3": "PDM_CLK",
+        "4": "GND",
+        "5": "GND"
+      },
+      "sheet": "05-microphones",
+      "dnp": false
+    },
+    {
+      "ref": "C504",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HEAD_3V3",
+        "2": "GND"
+      },
+      "sheet": "05-microphones",
+      "dnp": false
+    }
+  ]
+}

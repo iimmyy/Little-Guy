@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-21",
+  "scope": "Static support sensitivity for partial assumed mass model; not a released stand",
+  "tests": {
+    "command": "python -m unittest discover -s hardware/little-guy-v2/layout/stand -p test_stability.py -v",
+    "passed": 5,
+    "failed": 0,
+    "independent_rerun_passed": 5
+  },
+  "checks": [
+    "Mass ledger contains both arms, five other servos and bare Jetson kit without duplicating six carried servos",
+    "475 by475 independent mirrored arm pairs match independent review max0.11595836064413012kg.m",
+    "Continuous triangle bound independently recomputed0.11871780950770221kg.m",
+    "Force/edge signs and offcenter-support ballast lever analytically checked",
+    "Independent review found no actionable calculation or claim errors",
+    "Saved results agree with independent recomputation to8.9e-16numeric difference",
+    "Preview visually inspected; partial mass and zero-margin boundaries shown",
+    "Local document links resolve"
+  ],
+  "physical_stability_verified": false,
+  "floor_base_selected": false,
+  "ballast_selected": false,
+  "hardware_accessed": false,
+  "files_sha256": {
+    "parameters.json": "1bc662fae00d6b5732da1cc5ce29a1733d46a130f00e9dbc4bce006224b0fc5e",
+    "stability.py": "eb47a3a01b2515755956ef296b8af335bbf17e59d374c5b057cf4cacf1ac7b26",
+    "test_stability.py": "ae22ec28a2f22dcc502c02f73da5ab8c3731219a27cddcb1543c202507eb36c6",
+    "results.json": "f3f23bdea898eeee9a97da99ed4677cf2269e2774c7bb666b5eaf21a63ffb003",
+    "render.py": "b7dd0b9a1c40635a42c86d16d6773fddcb2cf933891ba75981db2e8ab894a117",
+    "README.md": "acfc9c863fc7664727599d9748acf53fdca4c47d170d2969393702ce66ef9234",
+    "stand-sensitivity.png": "52061a47133a870ac5422a51931c7a17d6adedae783b02dc3f4ab7dbc3b0f742",
+    "stand-sensitivity.svg": "0bd3c9e164dd875b0a8f506b5c695ebe41ce2040f44ce976abb8ec370c327372"
+  },
+  "input_dependencies_sha256": {
+    "layout/parameters.json": "d0849061e2853b55fd61c2f12699275437439591673b42e8860a9a90f09ec3b6",
+    "layout/components.json": "eb3f614ec7735a3c9cad982785c4df97ca5e962edbb49969a90b201540bbd134",
+    "layout/shoulder/parameters.json": "60d48a6d919dcb20ed0db5cf1efd20f9768dc6e9684b26b3a0918361a275d034",
+    "layout/shoulder/study.py": "e61fdd7a66bad824f08424d4ce30b8362abd627d1865c1b55881ec82a939b436",
+    "body-layout.md": "f59673aa6af40b23bf8c867839073c2a07462db60465d2042e7cafeef2f529d5"
+  }
+}

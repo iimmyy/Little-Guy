@@ -1,0 +1,556 @@
+{
+  "revision": "A0.2-WIP",
+  "release": false,
+  "parts": [
+    {
+      "ref": "J101",
+      "value": "Spinal to foot / 6 conductors",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "FOOT_5V",
+        "2": "GND",
+        "3": "FOOT_SCL",
+        "4": "FOOT_SDA",
+        "5": "FOOT_READY_N",
+        "6": "TOE_XSHUT"
+      },
+      "sheet": "01-foot-interface",
+      "dnp": false
+    },
+    {
+      "ref": "U101",
+      "value": "TLV75533PDBVR",
+      "footprint": "Package_TO_SOT_SMD:SOT-23-5",
+      "mpn": "TLV75533PDBVR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/tlv755p.pdf",
+      "pins": {
+        "1": "FOOT_5V",
+        "2": "GND",
+        "3": "FOOT_5V",
+        "4": null,
+        "5": "BRIDGE_3V3"
+      },
+      "sheet": "01-foot-interface",
+      "dnp": false
+    },
+    {
+      "ref": "U102",
+      "value": "TLV75533PDBVR",
+      "footprint": "Package_TO_SOT_SMD:SOT-23-5",
+      "mpn": "TLV75533PDBVR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/tlv755p.pdf",
+      "pins": {
+        "1": "FOOT_5V",
+        "2": "GND",
+        "3": "FOOT_5V",
+        "4": null,
+        "5": "TOF_3V3"
+      },
+      "sheet": "01-foot-interface",
+      "dnp": false
+    },
+    {
+      "ref": "C101",
+      "value": "4u7 10V X7R / verify effective C",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "FOOT_5V",
+        "2": "GND"
+      },
+      "sheet": "01-foot-interface",
+      "dnp": false
+    },
+    {
+      "ref": "C102",
+      "value": "4u7 10V X7R / verify effective C",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "BRIDGE_3V3",
+        "2": "GND"
+      },
+      "sheet": "01-foot-interface",
+      "dnp": false
+    },
+    {
+      "ref": "C103",
+      "value": "4u7 10V X7R / verify effective C",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "FOOT_5V",
+        "2": "GND"
+      },
+      "sheet": "01-foot-interface",
+      "dnp": false
+    },
+    {
+      "ref": "C104",
+      "value": "4u7 10V X7R / verify effective C",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "TOF_3V3",
+        "2": "GND"
+      },
+      "sheet": "01-foot-interface",
+      "dnp": false
+    },
+    {
+      "ref": "U103",
+      "value": "VL53L4CDV0DH/1",
+      "footprint": "",
+      "mpn": "VL53L4CDV0DH/1",
+      "datasheet": "https://www.st.com/resource/en/datasheet/vl53l4cd.pdf",
+      "pins": {
+        "1": "TOF_3V3",
+        "2": "GND",
+        "3": "GND",
+        "4": "GND",
+        "5": "TOE_XSHUT",
+        "6": "GND",
+        "7": "FOOT_READY_N",
+        "8": null,
+        "9": "FOOT_SDA",
+        "10": "FOOT_SCL",
+        "11": "TOF_3V3",
+        "12": "GND"
+      },
+      "sheet": "01-foot-interface",
+      "dnp": false
+    },
+    {
+      "ref": "C105",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "TOF_3V3",
+        "2": "GND"
+      },
+      "sheet": "01-foot-interface",
+      "dnp": false
+    },
+    {
+      "ref": "C106",
+      "value": "4u7 10V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "TOF_3V3",
+        "2": "GND"
+      },
+      "sheet": "01-foot-interface",
+      "dnp": false
+    },
+    {
+      "ref": "R101",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "TOF_3V3",
+        "2": "TOE_XSHUT"
+      },
+      "sheet": "01-foot-interface",
+      "dnp": false
+    },
+    {
+      "ref": "R102",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "BRIDGE_3V3",
+        "2": "FOOT_READY_N"
+      },
+      "sheet": "01-foot-interface",
+      "dnp": false
+    },
+    {
+      "ref": "#FLG212",
+      "value": "FOOT_5V",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "FOOT_5V"
+      },
+      "sheet": "01-foot-interface",
+      "dnp": false,
+      "annotation": true
+    },
+    {
+      "ref": "#FLG213",
+      "value": "GND",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "GND"
+      },
+      "sheet": "01-foot-interface",
+      "dnp": false,
+      "annotation": true
+    },
+    {
+      "ref": "U201",
+      "value": "ADS122C04IPWR / 0x40",
+      "footprint": "Package_SO:TSSOP-16_4.4x5mm_P0.65mm",
+      "mpn": "ADS122C04IPWR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/ads122c04.pdf",
+      "pins": {
+        "1": "GND",
+        "2": "GND",
+        "3": "BRIDGE_3V3",
+        "4": "GND",
+        "5": "GND",
+        "6": "ADC0_AIN3",
+        "7": "ADC0_AIN2",
+        "8": "GND",
+        "9": "BRIDGE_3V3",
+        "10": "ADC0_AIN1",
+        "11": "ADC0_AIN0",
+        "12": "BRIDGE_3V3",
+        "13": "BRIDGE_3V3",
+        "14": "FOOT_READY_N",
+        "15": "FOOT_SDA",
+        "16": "FOOT_SCL"
+      },
+      "sheet": "02-bridges-1",
+      "dnp": false
+    },
+    {
+      "ref": "J201",
+      "value": "Load cell 1 / full bridge",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "BRIDGE_3V3",
+        "2": "GND",
+        "3": "CELL1_P",
+        "4": "CELL1_N"
+      },
+      "sheet": "02-bridges-1",
+      "dnp": false
+    },
+    {
+      "ref": "R201",
+      "value": "1k 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CELL1_P",
+        "2": "ADC0_AIN0"
+      },
+      "sheet": "02-bridges-1",
+      "dnp": false
+    },
+    {
+      "ref": "R202",
+      "value": "1k 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CELL1_N",
+        "2": "ADC0_AIN1"
+      },
+      "sheet": "02-bridges-1",
+      "dnp": false
+    },
+    {
+      "ref": "C201",
+      "value": "10n C0G 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "ADC0_AIN0",
+        "2": "ADC0_AIN1"
+      },
+      "sheet": "02-bridges-1",
+      "dnp": false
+    },
+    {
+      "ref": "J202",
+      "value": "Load cell 2 / full bridge",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "BRIDGE_3V3",
+        "2": "GND",
+        "3": "CELL2_P",
+        "4": "CELL2_N"
+      },
+      "sheet": "02-bridges-1",
+      "dnp": false
+    },
+    {
+      "ref": "R203",
+      "value": "1k 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CELL2_P",
+        "2": "ADC0_AIN2"
+      },
+      "sheet": "02-bridges-1",
+      "dnp": false
+    },
+    {
+      "ref": "R204",
+      "value": "1k 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CELL2_N",
+        "2": "ADC0_AIN3"
+      },
+      "sheet": "02-bridges-1",
+      "dnp": false
+    },
+    {
+      "ref": "C202",
+      "value": "10n C0G 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "ADC0_AIN2",
+        "2": "ADC0_AIN3"
+      },
+      "sheet": "02-bridges-1",
+      "dnp": false
+    },
+    {
+      "ref": "C203",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "BRIDGE_3V3",
+        "2": "GND"
+      },
+      "sheet": "02-bridges-1",
+      "dnp": false
+    },
+    {
+      "ref": "C204",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "BRIDGE_3V3",
+        "2": "GND"
+      },
+      "sheet": "02-bridges-1",
+      "dnp": false
+    },
+    {
+      "ref": "C205",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "BRIDGE_3V3",
+        "2": "GND"
+      },
+      "sheet": "02-bridges-1",
+      "dnp": false
+    },
+    {
+      "ref": "U301",
+      "value": "ADS122C04IPWR / 0x41",
+      "footprint": "Package_SO:TSSOP-16_4.4x5mm_P0.65mm",
+      "mpn": "ADS122C04IPWR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/ads122c04.pdf",
+      "pins": {
+        "1": "BRIDGE_3V3",
+        "2": "GND",
+        "3": "BRIDGE_3V3",
+        "4": "GND",
+        "5": "GND",
+        "6": "ADC1_AIN3",
+        "7": "ADC1_AIN2",
+        "8": "GND",
+        "9": "BRIDGE_3V3",
+        "10": "ADC1_AIN1",
+        "11": "ADC1_AIN0",
+        "12": "BRIDGE_3V3",
+        "13": "BRIDGE_3V3",
+        "14": "FOOT_READY_N",
+        "15": "FOOT_SDA",
+        "16": "FOOT_SCL"
+      },
+      "sheet": "03-bridges-2",
+      "dnp": false
+    },
+    {
+      "ref": "J301",
+      "value": "Load cell 3 / full bridge",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "BRIDGE_3V3",
+        "2": "GND",
+        "3": "CELL3_P",
+        "4": "CELL3_N"
+      },
+      "sheet": "03-bridges-2",
+      "dnp": false
+    },
+    {
+      "ref": "R301",
+      "value": "1k 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CELL3_P",
+        "2": "ADC1_AIN0"
+      },
+      "sheet": "03-bridges-2",
+      "dnp": false
+    },
+    {
+      "ref": "R302",
+      "value": "1k 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CELL3_N",
+        "2": "ADC1_AIN1"
+      },
+      "sheet": "03-bridges-2",
+      "dnp": false
+    },
+    {
+      "ref": "C301",
+      "value": "10n C0G 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "ADC1_AIN0",
+        "2": "ADC1_AIN1"
+      },
+      "sheet": "03-bridges-2",
+      "dnp": false
+    },
+    {
+      "ref": "J302",
+      "value": "Load cell 4 / full bridge",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "BRIDGE_3V3",
+        "2": "GND",
+        "3": "CELL4_P",
+        "4": "CELL4_N"
+      },
+      "sheet": "03-bridges-2",
+      "dnp": false
+    },
+    {
+      "ref": "R303",
+      "value": "1k 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CELL4_P",
+        "2": "ADC1_AIN2"
+      },
+      "sheet": "03-bridges-2",
+      "dnp": false
+    },
+    {
+      "ref": "R304",
+      "value": "1k 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CELL4_N",
+        "2": "ADC1_AIN3"
+      },
+      "sheet": "03-bridges-2",
+      "dnp": false
+    },
+    {
+      "ref": "C302",
+      "value": "10n C0G 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "ADC1_AIN2",
+        "2": "ADC1_AIN3"
+      },
+      "sheet": "03-bridges-2",
+      "dnp": false
+    },
+    {
+      "ref": "C303",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "BRIDGE_3V3",
+        "2": "GND"
+      },
+      "sheet": "03-bridges-2",
+      "dnp": false
+    },
+    {
+      "ref": "C304",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "BRIDGE_3V3",
+        "2": "GND"
+      },
+      "sheet": "03-bridges-2",
+      "dnp": false
+    },
+    {
+      "ref": "C305",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "BRIDGE_3V3",
+        "2": "GND"
+      },
+      "sheet": "03-bridges-2",
+      "dnp": false
+    }
+  ]
+}

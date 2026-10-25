@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-21",
+  "scope": "Right-shoulder discrete geometry and static gravity screen; baseline and spacing candidate",
+  "checks": [
+    "Six analytical tests passed: rotations, torque/position cases, SAT separation, containment and candidate spacing",
+    "Independent review reproduced baseline positions and gravity torques and inspected SAT method",
+    "475 samples per variant generated and report counts checked",
+    "Baseline torso interior distinguished from boundary crossings; link-reference shift documented",
+    "Baseline pose preview visually inspected",
+    "Local Markdown links resolve",
+    "Final independent review reproduced candidate gaps, span and gravity-load change; no actionable findings"
+  ],
+  "physical_fit_verified": false,
+  "manufacturing_ready": false,
+  "continuous_motion_verified": false,
+  "joint_limits_verified": false,
+  "files_sha256": {
+    "parameters.json": "60d48a6d919dcb20ed0db5cf1efd20f9768dc6e9684b26b3a0918361a275d034",
+    "study.py": "e61fdd7a66bad824f08424d4ce30b8362abd627d1865c1b55881ec82a939b436",
+    "test_study.py": "c814c9e1f6e70a73f8e60e45b014c9627ca2b13258f4de489eeb1b90bf8bc50d",
+    "render.py": "f9e5ba9d9a2b0a3247bee8d4d4d2a9b03b352e981481d546ef2d2f5c54db8b69",
+    "README.md": "43e79b80dad729c30c3469e87ea774091c3cb231c2a3509e1a92efb89371b2e9",
+    "results.json": "e946542560dd43bf69da5fe8cddb1deae72384360315408584a215803e725277",
+    "candidate-results.json": "ff909c12c46fb84b27783ea1000ef98275126a0ec8244cabbc591fe5683ab66b",
+    "shoulder-poses.png": "56e775f95928e10900d30cb9751d85e251c7255e904352872b0a0f1d3c30692b",
+    "../parameters.json": "d0849061e2853b55fd61c2f12699275437439591673b42e8860a9a90f09ec3b6",
+    "../components.json": "eb3f614ec7735a3c9cad982785c4df97ca5e962edbb49969a90b201540bbd134",
+    "../../servo-interface.md": "eddb5db507da53adfb3a8df9575e257cf769cd2178211ec9f276712f4fbd0653"
+  }
+}

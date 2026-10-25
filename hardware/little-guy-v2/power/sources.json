@@ -1,0 +1,55 @@
+{
+  "reviewed": "2026-10-21",
+  "sources": [
+    {
+      "url": "https://files.waveshare.com/wiki/Bus_Servo_Adapter_A/Bus_Servo_Adapter_A.pdf",
+      "local_path": "../reference/Bus_Servo_Adapter_A.pdf",
+      "sha256": "cd056a9a90cbd5d2fd26abc22dcb6f87a954ca411128b0e46e02d5e4473bd1ae",
+      "supports": [
+        "H3/H5 common DC_IN0, DATA, GND and MAX6A label",
+        "Symbol pins1DATA2DC_IN03GND; physical mating view unverified",
+        "USB/DC diode and regulator paths power logic",
+        "Ground common to USB and bus; H1 input MOSFET does not cover DC1 direct input",
+        "D5 on adapter DC_IN0, not isolated external servo rail"
+      ],
+      "interpretation": "Schematic-derived, not actual board revision verification"
+    },
+    {
+      "url": "https://docs.waveshare.com/ST3215_Servo",
+      "supports": [
+        "12V selected servo rated current0.9A, stall current2.7A, operating range6-12.6V"
+      ],
+      "interpretation": "Published figures, not measured robot consumption"
+    },
+    {
+      "url": "https://docs.waveshare.com/ST3215_Servo/FAQ",
+      "supports": [
+        "5264-3P connector designation",
+        "Signal high2-5V low0-0.45V"
+      ],
+      "limitations": [
+        "Does not identify supplied contact manufacturer, current rating or powered-off input behavior"
+      ]
+    },
+    {
+      "url": "https://docs.waveshare.com/Bus_Servo_Adapter_A/Product-Wiring-Example",
+      "supports": [
+        "USB control and jumperB",
+        "Standard guide powers servo rail through adapter"
+      ],
+      "limitations": [
+        "Does not validate our external power harness"
+      ]
+    },
+    {
+      "url": "https://supplychain.molex.com/content/dam/molex/molex-dot-com/en_us/pdf/datasheets/987651-8703.pdf",
+      "supports": [
+        "Specific MiniSPOX family reference states3A atAWG22"
+      ],
+      "limitations": [
+        "Not a rating for unidentified supplied servo leads; no physical compatibility claim"
+      ]
+    }
+  ],
+  "physical_hardware_examined": false
+}

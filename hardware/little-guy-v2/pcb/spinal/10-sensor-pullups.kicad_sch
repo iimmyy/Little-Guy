@@ -1,0 +1,1259 @@
+(kicad_sch
+  (version 20260306)
+  (generator eeschema)
+  (generator_version "10.0")
+  (uuid "d3eef230-29e0-592f-8b00-975dee557173")
+  (paper "A3")
+  (title_block
+    (title "Sensor branch pull-ups / fitting options")
+    (date "2026-10-25")
+    (rev "A0.2-WIP")
+    (comment 1 "DESIGN IN PROGRESS - NOT FOR FABRICATION")
+  )
+  (lib_symbols
+    (symbol "LGV2:R"
+      (pin_names hide
+        (offset 0)
+      )
+      (pin_numbers hide)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "R"
+        (at 3.81 1.27 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Value" "R"
+        (at 3.81 -1.27 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (symbol "R_0_1"
+        (rectangle
+          (start -1.016 2.54)
+          (end 1.016 -2.54)
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+      )
+      (symbol "R_1_1"
+        (pin passive line
+          (at 0 5.08 270)
+          (length 2.54)
+          (name "~"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 0 -5.08 90)
+          (length 2.54)
+          (name "~"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+  (text "I2C BRANCH PULL-UPS / one fitted pair per selected electrical branch"
+    (at 15 15 0)
+    (effects
+      (font
+        (size 1.8 1.8)
+      )
+      (justify left)
+    )
+    (uuid "7c2161d5-7e0f-5486-bb17-20ebd8cc9219")
+  )
+  (text "Initial value 4k7. Remove duplicate remote module pull-ups or mark these DNP as appropriate.\nActual values depend on full cable capacitance, sink current and selected bus speed.\nQualify all five branches; this sheet does not establish cable noise immunity."
+    (at 15 24 0)
+    (effects
+      (font
+        (size 1.2 1.2)
+      )
+      (justify left)
+    )
+    (uuid "8d4bbb0d-469f-5662-87fb-e41b65b31ee4")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 44.45 90.17 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "076c3e76-aba1-5e78-9b6f-c1b62128dd6e")
+    (property "Reference" "R402"
+      (at 50.800000000000004 88.9 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "4k7 1% / fitting option"
+      (at 50.800000000000004 91.44 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 44.45 90.17 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 44.45 90.17 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 44.45 90.17 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 44.45 90.17 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167/d3eef230-29e0-592f-8b00-975dee557173"
+          (reference "R402")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 44.45 85.09)
+      (xy 44.45 81.28)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "bdb0ab27-9b94-5c81-ba79-2636d76317d3")
+  )
+  (global_label "MCU_3V3"
+    (shape bidirectional)
+    (at 44.45 81.28 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "6065c87b-f964-5dbf-b768-552e58eb1b6b")
+  )
+  (wire
+    (pts
+      (xy 44.45 95.25)
+      (xy 44.45 99.06)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "dc6cd29f-4dbf-533e-b0af-e07cf453eca2")
+  )
+  (global_label "SENSOR0_SCL"
+    (shape bidirectional)
+    (at 44.45 99.06 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "4e78572b-c5a6-5d28-ae8e-54e525427fc8")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 44.45 165.1 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "b0601747-e239-559b-ba16-47031a2aac28")
+    (property "Reference" "R403"
+      (at 50.800000000000004 163.82999999999998 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "4k7 1% / fitting option"
+      (at 50.800000000000004 166.37 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 44.45 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 44.45 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 44.45 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 44.45 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167/d3eef230-29e0-592f-8b00-975dee557173"
+          (reference "R403")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 44.45 160.02)
+      (xy 44.45 156.21)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "527b6309-36a1-599a-9c94-527d7e62ac79")
+  )
+  (global_label "MCU_3V3"
+    (shape bidirectional)
+    (at 44.45 156.21 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "913448dd-dc70-5117-ba21-4d202496a2bd")
+  )
+  (wire
+    (pts
+      (xy 44.45 170.18)
+      (xy 44.45 173.99)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "9a867e28-8349-5591-ae1c-9b8ccd3bc572")
+  )
+  (global_label "SENSOR0_SDA"
+    (shape bidirectional)
+    (at 44.45 173.99 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "cead0c6f-1e2a-5492-9887-cd7a545daaeb")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 119.38 90.17 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "e575d717-45ad-51cb-b9f0-a9512223f9a6")
+    (property "Reference" "R404"
+      (at 125.72999999999999 88.9 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "4k7 1% / fitting option"
+      (at 125.72999999999999 91.44 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 119.38 90.17 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 119.38 90.17 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 119.38 90.17 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 119.38 90.17 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167/d3eef230-29e0-592f-8b00-975dee557173"
+          (reference "R404")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 119.38 85.09)
+      (xy 119.38 81.28)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "7f49c84a-8c6a-5215-b591-eeee116aded5")
+  )
+  (global_label "MCU_3V3"
+    (shape bidirectional)
+    (at 119.38 81.28 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "e198e3af-c5fe-5d39-9a8b-6a5f515129f2")
+  )
+  (wire
+    (pts
+      (xy 119.38 95.25)
+      (xy 119.38 99.06)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "f6c03a25-f9a0-5e08-9c97-6fbdba2e62da")
+  )
+  (global_label "SENSOR1_SCL"
+    (shape bidirectional)
+    (at 119.38 99.06 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "5344ae6e-23cf-5016-86cb-5ef4cbe86730")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 119.38 165.1 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "281754a7-a5a7-5696-8065-021fdc049bff")
+    (property "Reference" "R405"
+      (at 125.72999999999999 163.82999999999998 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "4k7 1% / fitting option"
+      (at 125.72999999999999 166.37 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 119.38 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 119.38 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 119.38 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 119.38 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167/d3eef230-29e0-592f-8b00-975dee557173"
+          (reference "R405")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 119.38 160.02)
+      (xy 119.38 156.21)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "f5392c04-5f48-5345-9aa1-37151278b0cf")
+  )
+  (global_label "MCU_3V3"
+    (shape bidirectional)
+    (at 119.38 156.21 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "b10e8327-3cdf-5221-9a86-0cbfc2076add")
+  )
+  (wire
+    (pts
+      (xy 119.38 170.18)
+      (xy 119.38 173.99)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "7097b1b9-36d6-53a2-abc0-4ad12a4aa2e6")
+  )
+  (global_label "SENSOR1_SDA"
+    (shape bidirectional)
+    (at 119.38 173.99 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "63a53120-5dd8-50fc-b02c-090da20b6292")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 195.58 90.17 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "8be98357-939b-5206-9850-4c9d0b75d8cb")
+    (property "Reference" "R406"
+      (at 201.93 88.9 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "4k7 1% / fitting option"
+      (at 201.93 91.44 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 195.58 90.17 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 195.58 90.17 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 195.58 90.17 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 195.58 90.17 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167/d3eef230-29e0-592f-8b00-975dee557173"
+          (reference "R406")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 195.58 85.09)
+      (xy 195.58 81.28)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "25d129be-23ce-535b-9c18-1d2a26686395")
+  )
+  (global_label "MCU_3V3"
+    (shape bidirectional)
+    (at 195.58 81.28 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "52466455-ffc2-5a70-beb6-b64ccb5a60ba")
+  )
+  (wire
+    (pts
+      (xy 195.58 95.25)
+      (xy 195.58 99.06)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "f273bc4d-50ae-5d18-8330-133e12638e9a")
+  )
+  (global_label "SENSOR2_SCL"
+    (shape bidirectional)
+    (at 195.58 99.06 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "b2a141cb-d4b3-52e2-b9f9-bd2d77045f92")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 195.58 165.1 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "674e6e34-511f-5aad-bf88-b404ebf8ad92")
+    (property "Reference" "R407"
+      (at 201.93 163.82999999999998 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "4k7 1% / fitting option"
+      (at 201.93 166.37 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 195.58 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 195.58 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 195.58 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 195.58 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167/d3eef230-29e0-592f-8b00-975dee557173"
+          (reference "R407")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 195.58 160.02)
+      (xy 195.58 156.21)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "f76231ba-fdf2-5f8b-a94d-ae3aa99fe3d7")
+  )
+  (global_label "MCU_3V3"
+    (shape bidirectional)
+    (at 195.58 156.21 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "00dd56e2-8855-55e7-ac36-c3b46219174d")
+  )
+  (wire
+    (pts
+      (xy 195.58 170.18)
+      (xy 195.58 173.99)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "58720802-0e28-5692-8829-b192ae8fb73b")
+  )
+  (global_label "SENSOR2_SDA"
+    (shape bidirectional)
+    (at 195.58 173.99 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "f6049ce3-9328-5509-ad45-21565f0fc76f")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 270.51 90.17 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "300921a8-0cd8-5966-a427-3f75ca5cf1b7")
+    (property "Reference" "R408"
+      (at 276.86 88.9 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "4k7 1% / fitting option"
+      (at 276.86 91.44 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 270.51 90.17 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 270.51 90.17 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 270.51 90.17 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 270.51 90.17 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167/d3eef230-29e0-592f-8b00-975dee557173"
+          (reference "R408")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 270.51 85.09)
+      (xy 270.51 81.28)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "4b46ff36-84af-5b54-9d8b-7057e3496843")
+  )
+  (global_label "MCU_3V3"
+    (shape bidirectional)
+    (at 270.51 81.28 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "4bdef972-0d62-506a-8812-2669070d2b52")
+  )
+  (wire
+    (pts
+      (xy 270.51 95.25)
+      (xy 270.51 99.06)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "9de34db2-ee1d-5cc6-a5fb-6923176abe05")
+  )
+  (global_label "SENSOR3_SCL"
+    (shape bidirectional)
+    (at 270.51 99.06 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "d93ad5ab-0ad7-5977-8d0d-b2b1344bd57b")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 270.51 165.1 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "5b004fb6-7cbb-52e7-ac9c-503fe41525c4")
+    (property "Reference" "R409"
+      (at 276.86 163.82999999999998 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "4k7 1% / fitting option"
+      (at 276.86 166.37 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 270.51 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 270.51 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 270.51 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 270.51 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167/d3eef230-29e0-592f-8b00-975dee557173"
+          (reference "R409")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 270.51 160.02)
+      (xy 270.51 156.21)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "fc7c8f41-67db-50b1-bedd-c811a3170666")
+  )
+  (global_label "MCU_3V3"
+    (shape bidirectional)
+    (at 270.51 156.21 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "8b8ddc7f-30d7-5fb0-be6f-058ad3b0fa9c")
+  )
+  (wire
+    (pts
+      (xy 270.51 170.18)
+      (xy 270.51 173.99)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "b8e2e2d0-30a9-5139-8e76-ca6b441fafa8")
+  )
+  (global_label "SENSOR3_SDA"
+    (shape bidirectional)
+    (at 270.51 173.99 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "84906784-82c4-5ec9-84c4-d368b63274ca")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 345.44 90.17 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "5f7385b3-7fd7-5bdf-b8dd-6806daa08fa9")
+    (property "Reference" "R410"
+      (at 351.79 88.9 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "4k7 1% / fitting option"
+      (at 351.79 91.44 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 345.44 90.17 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 345.44 90.17 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 345.44 90.17 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 345.44 90.17 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167/d3eef230-29e0-592f-8b00-975dee557173"
+          (reference "R410")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 345.44 85.09)
+      (xy 345.44 81.28)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "7b85a588-d244-5319-98c3-e9a371f1effa")
+  )
+  (global_label "MCU_3V3"
+    (shape bidirectional)
+    (at 345.44 81.28 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "e1a3f32c-d163-5a3f-9601-f98c14b0e823")
+  )
+  (wire
+    (pts
+      (xy 345.44 95.25)
+      (xy 345.44 99.06)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "566e7734-f021-5102-9b5c-8c645683fcea")
+  )
+  (global_label "SENSOR4_SCL"
+    (shape bidirectional)
+    (at 345.44 99.06 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "c193fdc5-31bf-5c87-a12e-9ee9d19380b7")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 345.44 165.1 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "7ba604af-312d-52cb-8e29-4e385d426adb")
+    (property "Reference" "R411"
+      (at 351.79 163.82999999999998 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "4k7 1% / fitting option"
+      (at 351.79 166.37 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 345.44 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 345.44 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 345.44 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 345.44 165.1 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-spinal"
+        (path "/3766b370-f998-5372-8664-7b6b6b964167/d3eef230-29e0-592f-8b00-975dee557173"
+          (reference "R411")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 345.44 160.02)
+      (xy 345.44 156.21)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "2aa6e0f3-310d-5539-86db-e50ec36e7115")
+  )
+  (global_label "MCU_3V3"
+    (shape bidirectional)
+    (at 345.44 156.21 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "d909ce96-0dc2-5aa2-8523-28d383d3937b")
+  )
+  (wire
+    (pts
+      (xy 345.44 170.18)
+      (xy 345.44 173.99)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "0ebad934-d98f-541d-ae91-e51050cf1028")
+  )
+  (global_label "SENSOR4_SDA"
+    (shape bidirectional)
+    (at 345.44 173.99 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "68802433-3ff3-5967-8124-1850fe478061")
+  )
+  (embedded_fonts no)
+)

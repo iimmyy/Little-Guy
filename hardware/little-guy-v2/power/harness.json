@@ -1,0 +1,541 @@
+{
+  "schema_version": 1,
+  "status": "logical_candidate_not_connection_instruction",
+  "nominal_servo_voltage_v": 12,
+  "source_nodes": {
+    "positive": "PSU_P",
+    "return": "PSU_R"
+  },
+  "loads": [
+    {
+      "name": "head_yaw",
+      "positive": "HEAD_YAW_P",
+      "return": "HEAD_YAW_R",
+      "data": "HEAD_YAW_DATA",
+      "rated_current_reference_a": 0.9,
+      "stall_current_reference_a": 2.7
+    },
+    {
+      "name": "head_pitch",
+      "positive": "HEAD_PITCH_P",
+      "return": "HEAD_PITCH_R",
+      "data": "HEAD_PITCH_DATA",
+      "rated_current_reference_a": 0.9,
+      "stall_current_reference_a": 2.7
+    },
+    {
+      "name": "left_shoulder_pitch",
+      "positive": "LEFT_SHOULDER_PITCH_P",
+      "return": "LEFT_SHOULDER_PITCH_R",
+      "data": "LEFT_SHOULDER_PITCH_DATA",
+      "rated_current_reference_a": 0.9,
+      "stall_current_reference_a": 2.7
+    },
+    {
+      "name": "left_shoulder_roll",
+      "positive": "LEFT_SHOULDER_ROLL_P",
+      "return": "LEFT_SHOULDER_ROLL_R",
+      "data": "LEFT_SHOULDER_ROLL_DATA",
+      "rated_current_reference_a": 0.9,
+      "stall_current_reference_a": 2.7
+    },
+    {
+      "name": "left_elbow",
+      "positive": "LEFT_ELBOW_P",
+      "return": "LEFT_ELBOW_R",
+      "data": "LEFT_ELBOW_DATA",
+      "rated_current_reference_a": 0.9,
+      "stall_current_reference_a": 2.7
+    },
+    {
+      "name": "left_wrist",
+      "positive": "LEFT_WRIST_P",
+      "return": "LEFT_WRIST_R",
+      "data": "LEFT_WRIST_DATA",
+      "rated_current_reference_a": 0.9,
+      "stall_current_reference_a": 2.7
+    },
+    {
+      "name": "right_shoulder_pitch",
+      "positive": "RIGHT_SHOULDER_PITCH_P",
+      "return": "RIGHT_SHOULDER_PITCH_R",
+      "data": "RIGHT_SHOULDER_PITCH_DATA",
+      "rated_current_reference_a": 0.9,
+      "stall_current_reference_a": 2.7
+    },
+    {
+      "name": "right_shoulder_roll",
+      "positive": "RIGHT_SHOULDER_ROLL_P",
+      "return": "RIGHT_SHOULDER_ROLL_R",
+      "data": "RIGHT_SHOULDER_ROLL_DATA",
+      "rated_current_reference_a": 0.9,
+      "stall_current_reference_a": 2.7
+    },
+    {
+      "name": "right_elbow",
+      "positive": "RIGHT_ELBOW_P",
+      "return": "RIGHT_ELBOW_R",
+      "data": "RIGHT_ELBOW_DATA",
+      "rated_current_reference_a": 0.9,
+      "stall_current_reference_a": 2.7
+    },
+    {
+      "name": "right_wrist",
+      "positive": "RIGHT_WRIST_P",
+      "return": "RIGHT_WRIST_R",
+      "data": "RIGHT_WRIST_DATA",
+      "rated_current_reference_a": 0.9,
+      "stall_current_reference_a": 2.7
+    },
+    {
+      "name": "waist_yaw",
+      "positive": "WAIST_YAW_P",
+      "return": "WAIST_YAW_R",
+      "data": "WAIST_YAW_DATA",
+      "rated_current_reference_a": 0.9,
+      "stall_current_reference_a": 2.7
+    }
+  ],
+  "links": [
+    {
+      "id": "F_MAIN",
+      "a": "PSU_P",
+      "b": "AFTER_F_MAIN",
+      "domain": "positive",
+      "kind": "protection",
+      "selected_part": null,
+      "current_rating_a": null,
+      "expected_source_disconnects": [
+        "head_yaw",
+        "head_pitch",
+        "left_shoulder_pitch",
+        "left_shoulder_roll",
+        "left_elbow",
+        "left_wrist",
+        "right_shoulder_pitch",
+        "right_shoulder_roll",
+        "right_elbow",
+        "right_wrist",
+        "waist_yaw"
+      ]
+    },
+    {
+      "id": "SW_MAIN",
+      "a": "AFTER_F_MAIN",
+      "b": "AFTER_SW_MAIN",
+      "domain": "positive",
+      "kind": "manual_disconnect",
+      "selected_part": null,
+      "current_rating_a": null,
+      "expected_source_disconnects": [
+        "head_yaw",
+        "head_pitch",
+        "left_shoulder_pitch",
+        "left_shoulder_roll",
+        "left_elbow",
+        "left_wrist",
+        "right_shoulder_pitch",
+        "right_shoulder_roll",
+        "right_elbow",
+        "right_wrist",
+        "waist_yaw"
+      ]
+    },
+    {
+      "id": "TRUNK_P",
+      "a": "AFTER_SW_MAIN",
+      "b": "HUB_P",
+      "domain": "positive",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "TRUNK_R",
+      "a": "PSU_R",
+      "b": "HUB_R",
+      "domain": "return",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "F_HEAD_YAW",
+      "a": "HUB_P",
+      "b": "HEAD_YAW_FUSED",
+      "domain": "positive",
+      "kind": "protection",
+      "selected_part": null,
+      "current_rating_a": null,
+      "expected_source_disconnects": [
+        "head_yaw"
+      ]
+    },
+    {
+      "id": "FEED_HEAD_YAW",
+      "a": "HEAD_YAW_FUSED",
+      "b": "HEAD_YAW_P",
+      "domain": "positive",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "RETURN_HEAD_YAW",
+      "a": "HUB_R",
+      "b": "HEAD_YAW_R",
+      "domain": "return",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "F_HEAD_PITCH",
+      "a": "HUB_P",
+      "b": "HEAD_PITCH_FUSED",
+      "domain": "positive",
+      "kind": "protection",
+      "selected_part": null,
+      "current_rating_a": null,
+      "expected_source_disconnects": [
+        "head_pitch"
+      ]
+    },
+    {
+      "id": "FEED_HEAD_PITCH",
+      "a": "HEAD_PITCH_FUSED",
+      "b": "HEAD_PITCH_P",
+      "domain": "positive",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "RETURN_HEAD_PITCH",
+      "a": "HUB_R",
+      "b": "HEAD_PITCH_R",
+      "domain": "return",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "F_LEFT_SHOULDER_PITCH",
+      "a": "HUB_P",
+      "b": "LEFT_SHOULDER_PITCH_FUSED",
+      "domain": "positive",
+      "kind": "protection",
+      "selected_part": null,
+      "current_rating_a": null,
+      "expected_source_disconnects": [
+        "left_shoulder_pitch"
+      ]
+    },
+    {
+      "id": "FEED_LEFT_SHOULDER_PITCH",
+      "a": "LEFT_SHOULDER_PITCH_FUSED",
+      "b": "LEFT_SHOULDER_PITCH_P",
+      "domain": "positive",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "RETURN_LEFT_SHOULDER_PITCH",
+      "a": "HUB_R",
+      "b": "LEFT_SHOULDER_PITCH_R",
+      "domain": "return",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "F_LEFT_SHOULDER_ROLL",
+      "a": "HUB_P",
+      "b": "LEFT_SHOULDER_ROLL_FUSED",
+      "domain": "positive",
+      "kind": "protection",
+      "selected_part": null,
+      "current_rating_a": null,
+      "expected_source_disconnects": [
+        "left_shoulder_roll"
+      ]
+    },
+    {
+      "id": "FEED_LEFT_SHOULDER_ROLL",
+      "a": "LEFT_SHOULDER_ROLL_FUSED",
+      "b": "LEFT_SHOULDER_ROLL_P",
+      "domain": "positive",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "RETURN_LEFT_SHOULDER_ROLL",
+      "a": "HUB_R",
+      "b": "LEFT_SHOULDER_ROLL_R",
+      "domain": "return",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "F_LEFT_ELBOW",
+      "a": "HUB_P",
+      "b": "LEFT_ELBOW_FUSED",
+      "domain": "positive",
+      "kind": "protection",
+      "selected_part": null,
+      "current_rating_a": null,
+      "expected_source_disconnects": [
+        "left_elbow"
+      ]
+    },
+    {
+      "id": "FEED_LEFT_ELBOW",
+      "a": "LEFT_ELBOW_FUSED",
+      "b": "LEFT_ELBOW_P",
+      "domain": "positive",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "RETURN_LEFT_ELBOW",
+      "a": "HUB_R",
+      "b": "LEFT_ELBOW_R",
+      "domain": "return",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "F_LEFT_WRIST",
+      "a": "HUB_P",
+      "b": "LEFT_WRIST_FUSED",
+      "domain": "positive",
+      "kind": "protection",
+      "selected_part": null,
+      "current_rating_a": null,
+      "expected_source_disconnects": [
+        "left_wrist"
+      ]
+    },
+    {
+      "id": "FEED_LEFT_WRIST",
+      "a": "LEFT_WRIST_FUSED",
+      "b": "LEFT_WRIST_P",
+      "domain": "positive",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "RETURN_LEFT_WRIST",
+      "a": "HUB_R",
+      "b": "LEFT_WRIST_R",
+      "domain": "return",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "F_RIGHT_SHOULDER_PITCH",
+      "a": "HUB_P",
+      "b": "RIGHT_SHOULDER_PITCH_FUSED",
+      "domain": "positive",
+      "kind": "protection",
+      "selected_part": null,
+      "current_rating_a": null,
+      "expected_source_disconnects": [
+        "right_shoulder_pitch"
+      ]
+    },
+    {
+      "id": "FEED_RIGHT_SHOULDER_PITCH",
+      "a": "RIGHT_SHOULDER_PITCH_FUSED",
+      "b": "RIGHT_SHOULDER_PITCH_P",
+      "domain": "positive",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "RETURN_RIGHT_SHOULDER_PITCH",
+      "a": "HUB_R",
+      "b": "RIGHT_SHOULDER_PITCH_R",
+      "domain": "return",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "F_RIGHT_SHOULDER_ROLL",
+      "a": "HUB_P",
+      "b": "RIGHT_SHOULDER_ROLL_FUSED",
+      "domain": "positive",
+      "kind": "protection",
+      "selected_part": null,
+      "current_rating_a": null,
+      "expected_source_disconnects": [
+        "right_shoulder_roll"
+      ]
+    },
+    {
+      "id": "FEED_RIGHT_SHOULDER_ROLL",
+      "a": "RIGHT_SHOULDER_ROLL_FUSED",
+      "b": "RIGHT_SHOULDER_ROLL_P",
+      "domain": "positive",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "RETURN_RIGHT_SHOULDER_ROLL",
+      "a": "HUB_R",
+      "b": "RIGHT_SHOULDER_ROLL_R",
+      "domain": "return",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "F_RIGHT_ELBOW",
+      "a": "HUB_P",
+      "b": "RIGHT_ELBOW_FUSED",
+      "domain": "positive",
+      "kind": "protection",
+      "selected_part": null,
+      "current_rating_a": null,
+      "expected_source_disconnects": [
+        "right_elbow"
+      ]
+    },
+    {
+      "id": "FEED_RIGHT_ELBOW",
+      "a": "RIGHT_ELBOW_FUSED",
+      "b": "RIGHT_ELBOW_P",
+      "domain": "positive",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "RETURN_RIGHT_ELBOW",
+      "a": "HUB_R",
+      "b": "RIGHT_ELBOW_R",
+      "domain": "return",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "F_RIGHT_WRIST",
+      "a": "HUB_P",
+      "b": "RIGHT_WRIST_FUSED",
+      "domain": "positive",
+      "kind": "protection",
+      "selected_part": null,
+      "current_rating_a": null,
+      "expected_source_disconnects": [
+        "right_wrist"
+      ]
+    },
+    {
+      "id": "FEED_RIGHT_WRIST",
+      "a": "RIGHT_WRIST_FUSED",
+      "b": "RIGHT_WRIST_P",
+      "domain": "positive",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "RETURN_RIGHT_WRIST",
+      "a": "HUB_R",
+      "b": "RIGHT_WRIST_R",
+      "domain": "return",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "F_WAIST_YAW",
+      "a": "HUB_P",
+      "b": "WAIST_YAW_FUSED",
+      "domain": "positive",
+      "kind": "protection",
+      "selected_part": null,
+      "current_rating_a": null,
+      "expected_source_disconnects": [
+        "waist_yaw"
+      ]
+    },
+    {
+      "id": "FEED_WAIST_YAW",
+      "a": "WAIST_YAW_FUSED",
+      "b": "WAIST_YAW_P",
+      "domain": "positive",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "RETURN_WAIST_YAW",
+      "a": "HUB_R",
+      "b": "WAIST_YAW_R",
+      "domain": "return",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "ADAPTER_REFERENCE",
+      "a": "HUB_R",
+      "b": "ADAPTER_GND",
+      "domain": "return",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    },
+    {
+      "id": "USB_GROUND",
+      "a": "ADAPTER_GND",
+      "b": "JETSON_USB_GND",
+      "domain": "return",
+      "kind": "conductor",
+      "selected_part": null,
+      "current_rating_a": null
+    }
+  ],
+  "data_net": {
+    "driver": "ADAPTER_DATA",
+    "members": [
+      "HEAD_YAW_DATA",
+      "HEAD_PITCH_DATA",
+      "LEFT_SHOULDER_PITCH_DATA",
+      "LEFT_SHOULDER_ROLL_DATA",
+      "LEFT_ELBOW_DATA",
+      "LEFT_WRIST_DATA",
+      "RIGHT_SHOULDER_PITCH_DATA",
+      "RIGHT_SHOULDER_ROLL_DATA",
+      "RIGHT_ELBOW_DATA",
+      "RIGHT_WRIST_DATA",
+      "WAIST_YAW_DATA"
+    ],
+    "routing": "Not assigned: one half-duplex trunk/cascade with short taps to be designed and verified; membership is not a physical star."
+  },
+  "explicitly_unconnected": [
+    "ADAPTER_SERVO_VPLUS",
+    "ADAPTER_DC_INPUT"
+  ],
+  "unmodeled": [
+    "Servo input circuitry and possible phantom-power paths",
+    "Supply transient, regeneration and current-limit behavior",
+    "Fuse time-current and interrupting behavior",
+    "Earth, chassis and extra peripheral return connections",
+    "Actual pin orientation, cable lengths, connector contacts and wire ratings",
+    "Electrical signal integrity and host-loss response"
+  ],
+  "physical_harness_built": false
+}

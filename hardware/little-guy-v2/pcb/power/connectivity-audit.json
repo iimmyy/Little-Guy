@@ -1,0 +1,101 @@
+{
+  "electrically_validated": false,
+  "checks": [
+    {
+      "requirement": "Component references are unique",
+      "passed": true
+    },
+    {
+      "requirement": "Motor battery feed is separate from charger SYS",
+      "passed": true
+    },
+    {
+      "requirement": "Motor bridge input draws from protected pack",
+      "passed": true
+    },
+    {
+      "requirement": "Jetson regulator draws from charger logic SYS",
+      "passed": true
+    },
+    {
+      "requirement": "Hands draw from protected pack, bypassing internal charger BATFET",
+      "passed": true
+    },
+    {
+      "requirement": "Peripheral regulator draws from protected pack",
+      "passed": true
+    },
+    {
+      "requirement": "Charge-enable gate drives charger CE pin",
+      "passed": true
+    },
+    {
+      "requirement": "Independent temperature permission reaches charge gate",
+      "passed": true
+    },
+    {
+      "requirement": "Manual cut and supply supervisor clear motor latch",
+      "passed": true
+    },
+    {
+      "requirement": "Motor arm is edge-clocked rather than tied on",
+      "passed": true
+    },
+    {
+      "requirement": "Jetson feed is outside motor-arm gate outputs",
+      "passed": true
+    },
+    {
+      "requirement": "All six temperature comparators can inhibit charging",
+      "passed": true
+    },
+    {
+      "requirement": "Pack shunt separates pack source from every protected load",
+      "passed": true
+    },
+    {
+      "requirement": "INA228 polarity observes discharge as positive",
+      "passed": true
+    },
+    {
+      "requirement": "EEPROM and charger share only the PD controller bus",
+      "passed": true
+    },
+    {
+      "requirement": "Nominal temperature window: cold at 0 C",
+      "passed": true
+    },
+    {
+      "requirement": "Nominal temperature window: room at 25 C",
+      "passed": true
+    },
+    {
+      "requirement": "Nominal temperature window: hot at 50 C",
+      "passed": true
+    },
+    {
+      "requirement": "Nominal temperature window: sensor open",
+      "passed": true
+    },
+    {
+      "requirement": "Nominal temperature window: sensor short",
+      "passed": true
+    }
+  ],
+  "component_count": 315,
+  "net_count": 165,
+  "nominal_motor_v": 11.280000000000001,
+  "nominal_hand_v": 5.694835680751174,
+  "nominal_jetson_v": 12.010810810810812,
+  "nominal_peripheral_v": 5.016064257028113,
+  "remaining": [
+    "exact branch fuses and protection coordination",
+    "regeneration protection",
+    "pack BMS and cells",
+    "exact MPNs and land patterns",
+    "PD configuration and controller firmware",
+    "physical bench tests",
+    "layout",
+    "manufacturing checks"
+  ]
+}

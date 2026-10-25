@@ -1,0 +1,141 @@
+(kicad_sch
+  (version 20260306)
+  (generator eeschema)
+  (generator_version "10.0")
+  (uuid "f5f7aad3-e052-5c56-8a3b-7832fd38b8ec")
+  (paper "A3")
+  (title_block
+    (title "Little Guy V2 - foot board")
+    (date "2026-10-25")
+    (rev "A0.2-WIP")
+    (comment 1 "INCOMPLETE - NOT FOR FABRICATION")
+  )
+  (lib_symbols)
+  (text "FOOT BOARD / CIRCUIT CAPTURE IN PROGRESS\nTwo ADCs, four full bridges and toe ToF. No load cell or cable has been physically tested.\nNo layout or fabrication release; footprints, ESD and mechanics remain open."
+    (at 20 20 0)
+    (effects
+      (font
+        (size 1.4 1.4)
+      )
+      (justify left)
+    )
+    (uuid "3c2f68b8-b5cf-5467-921b-b4acf3336203")
+  )
+  (sheet
+    (at 15 55)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "5770183c-0f49-586f-b956-e8004a512819")
+    (property "Sheetname" "Foot power / single cable / toe ranging"
+      (at 17 53.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "01-foot-interface.kicad_sch"
+      (at 17 87.53999999999999 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-foot"
+        (path "/f5f7aad3-e052-5c56-8a3b-7832fd38b8ec"
+          (page "2")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 115 55)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "863cbc3e-9c56-53ec-b5e6-b3e137dfb96f")
+    (property "Sheetname" "Bridge pair 1 / ratiometric ADC"
+      (at 117 53.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "02-bridges-1.kicad_sch"
+      (at 117 87.53999999999999 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-foot"
+        (path "/f5f7aad3-e052-5c56-8a3b-7832fd38b8ec"
+          (page "3")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 215 55)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "e8f4fcba-11bf-57ea-b1f4-2828189ad918")
+    (property "Sheetname" "Bridge pair 2 / ratiometric ADC"
+      (at 217 53.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "03-bridges-2.kicad_sch"
+      (at 217 87.53999999999999 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-foot"
+        (path "/f5f7aad3-e052-5c56-8a3b-7832fd38b8ec"
+          (page "4")
+        )
+      )
+    )
+  )
+  (sheet_instances
+    (path "/"
+      (page "1")
+    )
+  )
+  (embedded_fonts no)
+)

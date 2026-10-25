@@ -1,0 +1,61 @@
+{
+  "$schema": "https://schemas.kicad.org/erc.v1.json",
+  "coordinate_units": "mm",
+  "date": "2026-10-25T14:32:25",
+  "ignored_checks": [
+    {
+      "description": "Global label only appears once in the schematic",
+      "key": "single_global_label"
+    },
+    {
+      "description": "Four connection points are joined together",
+      "key": "four_way_junction"
+    },
+    {
+      "description": "SPICE model issue",
+      "key": "simulation_model_issue"
+    },
+    {
+      "description": "Assigned footprint doesn't match footprint filters",
+      "key": "footprint_filter"
+    }
+  ],
+  "included_severities": [
+    "error",
+    "warning"
+  ],
+  "kicad_version": "10.0.6",
+  "sheets": [
+    {
+      "path": "/",
+      "uuid_path": "/925ddf46-9071-5dd9-a853-2bb938d1cbb4",
+      "violations": []
+    },
+    {
+      "path": "/XVF3800 / QSPI / USB / clock/",
+      "uuid_path": "/925ddf46-9071-5dd9-a853-2bb938d1cbb4/07541710-96da-5d00-9e2c-b4f420a37fa4",
+      "violations": []
+    },
+    {
+      "path": "/Audio supplies / core buck / PLL filtering/",
+      "uuid_path": "/925ddf46-9071-5dd9-a853-2bb938d1cbb4/28fefa3f-85d1-5494-8a82-ee9f79bf0512",
+      "violations": []
+    },
+    {
+      "path": "/Three-rail supervision / reset logic/",
+      "uuid_path": "/925ddf46-9071-5dd9-a853-2bb938d1cbb4/f59aec01-4de1-5f1d-8074-27d8166d5777",
+      "violations": []
+    },
+    {
+      "path": "/Processor local decoupling / PLL filter/",
+      "uuid_path": "/925ddf46-9071-5dd9-a853-2bb938d1cbb4/972ee935-d527-5688-bdbf-7c097185f6a8",
+      "violations": []
+    },
+    {
+      "path": "/Four PDM microphones / head-A geometry targets/",
+      "uuid_path": "/925ddf46-9071-5dd9-a853-2bb938d1cbb4/02e8b362-1c24-5eed-93b1-5d17ce5ffbdd",
+      "violations": []
+    }
+  ],
+  "source": "little-guy-head.kicad_sch"
+}

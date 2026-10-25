@@ -1,0 +1,1388 @@
+<?xml version='1.0' encoding='utf-8'?>
+<export version="E">
+  <design>
+    <source>little-guy-foot.kicad_sch</source>
+    <date>2026-10-25T14:32:24</date>
+    <tool>Eeschema 10.0.6</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title>Little Guy V2 - foot board</title>
+        <company />
+        <rev>A0.2-WIP</rev>
+        <date>2026-10-25</date>
+        <source>little-guy-foot.kicad_sch</source>
+        <comment number="1" value="INCOMPLETE - NOT FOR FABRICATION" />
+        <comment number="2" value="" />
+        <comment number="3" value="" />
+        <comment number="4" value="" />
+        <comment number="5" value="" />
+        <comment number="6" value="" />
+        <comment number="7" value="" />
+        <comment number="8" value="" />
+        <comment number="9" value="" />
+      </title_block>
+    </sheet>
+    <sheet number="2" name="/Foot power / single cable / toe ranging/" tstamps="/5770183c-0f49-586f-b956-e8004a512819/">
+      <title_block>
+        <title>Foot power / single cable / toe ranging</title>
+        <company />
+        <rev>A0.2-WIP</rev>
+        <date>2026-10-25</date>
+        <source>01-foot-interface.kicad_sch</source>
+        <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
+        <comment number="2" value="" />
+        <comment number="3" value="" />
+        <comment number="4" value="" />
+        <comment number="5" value="" />
+        <comment number="6" value="" />
+        <comment number="7" value="" />
+        <comment number="8" value="" />
+        <comment number="9" value="" />
+      </title_block>
+    </sheet>
+    <sheet number="3" name="/Bridge pair 1 / ratiometric ADC/" tstamps="/863cbc3e-9c56-53ec-b5e6-b3e137dfb96f/">
+      <title_block>
+        <title>Bridge pair 1 / ratiometric ADC</title>
+        <company />
+        <rev>A0.2-WIP</rev>
+        <date>2026-10-25</date>
+        <source>02-bridges-1.kicad_sch</source>
+        <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
+        <comment number="2" value="" />
+        <comment number="3" value="" />
+        <comment number="4" value="" />
+        <comment number="5" value="" />
+        <comment number="6" value="" />
+        <comment number="7" value="" />
+        <comment number="8" value="" />
+        <comment number="9" value="" />
+      </title_block>
+    </sheet>
+    <sheet number="4" name="/Bridge pair 2 / ratiometric ADC/" tstamps="/e8f4fcba-11bf-57ea-b1f4-2828189ad918/">
+      <title_block>
+        <title>Bridge pair 2 / ratiometric ADC</title>
+        <company />
+        <rev>A0.2-WIP</rev>
+        <date>2026-10-25</date>
+        <source>03-bridges-2.kicad_sch</source>
+        <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
+        <comment number="2" value="" />
+        <comment number="3" value="" />
+        <comment number="4" value="" />
+        <comment number="5" value="" />
+        <comment number="6" value="" />
+        <comment number="7" value="" />
+        <comment number="8" value="" />
+        <comment number="9" value="" />
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="C101">
+      <value>4u7 10V X7R / verify effective C</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Foot power / single cable / toe ranging" />
+      <property name="Sheetfile" value="01-foot-interface.kicad_sch" />
+      <sheetpath names="/Foot power / single cable / toe ranging/" tstamps="/5770183c-0f49-586f-b956-e8004a512819/" />
+      <tstamps>491f9ab7-1a9a-579e-adc1-cc65ddd988c1</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C102">
+      <value>4u7 10V X7R / verify effective C</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Foot power / single cable / toe ranging" />
+      <property name="Sheetfile" value="01-foot-interface.kicad_sch" />
+      <sheetpath names="/Foot power / single cable / toe ranging/" tstamps="/5770183c-0f49-586f-b956-e8004a512819/" />
+      <tstamps>54943ff9-4550-5a4b-914f-6abab828cea2</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C103">
+      <value>4u7 10V X7R / verify effective C</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Foot power / single cable / toe ranging" />
+      <property name="Sheetfile" value="01-foot-interface.kicad_sch" />
+      <sheetpath names="/Foot power / single cable / toe ranging/" tstamps="/5770183c-0f49-586f-b956-e8004a512819/" />
+      <tstamps>85f62f9d-062f-5c57-adbf-98512b7fd4cf</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C104">
+      <value>4u7 10V X7R / verify effective C</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Foot power / single cable / toe ranging" />
+      <property name="Sheetfile" value="01-foot-interface.kicad_sch" />
+      <sheetpath names="/Foot power / single cable / toe ranging/" tstamps="/5770183c-0f49-586f-b956-e8004a512819/" />
+      <tstamps>ddf8c73b-9e1f-53f9-a107-44a95d40913d</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C105">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Foot power / single cable / toe ranging" />
+      <property name="Sheetfile" value="01-foot-interface.kicad_sch" />
+      <sheetpath names="/Foot power / single cable / toe ranging/" tstamps="/5770183c-0f49-586f-b956-e8004a512819/" />
+      <tstamps>0f633505-4366-501d-9b04-be90cec31456</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C106">
+      <value>4u7 10V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Foot power / single cable / toe ranging" />
+      <property name="Sheetfile" value="01-foot-interface.kicad_sch" />
+      <sheetpath names="/Foot power / single cable / toe ranging/" tstamps="/5770183c-0f49-586f-b956-e8004a512819/" />
+      <tstamps>13cfd4e2-2c4a-5e06-920d-2ffeb5957ab1</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J101">
+      <value>Spinal to foot / 6 conductors</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_6" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Foot power / single cable / toe ranging" />
+      <property name="Sheetfile" value="01-foot-interface.kicad_sch" />
+      <sheetpath names="/Foot power / single cable / toe ranging/" tstamps="/5770183c-0f49-586f-b956-e8004a512819/" />
+      <tstamps>8f1fdb72-62cc-5d9d-9c2f-bccc31791190</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R101">
+      <value>10k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Foot power / single cable / toe ranging" />
+      <property name="Sheetfile" value="01-foot-interface.kicad_sch" />
+      <sheetpath names="/Foot power / single cable / toe ranging/" tstamps="/5770183c-0f49-586f-b956-e8004a512819/" />
+      <tstamps>a64ad6b2-eef2-5035-a69e-50bd300aed5c</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R102">
+      <value>10k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Foot power / single cable / toe ranging" />
+      <property name="Sheetfile" value="01-foot-interface.kicad_sch" />
+      <sheetpath names="/Foot power / single cable / toe ranging/" tstamps="/5770183c-0f49-586f-b956-e8004a512819/" />
+      <tstamps>89770f39-2e7f-5271-9062-e4902d089f33</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U101">
+      <value>TLV75533PDBVR</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/tlv755p.pdf</datasheet>
+      <fields>
+        <field name="MPN">TLV75533PDBVR</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/tlv755p.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="TLV755P_DBV" description="" />
+      <property name="MPN" value="TLV75533PDBVR" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Foot power / single cable / toe ranging" />
+      <property name="Sheetfile" value="01-foot-interface.kicad_sch" />
+      <sheetpath names="/Foot power / single cable / toe ranging/" tstamps="/5770183c-0f49-586f-b956-e8004a512819/" />
+      <tstamps>b1dfb133-ba54-5968-8bd4-2e20538d471f</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U102">
+      <value>TLV75533PDBVR</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/tlv755p.pdf</datasheet>
+      <fields>
+        <field name="MPN">TLV75533PDBVR</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/tlv755p.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="TLV755P_DBV" description="" />
+      <property name="MPN" value="TLV75533PDBVR" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Foot power / single cable / toe ranging" />
+      <property name="Sheetfile" value="01-foot-interface.kicad_sch" />
+      <sheetpath names="/Foot power / single cable / toe ranging/" tstamps="/5770183c-0f49-586f-b956-e8004a512819/" />
+      <tstamps>5427bb49-8c7d-5e34-a4b0-4acbb939cfe3</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U103">
+      <value>VL53L4CDV0DH/1</value>
+      <datasheet>https://www.st.com/resource/en/datasheet/vl53l4cd.pdf</datasheet>
+      <fields>
+        <field name="MPN">VL53L4CDV0DH/1</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint" />
+        <field name="Datasheet">https://www.st.com/resource/en/datasheet/vl53l4cd.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="VL53L4CD" description="" />
+      <property name="MPN" value="VL53L4CDV0DH/1" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Foot power / single cable / toe ranging" />
+      <property name="Sheetfile" value="01-foot-interface.kicad_sch" />
+      <sheetpath names="/Foot power / single cable / toe ranging/" tstamps="/5770183c-0f49-586f-b956-e8004a512819/" />
+      <tstamps>45ffb408-40f6-538a-b415-8164e7bf04d8</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+            <pin num="7" />
+            <pin num="8" />
+            <pin num="9" />
+            <pin num="10" />
+            <pin num="11" />
+            <pin num="12" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C201">
+      <value>10n C0G 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Bridge pair 1 / ratiometric ADC" />
+      <property name="Sheetfile" value="02-bridges-1.kicad_sch" />
+      <sheetpath names="/Bridge pair 1 / ratiometric ADC/" tstamps="/863cbc3e-9c56-53ec-b5e6-b3e137dfb96f/" />
+      <tstamps>b7b6d40f-e2be-58d2-8cd0-30ea753d24f4</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C202">
+      <value>10n C0G 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Bridge pair 1 / ratiometric ADC" />
+      <property name="Sheetfile" value="02-bridges-1.kicad_sch" />
+      <sheetpath names="/Bridge pair 1 / ratiometric ADC/" tstamps="/863cbc3e-9c56-53ec-b5e6-b3e137dfb96f/" />
+      <tstamps>e51c2aba-0a9e-5e6b-9318-7cd67e8f3078</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C203">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Bridge pair 1 / ratiometric ADC" />
+      <property name="Sheetfile" value="02-bridges-1.kicad_sch" />
+      <sheetpath names="/Bridge pair 1 / ratiometric ADC/" tstamps="/863cbc3e-9c56-53ec-b5e6-b3e137dfb96f/" />
+      <tstamps>3cf4f85d-70ad-5ebe-b69b-0213b478a9cd</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C204">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Bridge pair 1 / ratiometric ADC" />
+      <property name="Sheetfile" value="02-bridges-1.kicad_sch" />
+      <sheetpath names="/Bridge pair 1 / ratiometric ADC/" tstamps="/863cbc3e-9c56-53ec-b5e6-b3e137dfb96f/" />
+      <tstamps>cf89ce1d-2438-5faf-ac1d-7e85e2f1f184</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C205">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Bridge pair 1 / ratiometric ADC" />
+      <property name="Sheetfile" value="02-bridges-1.kicad_sch" />
+      <sheetpath names="/Bridge pair 1 / ratiometric ADC/" tstamps="/863cbc3e-9c56-53ec-b5e6-b3e137dfb96f/" />
+      <tstamps>d16116d1-d9d4-5adb-8d0e-d5b36a7283df</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J201">
+      <value>Load cell 1 / full bridge</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_4" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Bridge pair 1 / ratiometric ADC" />
+      <property name="Sheetfile" value="02-bridges-1.kicad_sch" />
+      <sheetpath names="/Bridge pair 1 / ratiometric ADC/" tstamps="/863cbc3e-9c56-53ec-b5e6-b3e137dfb96f/" />
+      <tstamps>869156b3-4b78-57cb-8db1-4a8fc2923230</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J202">
+      <value>Load cell 2 / full bridge</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_4" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Bridge pair 1 / ratiometric ADC" />
+      <property name="Sheetfile" value="02-bridges-1.kicad_sch" />
+      <sheetpath names="/Bridge pair 1 / ratiometric ADC/" tstamps="/863cbc3e-9c56-53ec-b5e6-b3e137dfb96f/" />
+      <tstamps>2d2da3d9-267f-58b4-8a40-6744bd55ddb9</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R201">
+      <value>1k 0.1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Bridge pair 1 / ratiometric ADC" />
+      <property name="Sheetfile" value="02-bridges-1.kicad_sch" />
+      <sheetpath names="/Bridge pair 1 / ratiometric ADC/" tstamps="/863cbc3e-9c56-53ec-b5e6-b3e137dfb96f/" />
+      <tstamps>32585cfb-891a-549a-a61e-c812c73b3ad5</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R202">
+      <value>1k 0.1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Bridge pair 1 / ratiometric ADC" />
+      <property name="Sheetfile" value="02-bridges-1.kicad_sch" />
+      <sheetpath names="/Bridge pair 1 / ratiometric ADC/" tstamps="/863cbc3e-9c56-53ec-b5e6-b3e137dfb96f/" />
+      <tstamps>7fc10817-1213-58e7-81ea-aa3725fbc1ea</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R203">
+      <value>1k 0.1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Bridge pair 1 / ratiometric ADC" />
+      <property name="Sheetfile" value="02-bridges-1.kicad_sch" />
+      <sheetpath names="/Bridge pair 1 / ratiometric ADC/" tstamps="/863cbc3e-9c56-53ec-b5e6-b3e137dfb96f/" />
+      <tstamps>97b4136e-b7f7-5414-8ea6-7ced7c9b7fac</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R204">
+      <value>1k 0.1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Bridge pair 1 / ratiometric ADC" />
+      <property name="Sheetfile" value="02-bridges-1.kicad_sch" />
+      <sheetpath names="/Bridge pair 1 / ratiometric ADC/" tstamps="/863cbc3e-9c56-53ec-b5e6-b3e137dfb96f/" />
+      <tstamps>50678da2-0496-5e55-942a-b939f285c8e6</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U201">
+      <value>ADS122C04IPWR / 0x40</value>
+      <footprint>Package_SO:TSSOP-16_4.4x5mm_P0.65mm</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/ads122c04.pdf</datasheet>
+      <fields>
+        <field name="MPN">ADS122C04IPWR</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_SO:TSSOP-16_4.4x5mm_P0.65mm</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/ads122c04.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="ADS122C04_PW" description="" />
+      <property name="MPN" value="ADS122C04IPWR" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Bridge pair 1 / ratiometric ADC" />
+      <property name="Sheetfile" value="02-bridges-1.kicad_sch" />
+      <sheetpath names="/Bridge pair 1 / ratiometric ADC/" tstamps="/863cbc3e-9c56-53ec-b5e6-b3e137dfb96f/" />
+      <tstamps>7830daef-d527-59ee-9b7c-084cdb796ee7</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+            <pin num="7" />
+            <pin num="8" />
+            <pin num="9" />
+            <pin num="10" />
+            <pin num="11" />
+            <pin num="12" />
+            <pin num="13" />
+            <pin num="14" />
+            <pin num="15" />
+            <pin num="16" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C301">
+      <value>10n C0G 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Bridge pair 2 / ratiometric ADC" />
+      <property name="Sheetfile" value="03-bridges-2.kicad_sch" />
+      <sheetpath names="/Bridge pair 2 / ratiometric ADC/" tstamps="/e8f4fcba-11bf-57ea-b1f4-2828189ad918/" />
+      <tstamps>f60cc93a-d37f-5fa8-985d-fa219d4f89da</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C302">
+      <value>10n C0G 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Bridge pair 2 / ratiometric ADC" />
+      <property name="Sheetfile" value="03-bridges-2.kicad_sch" />
+      <sheetpath names="/Bridge pair 2 / ratiometric ADC/" tstamps="/e8f4fcba-11bf-57ea-b1f4-2828189ad918/" />
+      <tstamps>2d6354dc-2fa5-5fd2-b4d5-a04ee5a23493</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C303">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Bridge pair 2 / ratiometric ADC" />
+      <property name="Sheetfile" value="03-bridges-2.kicad_sch" />
+      <sheetpath names="/Bridge pair 2 / ratiometric ADC/" tstamps="/e8f4fcba-11bf-57ea-b1f4-2828189ad918/" />
+      <tstamps>022407ee-8845-5775-b559-92cbe5ceceb5</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C304">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Bridge pair 2 / ratiometric ADC" />
+      <property name="Sheetfile" value="03-bridges-2.kicad_sch" />
+      <sheetpath names="/Bridge pair 2 / ratiometric ADC/" tstamps="/e8f4fcba-11bf-57ea-b1f4-2828189ad918/" />
+      <tstamps>3c009014-c99b-527b-a372-ebf3892ecfe7</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C305">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Bridge pair 2 / ratiometric ADC" />
+      <property name="Sheetfile" value="03-bridges-2.kicad_sch" />
+      <sheetpath names="/Bridge pair 2 / ratiometric ADC/" tstamps="/e8f4fcba-11bf-57ea-b1f4-2828189ad918/" />
+      <tstamps>64a51ef8-09e8-572b-bd47-e277f38fda7e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J301">
+      <value>Load cell 3 / full bridge</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_4" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Bridge pair 2 / ratiometric ADC" />
+      <property name="Sheetfile" value="03-bridges-2.kicad_sch" />
+      <sheetpath names="/Bridge pair 2 / ratiometric ADC/" tstamps="/e8f4fcba-11bf-57ea-b1f4-2828189ad918/" />
+      <tstamps>31087a40-f032-519c-85d9-663ef3cb1c1b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J302">
+      <value>Load cell 4 / full bridge</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_4" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Bridge pair 2 / ratiometric ADC" />
+      <property name="Sheetfile" value="03-bridges-2.kicad_sch" />
+      <sheetpath names="/Bridge pair 2 / ratiometric ADC/" tstamps="/e8f4fcba-11bf-57ea-b1f4-2828189ad918/" />
+      <tstamps>ede0655b-f2a1-5aab-ae0e-e5ff828509c1</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R301">
+      <value>1k 0.1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Bridge pair 2 / ratiometric ADC" />
+      <property name="Sheetfile" value="03-bridges-2.kicad_sch" />
+      <sheetpath names="/Bridge pair 2 / ratiometric ADC/" tstamps="/e8f4fcba-11bf-57ea-b1f4-2828189ad918/" />
+      <tstamps>54a036ac-6293-5166-8e14-0ba90d8987a3</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R302">
+      <value>1k 0.1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Bridge pair 2 / ratiometric ADC" />
+      <property name="Sheetfile" value="03-bridges-2.kicad_sch" />
+      <sheetpath names="/Bridge pair 2 / ratiometric ADC/" tstamps="/e8f4fcba-11bf-57ea-b1f4-2828189ad918/" />
+      <tstamps>5675036a-0420-525a-8ea0-ed8a16e008b8</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R303">
+      <value>1k 0.1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Bridge pair 2 / ratiometric ADC" />
+      <property name="Sheetfile" value="03-bridges-2.kicad_sch" />
+      <sheetpath names="/Bridge pair 2 / ratiometric ADC/" tstamps="/e8f4fcba-11bf-57ea-b1f4-2828189ad918/" />
+      <tstamps>8ccc45db-07cb-571e-b68a-cc153d7d570d</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R304">
+      <value>1k 0.1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Bridge pair 2 / ratiometric ADC" />
+      <property name="Sheetfile" value="03-bridges-2.kicad_sch" />
+      <sheetpath names="/Bridge pair 2 / ratiometric ADC/" tstamps="/e8f4fcba-11bf-57ea-b1f4-2828189ad918/" />
+      <tstamps>1b6e7daa-2bf3-50fb-8aa4-0bc67113e47b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U301">
+      <value>ADS122C04IPWR / 0x41</value>
+      <footprint>Package_SO:TSSOP-16_4.4x5mm_P0.65mm</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/ads122c04.pdf</datasheet>
+      <fields>
+        <field name="MPN">ADS122C04IPWR</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_SO:TSSOP-16_4.4x5mm_P0.65mm</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/ads122c04.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="ADS122C04_PW" description="" />
+      <property name="MPN" value="ADS122C04IPWR" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Bridge pair 2 / ratiometric ADC" />
+      <property name="Sheetfile" value="03-bridges-2.kicad_sch" />
+      <sheetpath names="/Bridge pair 2 / ratiometric ADC/" tstamps="/e8f4fcba-11bf-57ea-b1f4-2828189ad918/" />
+      <tstamps>3b44d256-694b-5b78-b78f-769b455f4ba4</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+            <pin num="7" />
+            <pin num="8" />
+            <pin num="9" />
+            <pin num="10" />
+            <pin num="11" />
+            <pin num="12" />
+            <pin num="13" />
+            <pin num="14" />
+            <pin num="15" />
+            <pin num="16" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="LGV2" part="ADS122C04_PW">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">ADS122C04_PW</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="A0" type="input" />
+        <pin num="2" name="A1" type="input" />
+        <pin num="3" name="~{RESET}" type="input" />
+        <pin num="4" name="DGND" type="power_in" />
+        <pin num="5" name="AVSS" type="power_in" />
+        <pin num="6" name="AIN3" type="input" />
+        <pin num="7" name="AIN2" type="input" />
+        <pin num="8" name="REFN" type="input" />
+        <pin num="9" name="REFP" type="input" />
+        <pin num="10" name="AIN1" type="input" />
+        <pin num="11" name="AIN0" type="input" />
+        <pin num="12" name="AVDD" type="power_in" />
+        <pin num="13" name="DVDD" type="power_in" />
+        <pin num="14" name="~{DRDY}" type="open_collector" />
+        <pin num="15" name="SDA" type="bidirectional" />
+        <pin num="16" name="SCL" type="input" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="C">
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">C</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive" />
+        <pin num="2" name="~" type="passive" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="Header_4">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Header_4</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive" />
+        <pin num="2" name="2" type="passive" />
+        <pin num="3" name="3" type="passive" />
+        <pin num="4" name="4" type="passive" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="Header_6">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Header_6</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive" />
+        <pin num="2" name="2" type="passive" />
+        <pin num="3" name="3" type="passive" />
+        <pin num="4" name="4" type="passive" />
+        <pin num="5" name="5" type="passive" />
+        <pin num="6" name="6" type="passive" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="R">
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive" />
+        <pin num="2" name="~" type="passive" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="TLV755P_DBV">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">TLV755P_DBV</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="IN" type="power_in" />
+        <pin num="2" name="GND" type="power_in" />
+        <pin num="3" name="EN" type="input" />
+        <pin num="4" name="NC" type="no_connect" />
+        <pin num="5" name="OUT" type="power_out" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="VL53L4CD">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">VL53L4CD</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="AVDDVCSEL" type="power_in" />
+        <pin num="2" name="AVSSVCSEL" type="power_in" />
+        <pin num="3" name="GND" type="passive" />
+        <pin num="4" name="GND2" type="passive" />
+        <pin num="5" name="XSHUT" type="input" />
+        <pin num="6" name="GND3" type="passive" />
+        <pin num="7" name="GPIO1" type="open_collector" />
+        <pin num="8" name="DNC" type="no_connect" />
+        <pin num="9" name="SDA" type="bidirectional" />
+        <pin num="10" name="SCL" type="input" />
+        <pin num="11" name="AVDD" type="power_in" />
+        <pin num="12" name="GND4" type="passive" />
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="LGV2">
+      <uri>${KIPRJMOD}/LGV2.kicad_sym</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="ADC0_AIN0" class="Default">
+      <node ref="C201" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R201" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U201" pin="11" pinfunction="AIN0_11" pintype="input" />
+    </net>
+    <net code="2" name="ADC0_AIN1" class="Default">
+      <node ref="C201" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R202" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U201" pin="10" pinfunction="AIN1_10" pintype="input" />
+    </net>
+    <net code="3" name="ADC0_AIN2" class="Default">
+      <node ref="C202" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R203" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U201" pin="7" pinfunction="AIN2_7" pintype="input" />
+    </net>
+    <net code="4" name="ADC0_AIN3" class="Default">
+      <node ref="C202" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R204" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U201" pin="6" pinfunction="AIN3_6" pintype="input" />
+    </net>
+    <net code="5" name="ADC1_AIN0" class="Default">
+      <node ref="C301" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R301" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U301" pin="11" pinfunction="AIN0_11" pintype="input" />
+    </net>
+    <net code="6" name="ADC1_AIN1" class="Default">
+      <node ref="C301" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R302" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U301" pin="10" pinfunction="AIN1_10" pintype="input" />
+    </net>
+    <net code="7" name="ADC1_AIN2" class="Default">
+      <node ref="C302" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R303" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U301" pin="7" pinfunction="AIN2_7" pintype="input" />
+    </net>
+    <net code="8" name="ADC1_AIN3" class="Default">
+      <node ref="C302" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R304" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U301" pin="6" pinfunction="AIN3_6" pintype="input" />
+    </net>
+    <net code="9" name="BRIDGE_3V3" class="Default">
+      <node ref="C102" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C203" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C204" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C205" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C303" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C304" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C305" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="J201" pin="1" pinfunction="1_1" pintype="passive" />
+      <node ref="J202" pin="1" pinfunction="1_1" pintype="passive" />
+      <node ref="J301" pin="1" pinfunction="1_1" pintype="passive" />
+      <node ref="J302" pin="1" pinfunction="1_1" pintype="passive" />
+      <node ref="R102" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U101" pin="5" pinfunction="OUT_5" pintype="power_out" />
+      <node ref="U201" pin="12" pinfunction="AVDD_12" pintype="power_in" />
+      <node ref="U201" pin="13" pinfunction="DVDD_13" pintype="power_in" />
+      <node ref="U201" pin="3" pinfunction="~{RESET}_3" pintype="input" />
+      <node ref="U201" pin="9" pinfunction="REFP_9" pintype="input" />
+      <node ref="U301" pin="1" pinfunction="A0_1" pintype="input" />
+      <node ref="U301" pin="12" pinfunction="AVDD_12" pintype="power_in" />
+      <node ref="U301" pin="13" pinfunction="DVDD_13" pintype="power_in" />
+      <node ref="U301" pin="3" pinfunction="~{RESET}_3" pintype="input" />
+      <node ref="U301" pin="9" pinfunction="REFP_9" pintype="input" />
+    </net>
+    <net code="10" name="CELL1_N" class="Default">
+      <node ref="J201" pin="4" pinfunction="4_4" pintype="passive" />
+      <node ref="R202" pin="1" pinfunction="~_1" pintype="passive" />
+    </net>
+    <net code="11" name="CELL1_P" class="Default">
+      <node ref="J201" pin="3" pinfunction="3_3" pintype="passive" />
+      <node ref="R201" pin="1" pinfunction="~_1" pintype="passive" />
+    </net>
+    <net code="12" name="CELL2_N" class="Default">
+      <node ref="J202" pin="4" pinfunction="4_4" pintype="passive" />
+      <node ref="R204" pin="1" pinfunction="~_1" pintype="passive" />
+    </net>
+    <net code="13" name="CELL2_P" class="Default">
+      <node ref="J202" pin="3" pinfunction="3_3" pintype="passive" />
+      <node ref="R203" pin="1" pinfunction="~_1" pintype="passive" />
+    </net>
+    <net code="14" name="CELL3_N" class="Default">
+      <node ref="J301" pin="4" pinfunction="4_4" pintype="passive" />
+      <node ref="R302" pin="1" pinfunction="~_1" pintype="passive" />
+    </net>
+    <net code="15" name="CELL3_P" class="Default">
+      <node ref="J301" pin="3" pinfunction="3_3" pintype="passive" />
+      <node ref="R301" pin="1" pinfunction="~_1" pintype="passive" />
+    </net>
+    <net code="16" name="CELL4_N" class="Default">
+      <node ref="J302" pin="4" pinfunction="4_4" pintype="passive" />
+      <node ref="R304" pin="1" pinfunction="~_1" pintype="passive" />
+    </net>
+    <net code="17" name="CELL4_P" class="Default">
+      <node ref="J302" pin="3" pinfunction="3_3" pintype="passive" />
+      <node ref="R303" pin="1" pinfunction="~_1" pintype="passive" />
+    </net>
+    <net code="18" name="FOOT_5V" class="Default">
+      <node ref="C101" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C103" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="J101" pin="1" pinfunction="1_1" pintype="passive" />
+      <node ref="U101" pin="1" pinfunction="IN_1" pintype="power_in" />
+      <node ref="U101" pin="3" pinfunction="EN_3" pintype="input" />
+      <node ref="U102" pin="1" pinfunction="IN_1" pintype="power_in" />
+      <node ref="U102" pin="3" pinfunction="EN_3" pintype="input" />
+    </net>
+    <net code="19" name="FOOT_READY_N" class="Default">
+      <node ref="J101" pin="5" pinfunction="5_5" pintype="passive" />
+      <node ref="R102" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U103" pin="7" pinfunction="GPIO1_7" pintype="open_collector" />
+      <node ref="U201" pin="14" pinfunction="~{DRDY}_14" pintype="open_collector" />
+      <node ref="U301" pin="14" pinfunction="~{DRDY}_14" pintype="open_collector" />
+    </net>
+    <net code="20" name="FOOT_SCL" class="Default">
+      <node ref="J101" pin="3" pinfunction="3_3" pintype="passive" />
+      <node ref="U103" pin="10" pinfunction="SCL_10" pintype="input" />
+      <node ref="U201" pin="16" pinfunction="SCL_16" pintype="input" />
+      <node ref="U301" pin="16" pinfunction="SCL_16" pintype="input" />
+    </net>
+    <net code="21" name="FOOT_SDA" class="Default">
+      <node ref="J101" pin="4" pinfunction="4_4" pintype="passive" />
+      <node ref="U103" pin="9" pinfunction="SDA_9" pintype="bidirectional" />
+      <node ref="U201" pin="15" pinfunction="SDA_15" pintype="bidirectional" />
+      <node ref="U301" pin="15" pinfunction="SDA_15" pintype="bidirectional" />
+    </net>
+    <net code="22" name="GND" class="Default">
+      <node ref="C101" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C102" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C103" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C104" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C105" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C106" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C203" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C204" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C205" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C303" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C304" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C305" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="J101" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="J201" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="J202" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="J301" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="J302" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="U101" pin="2" pinfunction="GND_2" pintype="power_in" />
+      <node ref="U102" pin="2" pinfunction="GND_2" pintype="power_in" />
+      <node ref="U103" pin="12" pinfunction="GND4_12" pintype="passive" />
+      <node ref="U103" pin="2" pinfunction="AVSSVCSEL_2" pintype="power_in" />
+      <node ref="U103" pin="3" pinfunction="GND_3" pintype="passive" />
+      <node ref="U103" pin="4" pinfunction="GND2_4" pintype="passive" />
+      <node ref="U103" pin="6" pinfunction="GND3_6" pintype="passive" />
+      <node ref="U201" pin="1" pinfunction="A0_1" pintype="input" />
+      <node ref="U201" pin="2" pinfunction="A1_2" pintype="input" />
+      <node ref="U201" pin="4" pinfunction="DGND_4" pintype="power_in" />
+      <node ref="U201" pin="5" pinfunction="AVSS_5" pintype="power_in" />
+      <node ref="U201" pin="8" pinfunction="REFN_8" pintype="input" />
+      <node ref="U301" pin="2" pinfunction="A1_2" pintype="input" />
+      <node ref="U301" pin="4" pinfunction="DGND_4" pintype="power_in" />
+      <node ref="U301" pin="5" pinfunction="AVSS_5" pintype="power_in" />
+      <node ref="U301" pin="8" pinfunction="REFN_8" pintype="input" />
+    </net>
+    <net code="23" name="TOE_XSHUT" class="Default">
+      <node ref="J101" pin="6" pinfunction="6_6" pintype="passive" />
+      <node ref="R101" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U103" pin="5" pinfunction="XSHUT_5" pintype="input" />
+    </net>
+    <net code="24" name="TOF_3V3" class="Default">
+      <node ref="C104" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C105" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C106" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R101" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U102" pin="5" pinfunction="OUT_5" pintype="power_out" />
+      <node ref="U103" pin="1" pinfunction="AVDDVCSEL_1" pintype="power_in" />
+      <node ref="U103" pin="11" pinfunction="AVDD_11" pintype="power_in" />
+    </net>
+    <net code="25" name="unconnected-(U101-NC-Pad4)" class="Default">
+      <node ref="U101" pin="4" pinfunction="NC_4" pintype="no_connect" />
+    </net>
+    <net code="26" name="unconnected-(U102-NC-Pad4)" class="Default">
+      <node ref="U102" pin="4" pinfunction="NC_4" pintype="no_connect" />
+    </net>
+    <net code="27" name="unconnected-(U103-DNC-Pad8)" class="Default">
+      <node ref="U103" pin="8" pinfunction="DNC_8" pintype="no_connect" />
+    </net>
+  </nets>
+</export>

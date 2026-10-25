@@ -1,0 +1,215 @@
+(kicad_sch
+  (version 20260306)
+  (generator eeschema)
+  (generator_version "10.0")
+  (uuid "925ddf46-9071-5dd9-a853-2bb938d1cbb4")
+  (paper "A3")
+  (title_block
+    (title "Little Guy V2 - head microphone board")
+    (date "2026-10-25")
+    (rev "A0.2-WIP")
+    (comment 1 "INCOMPLETE - NOT FOR FABRICATION")
+  )
+  (lib_symbols)
+  (text "HEAD MICROPHONE BOARD / CIRCUIT CAPTURE IN PROGRESS\nHead-A acoustic targets captured: rigid plane, 11.016 deg front-up tilt, explicit PDM channel order.\nUSB protection, package/outline/mounting, firmware and acoustic tests remain open; no fabrication release."
+    (at 20 20 0)
+    (effects
+      (font
+        (size 1.4 1.4)
+      )
+      (justify left)
+    )
+    (uuid "08114df6-0517-534f-8a9c-e5f39e8e265e")
+  )
+  (sheet
+    (at 15 55)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "07541710-96da-5d00-9e2c-b4f420a37fa4")
+    (property "Sheetname" "XVF3800 / QSPI / USB / clock"
+      (at 17 53.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "01-voice-processor.kicad_sch"
+      (at 17 87.53999999999999 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-head"
+        (path "/925ddf46-9071-5dd9-a853-2bb938d1cbb4"
+          (page "2")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 115 55)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "28fefa3f-85d1-5494-8a82-ee9f79bf0512")
+    (property "Sheetname" "Audio supplies / core buck / PLL filtering"
+      (at 117 53.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "02-supplies.kicad_sch"
+      (at 117 87.53999999999999 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-head"
+        (path "/925ddf46-9071-5dd9-a853-2bb938d1cbb4"
+          (page "3")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 215 55)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "f59aec01-4de1-5f1d-8074-27d8166d5777")
+    (property "Sheetname" "Three-rail supervision / reset logic"
+      (at 217 53.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "03-power-supervision.kicad_sch"
+      (at 217 87.53999999999999 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-head"
+        (path "/925ddf46-9071-5dd9-a853-2bb938d1cbb4"
+          (page "4")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 315 55)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "972ee935-d527-5688-bdbf-7c097185f6a8")
+    (property "Sheetname" "Processor local decoupling / PLL filter"
+      (at 317 53.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "04-decoupling.kicad_sch"
+      (at 317 87.53999999999999 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-head"
+        (path "/925ddf46-9071-5dd9-a853-2bb938d1cbb4"
+          (page "5")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 15 110)
+    (size 90 30)
+    (stroke
+      (width 0.254)
+      (type default)
+    )
+    (fill
+      (color 0 0 0 0)
+    )
+    (uuid "02e8b362-1c24-5eed-93b1-5d17ce5ffbdd")
+    (property "Sheetname" "Four PDM microphones / head-A geometry targets"
+      (at 17 108.73 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (property "Sheetfile" "05-microphones.kicad_sch"
+      (at 17 142.54 0)
+      (effects
+        (font
+          (size 0.9 0.9)
+        )
+        (justify left)
+      )
+    )
+    (instances
+      (project "little-guy-head"
+        (path "/925ddf46-9071-5dd9-a853-2bb938d1cbb4"
+          (page "6")
+        )
+      )
+    )
+  )
+  (sheet_instances
+    (path "/"
+      (page "1")
+    )
+  )
+  (embedded_fonts no)
+)

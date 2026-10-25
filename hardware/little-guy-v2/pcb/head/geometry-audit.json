@@ -1,0 +1,89 @@
+{
+  "revision": "A0.2-WIP",
+  "geometry_id": "head-A-diamond-2026-10-25",
+  "hardware_validated": false,
+  "firmware_built": false,
+  "fabrication_released": false,
+  "checks": [
+    {
+      "requirement": "Array axes are orthonormal",
+      "passed": true
+    },
+    {
+      "requirement": "Array frame is right-handed with outward normal",
+      "passed": true
+    },
+    {
+      "requirement": "Front/back horizontal and left/right spans match owner input",
+      "passed": true
+    },
+    {
+      "requirement": "Tilt and plane error agree with supplied approximate dimensions",
+      "passed": true
+    },
+    {
+      "requirement": "Front/back along the tilted plane preserves the 3D baseline",
+      "passed": true
+    },
+    {
+      "requirement": "MK501 projection and residual reconstruct the CAD target",
+      "passed": true
+    },
+    {
+      "requirement": "MK501 acoustic target lies on the common plane and uses KiCad Y flip",
+      "passed": true
+    },
+    {
+      "requirement": "MK502 projection and residual reconstruct the CAD target",
+      "passed": true
+    },
+    {
+      "requirement": "MK502 acoustic target lies on the common plane and uses KiCad Y flip",
+      "passed": true
+    },
+    {
+      "requirement": "MK503 projection and residual reconstruct the CAD target",
+      "passed": true
+    },
+    {
+      "requirement": "MK503 acoustic target lies on the common plane and uses KiCad Y flip",
+      "passed": true
+    },
+    {
+      "requirement": "MK504 projection and residual reconstruct the CAD target",
+      "passed": true
+    },
+    {
+      "requirement": "MK504 acoustic target lies on the common plane and uses KiCad Y flip",
+      "passed": true
+    },
+    {
+      "requirement": "XMOS fragment contains exactly four XYZ metre entries",
+      "passed": true
+    },
+    {
+      "requirement": "XMOS fragment preserves planned geometry to sub-micron rounding",
+      "passed": true
+    },
+    {
+      "requirement": "MK501 physical data net matches declared logical mic and XMOS pin",
+      "passed": true
+    },
+    {
+      "requirement": "MK502 physical data net matches declared logical mic and XMOS pin",
+      "passed": true
+    },
+    {
+      "requirement": "MK503 physical data net matches declared logical mic and XMOS pin",
+      "passed": true
+    },
+    {
+      "requirement": "MK504 physical data net matches declared logical mic and XMOS pin",
+      "passed": true
+    }
+  ],
+  "maximum_normal_residual_mm": 0.23312773346827775,
+  "tilt_front_up_deg": 11.015563126432495,
+  "front_back_board_plane_mm": 63.163513055520674,
+  "limits": "Checks target math, units and captured nets; does not validate acoustic performance, package origins, enclosure fit, mounts or firmware channel mapping on hardware."
+}

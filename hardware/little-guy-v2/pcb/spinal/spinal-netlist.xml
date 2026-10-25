@@ -1,0 +1,4321 @@
+<?xml version='1.0' encoding='utf-8'?>
+<export version="E">
+  <design>
+    <source>little-guy-spinal.kicad_sch</source>
+    <date>2026-10-25T14:32:24</date>
+    <tool>Eeschema 10.0.6</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title>Little Guy V2 - spinal-cord board</title>
+        <company />
+        <rev>A0.2-WIP</rev>
+        <date>2026-10-25</date>
+        <source>little-guy-spinal.kicad_sch</source>
+        <comment number="1" value="INCOMPLETE - NOT FOR FABRICATION" />
+        <comment number="2" value="" />
+        <comment number="3" value="" />
+        <comment number="4" value="" />
+        <comment number="5" value="" />
+        <comment number="6" value="" />
+        <comment number="7" value="" />
+        <comment number="8" value="" />
+        <comment number="9" value="" />
+      </title_block>
+    </sheet>
+    <sheet number="2" name="/Teensy 4.1 / power-board controls/" tstamps="/a6f35da2-d2c1-57a5-b432-7d6275359c78/">
+      <title_block>
+        <title>Teensy 4.1 / power-board controls</title>
+        <company />
+        <rev>A0.2-WIP</rev>
+        <date>2026-10-25</date>
+        <source>01-controller.kicad_sch</source>
+        <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
+        <comment number="2" value="" />
+        <comment number="3" value="" />
+        <comment number="4" value="" />
+        <comment number="5" value="" />
+        <comment number="6" value="" />
+        <comment number="7" value="" />
+        <comment number="8" value="" />
+        <comment number="9" value="" />
+      </title_block>
+    </sheet>
+    <sheet number="3" name="/Half-duplex TTL buses 1/" tstamps="/5c6a0d3a-a6d6-5d3e-9251-3e321ee206d2/">
+      <title_block>
+        <title>Half-duplex TTL buses 1</title>
+        <company />
+        <rev>A0.2-WIP</rev>
+        <date>2026-10-25</date>
+        <source>02-servo-buses-1.kicad_sch</source>
+        <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
+        <comment number="2" value="" />
+        <comment number="3" value="" />
+        <comment number="4" value="" />
+        <comment number="5" value="" />
+        <comment number="6" value="" />
+        <comment number="7" value="" />
+        <comment number="8" value="" />
+        <comment number="9" value="" />
+      </title_block>
+    </sheet>
+    <sheet number="4" name="/Half-duplex TTL buses 2/" tstamps="/1ea2a1a1-a46e-5ae1-97a5-83b4e4a3598a/">
+      <title_block>
+        <title>Half-duplex TTL buses 2</title>
+        <company />
+        <rev>A0.2-WIP</rev>
+        <date>2026-10-25</date>
+        <source>03-servo-buses-2.kicad_sch</source>
+        <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
+        <comment number="2" value="" />
+        <comment number="3" value="" />
+        <comment number="4" value="" />
+        <comment number="5" value="" />
+        <comment number="6" value="" />
+        <comment number="7" value="" />
+        <comment number="8" value="" />
+        <comment number="9" value="" />
+      </title_block>
+    </sheet>
+    <sheet number="5" name="/Sensor mux / IMU / foot cabling/" tstamps="/a1280054-6e7a-509e-9139-2d6d623d7d44/">
+      <title_block>
+        <title>Sensor mux / IMU / foot cabling</title>
+        <company />
+        <rev>A0.2-WIP</rev>
+        <date>2026-10-25</date>
+        <source>04-sensor-buses.kicad_sch</source>
+        <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
+        <comment number="2" value="" />
+        <comment number="3" value="" />
+        <comment number="4" value="" />
+        <comment number="5" value="" />
+        <comment number="6" value="" />
+        <comment number="7" value="" />
+        <comment number="8" value="" />
+        <comment number="9" value="" />
+      </title_block>
+    </sheet>
+    <sheet number="6" name="/Sensor branch pull-ups / fitting options/" tstamps="/d3eef230-29e0-592f-8b00-975dee557173/">
+      <title_block>
+        <title>Sensor branch pull-ups / fitting options</title>
+        <company />
+        <rev>A0.2-WIP</rev>
+        <date>2026-10-25</date>
+        <source>10-sensor-pullups.kicad_sch</source>
+        <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
+        <comment number="2" value="" />
+        <comment number="3" value="" />
+        <comment number="4" value="" />
+        <comment number="5" value="" />
+        <comment number="6" value="" />
+        <comment number="7" value="" />
+        <comment number="8" value="" />
+        <comment number="9" value="" />
+      </title_block>
+    </sheet>
+    <sheet number="7" name="/SPI IMU / independent watchdog/" tstamps="/72ea3c31-7975-5c19-aae7-c63c7515750e/">
+      <title_block>
+        <title>SPI IMU / independent watchdog</title>
+        <company />
+        <rev>A0.2-WIP</rev>
+        <date>2026-10-25</date>
+        <source>05-imu-watchdog.kicad_sch</source>
+        <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
+        <comment number="2" value="" />
+        <comment number="3" value="" />
+        <comment number="4" value="" />
+        <comment number="5" value="" />
+        <comment number="6" value="" />
+        <comment number="7" value="" />
+        <comment number="8" value="" />
+        <comment number="9" value="" />
+      </title_block>
+    </sheet>
+    <sheet number="8" name="/Touch electrodes 1-12/" tstamps="/34bdaf5b-528a-5328-a099-c4241ff5cde4/">
+      <title_block>
+        <title>Touch electrodes 1-12</title>
+        <company />
+        <rev>A0.2-WIP</rev>
+        <date>2026-10-25</date>
+        <source>06-touch-1.kicad_sch</source>
+        <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
+        <comment number="2" value="" />
+        <comment number="3" value="" />
+        <comment number="4" value="" />
+        <comment number="5" value="" />
+        <comment number="6" value="" />
+        <comment number="7" value="" />
+        <comment number="8" value="" />
+        <comment number="9" value="" />
+      </title_block>
+    </sheet>
+    <sheet number="9" name="/Touch electrodes 13-24/" tstamps="/1cb6d0cc-b1e7-5ec2-b8f6-a1c4466baff2/">
+      <title_block>
+        <title>Touch electrodes 13-24</title>
+        <company />
+        <rev>A0.2-WIP</rev>
+        <date>2026-10-25</date>
+        <source>07-touch-2.kicad_sch</source>
+        <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
+        <comment number="2" value="" />
+        <comment number="3" value="" />
+        <comment number="4" value="" />
+        <comment number="5" value="" />
+        <comment number="6" value="" />
+        <comment number="7" value="" />
+        <comment number="8" value="" />
+        <comment number="9" value="" />
+      </title_block>
+    </sheet>
+    <sheet number="10" name="/Touch electrodes 25-36/" tstamps="/6f770f01-2516-51be-82d3-4fb9011f377a/">
+      <title_block>
+        <title>Touch electrodes 25-36</title>
+        <company />
+        <rev>A0.2-WIP</rev>
+        <date>2026-10-25</date>
+        <source>08-touch-3.kicad_sch</source>
+        <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
+        <comment number="2" value="" />
+        <comment number="3" value="" />
+        <comment number="4" value="" />
+        <comment number="5" value="" />
+        <comment number="6" value="" />
+        <comment number="7" value="" />
+        <comment number="8" value="" />
+        <comment number="9" value="" />
+      </title_block>
+    </sheet>
+    <sheet number="11" name="/Touch electrodes 37-48/" tstamps="/22e79236-ba79-5f7c-9816-5f09cb74d55b/">
+      <title_block>
+        <title>Touch electrodes 37-48</title>
+        <company />
+        <rev>A0.2-WIP</rev>
+        <date>2026-10-25</date>
+        <source>09-touch-4.kicad_sch</source>
+        <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
+        <comment number="2" value="" />
+        <comment number="3" value="" />
+        <comment number="4" value="" />
+        <comment number="5" value="" />
+        <comment number="6" value="" />
+        <comment number="7" value="" />
+        <comment number="8" value="" />
+        <comment number="9" value="" />
+      </title_block>
+    </sheet>
+    <sheet number="12" name="/Hardware-gated servo transmit enables/" tstamps="/a0c9b2ff-9fa4-54bc-9eb1-88bdb6a437c1/">
+      <title_block>
+        <title>Hardware-gated servo transmit enables</title>
+        <company />
+        <rev>A0.2-WIP</rev>
+        <date>2026-10-25</date>
+        <source>11-transmit-cut.kicad_sch</source>
+        <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
+        <comment number="2" value="" />
+        <comment number="3" value="" />
+        <comment number="4" value="" />
+        <comment number="5" value="" />
+        <comment number="6" value="" />
+        <comment number="7" value="" />
+        <comment number="8" value="" />
+        <comment number="9" value="" />
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="C101">
+      <value>10u 10V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Teensy 4.1 / power-board controls" />
+      <property name="Sheetfile" value="01-controller.kicad_sch" />
+      <sheetpath names="/Teensy 4.1 / power-board controls/" tstamps="/a6f35da2-d2c1-57a5-b432-7d6275359c78/" />
+      <tstamps>d4e81f9e-00c2-55b4-9350-a2d3b36d6195</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C102">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Teensy 4.1 / power-board controls" />
+      <property name="Sheetfile" value="01-controller.kicad_sch" />
+      <sheetpath names="/Teensy 4.1 / power-board controls/" tstamps="/a6f35da2-d2c1-57a5-b432-7d6275359c78/" />
+      <tstamps>a768c8c2-70aa-5ab5-8f99-fe7e4d9c0d24</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J101">
+      <value>To power J103 / charging and always-on power</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_7" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Teensy 4.1 / power-board controls" />
+      <property name="Sheetfile" value="01-controller.kicad_sch" />
+      <sheetpath names="/Teensy 4.1 / power-board controls/" tstamps="/a6f35da2-d2c1-57a5-b432-7d6275359c78/" />
+      <tstamps>ca03d6dc-ce02-5a48-b322-bd6c58dfd9b3</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+            <pin num="7" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J102">
+      <value>To power J1002 / motor control and watchdog clear</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_12" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Teensy 4.1 / power-board controls" />
+      <property name="Sheetfile" value="01-controller.kicad_sch" />
+      <sheetpath names="/Teensy 4.1 / power-board controls/" tstamps="/a6f35da2-d2c1-57a5-b432-7d6275359c78/" />
+      <tstamps>a084392b-5232-5598-8a0c-0531569831df</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+            <pin num="7" />
+            <pin num="8" />
+            <pin num="9" />
+            <pin num="10" />
+            <pin num="11" />
+            <pin num="12" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J103">
+      <value>Power-board logic enables / connector interface pending</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_4" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Teensy 4.1 / power-board controls" />
+      <property name="Sheetfile" value="01-controller.kicad_sch" />
+      <sheetpath names="/Teensy 4.1 / power-board controls/" tstamps="/a6f35da2-d2c1-57a5-b432-7d6275359c78/" />
+      <tstamps>0be1961d-f86d-5782-a71e-f2896818c9a7</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J104">
+      <value>Front-door button and LED / no motor current here</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_4" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Teensy 4.1 / power-board controls" />
+      <property name="Sheetfile" value="01-controller.kicad_sch" />
+      <sheetpath names="/Teensy 4.1 / power-board controls/" tstamps="/a6f35da2-d2c1-57a5-b432-7d6275359c78/" />
+      <tstamps>d8e8fe49-2771-5265-b0cd-37986c1bbc89</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="Q101">
+      <value>MMBT3904-7-F</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23</footprint>
+      <datasheet>https://www.diodes.com/assets/Datasheets/MMBT3904.pdf</datasheet>
+      <fields>
+        <field name="MPN">MMBT3904-7-F</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23</field>
+        <field name="Datasheet">https://www.diodes.com/assets/Datasheets/MMBT3904.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="MMBT3904" description="" />
+      <property name="MPN" value="MMBT3904-7-F" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Teensy 4.1 / power-board controls" />
+      <property name="Sheetfile" value="01-controller.kicad_sch" />
+      <sheetpath names="/Teensy 4.1 / power-board controls/" tstamps="/a6f35da2-d2c1-57a5-b432-7d6275359c78/" />
+      <tstamps>b56d1d0b-4f09-581a-8f73-7111f4a32630</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R101">
+      <value>10k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Teensy 4.1 / power-board controls" />
+      <property name="Sheetfile" value="01-controller.kicad_sch" />
+      <sheetpath names="/Teensy 4.1 / power-board controls/" tstamps="/a6f35da2-d2c1-57a5-b432-7d6275359c78/" />
+      <tstamps>c0912825-6239-552c-8a7f-5e2f046bc220</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R102">
+      <value>1k 1% / initial LED current</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Teensy 4.1 / power-board controls" />
+      <property name="Sheetfile" value="01-controller.kicad_sch" />
+      <sheetpath names="/Teensy 4.1 / power-board controls/" tstamps="/a6f35da2-d2c1-57a5-b432-7d6275359c78/" />
+      <tstamps>f38a2448-33c2-503c-815a-cfeda4f3b634</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R103">
+      <value>10k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Teensy 4.1 / power-board controls" />
+      <property name="Sheetfile" value="01-controller.kicad_sch" />
+      <sheetpath names="/Teensy 4.1 / power-board controls/" tstamps="/a6f35da2-d2c1-57a5-b432-7d6275359c78/" />
+      <tstamps>20b09b9d-ef7f-558c-8f5a-060c38ffe376</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R104">
+      <value>100k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Teensy 4.1 / power-board controls" />
+      <property name="Sheetfile" value="01-controller.kicad_sch" />
+      <sheetpath names="/Teensy 4.1 / power-board controls/" tstamps="/a6f35da2-d2c1-57a5-b432-7d6275359c78/" />
+      <tstamps>bd0d0e7a-b795-520a-bb6b-3b01c4514d48</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U101">
+      <value>Teensy 4.1 / VUSB-VIN link cut</value>
+      <footprint>LGV2_Footprints:Teensy41_Socket_GPIO_ID</footprint>
+      <datasheet>https://www.pjrc.com/store/teensy41.html</datasheet>
+      <fields>
+        <field name="MPN">TEENSY41</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">LGV2_Footprints:Teensy41_Socket_GPIO_ID</field>
+        <field name="Datasheet">https://www.pjrc.com/store/teensy41.html</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Teensy41_Socket_GPIO_ID" description="" />
+      <property name="MPN" value="TEENSY41" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Teensy 4.1 / power-board controls" />
+      <property name="Sheetfile" value="01-controller.kicad_sch" />
+      <sheetpath names="/Teensy 4.1 / power-board controls/" tstamps="/a6f35da2-d2c1-57a5-b432-7d6275359c78/" />
+      <tstamps>bf90a8f7-6f8a-5abd-96af-fce52dc2cbd4</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="VIN" />
+            <pin num="GND0" />
+            <pin num="3V3A" />
+            <pin num="GPIO0" />
+            <pin num="GPIO1" />
+            <pin num="GPIO2" />
+            <pin num="GPIO3" />
+            <pin num="GPIO4" />
+            <pin num="GPIO5" />
+            <pin num="GPIO6" />
+            <pin num="GPIO7" />
+            <pin num="GPIO8" />
+            <pin num="GPIO9" />
+            <pin num="GPIO10" />
+            <pin num="GPIO11" />
+            <pin num="GPIO12" />
+            <pin num="GPIO13" />
+            <pin num="GPIO14" />
+            <pin num="GPIO15" />
+            <pin num="GPIO16" />
+            <pin num="GPIO17" />
+            <pin num="GPIO18" />
+            <pin num="GPIO19" />
+            <pin num="GPIO20" />
+            <pin num="GND1" />
+            <pin num="GND2" />
+            <pin num="3V3B" />
+            <pin num="GPIO21" />
+            <pin num="GPIO22" />
+            <pin num="GPIO23" />
+            <pin num="GPIO24" />
+            <pin num="GPIO25" />
+            <pin num="GPIO26" />
+            <pin num="GPIO27" />
+            <pin num="GPIO28" />
+            <pin num="GPIO29" />
+            <pin num="GPIO30" />
+            <pin num="GPIO31" />
+            <pin num="GPIO32" />
+            <pin num="GPIO33" />
+            <pin num="GPIO34" />
+            <pin num="GPIO35" />
+            <pin num="GPIO36" />
+            <pin num="GPIO37" />
+            <pin num="GPIO38" />
+            <pin num="GPIO39" />
+            <pin num="GPIO40" />
+            <pin num="GPIO41" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C201">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 1" />
+      <property name="Sheetfile" value="02-servo-buses-1.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 1/" tstamps="/5c6a0d3a-a6d6-5d3e-9251-3e321ee206d2/" />
+      <tstamps>4df550e4-5f20-565d-ae3a-aa9950f7ea13</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C202">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 1" />
+      <property name="Sheetfile" value="02-servo-buses-1.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 1/" tstamps="/5c6a0d3a-a6d6-5d3e-9251-3e321ee206d2/" />
+      <tstamps>2ea7e6ef-58c2-5db6-bff9-e1c847ca6999</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C241">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 1" />
+      <property name="Sheetfile" value="02-servo-buses-1.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 1/" tstamps="/5c6a0d3a-a6d6-5d3e-9251-3e321ee206d2/" />
+      <tstamps>ff720bac-5bca-53a0-a038-32b78fa79fef</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C242">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 1" />
+      <property name="Sheetfile" value="02-servo-buses-1.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 1/" tstamps="/5c6a0d3a-a6d6-5d3e-9251-3e321ee206d2/" />
+      <tstamps>882d9239-8903-5921-ba43-c0e76ca19d1d</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J201">
+      <value>LEG data to powered servo harness</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_2" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 1" />
+      <property name="Sheetfile" value="02-servo-buses-1.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 1/" tstamps="/5c6a0d3a-a6d6-5d3e-9251-3e321ee206d2/" />
+      <tstamps>edcf8ef6-d248-5b39-b247-733e847a030e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J241">
+      <value>UPPER data to powered servo harness</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_2" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 1" />
+      <property name="Sheetfile" value="02-servo-buses-1.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 1/" tstamps="/5c6a0d3a-a6d6-5d3e-9251-3e321ee206d2/" />
+      <tstamps>f5c7e435-631b-5d85-92d4-220d2d9fa569</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R201">
+      <value>47 1% / source damping</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 1" />
+      <property name="Sheetfile" value="02-servo-buses-1.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 1/" tstamps="/5c6a0d3a-a6d6-5d3e-9251-3e321ee206d2/" />
+      <tstamps>d0dd32f7-6ec0-531e-9d14-5797bc0c925a</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R202">
+      <value>100k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 1" />
+      <property name="Sheetfile" value="02-servo-buses-1.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 1/" tstamps="/5c6a0d3a-a6d6-5d3e-9251-3e321ee206d2/" />
+      <tstamps>38d9c565-51c5-5e4c-a1e3-dbec1d8938d8</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R203">
+      <value>100k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 1" />
+      <property name="Sheetfile" value="02-servo-buses-1.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 1/" tstamps="/5c6a0d3a-a6d6-5d3e-9251-3e321ee206d2/" />
+      <tstamps>c9765f2d-2b58-5989-80e3-b7a67c90f611</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R241">
+      <value>47 1% / source damping</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 1" />
+      <property name="Sheetfile" value="02-servo-buses-1.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 1/" tstamps="/5c6a0d3a-a6d6-5d3e-9251-3e321ee206d2/" />
+      <tstamps>c3d04081-70b1-555d-b1a3-793b0a10cc1a</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R242">
+      <value>100k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 1" />
+      <property name="Sheetfile" value="02-servo-buses-1.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 1/" tstamps="/5c6a0d3a-a6d6-5d3e-9251-3e321ee206d2/" />
+      <tstamps>42122403-8364-50d3-8950-8e77daf8491d</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R243">
+      <value>100k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 1" />
+      <property name="Sheetfile" value="02-servo-buses-1.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 1/" tstamps="/5c6a0d3a-a6d6-5d3e-9251-3e321ee206d2/" />
+      <tstamps>fd94e26e-bb64-5126-8387-6a53ad4efa6b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U201">
+      <value>SN74AHCT1G126DBVR</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74ahct1g126.pdf</datasheet>
+      <fields>
+        <field name="MPN">SN74AHCT1G126DBVR</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74ahct1g126.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="AHCT1G126_DBV" description="" />
+      <property name="MPN" value="SN74AHCT1G126DBVR" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Half-duplex TTL buses 1" />
+      <property name="Sheetfile" value="02-servo-buses-1.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 1/" tstamps="/5c6a0d3a-a6d6-5d3e-9251-3e321ee206d2/" />
+      <tstamps>8ecf9204-db6c-5e7a-bf5c-8ce5eacd7313</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U202">
+      <value>SN74LVC1G125DBVR</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74lvc1g125.pdf</datasheet>
+      <fields>
+        <field name="MPN">SN74LVC1G125DBVR</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc1g125.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="LVC1G125_DBV" description="" />
+      <property name="MPN" value="SN74LVC1G125DBVR" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Half-duplex TTL buses 1" />
+      <property name="Sheetfile" value="02-servo-buses-1.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 1/" tstamps="/5c6a0d3a-a6d6-5d3e-9251-3e321ee206d2/" />
+      <tstamps>40cdc61b-9bd1-5840-829f-25c91a5f4e81</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U241">
+      <value>SN74AHCT1G126DBVR</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74ahct1g126.pdf</datasheet>
+      <fields>
+        <field name="MPN">SN74AHCT1G126DBVR</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74ahct1g126.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="AHCT1G126_DBV" description="" />
+      <property name="MPN" value="SN74AHCT1G126DBVR" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Half-duplex TTL buses 1" />
+      <property name="Sheetfile" value="02-servo-buses-1.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 1/" tstamps="/5c6a0d3a-a6d6-5d3e-9251-3e321ee206d2/" />
+      <tstamps>b3a030e3-e780-5597-847a-1a601830a1fe</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U242">
+      <value>SN74LVC1G125DBVR</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74lvc1g125.pdf</datasheet>
+      <fields>
+        <field name="MPN">SN74LVC1G125DBVR</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc1g125.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="LVC1G125_DBV" description="" />
+      <property name="MPN" value="SN74LVC1G125DBVR" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Half-duplex TTL buses 1" />
+      <property name="Sheetfile" value="02-servo-buses-1.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 1/" tstamps="/5c6a0d3a-a6d6-5d3e-9251-3e321ee206d2/" />
+      <tstamps>b89742c0-3a2e-5988-addc-15ae691ca1a4</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C301">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 2" />
+      <property name="Sheetfile" value="03-servo-buses-2.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 2/" tstamps="/1ea2a1a1-a46e-5ae1-97a5-83b4e4a3598a/" />
+      <tstamps>b7795809-71a6-562e-8eac-4bbdec08516c</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C302">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 2" />
+      <property name="Sheetfile" value="03-servo-buses-2.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 2/" tstamps="/1ea2a1a1-a46e-5ae1-97a5-83b4e4a3598a/" />
+      <tstamps>5c4cca46-2636-5397-aebc-1f1657a165e1</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C341">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 2" />
+      <property name="Sheetfile" value="03-servo-buses-2.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 2/" tstamps="/1ea2a1a1-a46e-5ae1-97a5-83b4e4a3598a/" />
+      <tstamps>a2480148-0f6f-5bd5-aa08-b31090969369</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C342">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 2" />
+      <property name="Sheetfile" value="03-servo-buses-2.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 2/" tstamps="/1ea2a1a1-a46e-5ae1-97a5-83b4e4a3598a/" />
+      <tstamps>ca4bbedd-0138-5513-b73e-85e080c899aa</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J301">
+      <value>LEFT data to powered servo harness</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_2" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 2" />
+      <property name="Sheetfile" value="03-servo-buses-2.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 2/" tstamps="/1ea2a1a1-a46e-5ae1-97a5-83b4e4a3598a/" />
+      <tstamps>ecbe5075-5c1c-514a-aaeb-1ecb04094000</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J341">
+      <value>RIGHT data to powered servo harness</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_2" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 2" />
+      <property name="Sheetfile" value="03-servo-buses-2.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 2/" tstamps="/1ea2a1a1-a46e-5ae1-97a5-83b4e4a3598a/" />
+      <tstamps>ba19bc09-9bf8-5703-b385-1433f7d93fdf</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R301">
+      <value>47 1% / source damping</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 2" />
+      <property name="Sheetfile" value="03-servo-buses-2.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 2/" tstamps="/1ea2a1a1-a46e-5ae1-97a5-83b4e4a3598a/" />
+      <tstamps>300afeb2-ca8f-5d82-8f88-069ecd36c39b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R302">
+      <value>100k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 2" />
+      <property name="Sheetfile" value="03-servo-buses-2.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 2/" tstamps="/1ea2a1a1-a46e-5ae1-97a5-83b4e4a3598a/" />
+      <tstamps>7dd56f02-71d7-5ec6-892c-53d8db5a0c30</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R303">
+      <value>100k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 2" />
+      <property name="Sheetfile" value="03-servo-buses-2.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 2/" tstamps="/1ea2a1a1-a46e-5ae1-97a5-83b4e4a3598a/" />
+      <tstamps>ca5a4fc7-3cad-5aec-b2a7-0c00b39d065c</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R341">
+      <value>47 1% / source damping</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 2" />
+      <property name="Sheetfile" value="03-servo-buses-2.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 2/" tstamps="/1ea2a1a1-a46e-5ae1-97a5-83b4e4a3598a/" />
+      <tstamps>7de868d3-60a5-5635-b7c6-2f387e999b71</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R342">
+      <value>100k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 2" />
+      <property name="Sheetfile" value="03-servo-buses-2.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 2/" tstamps="/1ea2a1a1-a46e-5ae1-97a5-83b4e4a3598a/" />
+      <tstamps>0e430e59-bef6-5e67-9c6a-6dacfd1241e9</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R343">
+      <value>100k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Half-duplex TTL buses 2" />
+      <property name="Sheetfile" value="03-servo-buses-2.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 2/" tstamps="/1ea2a1a1-a46e-5ae1-97a5-83b4e4a3598a/" />
+      <tstamps>8c471b66-78e8-59c0-9650-e3ae4a8a6767</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U301">
+      <value>SN74AHCT1G126DBVR</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74ahct1g126.pdf</datasheet>
+      <fields>
+        <field name="MPN">SN74AHCT1G126DBVR</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74ahct1g126.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="AHCT1G126_DBV" description="" />
+      <property name="MPN" value="SN74AHCT1G126DBVR" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Half-duplex TTL buses 2" />
+      <property name="Sheetfile" value="03-servo-buses-2.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 2/" tstamps="/1ea2a1a1-a46e-5ae1-97a5-83b4e4a3598a/" />
+      <tstamps>4061d775-8b08-5aa1-9896-c41b1106835a</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U302">
+      <value>SN74LVC1G125DBVR</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74lvc1g125.pdf</datasheet>
+      <fields>
+        <field name="MPN">SN74LVC1G125DBVR</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc1g125.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="LVC1G125_DBV" description="" />
+      <property name="MPN" value="SN74LVC1G125DBVR" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Half-duplex TTL buses 2" />
+      <property name="Sheetfile" value="03-servo-buses-2.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 2/" tstamps="/1ea2a1a1-a46e-5ae1-97a5-83b4e4a3598a/" />
+      <tstamps>03370ef4-6537-509f-9b7e-2b4815352b9d</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U341">
+      <value>SN74AHCT1G126DBVR</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74ahct1g126.pdf</datasheet>
+      <fields>
+        <field name="MPN">SN74AHCT1G126DBVR</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74ahct1g126.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="AHCT1G126_DBV" description="" />
+      <property name="MPN" value="SN74AHCT1G126DBVR" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Half-duplex TTL buses 2" />
+      <property name="Sheetfile" value="03-servo-buses-2.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 2/" tstamps="/1ea2a1a1-a46e-5ae1-97a5-83b4e4a3598a/" />
+      <tstamps>410c0c65-142b-50e3-a597-7452aae53bcf</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U342">
+      <value>SN74LVC1G125DBVR</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74lvc1g125.pdf</datasheet>
+      <fields>
+        <field name="MPN">SN74LVC1G125DBVR</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc1g125.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="LVC1G125_DBV" description="" />
+      <property name="MPN" value="SN74LVC1G125DBVR" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Half-duplex TTL buses 2" />
+      <property name="Sheetfile" value="03-servo-buses-2.kicad_sch" />
+      <sheetpath names="/Half-duplex TTL buses 2/" tstamps="/1ea2a1a1-a46e-5ae1-97a5-83b4e4a3598a/" />
+      <tstamps>d609d0dd-2319-5386-b74e-7f4a8fe62f47</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C401">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Sensor mux / IMU / foot cabling" />
+      <property name="Sheetfile" value="04-sensor-buses.kicad_sch" />
+      <sheetpath names="/Sensor mux / IMU / foot cabling/" tstamps="/a1280054-6e7a-509e-9139-2d6d623d7d44/" />
+      <tstamps>bfd843fa-76b1-5151-a96a-61916a613962</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="F401">
+      <value>MF-MSMF020-2 / verify trip coordination</value>
+      <footprint>Fuse:Fuse_1812_4532Metric</footprint>
+      <fields>
+        <field name="MPN">MF-MSMF020-2</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Fuse:Fuse_1812_4532Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="F" description="" />
+      <property name="MPN" value="MF-MSMF020-2" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Sensor mux / IMU / foot cabling" />
+      <property name="Sheetfile" value="04-sensor-buses.kicad_sch" />
+      <sheetpath names="/Sensor mux / IMU / foot cabling/" tstamps="/a1280054-6e7a-509e-9139-2d6d623d7d44/" />
+      <tstamps>44c8adec-febc-5a07-95eb-8ae17babf9cf</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="F402">
+      <value>MF-MSMF020-2 / verify trip coordination</value>
+      <footprint>Fuse:Fuse_1812_4532Metric</footprint>
+      <fields>
+        <field name="MPN">MF-MSMF020-2</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Fuse:Fuse_1812_4532Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="F" description="" />
+      <property name="MPN" value="MF-MSMF020-2" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Sensor mux / IMU / foot cabling" />
+      <property name="Sheetfile" value="04-sensor-buses.kicad_sch" />
+      <sheetpath names="/Sensor mux / IMU / foot cabling/" tstamps="/a1280054-6e7a-509e-9139-2d6d623d7d44/" />
+      <tstamps>ccf4db3d-b32a-582c-ba30-0becd27f2a63</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J401">
+      <value>LEFT foot / mates foot J101 pin for pin</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_6" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Sensor mux / IMU / foot cabling" />
+      <property name="Sheetfile" value="04-sensor-buses.kicad_sch" />
+      <sheetpath names="/Sensor mux / IMU / foot cabling/" tstamps="/a1280054-6e7a-509e-9139-2d6d623d7d44/" />
+      <tstamps>e2b159eb-3d67-5ae1-ad7b-8b844ec4d6fb</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J402">
+      <value>RIGHT foot / mates foot J101 pin for pin</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_6" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Sensor mux / IMU / foot cabling" />
+      <property name="Sheetfile" value="04-sensor-buses.kicad_sch" />
+      <sheetpath names="/Sensor mux / IMU / foot cabling/" tstamps="/a1280054-6e7a-509e-9139-2d6d623d7d44/" />
+      <tstamps>907f93c6-bd5d-5679-a0c4-1a0def85c0ac</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J403">
+      <value>BME688 module</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_4" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Sensor mux / IMU / foot cabling" />
+      <property name="Sheetfile" value="04-sensor-buses.kicad_sch" />
+      <sheetpath names="/Sensor mux / IMU / foot cabling/" tstamps="/a1280054-6e7a-509e-9139-2d6d623d7d44/" />
+      <tstamps>35b62cef-4a33-524e-b265-bc446a959586</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J404">
+      <value>Edge sensor A</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_4" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Sensor mux / IMU / foot cabling" />
+      <property name="Sheetfile" value="04-sensor-buses.kicad_sch" />
+      <sheetpath names="/Sensor mux / IMU / foot cabling/" tstamps="/a1280054-6e7a-509e-9139-2d6d623d7d44/" />
+      <tstamps>9ba6042e-5b04-5c96-9ff4-3755d8588741</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J405">
+      <value>Edge sensor B</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_4" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Sensor mux / IMU / foot cabling" />
+      <property name="Sheetfile" value="04-sensor-buses.kicad_sch" />
+      <sheetpath names="/Sensor mux / IMU / foot cabling/" tstamps="/a1280054-6e7a-509e-9139-2d6d623d7d44/" />
+      <tstamps>4f95cdfc-1b19-5149-9ece-2a758443b7f6</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R401">
+      <value>10k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Sensor mux / IMU / foot cabling" />
+      <property name="Sheetfile" value="04-sensor-buses.kicad_sch" />
+      <sheetpath names="/Sensor mux / IMU / foot cabling/" tstamps="/a1280054-6e7a-509e-9139-2d6d623d7d44/" />
+      <tstamps>2d210670-6a2d-52fc-b5bd-e82a11e4ade6</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U401">
+      <value>TCA9548APWR</value>
+      <footprint>Package_SO:TSSOP-24_4.4x7.8mm_P0.65mm</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/tca9548a.pdf</datasheet>
+      <fields>
+        <field name="MPN">TCA9548APWR</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_SO:TSSOP-24_4.4x7.8mm_P0.65mm</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/tca9548a.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="TCA9548A_PW" description="" />
+      <property name="MPN" value="TCA9548APWR" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Sensor mux / IMU / foot cabling" />
+      <property name="Sheetfile" value="04-sensor-buses.kicad_sch" />
+      <sheetpath names="/Sensor mux / IMU / foot cabling/" tstamps="/a1280054-6e7a-509e-9139-2d6d623d7d44/" />
+      <tstamps>2d08f9d7-267e-5bb4-8b58-72ec3c09a53e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="12" />
+            <pin num="21" />
+            <pin num="22" />
+            <pin num="23" />
+            <pin num="24" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+            <pin num="7" />
+            <pin num="8" />
+            <pin num="9" />
+            <pin num="10" />
+            <pin num="11" />
+            <pin num="13" />
+            <pin num="14" />
+            <pin num="15" />
+            <pin num="16" />
+            <pin num="17" />
+            <pin num="18" />
+            <pin num="19" />
+            <pin num="20" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R402">
+      <value>4k7 1% / fitting option</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Sensor branch pull-ups / fitting options" />
+      <property name="Sheetfile" value="10-sensor-pullups.kicad_sch" />
+      <sheetpath names="/Sensor branch pull-ups / fitting options/" tstamps="/d3eef230-29e0-592f-8b00-975dee557173/" />
+      <tstamps>076c3e76-aba1-5e78-9b6f-c1b62128dd6e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R403">
+      <value>4k7 1% / fitting option</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Sensor branch pull-ups / fitting options" />
+      <property name="Sheetfile" value="10-sensor-pullups.kicad_sch" />
+      <sheetpath names="/Sensor branch pull-ups / fitting options/" tstamps="/d3eef230-29e0-592f-8b00-975dee557173/" />
+      <tstamps>b0601747-e239-559b-ba16-47031a2aac28</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R404">
+      <value>4k7 1% / fitting option</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Sensor branch pull-ups / fitting options" />
+      <property name="Sheetfile" value="10-sensor-pullups.kicad_sch" />
+      <sheetpath names="/Sensor branch pull-ups / fitting options/" tstamps="/d3eef230-29e0-592f-8b00-975dee557173/" />
+      <tstamps>e575d717-45ad-51cb-b9f0-a9512223f9a6</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R405">
+      <value>4k7 1% / fitting option</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Sensor branch pull-ups / fitting options" />
+      <property name="Sheetfile" value="10-sensor-pullups.kicad_sch" />
+      <sheetpath names="/Sensor branch pull-ups / fitting options/" tstamps="/d3eef230-29e0-592f-8b00-975dee557173/" />
+      <tstamps>281754a7-a5a7-5696-8065-021fdc049bff</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R406">
+      <value>4k7 1% / fitting option</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Sensor branch pull-ups / fitting options" />
+      <property name="Sheetfile" value="10-sensor-pullups.kicad_sch" />
+      <sheetpath names="/Sensor branch pull-ups / fitting options/" tstamps="/d3eef230-29e0-592f-8b00-975dee557173/" />
+      <tstamps>8be98357-939b-5206-9850-4c9d0b75d8cb</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R407">
+      <value>4k7 1% / fitting option</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Sensor branch pull-ups / fitting options" />
+      <property name="Sheetfile" value="10-sensor-pullups.kicad_sch" />
+      <sheetpath names="/Sensor branch pull-ups / fitting options/" tstamps="/d3eef230-29e0-592f-8b00-975dee557173/" />
+      <tstamps>674e6e34-511f-5aad-bf88-b404ebf8ad92</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R408">
+      <value>4k7 1% / fitting option</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Sensor branch pull-ups / fitting options" />
+      <property name="Sheetfile" value="10-sensor-pullups.kicad_sch" />
+      <sheetpath names="/Sensor branch pull-ups / fitting options/" tstamps="/d3eef230-29e0-592f-8b00-975dee557173/" />
+      <tstamps>300921a8-0cd8-5966-a427-3f75ca5cf1b7</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R409">
+      <value>4k7 1% / fitting option</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Sensor branch pull-ups / fitting options" />
+      <property name="Sheetfile" value="10-sensor-pullups.kicad_sch" />
+      <sheetpath names="/Sensor branch pull-ups / fitting options/" tstamps="/d3eef230-29e0-592f-8b00-975dee557173/" />
+      <tstamps>5b004fb6-7cbb-52e7-ac9c-503fe41525c4</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R410">
+      <value>4k7 1% / fitting option</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Sensor branch pull-ups / fitting options" />
+      <property name="Sheetfile" value="10-sensor-pullups.kicad_sch" />
+      <sheetpath names="/Sensor branch pull-ups / fitting options/" tstamps="/d3eef230-29e0-592f-8b00-975dee557173/" />
+      <tstamps>5f7385b3-7fd7-5bdf-b8dd-6806daa08fa9</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R411">
+      <value>4k7 1% / fitting option</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Sensor branch pull-ups / fitting options" />
+      <property name="Sheetfile" value="10-sensor-pullups.kicad_sch" />
+      <sheetpath names="/Sensor branch pull-ups / fitting options/" tstamps="/d3eef230-29e0-592f-8b00-975dee557173/" />
+      <tstamps>7ba604af-312d-52cb-8e29-4e385d426adb</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C501">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="SPI IMU / independent watchdog" />
+      <property name="Sheetfile" value="05-imu-watchdog.kicad_sch" />
+      <sheetpath names="/SPI IMU / independent watchdog/" tstamps="/72ea3c31-7975-5c19-aae7-c63c7515750e/" />
+      <tstamps>fff6733f-04f4-5641-a515-2d8f666241cf</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C502">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="SPI IMU / independent watchdog" />
+      <property name="Sheetfile" value="05-imu-watchdog.kicad_sch" />
+      <sheetpath names="/SPI IMU / independent watchdog/" tstamps="/72ea3c31-7975-5c19-aae7-c63c7515750e/" />
+      <tstamps>da2b5126-7228-5201-becc-6f0beb74df95</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C503">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="SPI IMU / independent watchdog" />
+      <property name="Sheetfile" value="05-imu-watchdog.kicad_sch" />
+      <sheetpath names="/SPI IMU / independent watchdog/" tstamps="/72ea3c31-7975-5c19-aae7-c63c7515750e/" />
+      <tstamps>b895b96e-0984-5a37-8e2c-cb7b9f0071aa</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J501">
+      <value>Watchdog test points / fault goes to power J1002.9</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_3" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="SPI IMU / independent watchdog" />
+      <property name="Sheetfile" value="05-imu-watchdog.kicad_sch" />
+      <sheetpath names="/SPI IMU / independent watchdog/" tstamps="/72ea3c31-7975-5c19-aae7-c63c7515750e/" />
+      <tstamps>4d7cfd7d-a335-5e6f-a4f6-88368169a4ff</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R501">
+      <value>10k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="SPI IMU / independent watchdog" />
+      <property name="Sheetfile" value="05-imu-watchdog.kicad_sch" />
+      <sheetpath names="/SPI IMU / independent watchdog/" tstamps="/72ea3c31-7975-5c19-aae7-c63c7515750e/" />
+      <tstamps>ff769e79-338c-54a4-8814-b2339ccebd93</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R502">
+      <value>10k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="SPI IMU / independent watchdog" />
+      <property name="Sheetfile" value="05-imu-watchdog.kicad_sch" />
+      <sheetpath names="/SPI IMU / independent watchdog/" tstamps="/72ea3c31-7975-5c19-aae7-c63c7515750e/" />
+      <tstamps>9432e060-540a-5ef1-a4ad-f18170b734bc</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R503">
+      <value>10k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="SPI IMU / independent watchdog" />
+      <property name="Sheetfile" value="05-imu-watchdog.kicad_sch" />
+      <sheetpath names="/SPI IMU / independent watchdog/" tstamps="/72ea3c31-7975-5c19-aae7-c63c7515750e/" />
+      <tstamps>9c18827c-e781-5497-bd52-2fe8d3c4cdd8</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R504">
+      <value>100k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="SPI IMU / independent watchdog" />
+      <property name="Sheetfile" value="05-imu-watchdog.kicad_sch" />
+      <sheetpath names="/SPI IMU / independent watchdog/" tstamps="/72ea3c31-7975-5c19-aae7-c63c7515750e/" />
+      <tstamps>83f5aa09-4303-552b-bff5-37b6f5f6015d</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U501">
+      <value>LSM6DSOXTR</value>
+      <datasheet>https://www.st.com/resource/en/datasheet/lsm6dsox.pdf</datasheet>
+      <fields>
+        <field name="MPN">LSM6DSOXTR</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint" />
+        <field name="Datasheet">https://www.st.com/resource/en/datasheet/lsm6dsox.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="LSM6DSOX" description="" />
+      <property name="MPN" value="LSM6DSOXTR" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="SPI IMU / independent watchdog" />
+      <property name="Sheetfile" value="05-imu-watchdog.kicad_sch" />
+      <sheetpath names="/SPI IMU / independent watchdog/" tstamps="/72ea3c31-7975-5c19-aae7-c63c7515750e/" />
+      <tstamps>4eb09f57-97d4-50a4-a481-5c1e18dd9a60</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+            <pin num="7" />
+            <pin num="8" />
+            <pin num="9" />
+            <pin num="10" />
+            <pin num="11" />
+            <pin num="12" />
+            <pin num="13" />
+            <pin num="14" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U502">
+      <value>TPS3431SDRBR</value>
+      <datasheet>https://www.ti.com/lit/ds/symlink/tps3431.pdf</datasheet>
+      <fields>
+        <field name="MPN">TPS3431SDRBR</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint" />
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/tps3431.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="TPS3431_DRB" description="" />
+      <property name="MPN" value="TPS3431SDRBR" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="SPI IMU / independent watchdog" />
+      <property name="Sheetfile" value="05-imu-watchdog.kicad_sch" />
+      <sheetpath names="/SPI IMU / independent watchdog/" tstamps="/72ea3c31-7975-5c19-aae7-c63c7515750e/" />
+      <tstamps>4e592b0a-824e-50f6-a712-6a44b1acc0a4</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="9" />
+            <pin num="5" />
+            <pin num="6" />
+            <pin num="7" />
+            <pin num="8" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C601">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Touch electrodes 1-12" />
+      <property name="Sheetfile" value="06-touch-1.kicad_sch" />
+      <sheetpath names="/Touch electrodes 1-12/" tstamps="/34bdaf5b-528a-5328-a099-c4241ff5cde4/" />
+      <tstamps>6620c3f6-3415-5078-b137-8007475f14f4</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C602">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Touch electrodes 1-12" />
+      <property name="Sheetfile" value="06-touch-1.kicad_sch" />
+      <sheetpath names="/Touch electrodes 1-12/" tstamps="/34bdaf5b-528a-5328-a099-c4241ff5cde4/" />
+      <tstamps>e3c1318e-a2c7-5928-9193-c9d467dccf45</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J601">
+      <value>12 shell electrodes plus ground / no shield over sensing pads</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_13" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Touch electrodes 1-12" />
+      <property name="Sheetfile" value="06-touch-1.kicad_sch" />
+      <sheetpath names="/Touch electrodes 1-12/" tstamps="/34bdaf5b-528a-5328-a099-c4241ff5cde4/" />
+      <tstamps>5e6af03a-8222-59f2-821c-76e88751d096</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+            <pin num="7" />
+            <pin num="8" />
+            <pin num="9" />
+            <pin num="10" />
+            <pin num="11" />
+            <pin num="12" />
+            <pin num="13" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R601">
+      <value>75k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Touch electrodes 1-12" />
+      <property name="Sheetfile" value="06-touch-1.kicad_sch" />
+      <sheetpath names="/Touch electrodes 1-12/" tstamps="/34bdaf5b-528a-5328-a099-c4241ff5cde4/" />
+      <tstamps>ea4759f9-f46b-598e-8328-64c6f8e3d2e1</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R602">
+      <value>10k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Touch electrodes 1-12" />
+      <property name="Sheetfile" value="06-touch-1.kicad_sch" />
+      <sheetpath names="/Touch electrodes 1-12/" tstamps="/34bdaf5b-528a-5328-a099-c4241ff5cde4/" />
+      <tstamps>b0e5c8fb-08f6-56f4-8cdc-cb9c21f180ce</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U601">
+      <value>MPR121QR2 / 0x5a</value>
+      <footprint>Package_DFN_QFN:UQFN-20_3x3mm_P0.4mm</footprint>
+      <datasheet>https://www.nxp.com/docs/en/data-sheet/MPR121.pdf</datasheet>
+      <fields>
+        <field name="MPN">MPR121QR2</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_DFN_QFN:UQFN-20_3x3mm_P0.4mm</field>
+        <field name="Datasheet">https://www.nxp.com/docs/en/data-sheet/MPR121.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="MPR121_QFN20" description="" />
+      <property name="MPN" value="MPR121QR2" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Touch electrodes 1-12" />
+      <property name="Sheetfile" value="06-touch-1.kicad_sch" />
+      <sheetpath names="/Touch electrodes 1-12/" tstamps="/34bdaf5b-528a-5328-a099-c4241ff5cde4/" />
+      <tstamps>32bdbb2b-00da-5286-9bc0-51ca151b1a2b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+            <pin num="7" />
+            <pin num="8" />
+            <pin num="9" />
+            <pin num="10" />
+            <pin num="11" />
+            <pin num="12" />
+            <pin num="13" />
+            <pin num="14" />
+            <pin num="15" />
+            <pin num="16" />
+            <pin num="17" />
+            <pin num="18" />
+            <pin num="19" />
+            <pin num="20" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C701">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Touch electrodes 13-24" />
+      <property name="Sheetfile" value="07-touch-2.kicad_sch" />
+      <sheetpath names="/Touch electrodes 13-24/" tstamps="/1cb6d0cc-b1e7-5ec2-b8f6-a1c4466baff2/" />
+      <tstamps>00cda1df-7663-5db3-aa16-492290ffc549</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C702">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Touch electrodes 13-24" />
+      <property name="Sheetfile" value="07-touch-2.kicad_sch" />
+      <sheetpath names="/Touch electrodes 13-24/" tstamps="/1cb6d0cc-b1e7-5ec2-b8f6-a1c4466baff2/" />
+      <tstamps>eb073459-d802-5ff4-ae7e-dc098008bfaa</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J701">
+      <value>12 shell electrodes plus ground / no shield over sensing pads</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_13" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Touch electrodes 13-24" />
+      <property name="Sheetfile" value="07-touch-2.kicad_sch" />
+      <sheetpath names="/Touch electrodes 13-24/" tstamps="/1cb6d0cc-b1e7-5ec2-b8f6-a1c4466baff2/" />
+      <tstamps>c56af32f-869d-594a-8350-516346c40219</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+            <pin num="7" />
+            <pin num="8" />
+            <pin num="9" />
+            <pin num="10" />
+            <pin num="11" />
+            <pin num="12" />
+            <pin num="13" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R701">
+      <value>75k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Touch electrodes 13-24" />
+      <property name="Sheetfile" value="07-touch-2.kicad_sch" />
+      <sheetpath names="/Touch electrodes 13-24/" tstamps="/1cb6d0cc-b1e7-5ec2-b8f6-a1c4466baff2/" />
+      <tstamps>24cccd72-3297-5153-a53d-9476f1e6d579</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U701">
+      <value>MPR121QR2 / 0x5b</value>
+      <footprint>Package_DFN_QFN:UQFN-20_3x3mm_P0.4mm</footprint>
+      <datasheet>https://www.nxp.com/docs/en/data-sheet/MPR121.pdf</datasheet>
+      <fields>
+        <field name="MPN">MPR121QR2</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_DFN_QFN:UQFN-20_3x3mm_P0.4mm</field>
+        <field name="Datasheet">https://www.nxp.com/docs/en/data-sheet/MPR121.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="MPR121_QFN20" description="" />
+      <property name="MPN" value="MPR121QR2" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Touch electrodes 13-24" />
+      <property name="Sheetfile" value="07-touch-2.kicad_sch" />
+      <sheetpath names="/Touch electrodes 13-24/" tstamps="/1cb6d0cc-b1e7-5ec2-b8f6-a1c4466baff2/" />
+      <tstamps>e2ba9eca-a640-5f10-8f2c-3cc30212ae33</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+            <pin num="7" />
+            <pin num="8" />
+            <pin num="9" />
+            <pin num="10" />
+            <pin num="11" />
+            <pin num="12" />
+            <pin num="13" />
+            <pin num="14" />
+            <pin num="15" />
+            <pin num="16" />
+            <pin num="17" />
+            <pin num="18" />
+            <pin num="19" />
+            <pin num="20" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C801">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Touch electrodes 25-36" />
+      <property name="Sheetfile" value="08-touch-3.kicad_sch" />
+      <sheetpath names="/Touch electrodes 25-36/" tstamps="/6f770f01-2516-51be-82d3-4fb9011f377a/" />
+      <tstamps>1463cf3b-c791-5887-812b-5871ddd7f29d</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C802">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Touch electrodes 25-36" />
+      <property name="Sheetfile" value="08-touch-3.kicad_sch" />
+      <sheetpath names="/Touch electrodes 25-36/" tstamps="/6f770f01-2516-51be-82d3-4fb9011f377a/" />
+      <tstamps>83d127f9-7bfb-5bdd-ad1e-756d603403bf</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J801">
+      <value>12 shell electrodes plus ground / no shield over sensing pads</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_13" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Touch electrodes 25-36" />
+      <property name="Sheetfile" value="08-touch-3.kicad_sch" />
+      <sheetpath names="/Touch electrodes 25-36/" tstamps="/6f770f01-2516-51be-82d3-4fb9011f377a/" />
+      <tstamps>4de0885a-0477-54d0-8784-780d3728f87b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+            <pin num="7" />
+            <pin num="8" />
+            <pin num="9" />
+            <pin num="10" />
+            <pin num="11" />
+            <pin num="12" />
+            <pin num="13" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R801">
+      <value>75k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Touch electrodes 25-36" />
+      <property name="Sheetfile" value="08-touch-3.kicad_sch" />
+      <sheetpath names="/Touch electrodes 25-36/" tstamps="/6f770f01-2516-51be-82d3-4fb9011f377a/" />
+      <tstamps>12dcc7e2-c0e3-59f8-863d-8bebfb09d434</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U801">
+      <value>MPR121QR2 / 0x5c</value>
+      <footprint>Package_DFN_QFN:UQFN-20_3x3mm_P0.4mm</footprint>
+      <datasheet>https://www.nxp.com/docs/en/data-sheet/MPR121.pdf</datasheet>
+      <fields>
+        <field name="MPN">MPR121QR2</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_DFN_QFN:UQFN-20_3x3mm_P0.4mm</field>
+        <field name="Datasheet">https://www.nxp.com/docs/en/data-sheet/MPR121.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="MPR121_QFN20" description="" />
+      <property name="MPN" value="MPR121QR2" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Touch electrodes 25-36" />
+      <property name="Sheetfile" value="08-touch-3.kicad_sch" />
+      <sheetpath names="/Touch electrodes 25-36/" tstamps="/6f770f01-2516-51be-82d3-4fb9011f377a/" />
+      <tstamps>6f7290a4-cc41-5eea-a287-295d3b2ae5ab</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+            <pin num="7" />
+            <pin num="8" />
+            <pin num="9" />
+            <pin num="10" />
+            <pin num="11" />
+            <pin num="12" />
+            <pin num="13" />
+            <pin num="14" />
+            <pin num="15" />
+            <pin num="16" />
+            <pin num="17" />
+            <pin num="18" />
+            <pin num="19" />
+            <pin num="20" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C901">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Touch electrodes 37-48" />
+      <property name="Sheetfile" value="09-touch-4.kicad_sch" />
+      <sheetpath names="/Touch electrodes 37-48/" tstamps="/22e79236-ba79-5f7c-9816-5f09cb74d55b/" />
+      <tstamps>5a6ae800-50b4-53e9-8c04-0d01a74b452c</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C902">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Touch electrodes 37-48" />
+      <property name="Sheetfile" value="09-touch-4.kicad_sch" />
+      <sheetpath names="/Touch electrodes 37-48/" tstamps="/22e79236-ba79-5f7c-9816-5f09cb74d55b/" />
+      <tstamps>9e8f1d70-994e-5868-8763-ac902cc5ac3b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J901">
+      <value>12 shell electrodes plus ground / no shield over sensing pads</value>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="Header_13" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Touch electrodes 37-48" />
+      <property name="Sheetfile" value="09-touch-4.kicad_sch" />
+      <sheetpath names="/Touch electrodes 37-48/" tstamps="/22e79236-ba79-5f7c-9816-5f09cb74d55b/" />
+      <tstamps>6a23c390-579b-502e-a8fe-dc3fd382a341</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+            <pin num="7" />
+            <pin num="8" />
+            <pin num="9" />
+            <pin num="10" />
+            <pin num="11" />
+            <pin num="12" />
+            <pin num="13" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R901">
+      <value>75k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Touch electrodes 37-48" />
+      <property name="Sheetfile" value="09-touch-4.kicad_sch" />
+      <sheetpath names="/Touch electrodes 37-48/" tstamps="/22e79236-ba79-5f7c-9816-5f09cb74d55b/" />
+      <tstamps>607bc8b1-7b6d-5d34-8b6a-e4ac99e3affb</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U901">
+      <value>MPR121QR2 / 0x5d</value>
+      <footprint>Package_DFN_QFN:UQFN-20_3x3mm_P0.4mm</footprint>
+      <datasheet>https://www.nxp.com/docs/en/data-sheet/MPR121.pdf</datasheet>
+      <fields>
+        <field name="MPN">MPR121QR2</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_DFN_QFN:UQFN-20_3x3mm_P0.4mm</field>
+        <field name="Datasheet">https://www.nxp.com/docs/en/data-sheet/MPR121.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="MPR121_QFN20" description="" />
+      <property name="MPN" value="MPR121QR2" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Touch electrodes 37-48" />
+      <property name="Sheetfile" value="09-touch-4.kicad_sch" />
+      <sheetpath names="/Touch electrodes 37-48/" tstamps="/22e79236-ba79-5f7c-9816-5f09cb74d55b/" />
+      <tstamps>99e886d6-fd0a-573c-ba7e-01ec54c03b0a</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="3" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="6" />
+            <pin num="7" />
+            <pin num="8" />
+            <pin num="9" />
+            <pin num="10" />
+            <pin num="11" />
+            <pin num="12" />
+            <pin num="13" />
+            <pin num="14" />
+            <pin num="15" />
+            <pin num="16" />
+            <pin num="17" />
+            <pin num="18" />
+            <pin num="19" />
+            <pin num="20" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C1101">
+      <value>100n 16V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="C" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Hardware-gated servo transmit enables" />
+      <property name="Sheetfile" value="11-transmit-cut.kicad_sch" />
+      <sheetpath names="/Hardware-gated servo transmit enables/" tstamps="/a0c9b2ff-9fa4-54bc-9eb1-88bdb6a437c1/" />
+      <tstamps>03e6ff0d-3002-50c7-b437-5eef754fecd8</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R1101">
+      <value>100k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Hardware-gated servo transmit enables" />
+      <property name="Sheetfile" value="11-transmit-cut.kicad_sch" />
+      <sheetpath names="/Hardware-gated servo transmit enables/" tstamps="/a0c9b2ff-9fa4-54bc-9eb1-88bdb6a437c1/" />
+      <tstamps>0fe07909-2a96-5615-8028-82a38809cf93</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R1102">
+      <value>100k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Hardware-gated servo transmit enables" />
+      <property name="Sheetfile" value="11-transmit-cut.kicad_sch" />
+      <sheetpath names="/Hardware-gated servo transmit enables/" tstamps="/a0c9b2ff-9fa4-54bc-9eb1-88bdb6a437c1/" />
+      <tstamps>4cb385e0-7f8e-5793-a406-42ec2f311f31</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R1103">
+      <value>100k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Hardware-gated servo transmit enables" />
+      <property name="Sheetfile" value="11-transmit-cut.kicad_sch" />
+      <sheetpath names="/Hardware-gated servo transmit enables/" tstamps="/a0c9b2ff-9fa4-54bc-9eb1-88bdb6a437c1/" />
+      <tstamps>4920e07a-dab1-5203-9bf9-e84ac384376c</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R1104">
+      <value>100k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Hardware-gated servo transmit enables" />
+      <property name="Sheetfile" value="11-transmit-cut.kicad_sch" />
+      <sheetpath names="/Hardware-gated servo transmit enables/" tstamps="/a0c9b2ff-9fa4-54bc-9eb1-88bdb6a437c1/" />
+      <tstamps>dc4067b5-f574-53ba-89ae-823cd5839eaf</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R1105">
+      <value>100k 1%</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="MPN" />
+        <field name="Selection">MPN_PENDING</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="R" description="" />
+      <property name="MPN" value="" />
+      <property name="Selection" value="MPN_PENDING" />
+      <property name="Sheetname" value="Hardware-gated servo transmit enables" />
+      <property name="Sheetfile" value="11-transmit-cut.kicad_sch" />
+      <sheetpath names="/Hardware-gated servo transmit enables/" tstamps="/a0c9b2ff-9fa4-54bc-9eb1-88bdb6a437c1/" />
+      <tstamps>d8f9ac53-a581-5407-831d-2a52e6eae668</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U1101">
+      <value>SN74LVC08APWR</value>
+      <footprint>Package_SO:TSSOP-14_4.4x5mm_P0.65mm</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74lvc08a.pdf</datasheet>
+      <fields>
+        <field name="MPN">SN74LVC08APWR</field>
+        <field name="Selection">candidate</field>
+        <field name="Footprint">Package_SO:TSSOP-14_4.4x5mm_P0.65mm</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc08a.pdf</field>
+        <field name="Description" />
+      </fields>
+      <libsource lib="LGV2" part="SN74LVC08A" description="" />
+      <property name="MPN" value="SN74LVC08APWR" />
+      <property name="Selection" value="candidate" />
+      <property name="Sheetname" value="Hardware-gated servo transmit enables" />
+      <property name="Sheetfile" value="11-transmit-cut.kicad_sch" />
+      <sheetpath names="/Hardware-gated servo transmit enables/" tstamps="/a0c9b2ff-9fa4-54bc-9eb1-88bdb6a437c1/" />
+      <tstamps>b78647f8-7ddb-5a02-bc39-89e0deb07601</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1" />
+            <pin num="2" />
+            <pin num="4" />
+            <pin num="5" />
+            <pin num="9" />
+            <pin num="10" />
+            <pin num="12" />
+            <pin num="13" />
+            <pin num="7" />
+            <pin num="3" />
+            <pin num="6" />
+            <pin num="8" />
+            <pin num="11" />
+            <pin num="14" />
+          </pins>
+        </unit>
+      </units>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="LGV2" part="AHCT1G126_DBV">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">AHCT1G126_DBV</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="OE" type="input" />
+        <pin num="2" name="A" type="input" />
+        <pin num="3" name="GND" type="power_in" />
+        <pin num="4" name="Y" type="tri_state" />
+        <pin num="5" name="VCC" type="power_in" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="C">
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">C</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive" />
+        <pin num="2" name="~" type="passive" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="F">
+      <fields>
+        <field name="Reference">F</field>
+        <field name="Value">F</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive" />
+        <pin num="2" name="~" type="passive" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="Header_12">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Header_12</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive" />
+        <pin num="2" name="2" type="passive" />
+        <pin num="3" name="3" type="passive" />
+        <pin num="4" name="4" type="passive" />
+        <pin num="5" name="5" type="passive" />
+        <pin num="6" name="6" type="passive" />
+        <pin num="7" name="7" type="passive" />
+        <pin num="8" name="8" type="passive" />
+        <pin num="9" name="9" type="passive" />
+        <pin num="10" name="10" type="passive" />
+        <pin num="11" name="11" type="passive" />
+        <pin num="12" name="12" type="passive" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="Header_13">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Header_13</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive" />
+        <pin num="2" name="2" type="passive" />
+        <pin num="3" name="3" type="passive" />
+        <pin num="4" name="4" type="passive" />
+        <pin num="5" name="5" type="passive" />
+        <pin num="6" name="6" type="passive" />
+        <pin num="7" name="7" type="passive" />
+        <pin num="8" name="8" type="passive" />
+        <pin num="9" name="9" type="passive" />
+        <pin num="10" name="10" type="passive" />
+        <pin num="11" name="11" type="passive" />
+        <pin num="12" name="12" type="passive" />
+        <pin num="13" name="13" type="passive" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="Header_2">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Header_2</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive" />
+        <pin num="2" name="2" type="passive" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="Header_3">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Header_3</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive" />
+        <pin num="2" name="2" type="passive" />
+        <pin num="3" name="3" type="passive" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="Header_4">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Header_4</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive" />
+        <pin num="2" name="2" type="passive" />
+        <pin num="3" name="3" type="passive" />
+        <pin num="4" name="4" type="passive" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="Header_6">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Header_6</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive" />
+        <pin num="2" name="2" type="passive" />
+        <pin num="3" name="3" type="passive" />
+        <pin num="4" name="4" type="passive" />
+        <pin num="5" name="5" type="passive" />
+        <pin num="6" name="6" type="passive" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="Header_7">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Header_7</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive" />
+        <pin num="2" name="2" type="passive" />
+        <pin num="3" name="3" type="passive" />
+        <pin num="4" name="4" type="passive" />
+        <pin num="5" name="5" type="passive" />
+        <pin num="6" name="6" type="passive" />
+        <pin num="7" name="7" type="passive" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="LSM6DSOX">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">LSM6DSOX</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="SDO" type="output" />
+        <pin num="2" name="SDx" type="input" />
+        <pin num="3" name="SCx" type="input" />
+        <pin num="4" name="INT1" type="output" />
+        <pin num="5" name="VDDIO" type="power_in" />
+        <pin num="6" name="GND" type="power_in" />
+        <pin num="7" name="GND" type="passive" />
+        <pin num="8" name="VDD" type="power_in" />
+        <pin num="9" name="INT2" type="output" />
+        <pin num="10" name="OCS_Aux" type="no_connect" />
+        <pin num="11" name="SDO_Aux" type="output" />
+        <pin num="12" name="~{CS}" type="input" />
+        <pin num="13" name="SCL_SPC" type="input" />
+        <pin num="14" name="SDA_SDI" type="input" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="LVC1G125_DBV">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">LVC1G125_DBV</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="~{OE}" type="input" />
+        <pin num="2" name="A_5V_tolerant" type="input" />
+        <pin num="3" name="GND" type="power_in" />
+        <pin num="4" name="Y" type="output" />
+        <pin num="5" name="VCC" type="power_in" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="MMBT3904">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">MMBT3904</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="B" type="input" />
+        <pin num="2" name="E" type="passive" />
+        <pin num="3" name="C" type="passive" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="MPR121_QFN20">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">MPR121_QFN20</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="~{IRQ}" type="open_collector" />
+        <pin num="2" name="SCL" type="input" />
+        <pin num="3" name="SDA" type="bidirectional" />
+        <pin num="4" name="ADDR" type="input" />
+        <pin num="5" name="VREG" type="power_out" />
+        <pin num="6" name="VSS" type="power_in" />
+        <pin num="7" name="REXT" type="passive" />
+        <pin num="8" name="ELE0" type="passive" />
+        <pin num="9" name="ELE1" type="passive" />
+        <pin num="10" name="ELE2" type="passive" />
+        <pin num="11" name="ELE3" type="passive" />
+        <pin num="12" name="ELE4" type="passive" />
+        <pin num="13" name="ELE5" type="passive" />
+        <pin num="14" name="ELE6" type="passive" />
+        <pin num="15" name="ELE7" type="passive" />
+        <pin num="16" name="ELE8" type="passive" />
+        <pin num="17" name="ELE9" type="passive" />
+        <pin num="18" name="ELE10" type="passive" />
+        <pin num="19" name="ELE11" type="passive" />
+        <pin num="20" name="VDD" type="power_in" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="R">
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive" />
+        <pin num="2" name="~" type="passive" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="SN74LVC08A">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">SN74LVC08A</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="1A" type="input" />
+        <pin num="2" name="1B" type="input" />
+        <pin num="3" name="1Y" type="output" />
+        <pin num="4" name="2A" type="input" />
+        <pin num="5" name="2B" type="input" />
+        <pin num="6" name="2Y" type="output" />
+        <pin num="7" name="GND" type="power_in" />
+        <pin num="8" name="3Y" type="output" />
+        <pin num="9" name="3A" type="input" />
+        <pin num="10" name="3B" type="input" />
+        <pin num="11" name="4Y" type="output" />
+        <pin num="12" name="4A" type="input" />
+        <pin num="13" name="4B" type="input" />
+        <pin num="14" name="VCC" type="power_in" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="TCA9548A_PW">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">TCA9548A_PW</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="A0" type="input" />
+        <pin num="2" name="A1" type="input" />
+        <pin num="3" name="~{RESET}" type="input" />
+        <pin num="4" name="SD0" type="bidirectional" />
+        <pin num="5" name="SC0" type="bidirectional" />
+        <pin num="6" name="SD1" type="bidirectional" />
+        <pin num="7" name="SC1" type="bidirectional" />
+        <pin num="8" name="SD2" type="bidirectional" />
+        <pin num="9" name="SC2" type="bidirectional" />
+        <pin num="10" name="SD3" type="bidirectional" />
+        <pin num="11" name="SC3" type="bidirectional" />
+        <pin num="12" name="GND" type="power_in" />
+        <pin num="13" name="SD4" type="bidirectional" />
+        <pin num="14" name="SC4" type="bidirectional" />
+        <pin num="15" name="SD5" type="bidirectional" />
+        <pin num="16" name="SC5" type="bidirectional" />
+        <pin num="17" name="SD6" type="bidirectional" />
+        <pin num="18" name="SC6" type="bidirectional" />
+        <pin num="19" name="SD7" type="bidirectional" />
+        <pin num="20" name="SC7" type="bidirectional" />
+        <pin num="21" name="A2" type="input" />
+        <pin num="22" name="SCL" type="bidirectional" />
+        <pin num="23" name="SDA" type="bidirectional" />
+        <pin num="24" name="VCC" type="power_in" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="TPS3431_DRB">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">TPS3431_DRB</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="1" name="VDD" type="power_in" />
+        <pin num="2" name="CWD" type="passive" />
+        <pin num="3" name="EN" type="input" />
+        <pin num="4" name="GND" type="power_in" />
+        <pin num="5" name="SET1" type="input" />
+        <pin num="6" name="WDI" type="input" />
+        <pin num="7" name="~{WDO}" type="open_collector" />
+        <pin num="8" name="ENOUT" type="open_collector" />
+        <pin num="9" name="EP" type="passive" />
+      </pins>
+    </libpart>
+    <libpart lib="LGV2" part="Teensy41_Socket_GPIO_ID">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Teensy41_Socket_GPIO_ID</field>
+        <field name="Footprint" />
+        <field name="Datasheet" />
+        <field name="Description" />
+      </fields>
+      <pins>
+        <pin num="3V3A" name="3V3" type="power_out" />
+        <pin num="3V3B" name="3V3" type="passive" />
+        <pin num="GND0" name="GND" type="power_in" />
+        <pin num="GND1" name="GND" type="passive" />
+        <pin num="GND2" name="GND" type="passive" />
+        <pin num="GPIO0" name="0_/_LEG_RX" type="input" />
+        <pin num="GPIO1" name="1_/_LEG_TX" type="output" />
+        <pin num="GPIO2" name="2_/_LEG_DE" type="output" />
+        <pin num="GPIO3" name="3_/_UPPER_DE" type="output" />
+        <pin num="GPIO4" name="4_/_LEFT_DE" type="output" />
+        <pin num="GPIO5" name="5_/_RIGHT_DE" type="output" />
+        <pin num="GPIO6" name="6_/_IMU_INT" type="input" />
+        <pin num="GPIO7" name="7_/_UPPER_RX" type="input" />
+        <pin num="GPIO8" name="8_/_UPPER_TX" type="output" />
+        <pin num="GPIO9" name="9_/_WATCHDOG_KICK" type="output" />
+        <pin num="GPIO10" name="10_/_IMU_CS_N" type="output" />
+        <pin num="GPIO11" name="11_/_IMU_MOSI" type="output" />
+        <pin num="GPIO12" name="12_/_IMU_MISO" type="input" />
+        <pin num="GPIO13" name="13_/_IMU_SCK" type="output" />
+        <pin num="GPIO14" name="14_/_LEFT_TX" type="output" />
+        <pin num="GPIO15" name="15_/_LEFT_RX" type="input" />
+        <pin num="GPIO16" name="16_/_RIGHT_RX" type="input" />
+        <pin num="GPIO17" name="17_/_RIGHT_TX" type="output" />
+        <pin num="GPIO18" name="18_/_HOST_SDA" type="bidirectional" />
+        <pin num="GPIO19" name="19_/_HOST_SCL" type="open_collector" />
+        <pin num="GPIO20" name="20_/_MOTOR_ARM" type="output" />
+        <pin num="GPIO21" name="21_/_MOTOR_REG_REQUEST" type="output" />
+        <pin num="GPIO22" name="22_/_HAND_LEFT_REQUEST" type="output" />
+        <pin num="GPIO23" name="23_/_HAND_RIGHT_REQUEST" type="output" />
+        <pin num="GPIO24" name="24_/_LEG_REQUEST" type="output" />
+        <pin num="GPIO25" name="25_/_UPPER_REQUEST" type="output" />
+        <pin num="GPIO26" name="26_/_JETSON_EN" type="output" />
+        <pin num="GPIO27" name="27_/_PERIPHERAL_ENABLE" type="output" />
+        <pin num="GPIO28" name="28_/_CHG_ALLOW" type="output" />
+        <pin num="GPIO29" name="29_/_PACK_TEMP_STATUS" type="input" />
+        <pin num="GPIO30" name="30_/_MOTOR_ARMED" type="input" />
+        <pin num="GPIO31" name="31_/_PD_IRQ_N" type="input" />
+        <pin num="GPIO32" name="32_/_PACK_ALERT_N" type="input" />
+        <pin num="GPIO33" name="33_/_SENSOR_MUX_RESET_N" type="output" />
+        <pin num="GPIO34" name="34_/_LEFT_READY_N" type="input" />
+        <pin num="GPIO35" name="35_/_RIGHT_READY_N" type="input" />
+        <pin num="GPIO36" name="36_/_POWER_BUTTON_N" type="input" />
+        <pin num="GPIO37" name="37_/_POWER_LED_DRIVE" type="output" />
+        <pin num="GPIO38" name="38_/_unused" type="bidirectional" />
+        <pin num="GPIO39" name="39_/_TOUCH_IRQ_N" type="input" />
+        <pin num="GPIO40" name="40_/_LEFT_XSHUT" type="output" />
+        <pin num="GPIO41" name="41_/_RIGHT_XSHUT" type="output" />
+        <pin num="VIN" name="VIN" type="power_in" />
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="LGV2">
+      <uri>${KIPRJMOD}/LGV2.kicad_sym</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="AON_5V" class="Default">
+      <node ref="C101" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C201" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C241" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C301" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C341" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="F401" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="F402" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="J101" pin="1" pinfunction="1_1" pintype="passive" />
+      <node ref="J104" pin="3" pinfunction="3_3" pintype="passive" />
+      <node ref="J403" pin="1" pinfunction="1_1" pintype="passive" />
+      <node ref="J404" pin="1" pinfunction="1_1" pintype="passive" />
+      <node ref="J405" pin="1" pinfunction="1_1" pintype="passive" />
+      <node ref="U101" pin="VIN" pinfunction="VIN_VIN" pintype="power_in" />
+      <node ref="U201" pin="5" pinfunction="VCC_5" pintype="power_in" />
+      <node ref="U241" pin="5" pinfunction="VCC_5" pintype="power_in" />
+      <node ref="U301" pin="5" pinfunction="VCC_5" pintype="power_in" />
+      <node ref="U341" pin="5" pinfunction="VCC_5" pintype="power_in" />
+    </net>
+    <net code="2" name="BUTTON_LED_B" class="Default">
+      <node ref="Q101" pin="1" pinfunction="B_1" pintype="input" />
+      <node ref="R103" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R104" pin="1" pinfunction="~_1" pintype="passive" />
+    </net>
+    <net code="3" name="BUTTON_LED_C" class="Default">
+      <node ref="Q101" pin="3" pinfunction="C_3" pintype="passive" />
+      <node ref="R102" pin="2" pinfunction="~_2" pintype="passive" />
+    </net>
+    <net code="4" name="CHG_ALLOW" class="Default">
+      <node ref="J101" pin="6" pinfunction="6_6" pintype="passive" />
+      <node ref="U101" pin="GPIO28" pinfunction="28_/_CHG_ALLOW_GPIO28" pintype="output" />
+    </net>
+    <net code="5" name="GND" class="Default">
+      <node ref="C101" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C102" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C1101" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C201" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C202" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C241" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C242" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C301" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C302" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C341" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C342" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C401" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C501" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C502" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C503" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C601" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C602" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C701" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C702" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C801" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C802" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C901" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="C902" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="J101" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="J102" pin="1" pinfunction="1_1" pintype="passive" />
+      <node ref="J103" pin="1" pinfunction="1_1" pintype="passive" />
+      <node ref="J104" pin="1" pinfunction="1_1" pintype="passive" />
+      <node ref="J201" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="J241" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="J301" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="J341" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="J401" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="J402" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="J403" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="J404" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="J405" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="J501" pin="3" pinfunction="3_3" pintype="passive" />
+      <node ref="J601" pin="13" pinfunction="13_13" pintype="passive" />
+      <node ref="J701" pin="13" pinfunction="13_13" pintype="passive" />
+      <node ref="J801" pin="13" pinfunction="13_13" pintype="passive" />
+      <node ref="J901" pin="13" pinfunction="13_13" pintype="passive" />
+      <node ref="Q101" pin="2" pinfunction="E_2" pintype="passive" />
+      <node ref="R104" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R1101" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R1102" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R1103" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R1104" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R1105" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R202" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R242" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R302" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R342" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R504" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R601" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R701" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R801" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="R901" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U101" pin="GND0" pinfunction="GND_GND0" pintype="power_in" />
+      <node ref="U101" pin="GND1" pinfunction="GND_GND1" pintype="passive" />
+      <node ref="U101" pin="GND2" pinfunction="GND_GND2" pintype="passive" />
+      <node ref="U1101" pin="7" pinfunction="GND_7" pintype="power_in" />
+      <node ref="U201" pin="3" pinfunction="GND_3" pintype="power_in" />
+      <node ref="U202" pin="1" pinfunction="~{OE}_1" pintype="input" />
+      <node ref="U202" pin="3" pinfunction="GND_3" pintype="power_in" />
+      <node ref="U241" pin="3" pinfunction="GND_3" pintype="power_in" />
+      <node ref="U242" pin="1" pinfunction="~{OE}_1" pintype="input" />
+      <node ref="U242" pin="3" pinfunction="GND_3" pintype="power_in" />
+      <node ref="U301" pin="3" pinfunction="GND_3" pintype="power_in" />
+      <node ref="U302" pin="1" pinfunction="~{OE}_1" pintype="input" />
+      <node ref="U302" pin="3" pinfunction="GND_3" pintype="power_in" />
+      <node ref="U341" pin="3" pinfunction="GND_3" pintype="power_in" />
+      <node ref="U342" pin="1" pinfunction="~{OE}_1" pintype="input" />
+      <node ref="U342" pin="3" pinfunction="GND_3" pintype="power_in" />
+      <node ref="U401" pin="1" pinfunction="A0_1" pintype="input" />
+      <node ref="U401" pin="12" pinfunction="GND_12" pintype="power_in" />
+      <node ref="U401" pin="2" pinfunction="A1_2" pintype="input" />
+      <node ref="U401" pin="21" pinfunction="A2_21" pintype="input" />
+      <node ref="U501" pin="2" pinfunction="SDx_2" pintype="input" />
+      <node ref="U501" pin="3" pinfunction="SCx_3" pintype="input" />
+      <node ref="U501" pin="6" pinfunction="GND_6" pintype="power_in" />
+      <node ref="U501" pin="7" pinfunction="GND_7" pintype="passive" />
+      <node ref="U502" pin="4" pinfunction="GND_4" pintype="power_in" />
+      <node ref="U502" pin="9" pinfunction="EP_9" pintype="passive" />
+      <node ref="U601" pin="4" pinfunction="ADDR_4" pintype="input" />
+      <node ref="U601" pin="6" pinfunction="VSS_6" pintype="power_in" />
+      <node ref="U701" pin="6" pinfunction="VSS_6" pintype="power_in" />
+      <node ref="U801" pin="6" pinfunction="VSS_6" pintype="power_in" />
+      <node ref="U901" pin="6" pinfunction="VSS_6" pintype="power_in" />
+    </net>
+    <net code="6" name="HAND_LEFT_REQUEST" class="Default">
+      <node ref="J102" pin="4" pinfunction="4_4" pintype="passive" />
+      <node ref="U101" pin="GPIO22" pinfunction="22_/_HAND_LEFT_REQUEST_GPIO22" pintype="output" />
+    </net>
+    <net code="7" name="HAND_RIGHT_REQUEST" class="Default">
+      <node ref="J102" pin="5" pinfunction="5_5" pintype="passive" />
+      <node ref="U101" pin="GPIO23" pinfunction="23_/_HAND_RIGHT_REQUEST_GPIO23" pintype="output" />
+    </net>
+    <net code="8" name="HOST_SCL" class="Default">
+      <node ref="J101" pin="3" pinfunction="3_3" pintype="passive" />
+      <node ref="U101" pin="GPIO19" pinfunction="19_/_HOST_SCL_GPIO19" pintype="open_collector" />
+      <node ref="U401" pin="22" pinfunction="SCL_22" pintype="bidirectional" />
+      <node ref="U601" pin="2" pinfunction="SCL_2" pintype="input" />
+      <node ref="U701" pin="2" pinfunction="SCL_2" pintype="input" />
+      <node ref="U801" pin="2" pinfunction="SCL_2" pintype="input" />
+      <node ref="U901" pin="2" pinfunction="SCL_2" pintype="input" />
+      <node ref="U901" pin="4" pinfunction="ADDR_4" pintype="input" />
+    </net>
+    <net code="9" name="HOST_SDA" class="Default">
+      <node ref="J101" pin="4" pinfunction="4_4" pintype="passive" />
+      <node ref="U101" pin="GPIO18" pinfunction="18_/_HOST_SDA_GPIO18" pintype="bidirectional" />
+      <node ref="U401" pin="23" pinfunction="SDA_23" pintype="bidirectional" />
+      <node ref="U601" pin="3" pinfunction="SDA_3" pintype="bidirectional" />
+      <node ref="U701" pin="3" pinfunction="SDA_3" pintype="bidirectional" />
+      <node ref="U801" pin="3" pinfunction="SDA_3" pintype="bidirectional" />
+      <node ref="U801" pin="4" pinfunction="ADDR_4" pintype="input" />
+      <node ref="U901" pin="3" pinfunction="SDA_3" pintype="bidirectional" />
+    </net>
+    <net code="10" name="IMU_CS_N" class="Default">
+      <node ref="R501" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U101" pin="GPIO10" pinfunction="10_/_IMU_CS_N_GPIO10" pintype="output" />
+      <node ref="U501" pin="12" pinfunction="~{CS}_12" pintype="input" />
+    </net>
+    <net code="11" name="IMU_INT" class="Default">
+      <node ref="U101" pin="GPIO6" pinfunction="6_/_IMU_INT_GPIO6" pintype="input" />
+      <node ref="U501" pin="4" pinfunction="INT1_4" pintype="output" />
+    </net>
+    <net code="12" name="IMU_MISO" class="Default">
+      <node ref="U101" pin="GPIO12" pinfunction="12_/_IMU_MISO_GPIO12" pintype="input" />
+      <node ref="U501" pin="1" pinfunction="SDO_1" pintype="output" />
+    </net>
+    <net code="13" name="IMU_MOSI" class="Default">
+      <node ref="U101" pin="GPIO11" pinfunction="11_/_IMU_MOSI_GPIO11" pintype="output" />
+      <node ref="U501" pin="14" pinfunction="SDA_SDI_14" pintype="input" />
+    </net>
+    <net code="14" name="IMU_SCK" class="Default">
+      <node ref="U101" pin="GPIO13" pinfunction="13_/_IMU_SCK_GPIO13" pintype="output" />
+      <node ref="U501" pin="13" pinfunction="SCL_SPC_13" pintype="input" />
+    </net>
+    <net code="15" name="JETSON_EN" class="Default">
+      <node ref="J102" pin="10" pinfunction="10_10" pintype="passive" />
+      <node ref="J103" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="U101" pin="GPIO26" pinfunction="26_/_JETSON_EN_GPIO26" pintype="output" />
+    </net>
+    <net code="16" name="LED_CATHODE" class="Default">
+      <node ref="J104" pin="4" pinfunction="4_4" pintype="passive" />
+      <node ref="R102" pin="1" pinfunction="~_1" pintype="passive" />
+    </net>
+    <net code="17" name="LEFT_DATA" class="Default">
+      <node ref="J301" pin="1" pinfunction="1_1" pintype="passive" />
+      <node ref="R301" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U302" pin="2" pinfunction="A_5V_tolerant_2" pintype="input" />
+    </net>
+    <net code="18" name="LEFT_DE" class="Default">
+      <node ref="R302" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U101" pin="GPIO4" pinfunction="4_/_LEFT_DE_GPIO4" pintype="output" />
+      <node ref="U1101" pin="9" pinfunction="3A_9" pintype="input" />
+    </net>
+    <net code="19" name="LEFT_FOOT_5V" class="Default">
+      <node ref="F401" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="J401" pin="1" pinfunction="1_1" pintype="passive" />
+    </net>
+    <net code="20" name="LEFT_READY_N" class="Default">
+      <node ref="J401" pin="5" pinfunction="5_5" pintype="passive" />
+      <node ref="U101" pin="GPIO34" pinfunction="34_/_LEFT_READY_N_GPIO34" pintype="input" />
+    </net>
+    <net code="21" name="LEFT_RX" class="Default">
+      <node ref="U101" pin="GPIO15" pinfunction="15_/_LEFT_RX_GPIO15" pintype="input" />
+      <node ref="U302" pin="4" pinfunction="Y_4" pintype="output" />
+    </net>
+    <net code="22" name="LEFT_TX" class="Default">
+      <node ref="R303" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U101" pin="GPIO14" pinfunction="14_/_LEFT_TX_GPIO14" pintype="output" />
+      <node ref="U301" pin="2" pinfunction="A_2" pintype="input" />
+    </net>
+    <net code="23" name="LEFT_TX_DRV" class="Default">
+      <node ref="R301" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U301" pin="4" pinfunction="Y_4" pintype="tri_state" />
+    </net>
+    <net code="24" name="LEFT_TX_ENABLE" class="Default">
+      <node ref="R1103" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U1101" pin="8" pinfunction="3Y_8" pintype="output" />
+      <node ref="U301" pin="1" pinfunction="OE_1" pintype="input" />
+    </net>
+    <net code="25" name="LEFT_XSHUT" class="Default">
+      <node ref="J401" pin="6" pinfunction="6_6" pintype="passive" />
+      <node ref="U101" pin="GPIO40" pinfunction="40_/_LEFT_XSHUT_GPIO40" pintype="output" />
+    </net>
+    <net code="26" name="LEG_DATA" class="Default">
+      <node ref="J201" pin="1" pinfunction="1_1" pintype="passive" />
+      <node ref="R201" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U202" pin="2" pinfunction="A_5V_tolerant_2" pintype="input" />
+    </net>
+    <net code="27" name="LEG_DE" class="Default">
+      <node ref="R202" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U101" pin="GPIO2" pinfunction="2_/_LEG_DE_GPIO2" pintype="output" />
+      <node ref="U1101" pin="1" pinfunction="1A_1" pintype="input" />
+    </net>
+    <net code="28" name="LEG_REQUEST" class="Default">
+      <node ref="J102" pin="6" pinfunction="6_6" pintype="passive" />
+      <node ref="U101" pin="GPIO24" pinfunction="24_/_LEG_REQUEST_GPIO24" pintype="output" />
+    </net>
+    <net code="29" name="LEG_RX" class="Default">
+      <node ref="U101" pin="GPIO0" pinfunction="0_/_LEG_RX_GPIO0" pintype="input" />
+      <node ref="U202" pin="4" pinfunction="Y_4" pintype="output" />
+    </net>
+    <net code="30" name="LEG_TX" class="Default">
+      <node ref="R203" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U101" pin="GPIO1" pinfunction="1_/_LEG_TX_GPIO1" pintype="output" />
+      <node ref="U201" pin="2" pinfunction="A_2" pintype="input" />
+    </net>
+    <net code="31" name="LEG_TX_DRV" class="Default">
+      <node ref="R201" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U201" pin="4" pinfunction="Y_4" pintype="tri_state" />
+    </net>
+    <net code="32" name="LEG_TX_ENABLE" class="Default">
+      <node ref="R1101" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U1101" pin="3" pinfunction="1Y_3" pintype="output" />
+      <node ref="U201" pin="1" pinfunction="OE_1" pintype="input" />
+    </net>
+    <net code="33" name="MCU_3V3" class="Default">
+      <node ref="C102" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C1101" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C202" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C242" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C302" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C342" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C401" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C501" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C502" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C503" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C601" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C701" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C801" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="C901" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R101" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R203" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R243" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R303" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R343" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R401" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R402" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R403" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R404" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R405" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R406" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R407" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R408" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R409" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R410" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R411" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R501" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R502" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R503" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="R602" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U101" pin="3V3A" pinfunction="3V3_3V3A" pintype="power_out" />
+      <node ref="U101" pin="3V3B" pinfunction="3V3_3V3B" pintype="passive" />
+      <node ref="U1101" pin="14" pinfunction="VCC_14" pintype="power_in" />
+      <node ref="U202" pin="5" pinfunction="VCC_5" pintype="power_in" />
+      <node ref="U242" pin="5" pinfunction="VCC_5" pintype="power_in" />
+      <node ref="U302" pin="5" pinfunction="VCC_5" pintype="power_in" />
+      <node ref="U342" pin="5" pinfunction="VCC_5" pintype="power_in" />
+      <node ref="U401" pin="24" pinfunction="VCC_24" pintype="power_in" />
+      <node ref="U501" pin="5" pinfunction="VDDIO_5" pintype="power_in" />
+      <node ref="U501" pin="8" pinfunction="VDD_8" pintype="power_in" />
+      <node ref="U502" pin="1" pinfunction="VDD_1" pintype="power_in" />
+      <node ref="U502" pin="3" pinfunction="EN_3" pintype="input" />
+      <node ref="U502" pin="5" pinfunction="SET1_5" pintype="input" />
+      <node ref="U601" pin="20" pinfunction="VDD_20" pintype="power_in" />
+      <node ref="U701" pin="20" pinfunction="VDD_20" pintype="power_in" />
+      <node ref="U701" pin="4" pinfunction="ADDR_4" pintype="input" />
+      <node ref="U801" pin="20" pinfunction="VDD_20" pintype="power_in" />
+      <node ref="U901" pin="20" pinfunction="VDD_20" pintype="power_in" />
+    </net>
+    <net code="34" name="MOTOR_ARM" class="Default">
+      <node ref="J102" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="U101" pin="GPIO20" pinfunction="20_/_MOTOR_ARM_GPIO20" pintype="output" />
+    </net>
+    <net code="35" name="MOTOR_ARMED" class="Default">
+      <node ref="J102" pin="7" pinfunction="7_7" pintype="passive" />
+      <node ref="R1105" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U101" pin="GPIO30" pinfunction="30_/_MOTOR_ARMED_GPIO30" pintype="input" />
+      <node ref="U1101" pin="10" pinfunction="3B_10" pintype="input" />
+      <node ref="U1101" pin="13" pinfunction="4B_13" pintype="input" />
+      <node ref="U1101" pin="2" pinfunction="1B_2" pintype="input" />
+      <node ref="U1101" pin="5" pinfunction="2B_5" pintype="input" />
+    </net>
+    <net code="36" name="MOTOR_REG_REQUEST" class="Default">
+      <node ref="J102" pin="3" pinfunction="3_3" pintype="passive" />
+      <node ref="U101" pin="GPIO21" pinfunction="21_/_MOTOR_REG_REQUEST_GPIO21" pintype="output" />
+    </net>
+    <net code="37" name="PACK_ALERT_N" class="Default">
+      <node ref="J102" pin="12" pinfunction="12_12" pintype="passive" />
+      <node ref="J103" pin="4" pinfunction="4_4" pintype="passive" />
+      <node ref="U101" pin="GPIO32" pinfunction="32_/_PACK_ALERT_N_GPIO32" pintype="input" />
+    </net>
+    <net code="38" name="PACK_TEMP_STATUS" class="Default">
+      <node ref="J101" pin="7" pinfunction="7_7" pintype="passive" />
+      <node ref="U101" pin="GPIO29" pinfunction="29_/_PACK_TEMP_STATUS_GPIO29" pintype="input" />
+    </net>
+    <net code="39" name="PD_IRQ_N" class="Default">
+      <node ref="J101" pin="5" pinfunction="5_5" pintype="passive" />
+      <node ref="U101" pin="GPIO31" pinfunction="31_/_PD_IRQ_N_GPIO31" pintype="input" />
+    </net>
+    <net code="40" name="PERIPHERAL_ENABLE" class="Default">
+      <node ref="J102" pin="11" pinfunction="11_11" pintype="passive" />
+      <node ref="J103" pin="3" pinfunction="3_3" pintype="passive" />
+      <node ref="U101" pin="GPIO27" pinfunction="27_/_PERIPHERAL_ENABLE_GPIO27" pintype="output" />
+    </net>
+    <net code="41" name="POWER_BUTTON_N" class="Default">
+      <node ref="J104" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="R101" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U101" pin="GPIO36" pinfunction="36_/_POWER_BUTTON_N_GPIO36" pintype="input" />
+    </net>
+    <net code="42" name="POWER_LED_DRIVE" class="Default">
+      <node ref="R103" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U101" pin="GPIO37" pinfunction="37_/_POWER_LED_DRIVE_GPIO37" pintype="output" />
+    </net>
+    <net code="43" name="RIGHT_DATA" class="Default">
+      <node ref="J341" pin="1" pinfunction="1_1" pintype="passive" />
+      <node ref="R341" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U342" pin="2" pinfunction="A_5V_tolerant_2" pintype="input" />
+    </net>
+    <net code="44" name="RIGHT_DE" class="Default">
+      <node ref="R342" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U101" pin="GPIO5" pinfunction="5_/_RIGHT_DE_GPIO5" pintype="output" />
+      <node ref="U1101" pin="12" pinfunction="4A_12" pintype="input" />
+    </net>
+    <net code="45" name="RIGHT_FOOT_5V" class="Default">
+      <node ref="F402" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="J402" pin="1" pinfunction="1_1" pintype="passive" />
+    </net>
+    <net code="46" name="RIGHT_READY_N" class="Default">
+      <node ref="J402" pin="5" pinfunction="5_5" pintype="passive" />
+      <node ref="U101" pin="GPIO35" pinfunction="35_/_RIGHT_READY_N_GPIO35" pintype="input" />
+    </net>
+    <net code="47" name="RIGHT_RX" class="Default">
+      <node ref="U101" pin="GPIO16" pinfunction="16_/_RIGHT_RX_GPIO16" pintype="input" />
+      <node ref="U342" pin="4" pinfunction="Y_4" pintype="output" />
+    </net>
+    <net code="48" name="RIGHT_TX" class="Default">
+      <node ref="R343" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U101" pin="GPIO17" pinfunction="17_/_RIGHT_TX_GPIO17" pintype="output" />
+      <node ref="U341" pin="2" pinfunction="A_2" pintype="input" />
+    </net>
+    <net code="49" name="RIGHT_TX_DRV" class="Default">
+      <node ref="R341" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U341" pin="4" pinfunction="Y_4" pintype="tri_state" />
+    </net>
+    <net code="50" name="RIGHT_TX_ENABLE" class="Default">
+      <node ref="R1104" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U1101" pin="11" pinfunction="4Y_11" pintype="output" />
+      <node ref="U341" pin="1" pinfunction="OE_1" pintype="input" />
+    </net>
+    <net code="51" name="RIGHT_XSHUT" class="Default">
+      <node ref="J402" pin="6" pinfunction="6_6" pintype="passive" />
+      <node ref="U101" pin="GPIO41" pinfunction="41_/_RIGHT_XSHUT_GPIO41" pintype="output" />
+    </net>
+    <net code="52" name="SENSOR0_SCL" class="Default">
+      <node ref="J401" pin="3" pinfunction="3_3" pintype="passive" />
+      <node ref="R402" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U401" pin="5" pinfunction="SC0_5" pintype="bidirectional" />
+    </net>
+    <net code="53" name="SENSOR0_SDA" class="Default">
+      <node ref="J401" pin="4" pinfunction="4_4" pintype="passive" />
+      <node ref="R403" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U401" pin="4" pinfunction="SD0_4" pintype="bidirectional" />
+    </net>
+    <net code="54" name="SENSOR1_SCL" class="Default">
+      <node ref="J402" pin="3" pinfunction="3_3" pintype="passive" />
+      <node ref="R404" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U401" pin="7" pinfunction="SC1_7" pintype="bidirectional" />
+    </net>
+    <net code="55" name="SENSOR1_SDA" class="Default">
+      <node ref="J402" pin="4" pinfunction="4_4" pintype="passive" />
+      <node ref="R405" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U401" pin="6" pinfunction="SD1_6" pintype="bidirectional" />
+    </net>
+    <net code="56" name="SENSOR2_SCL" class="Default">
+      <node ref="J403" pin="3" pinfunction="3_3" pintype="passive" />
+      <node ref="R406" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U401" pin="9" pinfunction="SC2_9" pintype="bidirectional" />
+    </net>
+    <net code="57" name="SENSOR2_SDA" class="Default">
+      <node ref="J403" pin="4" pinfunction="4_4" pintype="passive" />
+      <node ref="R407" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U401" pin="8" pinfunction="SD2_8" pintype="bidirectional" />
+    </net>
+    <net code="58" name="SENSOR3_SCL" class="Default">
+      <node ref="J404" pin="3" pinfunction="3_3" pintype="passive" />
+      <node ref="R408" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U401" pin="11" pinfunction="SC3_11" pintype="bidirectional" />
+    </net>
+    <net code="59" name="SENSOR3_SDA" class="Default">
+      <node ref="J404" pin="4" pinfunction="4_4" pintype="passive" />
+      <node ref="R409" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U401" pin="10" pinfunction="SD3_10" pintype="bidirectional" />
+    </net>
+    <net code="60" name="SENSOR4_SCL" class="Default">
+      <node ref="J405" pin="3" pinfunction="3_3" pintype="passive" />
+      <node ref="R410" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U401" pin="14" pinfunction="SC4_14" pintype="bidirectional" />
+    </net>
+    <net code="61" name="SENSOR4_SDA" class="Default">
+      <node ref="J405" pin="4" pinfunction="4_4" pintype="passive" />
+      <node ref="R411" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U401" pin="13" pinfunction="SD4_13" pintype="bidirectional" />
+    </net>
+    <net code="62" name="SENSOR_MUX_RESET_N" class="Default">
+      <node ref="R401" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U101" pin="GPIO33" pinfunction="33_/_SENSOR_MUX_RESET_N_GPIO33" pintype="output" />
+      <node ref="U401" pin="3" pinfunction="~{RESET}_3" pintype="input" />
+    </net>
+    <net code="63" name="TOUCH0_REXT" class="Default">
+      <node ref="R601" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U601" pin="7" pinfunction="REXT_7" pintype="passive" />
+    </net>
+    <net code="64" name="TOUCH0_VREG" class="Default">
+      <node ref="C602" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U601" pin="5" pinfunction="VREG_5" pintype="power_out" />
+    </net>
+    <net code="65" name="TOUCH1_REXT" class="Default">
+      <node ref="R701" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U701" pin="7" pinfunction="REXT_7" pintype="passive" />
+    </net>
+    <net code="66" name="TOUCH1_VREG" class="Default">
+      <node ref="C702" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U701" pin="5" pinfunction="VREG_5" pintype="power_out" />
+    </net>
+    <net code="67" name="TOUCH2_REXT" class="Default">
+      <node ref="R801" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U801" pin="7" pinfunction="REXT_7" pintype="passive" />
+    </net>
+    <net code="68" name="TOUCH2_VREG" class="Default">
+      <node ref="C802" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U801" pin="5" pinfunction="VREG_5" pintype="power_out" />
+    </net>
+    <net code="69" name="TOUCH3_REXT" class="Default">
+      <node ref="R901" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U901" pin="7" pinfunction="REXT_7" pintype="passive" />
+    </net>
+    <net code="70" name="TOUCH3_VREG" class="Default">
+      <node ref="C902" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U901" pin="5" pinfunction="VREG_5" pintype="power_out" />
+    </net>
+    <net code="71" name="TOUCH_IRQ_N" class="Default">
+      <node ref="R602" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U101" pin="GPIO39" pinfunction="39_/_TOUCH_IRQ_N_GPIO39" pintype="input" />
+      <node ref="U601" pin="1" pinfunction="~{IRQ}_1" pintype="open_collector" />
+      <node ref="U701" pin="1" pinfunction="~{IRQ}_1" pintype="open_collector" />
+      <node ref="U801" pin="1" pinfunction="~{IRQ}_1" pintype="open_collector" />
+      <node ref="U901" pin="1" pinfunction="~{IRQ}_1" pintype="open_collector" />
+    </net>
+    <net code="72" name="TOUCH_PAD_01" class="Default">
+      <node ref="J601" pin="1" pinfunction="1_1" pintype="passive" />
+      <node ref="U601" pin="8" pinfunction="ELE0_8" pintype="passive" />
+    </net>
+    <net code="73" name="TOUCH_PAD_02" class="Default">
+      <node ref="J601" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="U601" pin="9" pinfunction="ELE1_9" pintype="passive" />
+    </net>
+    <net code="74" name="TOUCH_PAD_03" class="Default">
+      <node ref="J601" pin="3" pinfunction="3_3" pintype="passive" />
+      <node ref="U601" pin="10" pinfunction="ELE2_10" pintype="passive" />
+    </net>
+    <net code="75" name="TOUCH_PAD_04" class="Default">
+      <node ref="J601" pin="4" pinfunction="4_4" pintype="passive" />
+      <node ref="U601" pin="11" pinfunction="ELE3_11" pintype="passive" />
+    </net>
+    <net code="76" name="TOUCH_PAD_05" class="Default">
+      <node ref="J601" pin="5" pinfunction="5_5" pintype="passive" />
+      <node ref="U601" pin="12" pinfunction="ELE4_12" pintype="passive" />
+    </net>
+    <net code="77" name="TOUCH_PAD_06" class="Default">
+      <node ref="J601" pin="6" pinfunction="6_6" pintype="passive" />
+      <node ref="U601" pin="13" pinfunction="ELE5_13" pintype="passive" />
+    </net>
+    <net code="78" name="TOUCH_PAD_07" class="Default">
+      <node ref="J601" pin="7" pinfunction="7_7" pintype="passive" />
+      <node ref="U601" pin="14" pinfunction="ELE6_14" pintype="passive" />
+    </net>
+    <net code="79" name="TOUCH_PAD_08" class="Default">
+      <node ref="J601" pin="8" pinfunction="8_8" pintype="passive" />
+      <node ref="U601" pin="15" pinfunction="ELE7_15" pintype="passive" />
+    </net>
+    <net code="80" name="TOUCH_PAD_09" class="Default">
+      <node ref="J601" pin="9" pinfunction="9_9" pintype="passive" />
+      <node ref="U601" pin="16" pinfunction="ELE8_16" pintype="passive" />
+    </net>
+    <net code="81" name="TOUCH_PAD_10" class="Default">
+      <node ref="J601" pin="10" pinfunction="10_10" pintype="passive" />
+      <node ref="U601" pin="17" pinfunction="ELE9_17" pintype="passive" />
+    </net>
+    <net code="82" name="TOUCH_PAD_11" class="Default">
+      <node ref="J601" pin="11" pinfunction="11_11" pintype="passive" />
+      <node ref="U601" pin="18" pinfunction="ELE10_18" pintype="passive" />
+    </net>
+    <net code="83" name="TOUCH_PAD_12" class="Default">
+      <node ref="J601" pin="12" pinfunction="12_12" pintype="passive" />
+      <node ref="U601" pin="19" pinfunction="ELE11_19" pintype="passive" />
+    </net>
+    <net code="84" name="TOUCH_PAD_13" class="Default">
+      <node ref="J701" pin="1" pinfunction="1_1" pintype="passive" />
+      <node ref="U701" pin="8" pinfunction="ELE0_8" pintype="passive" />
+    </net>
+    <net code="85" name="TOUCH_PAD_14" class="Default">
+      <node ref="J701" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="U701" pin="9" pinfunction="ELE1_9" pintype="passive" />
+    </net>
+    <net code="86" name="TOUCH_PAD_15" class="Default">
+      <node ref="J701" pin="3" pinfunction="3_3" pintype="passive" />
+      <node ref="U701" pin="10" pinfunction="ELE2_10" pintype="passive" />
+    </net>
+    <net code="87" name="TOUCH_PAD_16" class="Default">
+      <node ref="J701" pin="4" pinfunction="4_4" pintype="passive" />
+      <node ref="U701" pin="11" pinfunction="ELE3_11" pintype="passive" />
+    </net>
+    <net code="88" name="TOUCH_PAD_17" class="Default">
+      <node ref="J701" pin="5" pinfunction="5_5" pintype="passive" />
+      <node ref="U701" pin="12" pinfunction="ELE4_12" pintype="passive" />
+    </net>
+    <net code="89" name="TOUCH_PAD_18" class="Default">
+      <node ref="J701" pin="6" pinfunction="6_6" pintype="passive" />
+      <node ref="U701" pin="13" pinfunction="ELE5_13" pintype="passive" />
+    </net>
+    <net code="90" name="TOUCH_PAD_19" class="Default">
+      <node ref="J701" pin="7" pinfunction="7_7" pintype="passive" />
+      <node ref="U701" pin="14" pinfunction="ELE6_14" pintype="passive" />
+    </net>
+    <net code="91" name="TOUCH_PAD_20" class="Default">
+      <node ref="J701" pin="8" pinfunction="8_8" pintype="passive" />
+      <node ref="U701" pin="15" pinfunction="ELE7_15" pintype="passive" />
+    </net>
+    <net code="92" name="TOUCH_PAD_21" class="Default">
+      <node ref="J701" pin="9" pinfunction="9_9" pintype="passive" />
+      <node ref="U701" pin="16" pinfunction="ELE8_16" pintype="passive" />
+    </net>
+    <net code="93" name="TOUCH_PAD_22" class="Default">
+      <node ref="J701" pin="10" pinfunction="10_10" pintype="passive" />
+      <node ref="U701" pin="17" pinfunction="ELE9_17" pintype="passive" />
+    </net>
+    <net code="94" name="TOUCH_PAD_23" class="Default">
+      <node ref="J701" pin="11" pinfunction="11_11" pintype="passive" />
+      <node ref="U701" pin="18" pinfunction="ELE10_18" pintype="passive" />
+    </net>
+    <net code="95" name="TOUCH_PAD_24" class="Default">
+      <node ref="J701" pin="12" pinfunction="12_12" pintype="passive" />
+      <node ref="U701" pin="19" pinfunction="ELE11_19" pintype="passive" />
+    </net>
+    <net code="96" name="TOUCH_PAD_25" class="Default">
+      <node ref="J801" pin="1" pinfunction="1_1" pintype="passive" />
+      <node ref="U801" pin="8" pinfunction="ELE0_8" pintype="passive" />
+    </net>
+    <net code="97" name="TOUCH_PAD_26" class="Default">
+      <node ref="J801" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="U801" pin="9" pinfunction="ELE1_9" pintype="passive" />
+    </net>
+    <net code="98" name="TOUCH_PAD_27" class="Default">
+      <node ref="J801" pin="3" pinfunction="3_3" pintype="passive" />
+      <node ref="U801" pin="10" pinfunction="ELE2_10" pintype="passive" />
+    </net>
+    <net code="99" name="TOUCH_PAD_28" class="Default">
+      <node ref="J801" pin="4" pinfunction="4_4" pintype="passive" />
+      <node ref="U801" pin="11" pinfunction="ELE3_11" pintype="passive" />
+    </net>
+    <net code="100" name="TOUCH_PAD_29" class="Default">
+      <node ref="J801" pin="5" pinfunction="5_5" pintype="passive" />
+      <node ref="U801" pin="12" pinfunction="ELE4_12" pintype="passive" />
+    </net>
+    <net code="101" name="TOUCH_PAD_30" class="Default">
+      <node ref="J801" pin="6" pinfunction="6_6" pintype="passive" />
+      <node ref="U801" pin="13" pinfunction="ELE5_13" pintype="passive" />
+    </net>
+    <net code="102" name="TOUCH_PAD_31" class="Default">
+      <node ref="J801" pin="7" pinfunction="7_7" pintype="passive" />
+      <node ref="U801" pin="14" pinfunction="ELE6_14" pintype="passive" />
+    </net>
+    <net code="103" name="TOUCH_PAD_32" class="Default">
+      <node ref="J801" pin="8" pinfunction="8_8" pintype="passive" />
+      <node ref="U801" pin="15" pinfunction="ELE7_15" pintype="passive" />
+    </net>
+    <net code="104" name="TOUCH_PAD_33" class="Default">
+      <node ref="J801" pin="9" pinfunction="9_9" pintype="passive" />
+      <node ref="U801" pin="16" pinfunction="ELE8_16" pintype="passive" />
+    </net>
+    <net code="105" name="TOUCH_PAD_34" class="Default">
+      <node ref="J801" pin="10" pinfunction="10_10" pintype="passive" />
+      <node ref="U801" pin="17" pinfunction="ELE9_17" pintype="passive" />
+    </net>
+    <net code="106" name="TOUCH_PAD_35" class="Default">
+      <node ref="J801" pin="11" pinfunction="11_11" pintype="passive" />
+      <node ref="U801" pin="18" pinfunction="ELE10_18" pintype="passive" />
+    </net>
+    <net code="107" name="TOUCH_PAD_36" class="Default">
+      <node ref="J801" pin="12" pinfunction="12_12" pintype="passive" />
+      <node ref="U801" pin="19" pinfunction="ELE11_19" pintype="passive" />
+    </net>
+    <net code="108" name="TOUCH_PAD_37" class="Default">
+      <node ref="J901" pin="1" pinfunction="1_1" pintype="passive" />
+      <node ref="U901" pin="8" pinfunction="ELE0_8" pintype="passive" />
+    </net>
+    <net code="109" name="TOUCH_PAD_38" class="Default">
+      <node ref="J901" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="U901" pin="9" pinfunction="ELE1_9" pintype="passive" />
+    </net>
+    <net code="110" name="TOUCH_PAD_39" class="Default">
+      <node ref="J901" pin="3" pinfunction="3_3" pintype="passive" />
+      <node ref="U901" pin="10" pinfunction="ELE2_10" pintype="passive" />
+    </net>
+    <net code="111" name="TOUCH_PAD_40" class="Default">
+      <node ref="J901" pin="4" pinfunction="4_4" pintype="passive" />
+      <node ref="U901" pin="11" pinfunction="ELE3_11" pintype="passive" />
+    </net>
+    <net code="112" name="TOUCH_PAD_41" class="Default">
+      <node ref="J901" pin="5" pinfunction="5_5" pintype="passive" />
+      <node ref="U901" pin="12" pinfunction="ELE4_12" pintype="passive" />
+    </net>
+    <net code="113" name="TOUCH_PAD_42" class="Default">
+      <node ref="J901" pin="6" pinfunction="6_6" pintype="passive" />
+      <node ref="U901" pin="13" pinfunction="ELE5_13" pintype="passive" />
+    </net>
+    <net code="114" name="TOUCH_PAD_43" class="Default">
+      <node ref="J901" pin="7" pinfunction="7_7" pintype="passive" />
+      <node ref="U901" pin="14" pinfunction="ELE6_14" pintype="passive" />
+    </net>
+    <net code="115" name="TOUCH_PAD_44" class="Default">
+      <node ref="J901" pin="8" pinfunction="8_8" pintype="passive" />
+      <node ref="U901" pin="15" pinfunction="ELE7_15" pintype="passive" />
+    </net>
+    <net code="116" name="TOUCH_PAD_45" class="Default">
+      <node ref="J901" pin="9" pinfunction="9_9" pintype="passive" />
+      <node ref="U901" pin="16" pinfunction="ELE8_16" pintype="passive" />
+    </net>
+    <net code="117" name="TOUCH_PAD_46" class="Default">
+      <node ref="J901" pin="10" pinfunction="10_10" pintype="passive" />
+      <node ref="U901" pin="17" pinfunction="ELE9_17" pintype="passive" />
+    </net>
+    <net code="118" name="TOUCH_PAD_47" class="Default">
+      <node ref="J901" pin="11" pinfunction="11_11" pintype="passive" />
+      <node ref="U901" pin="18" pinfunction="ELE10_18" pintype="passive" />
+    </net>
+    <net code="119" name="TOUCH_PAD_48" class="Default">
+      <node ref="J901" pin="12" pinfunction="12_12" pintype="passive" />
+      <node ref="U901" pin="19" pinfunction="ELE11_19" pintype="passive" />
+    </net>
+    <net code="120" name="UPPER_DATA" class="Default">
+      <node ref="J241" pin="1" pinfunction="1_1" pintype="passive" />
+      <node ref="R241" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U242" pin="2" pinfunction="A_5V_tolerant_2" pintype="input" />
+    </net>
+    <net code="121" name="UPPER_DE" class="Default">
+      <node ref="R242" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U101" pin="GPIO3" pinfunction="3_/_UPPER_DE_GPIO3" pintype="output" />
+      <node ref="U1101" pin="4" pinfunction="2A_4" pintype="input" />
+    </net>
+    <net code="122" name="UPPER_REQUEST" class="Default">
+      <node ref="J102" pin="8" pinfunction="8_8" pintype="passive" />
+      <node ref="U101" pin="GPIO25" pinfunction="25_/_UPPER_REQUEST_GPIO25" pintype="output" />
+    </net>
+    <net code="123" name="UPPER_RX" class="Default">
+      <node ref="U101" pin="GPIO7" pinfunction="7_/_UPPER_RX_GPIO7" pintype="input" />
+      <node ref="U242" pin="4" pinfunction="Y_4" pintype="output" />
+    </net>
+    <net code="124" name="UPPER_TX" class="Default">
+      <node ref="R243" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U101" pin="GPIO8" pinfunction="8_/_UPPER_TX_GPIO8" pintype="output" />
+      <node ref="U241" pin="2" pinfunction="A_2" pintype="input" />
+    </net>
+    <net code="125" name="UPPER_TX_DRV" class="Default">
+      <node ref="R241" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U241" pin="4" pinfunction="Y_4" pintype="tri_state" />
+    </net>
+    <net code="126" name="UPPER_TX_ENABLE" class="Default">
+      <node ref="R1102" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U1101" pin="6" pinfunction="2Y_6" pintype="output" />
+      <node ref="U241" pin="1" pinfunction="OE_1" pintype="input" />
+    </net>
+    <net code="127" name="WATCHDOG_FAULT_N" class="Default">
+      <node ref="J102" pin="9" pinfunction="9_9" pintype="passive" />
+      <node ref="J501" pin="2" pinfunction="2_2" pintype="passive" />
+      <node ref="R503" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U502" pin="7" pinfunction="~{WDO}_7" pintype="open_collector" />
+    </net>
+    <net code="128" name="WATCHDOG_KICK" class="Default">
+      <node ref="J501" pin="1" pinfunction="1_1" pintype="passive" />
+      <node ref="R504" pin="1" pinfunction="~_1" pintype="passive" />
+      <node ref="U101" pin="GPIO9" pinfunction="9_/_WATCHDOG_KICK_GPIO9" pintype="output" />
+      <node ref="U502" pin="6" pinfunction="WDI_6" pintype="input" />
+    </net>
+    <net code="129" name="WD_CWD" class="Default">
+      <node ref="R502" pin="2" pinfunction="~_2" pintype="passive" />
+      <node ref="U502" pin="2" pinfunction="CWD_2" pintype="passive" />
+    </net>
+    <net code="130" name="unconnected-(U101-38_{slash}_unused-PadGPIO38)" class="Default">
+      <node ref="U101" pin="GPIO38" pinfunction="38_/_unused_GPIO38" pintype="bidirectional+no_connect" />
+    </net>
+    <net code="131" name="unconnected-(U401-SC5-Pad16)" class="Default">
+      <node ref="U401" pin="16" pinfunction="SC5_16" pintype="bidirectional+no_connect" />
+    </net>
+    <net code="132" name="unconnected-(U401-SC6-Pad18)" class="Default">
+      <node ref="U401" pin="18" pinfunction="SC6_18" pintype="bidirectional+no_connect" />
+    </net>
+    <net code="133" name="unconnected-(U401-SC7-Pad20)" class="Default">
+      <node ref="U401" pin="20" pinfunction="SC7_20" pintype="bidirectional+no_connect" />
+    </net>
+    <net code="134" name="unconnected-(U401-SD5-Pad15)" class="Default">
+      <node ref="U401" pin="15" pinfunction="SD5_15" pintype="bidirectional+no_connect" />
+    </net>
+    <net code="135" name="unconnected-(U401-SD6-Pad17)" class="Default">
+      <node ref="U401" pin="17" pinfunction="SD6_17" pintype="bidirectional+no_connect" />
+    </net>
+    <net code="136" name="unconnected-(U401-SD7-Pad19)" class="Default">
+      <node ref="U401" pin="19" pinfunction="SD7_19" pintype="bidirectional+no_connect" />
+    </net>
+    <net code="137" name="unconnected-(U501-INT2-Pad9)" class="Default">
+      <node ref="U501" pin="9" pinfunction="INT2_9" pintype="output+no_connect" />
+    </net>
+    <net code="138" name="unconnected-(U501-OCS_Aux-Pad10)" class="Default">
+      <node ref="U501" pin="10" pinfunction="OCS_Aux_10" pintype="no_connect" />
+    </net>
+    <net code="139" name="unconnected-(U501-SDO_Aux-Pad11)" class="Default">
+      <node ref="U501" pin="11" pinfunction="SDO_Aux_11" pintype="output+no_connect" />
+    </net>
+    <net code="140" name="unconnected-(U502-ENOUT-Pad8)" class="Default">
+      <node ref="U502" pin="8" pinfunction="ENOUT_8" pintype="open_collector+no_connect" />
+    </net>
+  </nets>
+</export>

@@ -1,0 +1,37 @@
+(fp_lib_table
+  (lib
+    (name "Capacitor_SMD")
+    (type "KiCad")
+    (uri "${KICAD10_FOOTPRINT_DIR}/Capacitor_SMD.pretty")
+    (options "")
+    (descr "KiCad standard footprint library")
+  )
+  (lib
+    (name "Diode_SMD")
+    (type "KiCad")
+    (uri "${KICAD10_FOOTPRINT_DIR}/Diode_SMD.pretty")
+    (options "")
+    (descr "KiCad standard footprint library")
+  )
+  (lib
+    (name "Package_SO")
+    (type "KiCad")
+    (uri "${KICAD10_FOOTPRINT_DIR}/Package_SO.pretty")
+    (options "")
+    (descr "KiCad standard footprint library")
+  )
+  (lib
+    (name "Package_TO_SOT_SMD")
+    (type "KiCad")
+    (uri "${KICAD10_FOOTPRINT_DIR}/Package_TO_SOT_SMD.pretty")
+    (options "")
+    (descr "KiCad standard footprint library")
+  )
+  (lib
+    (name "Resistor_SMD")
+    (type "KiCad")
+    (uri "${KICAD10_FOOTPRINT_DIR}/Resistor_SMD.pretty")
+    (options "")
+    (descr "KiCad standard footprint library")
+  )
+)

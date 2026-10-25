@@ -1,0 +1,91 @@
+{
+  "$schema": "https://schemas.kicad.org/erc.v1.json",
+  "coordinate_units": "mm",
+  "date": "2026-10-25T14:32:25",
+  "ignored_checks": [
+    {
+      "description": "Global label only appears once in the schematic",
+      "key": "single_global_label"
+    },
+    {
+      "description": "Four connection points are joined together",
+      "key": "four_way_junction"
+    },
+    {
+      "description": "SPICE model issue",
+      "key": "simulation_model_issue"
+    },
+    {
+      "description": "Assigned footprint doesn't match footprint filters",
+      "key": "footprint_filter"
+    }
+  ],
+  "included_severities": [
+    "error",
+    "warning"
+  ],
+  "kicad_version": "10.0.6",
+  "sheets": [
+    {
+      "path": "/",
+      "uuid_path": "/3766b370-f998-5372-8664-7b6b6b964167",
+      "violations": []
+    },
+    {
+      "path": "/Teensy 4.1 / power-board controls/",
+      "uuid_path": "/3766b370-f998-5372-8664-7b6b6b964167/a6f35da2-d2c1-57a5-b432-7d6275359c78",
+      "violations": []
+    },
+    {
+      "path": "/Half-duplex TTL buses 1/",
+      "uuid_path": "/3766b370-f998-5372-8664-7b6b6b964167/5c6a0d3a-a6d6-5d3e-9251-3e321ee206d2",
+      "violations": []
+    },
+    {
+      "path": "/Half-duplex TTL buses 2/",
+      "uuid_path": "/3766b370-f998-5372-8664-7b6b6b964167/1ea2a1a1-a46e-5ae1-97a5-83b4e4a3598a",
+      "violations": []
+    },
+    {
+      "path": "/Sensor mux / IMU / foot cabling/",
+      "uuid_path": "/3766b370-f998-5372-8664-7b6b6b964167/a1280054-6e7a-509e-9139-2d6d623d7d44",
+      "violations": []
+    },
+    {
+      "path": "/Sensor branch pull-ups / fitting options/",
+      "uuid_path": "/3766b370-f998-5372-8664-7b6b6b964167/d3eef230-29e0-592f-8b00-975dee557173",
+      "violations": []
+    },
+    {
+      "path": "/SPI IMU / independent watchdog/",
+      "uuid_path": "/3766b370-f998-5372-8664-7b6b6b964167/72ea3c31-7975-5c19-aae7-c63c7515750e",
+      "violations": []
+    },
+    {
+      "path": "/Touch electrodes 1-12/",
+      "uuid_path": "/3766b370-f998-5372-8664-7b6b6b964167/34bdaf5b-528a-5328-a099-c4241ff5cde4",
+      "violations": []
+    },
+    {
+      "path": "/Touch electrodes 13-24/",
+      "uuid_path": "/3766b370-f998-5372-8664-7b6b6b964167/1cb6d0cc-b1e7-5ec2-b8f6-a1c4466baff2",
+      "violations": []
+    },
+    {
+      "path": "/Touch electrodes 25-36/",
+      "uuid_path": "/3766b370-f998-5372-8664-7b6b6b964167/6f770f01-2516-51be-82d3-4fb9011f377a",
+      "violations": []
+    },
+    {
+      "path": "/Touch electrodes 37-48/",
+      "uuid_path": "/3766b370-f998-5372-8664-7b6b6b964167/22e79236-ba79-5f7c-9816-5f09cb74d55b",
+      "violations": []
+    },
+    {
+      "path": "/Hardware-gated servo transmit enables/",
+      "uuid_path": "/3766b370-f998-5372-8664-7b6b6b964167/a0c9b2ff-9fa4-54bc-9eb1-88bdb6a437c1",
+      "violations": []
+    }
+  ],
+  "source": "little-guy-spinal.kicad_sch"
+}

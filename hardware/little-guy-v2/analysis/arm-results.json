@@ -1,0 +1,169 @@
+{
+  "status": "exploratory assumptions, not selected robot geometry",
+  "results": [
+    {
+      "name": "compact_light",
+      "acceleration_case": "each row independently accelerates its joint; upstream joint fixed, downstream joints locked",
+      "reach_m": 0.26,
+      "moving_mass_kg": 0.345,
+      "screening_allowance_kgf_cm": 5.0,
+      "joints": {
+        "proximal_shoulder": {
+          "gravity_kgf_cm": 4.0075,
+          "acceleration_kgf_cm": 0.13417510906714664,
+          "combined_kgf_cm": 4.141675109067147,
+          "within_screening_allowance": true,
+          "additional_tip_mass_margin_kg": 0.031350146658130115,
+          "components": [
+            {
+              "component": "second shoulder servo",
+              "gravity_Nm": 0.01348414375,
+              "inertia_kg_m2": 3.437500000000001e-05
+            },
+            {
+              "component": "upper structure",
+              "gravity_Nm": 0.0392266,
+              "inertia_kg_m2": 0.00026666666666666673
+            },
+            {
+              "component": "elbow servo",
+              "gravity_Nm": 0.053936575,
+              "inertia_kg_m2": 0.0005500000000000001
+            },
+            {
+              "component": "forearm structure",
+              "gravity_Nm": 0.08825985,
+              "inertia_kg_m2": 0.0014000000000000002
+            },
+            {
+              "component": "wrist servo",
+              "gravity_Nm": 0.10787315,
+              "inertia_kg_m2": 0.0022000000000000006
+            },
+            {
+              "component": "hand structure",
+              "gravity_Nm": 0.09022118,
+              "inertia_kg_m2": 0.002128
+            },
+            {
+              "component": "tip payload",
+              "gravity_Nm": 0.0,
+              "inertia_kg_m2": 0.0
+            }
+          ]
+        },
+        "elbow": {
+          "gravity_kgf_cm": 1.3699999999999999,
+          "acceleration_kgf_cm": 0.029327038285245226,
+          "combined_kgf_cm": 1.3993270382852452,
+          "within_screening_allowance": true,
+          "additional_tip_mass_margin_kg": 0.2179307785644809,
+          "components": [
+            {
+              "component": "forearm structure",
+              "gravity_Nm": 0.029419950000000004,
+              "inertia_kg_m2": 0.00020000000000000012
+            },
+            {
+              "component": "wrist servo",
+              "gravity_Nm": 0.053936575,
+              "inertia_kg_m2": 0.0005500000000000001
+            },
+            {
+              "component": "hand structure",
+              "gravity_Nm": 0.050994580000000005,
+              "inertia_kg_m2": 0.0006880000000000001
+            },
+            {
+              "component": "tip payload",
+              "gravity_Nm": 0.0,
+              "inertia_kg_m2": 0.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "longer_heavier",
+      "acceleration_case": "each row independently accelerates its joint; upstream joint fixed, downstream joints locked",
+      "reach_m": 0.31,
+      "moving_mass_kg": 0.425,
+      "screening_allowance_kgf_cm": 5.0,
+      "joints": {
+        "proximal_shoulder": {
+          "gravity_kgf_cm": 5.967499999999999,
+          "acceleration_kgf_cm": 0.23998681167031213,
+          "combined_kgf_cm": 6.207486811670312,
+          "within_screening_allowance": false,
+          "additional_tip_mass_margin_kg": -0.03663503259766162,
+          "components": [
+            {
+              "component": "second shoulder servo",
+              "gravity_Nm": 0.016180972499999998,
+              "inertia_kg_m2": 4.95e-05
+            },
+            {
+              "component": "upper structure",
+              "gravity_Nm": 0.06766588500000001,
+              "inertia_kg_m2": 0.000552
+            },
+            {
+              "component": "elbow servo",
+              "gravity_Nm": 0.06472388999999999,
+              "inertia_kg_m2": 0.000792
+            },
+            {
+              "component": "forearm structure",
+              "gravity_Nm": 0.15886772999999998,
+              "inertia_kg_m2": 0.0030239999999999998
+            },
+            {
+              "component": "wrist servo",
+              "gravity_Nm": 0.12944777999999998,
+              "inertia_kg_m2": 0.003168
+            },
+            {
+              "component": "hand structure",
+              "gravity_Nm": 0.14832558125,
+              "inertia_kg_m2": 0.004181833333333333
+            },
+            {
+              "component": "tip payload",
+              "gravity_Nm": 0.0,
+              "inertia_kg_m2": 0.0
+            }
+          ]
+        },
+        "elbow": {
+          "gravity_kgf_cm": 2.0524999999999998,
+          "acceleration_kgf_cm": 0.052369225644503144,
+          "combined_kgf_cm": 2.1048692256445034,
+          "within_screening_allowance": true,
+          "additional_tip_mass_margin_kg": 0.14669113733394268,
+          "components": [
+            {
+              "component": "forearm structure",
+              "gravity_Nm": 0.052955909999999995,
+              "inertia_kg_m2": 0.00043199999999999993
+            },
+            {
+              "component": "wrist servo",
+              "gravity_Nm": 0.06472388999999999,
+              "inertia_kg_m2": 0.000792
+            },
+            {
+              "component": "hand structure",
+              "gravity_Nm": 0.08360169125000001,
+              "inertia_kg_m2": 0.0013438333333333338
+            },
+            {
+              "component": "tip payload",
+              "gravity_Nm": 0.0,
+              "inertia_kg_m2": 0.0
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "status": "provisional packaging study, not printable mechanical design",
+  "servo_count": 11,
+  "reserved_bay_conflicts": [],
+  "component_envelope_conflicts": [],
+  "stationary_arm_outer_width_mm": 279.8,
+  "stand_platform_conflicts": [],
+  "limb_torso_reference_intrusions": [
+    {
+      "part": "left upper arm reference",
+      "overlap_xyz_mm": [
+        4.0,
+        32.0,
+        100.0
+      ],
+      "meaning": "Unresolved limb/torso reference intrusion; shell is not designed"
+    },
+    {
+      "part": "left elbow",
+      "overlap_xyz_mm": [
+        7.900000000000006,
+        24.730000000000004,
+        45.22999999999999
+      ],
+      "meaning": "Unresolved limb/torso reference intrusion; shell is not designed"
+    },
+    {
+      "part": "left forearm reference",
+      "overlap_xyz_mm": [
+        4.0,
+        32.0,
+        60.0
+      ],
+      "meaning": "Unresolved limb/torso reference intrusion; shell is not designed"
+    },
+    {
+      "part": "right upper arm reference",
+      "overlap_xyz_mm": [
+        4.0,
+        32.0,
+        100.0
+      ],
+      "meaning": "Unresolved limb/torso reference intrusion; shell is not designed"
+    },
+    {
+      "part": "right elbow",
+      "overlap_xyz_mm": [
+        7.900000000000006,
+        24.730000000000004,
+        45.22999999999999
+      ],
+      "meaning": "Unresolved limb/torso reference intrusion; shell is not designed"
+    },
+    {
+      "part": "right forearm reference",
+      "overlap_xyz_mm": [
+        4.0,
+        32.0,
+        60.0
+      ],
+      "meaning": "Unresolved limb/torso reference intrusion; shell is not designed"
+    }
+  ],
+  "future_jetson": {
+    "orientation_xyz_mm": [
+      103,
+      34.77,
+      90.5
+    ],
+    "spare_total_xyz_at_upper_size_tolerance_mm": [
+      26.8,
+      29.139999999999997,
+      29.3
+    ],
+    "bare_box_fits": true,
+    "installed_fit_verified": false
+  },
+  "jetson_platform_gap_mm": 8.0,
+  "remaining_waist_to_ground_for_height_reference_mm": 215.0,
+  "layout_accepted_for_manufacture": false,
+  "scope": "Axis-aligned envelope intersections in one pose only. Excludes brackets, fasteners, cables, speaker and motion sweeps."
+}

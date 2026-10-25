@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-21",
+  "scope": "Logical eleven-feed harness and ideal-wire graph; no electrical or physical validation",
+  "tests": {
+    "command": "python -m unittest discover -s hardware/little-guy-v2/power -p test_harness.py -v",
+    "passed": 4,
+    "failed": 0,
+    "independent_rerun_passed": 4
+  },
+  "checks": [
+    "All eleven loads match current joint-map names",
+    "Saved graph audit equals fresh calculation",
+    "Independent reviewer recomputed all source/protection cuts",
+    "Deliberate positive cross-feed bypasses two leaf protection cuts",
+    "Deliberate return cross-link bypasses open leaf return",
+    "Hypothetical external host/source return bypasses open main return through USB ground",
+    "Adapter schematic visually inspected; source hash matches",
+    "Diagram regenerated and visually checked against logical netlist",
+    "Independent review found no concrete artifact or claim-boundary errors",
+    "Local Markdown links resolve"
+  ],
+  "electrical_design_validated": false,
+  "physical_harness_built": false,
+  "hardware_accessed": false,
+  "parts_selected": false,
+  "files_sha256": {
+    "README.md": "ab74219de48661e332898d2161a127d60ae5380d997ab3684d70759da9dbc3fc",
+    "harness.json": "820bdad2f5aa1d7fdd6d96c6b084c9b9cab0aac969d203504a534be6559b14c3",
+    "audit_harness.py": "7005c768031b66000eff0284d2cb73169e3569a08e01dc4c6666815fac496957",
+    "test_harness.py": "4bc4817725fb4747ffbccc427f5761a080a6b68bb713af77b0d0c84a6fa51382",
+    "harness-audit.json": "57b977138075e13b4c7de00a23a6133bafb0ba38bcc6d57851100041637f69d1",
+    "sources.json": "bf62900b0a2f51a33ad01344e3b78629ebce2f9dae3ffe5f41e28c861e5774d5",
+    "render_harness.py": "22b9a2fa10d5a97ac46ca31b124b1dfe0ae01dd8843715b8945eff3d3cc8127a",
+    "harness-overview.svg": "4db6f3310cc9fce55c395a5176070f116262bb757cf490b8a1a0403ddeefd312",
+    "harness-overview.png": "52ac042bb1c9e68b3250e0ad9694d4fdb30f17294ed7e5277714efe36b56b9a5"
+  }
+}

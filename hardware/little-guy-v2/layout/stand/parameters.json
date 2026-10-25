@@ -1,0 +1,83 @@
+{
+  "status": "Static tipping sensitivity of a partial assumed mass model; not a stand release",
+  "coordinates": "Same XYZ as body study; support coordinates are contact points, not outside edges of a base plate",
+  "shoulder_variant": "spacing_candidate",
+  "left_arm": "Mirror right-arm mass/geometry across X=0; symmetry not physically verified",
+  "waist_orientation": "Any yaw orientation for design screening only; not a proposed or calibrated travel range",
+  "jetson_mass_kg": 0.175,
+  "jetson_mass_scope": "Published bare assembled developer kit; tray, storage and cables omitted",
+  "force_application_height_above_support_m": 0.55,
+  "force_height_note": "Analyst example at nominal overall height; not a prescribed test or validated load",
+  "horizontal_force_examples_n": [
+    0,
+    2,
+    5,
+    10
+  ],
+  "support_candidates": [
+    {
+      "name": "platform_size_comparison",
+      "label": "180 \u00d7 240 mm, rear shifted",
+      "size_xy_mm": [
+        180,
+        240
+      ],
+      "center_xy_mm": [
+        0,
+        -40
+      ],
+      "note": "Hypothetical floor contact rectangle matching the assembly shelf outline; the shelf is not a floor base."
+    },
+    {
+      "name": "240x300",
+      "label": "240 \u00d7 300 mm",
+      "size_xy_mm": [
+        240,
+        300
+      ],
+      "center_xy_mm": [
+        0,
+        0
+      ]
+    },
+    {
+      "name": "300x300",
+      "label": "300 \u00d7 300 mm",
+      "size_xy_mm": [
+        300,
+        300
+      ],
+      "center_xy_mm": [
+        0,
+        0
+      ]
+    },
+    {
+      "name": "360x360",
+      "label": "360 \u00d7 360 mm",
+      "size_xy_mm": [
+        360,
+        360
+      ],
+      "center_xy_mm": [
+        0,
+        0
+      ]
+    }
+  ],
+  "unmodeled_masses": [
+    "Head shell, user speaker, cameras and other head payload",
+    "Torso shell, structural frame, waist/neck bearings and fittings",
+    "Stand base, feet, post and assembly shelf",
+    "Jetson tray, storage accessories and extra cables",
+    "Power hub, protection, trunk and harness beyond the assumed arm budgets"
+  ],
+  "excluded_effects": [
+    "Angular acceleration and coupled motion",
+    "Impact, user interaction load qualification and cable snag transients",
+    "Floor slope, friction/sliding, foot compliance and loss of contact",
+    "Structural strength, fastener or printed-part failure",
+    "Mass and geometry changes from unfinished brackets and hardware"
+  ],
+  "physical_stability_verified": false
+}

@@ -1,0 +1,3851 @@
+(kicad_sch
+  (version 20260306)
+  (generator eeschema)
+  (generator_version "10.0")
+  (uuid "28ae0a1d-062e-581f-bc89-a9c916a58d9a")
+  (paper "A3")
+  (title_block
+    (title "Motor buck-boost bridge")
+    (date "2026-10-25")
+    (rev "A0.2-WIP")
+    (comment 1 "DESIGN IN PROGRESS - NOT FOR FABRICATION")
+  )
+  (lib_symbols
+    (symbol "LGV2:Power_NMOS_8"
+      (pin_names
+        (offset 0.762)
+      )
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "U"
+        (at 0 11.43 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Value" "Power_NMOS_8"
+        (at 0 8.89 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (symbol "Power_NMOS_8_0_1"
+        (rectangle
+          (start -5.08 6.35)
+          (end 5.08 -6.35)
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type background)
+          )
+        )
+      )
+      (symbol "Power_NMOS_8_1_1"
+        (pin passive line
+          (at -10.16 3.81 0)
+          (length 5.08)
+          (name "S"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -10.16 1.27 0)
+          (length 5.08)
+          (name "S"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -10.16 -1.27 0)
+          (length 5.08)
+          (name "S"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "3"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin input line
+          (at -10.16 -3.81 0)
+          (length 5.08)
+          (name "G"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "4"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 10.16 3.81 180)
+          (length 5.08)
+          (name "D"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "5"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 10.16 1.27 180)
+          (length 5.08)
+          (name "D"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "6"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 10.16 -1.27 180)
+          (length 5.08)
+          (name "D"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "7"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 10.16 -3.81 180)
+          (length 5.08)
+          (name "D"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+          (number "8"
+            (effects
+              (font
+                (size 0.9 0.9)
+              )
+            )
+          )
+        )
+      )
+    )
+    (symbol "LGV2:R"
+      (pin_names hide
+        (offset 0)
+      )
+      (pin_numbers hide)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "R"
+        (at 3.81 1.27 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Value" "R"
+        (at 3.81 -1.27 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (symbol "R_0_1"
+        (rectangle
+          (start -1.016 2.54)
+          (end 1.016 -2.54)
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+      )
+      (symbol "R_1_1"
+        (pin passive line
+          (at 0 5.08 270)
+          (length 2.54)
+          (name "~"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 0 -5.08 90)
+          (length 2.54)
+          (name "~"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+        )
+      )
+    )
+    (symbol "LGV2:L"
+      (pin_names hide
+        (offset 0)
+      )
+      (pin_numbers hide)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "L"
+        (at 3.81 1.27 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Value" "L"
+        (at 3.81 -1.27 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.0 1.0)
+          )
+        )
+        (hide yes)
+      )
+      (symbol "L_0_1"
+        (rectangle
+          (start -1.016 2.54)
+          (end 1.016 -2.54)
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+      )
+      (symbol "L_1_1"
+        (pin passive line
+          (at 0 5.08 270)
+          (length 2.54)
+          (name "~"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 0 -5.08 90)
+          (length 2.54)
+          (name "~"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 1.0 1.0)
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+  (text "4-switch bridge / matched parallel FETs / Kelvin current sensing"
+    (at 15 15 0)
+    (effects
+      (font
+        (size 1.8 1.8)
+      )
+      (justify left)
+    )
+    (uuid "20002e21-3d0a-5116-b487-25730d6b3f04")
+  )
+  (text "Based on PMP21278; this implementation is not tested. Source reference used external input damping.\nReturned motor energy, branch switching/fusing and emergency-cut circuitry remain incomplete.\nNo motor connection or manufacturing release from these draft sheets."
+    (at 15 24 0)
+    (effects
+      (font
+        (size 1.2 1.2)
+      )
+      (justify left)
+    )
+    (uuid "dc09365a-8c73-58d4-a5ff-50600a17769c")
+  )
+  (symbol
+    (lib_id "LGV2:Power_NMOS_8")
+    (at 44.45 69.85 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "489357cd-5a35-55ca-b5cd-1da0c09256b1")
+    (property "Reference" "Q501"
+      (at 44.45 58.419999999999995 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "CSD19502Q5B"
+      (at 44.45 60.959999999999994 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 44.45 69.85 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" "https://www.ti.com/product/CSD19502Q5B"
+      (at 44.45 69.85 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" "CSD19502Q5B"
+      (at 44.45 69.85 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "candidate"
+      (at 44.45 69.85 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412/28ae0a1d-062e-581f-bc89-a9c916a58d9a"
+          (reference "Q501")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 34.29 66.04)
+      (xy 26.67 66.04)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "a932da0b-9590-5175-bf7f-83c81d584dee")
+  )
+  (global_label "MR_SW1"
+    (shape bidirectional)
+    (at 26.67 66.04 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "6059f03e-eb57-5302-bce2-e06454c1fbfb")
+  )
+  (wire
+    (pts
+      (xy 34.29 68.58)
+      (xy 26.67 68.58)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "be77b77e-ce7a-59ae-9e67-b9ebf5401082")
+  )
+  (global_label "MR_SW1"
+    (shape bidirectional)
+    (at 26.67 68.58 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "028452c5-d2b0-5830-af41-99344f15afd1")
+  )
+  (wire
+    (pts
+      (xy 34.29 71.12)
+      (xy 26.67 71.12)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "81a580e6-3b4a-5a45-9d30-8059a6550605")
+  )
+  (global_label "MR_SW1"
+    (shape bidirectional)
+    (at 26.67 71.12 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "52e4033b-a1ca-5d6b-8826-457f6695ab7d")
+  )
+  (wire
+    (pts
+      (xy 34.29 73.66)
+      (xy 26.67 73.66)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "061c764a-45f2-5940-b340-923313ba7f31")
+  )
+  (global_label "MR_GATE_H1_0"
+    (shape bidirectional)
+    (at 26.67 73.66 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "24ced774-a842-5efa-b42e-e9a54022c50e")
+  )
+  (wire
+    (pts
+      (xy 54.61 66.04)
+      (xy 62.23 66.04)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "b87313fb-41db-5609-9f6a-393465a2db94")
+  )
+  (global_label "PACK_PROTECTED"
+    (shape bidirectional)
+    (at 62.23 66.04 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "a652d746-c7b2-5f3b-88be-c1503d5a54ef")
+  )
+  (wire
+    (pts
+      (xy 54.61 68.58)
+      (xy 62.23 68.58)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "54440688-5114-5e71-b65e-f0b48fc29dcc")
+  )
+  (global_label "PACK_PROTECTED"
+    (shape bidirectional)
+    (at 62.23 68.58 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "9bfb5282-d2ff-5fb7-96c4-0c5cdce61cb2")
+  )
+  (wire
+    (pts
+      (xy 54.61 71.12)
+      (xy 62.23 71.12)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "12be30d9-942c-562e-b8e1-1d4f234063d9")
+  )
+  (global_label "PACK_PROTECTED"
+    (shape bidirectional)
+    (at 62.23 71.12 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "7bae329c-911f-580d-9153-60c87c781d8b")
+  )
+  (wire
+    (pts
+      (xy 54.61 73.66)
+      (xy 62.23 73.66)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "96a33761-8eb5-51aa-8892-8ffc6d817480")
+  )
+  (global_label "PACK_PROTECTED"
+    (shape bidirectional)
+    (at 62.23 73.66 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "d54b3928-52ca-5ac5-baa3-cae3fcc14756")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 44.45 176.53 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "181b5ca7-7c5c-5d87-9a1a-f67250ed607e")
+    (property "Reference" "R501"
+      (at 50.800000000000004 175.26 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "0 / gate resistor tuning"
+      (at 50.800000000000004 177.8 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 44.45 176.53 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 44.45 176.53 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 44.45 176.53 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 44.45 176.53 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412/28ae0a1d-062e-581f-bc89-a9c916a58d9a"
+          (reference "R501")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 44.45 171.45)
+      (xy 44.45 167.64)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "edbedb78-f546-50ab-bf47-77486b812114")
+  )
+  (global_label "MR_HDRV1"
+    (shape bidirectional)
+    (at 44.45 167.64 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "38c3291a-2130-5671-be60-a94a05f3f3da")
+  )
+  (wire
+    (pts
+      (xy 44.45 181.61)
+      (xy 44.45 185.42)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "aa5c03fd-9252-55b1-967e-0347cb3b0eb3")
+  )
+  (global_label "MR_GATE_H1_0"
+    (shape bidirectional)
+    (at 44.45 185.42 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "8963f28c-86f2-5863-a1eb-d46b19e7da9c")
+  )
+  (symbol
+    (lib_id "LGV2:Power_NMOS_8")
+    (at 44.45 129.54 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "c7f9ae76-cf1d-511d-81e4-be85cfa65766")
+    (property "Reference" "Q502"
+      (at 44.45 118.10999999999999 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "CSD19502Q5B"
+      (at 44.45 120.64999999999999 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 44.45 129.54 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" "https://www.ti.com/product/CSD19502Q5B"
+      (at 44.45 129.54 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" "CSD19502Q5B"
+      (at 44.45 129.54 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "candidate"
+      (at 44.45 129.54 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412/28ae0a1d-062e-581f-bc89-a9c916a58d9a"
+          (reference "Q502")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 34.29 125.73)
+      (xy 26.67 125.73)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "d5a1f495-5e95-589c-83e7-dc599fc4dab7")
+  )
+  (global_label "MR_SW1"
+    (shape bidirectional)
+    (at 26.67 125.73 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "70f0f6ad-1846-528f-b74a-f2c571ff578e")
+  )
+  (wire
+    (pts
+      (xy 34.29 128.27)
+      (xy 26.67 128.27)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "65efb5c8-4f9b-5684-a518-bc372af53d3d")
+  )
+  (global_label "MR_SW1"
+    (shape bidirectional)
+    (at 26.67 128.27 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "9f0a53d3-2aef-5b86-b4b0-db3a2946dd73")
+  )
+  (wire
+    (pts
+      (xy 34.29 130.81)
+      (xy 26.67 130.81)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "1bea9def-864e-57cb-b7b0-f82d9cac4e9c")
+  )
+  (global_label "MR_SW1"
+    (shape bidirectional)
+    (at 26.67 130.81 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "7b020c03-829b-526b-a3a2-623064e57a58")
+  )
+  (wire
+    (pts
+      (xy 34.29 133.35)
+      (xy 26.67 133.35)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "08c621c7-3da9-5003-bbbe-d4d3046abaad")
+  )
+  (global_label "MR_GATE_H1_1"
+    (shape bidirectional)
+    (at 26.67 133.35 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "ef5c55ff-15f5-5aae-93a8-0441e2475894")
+  )
+  (wire
+    (pts
+      (xy 54.61 125.73)
+      (xy 62.23 125.73)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "ed275c30-d41a-5804-bd92-41851757aab1")
+  )
+  (global_label "PACK_PROTECTED"
+    (shape bidirectional)
+    (at 62.23 125.73 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "a3535c26-b090-5ba0-b033-1ef97033a544")
+  )
+  (wire
+    (pts
+      (xy 54.61 128.27)
+      (xy 62.23 128.27)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "3b3bdd2c-6467-5d67-b860-79d974dc958e")
+  )
+  (global_label "PACK_PROTECTED"
+    (shape bidirectional)
+    (at 62.23 128.27 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "ce9505c9-bbc8-5afc-930d-f530e0ac30d7")
+  )
+  (wire
+    (pts
+      (xy 54.61 130.81)
+      (xy 62.23 130.81)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "b7b37e3a-e5df-5c0f-98e4-ccb149a7a99e")
+  )
+  (global_label "PACK_PROTECTED"
+    (shape bidirectional)
+    (at 62.23 130.81 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "504e65d7-b39c-56f4-abf5-aec99cca3994")
+  )
+  (wire
+    (pts
+      (xy 54.61 133.35)
+      (xy 62.23 133.35)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "bb520414-fab5-51de-a64f-da523f8c7d57")
+  )
+  (global_label "PACK_PROTECTED"
+    (shape bidirectional)
+    (at 62.23 133.35 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "fa5441c3-3a02-520b-a0f9-64c123733d7c")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 44.45 212.09 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "88a58268-db09-534c-a9b5-6396419391d1")
+    (property "Reference" "R502"
+      (at 50.800000000000004 210.82 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "0 / gate resistor tuning"
+      (at 50.800000000000004 213.36 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 44.45 212.09 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 44.45 212.09 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 44.45 212.09 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 44.45 212.09 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412/28ae0a1d-062e-581f-bc89-a9c916a58d9a"
+          (reference "R502")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 44.45 207.01)
+      (xy 44.45 203.2)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "b14c6a71-58c4-58d3-b5ab-ae2b9698ce7d")
+  )
+  (global_label "MR_HDRV1"
+    (shape bidirectional)
+    (at 44.45 203.2 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "d7f94b31-422b-5364-b24b-1f51085775fd")
+  )
+  (wire
+    (pts
+      (xy 44.45 217.17)
+      (xy 44.45 220.98)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "d7135ad6-6d8a-51fa-94ff-d765f73c5678")
+  )
+  (global_label "MR_GATE_H1_1"
+    (shape bidirectional)
+    (at 44.45 220.98 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "d455b969-dada-5ad8-8728-87579dc82e9a")
+  )
+  (symbol
+    (lib_id "LGV2:Power_NMOS_8")
+    (at 139.7 69.85 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "d0d049dc-2f9c-542f-9884-3805812ee7f7")
+    (property "Reference" "Q503"
+      (at 139.7 58.419999999999995 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "CSD19502Q5B"
+      (at 139.7 60.959999999999994 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 139.7 69.85 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" "https://www.ti.com/product/CSD19502Q5B"
+      (at 139.7 69.85 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" "CSD19502Q5B"
+      (at 139.7 69.85 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "candidate"
+      (at 139.7 69.85 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412/28ae0a1d-062e-581f-bc89-a9c916a58d9a"
+          (reference "Q503")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 129.54 66.04)
+      (xy 121.92 66.04)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "a1ba0cff-4ace-5465-aacb-679de81d0e99")
+  )
+  (global_label "MR_SENSE_HIGH"
+    (shape bidirectional)
+    (at 121.92 66.04 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "1ec4913b-7d90-5413-8c86-cada2cd407eb")
+  )
+  (wire
+    (pts
+      (xy 129.54 68.58)
+      (xy 121.92 68.58)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "050d29f1-7a71-511f-8fc1-885110fd3808")
+  )
+  (global_label "MR_SENSE_HIGH"
+    (shape bidirectional)
+    (at 121.92 68.58 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "0dee5b6d-ad2b-5df2-bdbe-01d0126cce15")
+  )
+  (wire
+    (pts
+      (xy 129.54 71.12)
+      (xy 121.92 71.12)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "140b5aec-539c-5fbd-b400-ee6d71e93f3c")
+  )
+  (global_label "MR_SENSE_HIGH"
+    (shape bidirectional)
+    (at 121.92 71.12 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "fe8a1aa0-91bb-59b8-8281-64c89fbaedb7")
+  )
+  (wire
+    (pts
+      (xy 129.54 73.66)
+      (xy 121.92 73.66)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "69da5b35-b69a-533a-840b-f1e3a02ae1bc")
+  )
+  (global_label "MR_GATE_L1_0"
+    (shape bidirectional)
+    (at 121.92 73.66 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "5a332dd2-bc7d-5515-9b3d-d7b64ec43036")
+  )
+  (wire
+    (pts
+      (xy 149.86 66.04)
+      (xy 157.48 66.04)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "1774279b-0717-5901-8cf0-eb4808cc2722")
+  )
+  (global_label "MR_SW1"
+    (shape bidirectional)
+    (at 157.48 66.04 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "a216ac8b-8d5f-5f61-8123-1bce0195edb5")
+  )
+  (wire
+    (pts
+      (xy 149.86 68.58)
+      (xy 157.48 68.58)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "a55117a8-eef2-510a-98e9-59b5e1d37409")
+  )
+  (global_label "MR_SW1"
+    (shape bidirectional)
+    (at 157.48 68.58 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "58996023-7ccf-5445-89eb-d359092f79a9")
+  )
+  (wire
+    (pts
+      (xy 149.86 71.12)
+      (xy 157.48 71.12)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "48335806-3c5c-5a87-837c-a24c41b63567")
+  )
+  (global_label "MR_SW1"
+    (shape bidirectional)
+    (at 157.48 71.12 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "ea21561e-dbcc-5924-bdd6-aa4ff33d995f")
+  )
+  (wire
+    (pts
+      (xy 149.86 73.66)
+      (xy 157.48 73.66)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "d81819dd-6491-508d-986b-f68f7eed67b9")
+  )
+  (global_label "MR_SW1"
+    (shape bidirectional)
+    (at 157.48 73.66 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "ab14139f-016e-5c5b-b039-e5d44c357095")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 139.7 176.53 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "01616d4a-6ce8-51a3-a4d5-d84752421f48")
+    (property "Reference" "R503"
+      (at 146.04999999999998 175.26 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "0 / gate resistor tuning"
+      (at 146.04999999999998 177.8 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 139.7 176.53 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 139.7 176.53 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 139.7 176.53 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 139.7 176.53 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412/28ae0a1d-062e-581f-bc89-a9c916a58d9a"
+          (reference "R503")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 139.7 171.45)
+      (xy 139.7 167.64)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "d4684142-e9e5-5ef6-8277-1e2fa0f36221")
+  )
+  (global_label "MR_LDRV1"
+    (shape bidirectional)
+    (at 139.7 167.64 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "1ef891e6-a43e-508d-92d4-2e177f15a692")
+  )
+  (wire
+    (pts
+      (xy 139.7 181.61)
+      (xy 139.7 185.42)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "36d9315f-80e3-5592-aa42-e99b611c5aab")
+  )
+  (global_label "MR_GATE_L1_0"
+    (shape bidirectional)
+    (at 139.7 185.42 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "c91a39d9-a050-54cb-9859-fd58dbd5d097")
+  )
+  (symbol
+    (lib_id "LGV2:Power_NMOS_8")
+    (at 139.7 129.54 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "9ada0ca4-9d5e-5a7a-9ec5-5e1fe48e347d")
+    (property "Reference" "Q504"
+      (at 139.7 118.10999999999999 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "CSD19502Q5B"
+      (at 139.7 120.64999999999999 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 139.7 129.54 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" "https://www.ti.com/product/CSD19502Q5B"
+      (at 139.7 129.54 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" "CSD19502Q5B"
+      (at 139.7 129.54 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "candidate"
+      (at 139.7 129.54 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412/28ae0a1d-062e-581f-bc89-a9c916a58d9a"
+          (reference "Q504")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 129.54 125.73)
+      (xy 121.92 125.73)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "36351ef2-75ea-530d-b0fd-237cf94fde25")
+  )
+  (global_label "MR_SENSE_HIGH"
+    (shape bidirectional)
+    (at 121.92 125.73 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "60e0f3e7-75dc-5f51-ae3d-aebf8d7bf4c0")
+  )
+  (wire
+    (pts
+      (xy 129.54 128.27)
+      (xy 121.92 128.27)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "1cfbdb8a-d455-5b1b-9507-e9920902ef46")
+  )
+  (global_label "MR_SENSE_HIGH"
+    (shape bidirectional)
+    (at 121.92 128.27 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "a1f90ee6-7df6-5a52-87a8-921a45784696")
+  )
+  (wire
+    (pts
+      (xy 129.54 130.81)
+      (xy 121.92 130.81)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "bf04b171-0101-53d3-b449-df3b0a1d9b8b")
+  )
+  (global_label "MR_SENSE_HIGH"
+    (shape bidirectional)
+    (at 121.92 130.81 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "3218ab87-9f6d-5cc2-bd6e-f50d084bf678")
+  )
+  (wire
+    (pts
+      (xy 129.54 133.35)
+      (xy 121.92 133.35)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "1748fb02-31d7-53bf-86e3-d96d3d8c2648")
+  )
+  (global_label "MR_GATE_L1_1"
+    (shape bidirectional)
+    (at 121.92 133.35 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "95bb7d4e-6c79-5a39-9375-01e9f766788c")
+  )
+  (wire
+    (pts
+      (xy 149.86 125.73)
+      (xy 157.48 125.73)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "45d5352c-3127-5186-bd9a-822a5cd96a75")
+  )
+  (global_label "MR_SW1"
+    (shape bidirectional)
+    (at 157.48 125.73 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "152ea062-e941-5a23-a9d6-80b10a67b3a1")
+  )
+  (wire
+    (pts
+      (xy 149.86 128.27)
+      (xy 157.48 128.27)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "b3eae293-c3ec-576c-8a12-eb621d363cb4")
+  )
+  (global_label "MR_SW1"
+    (shape bidirectional)
+    (at 157.48 128.27 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "3dd1b6b8-1798-5c50-8629-e0d7a4c86050")
+  )
+  (wire
+    (pts
+      (xy 149.86 130.81)
+      (xy 157.48 130.81)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "35bd4996-a154-5fa4-95ac-8aa46aabf7a7")
+  )
+  (global_label "MR_SW1"
+    (shape bidirectional)
+    (at 157.48 130.81 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "2391c61d-ae2f-5208-b3df-4f9352bb93cc")
+  )
+  (wire
+    (pts
+      (xy 149.86 133.35)
+      (xy 157.48 133.35)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "bf0b8ae1-2df6-5e9f-90aa-991158d6d7fe")
+  )
+  (global_label "MR_SW1"
+    (shape bidirectional)
+    (at 157.48 133.35 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "a89c2554-4cb4-51cd-9a0b-816f096590d5")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 139.7 212.09 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "6285f1e4-51b4-5c3a-b611-6ef38f520ec8")
+    (property "Reference" "R504"
+      (at 146.04999999999998 210.82 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "0 / gate resistor tuning"
+      (at 146.04999999999998 213.36 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 139.7 212.09 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 139.7 212.09 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 139.7 212.09 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 139.7 212.09 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412/28ae0a1d-062e-581f-bc89-a9c916a58d9a"
+          (reference "R504")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 139.7 207.01)
+      (xy 139.7 203.2)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "627900c4-2f2c-5234-b0a5-a2fd535f9ec3")
+  )
+  (global_label "MR_LDRV1"
+    (shape bidirectional)
+    (at 139.7 203.2 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "03829cf6-b9b6-560e-9372-cbaac23fc670")
+  )
+  (wire
+    (pts
+      (xy 139.7 217.17)
+      (xy 139.7 220.98)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "8aa3192b-9584-5b71-b480-49d7e01aec60")
+  )
+  (global_label "MR_GATE_L1_1"
+    (shape bidirectional)
+    (at 139.7 220.98 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "cdfdaf6b-427c-5dc1-89b9-25508be8d42c")
+  )
+  (symbol
+    (lib_id "LGV2:Power_NMOS_8")
+    (at 234.95 69.85 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "e7a000ca-730f-5cb9-9b60-4599757e08bf")
+    (property "Reference" "Q505"
+      (at 234.95 58.419999999999995 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "CSD17573Q5B"
+      (at 234.95 60.959999999999994 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 234.95 69.85 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" "https://www.ti.com/product/CSD17573Q5B"
+      (at 234.95 69.85 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" "CSD17573Q5B"
+      (at 234.95 69.85 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "candidate"
+      (at 234.95 69.85 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412/28ae0a1d-062e-581f-bc89-a9c916a58d9a"
+          (reference "Q505")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 224.79 66.04)
+      (xy 217.17 66.04)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "af232901-d0eb-5372-8cdc-f0db76fcb596")
+  )
+  (global_label "MR_SW2"
+    (shape bidirectional)
+    (at 217.17 66.04 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "0053a92d-7744-5fb5-ac7d-8c207004fefd")
+  )
+  (wire
+    (pts
+      (xy 224.79 68.58)
+      (xy 217.17 68.58)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "53e4265a-9c27-5f38-a7a4-fe60ff70e171")
+  )
+  (global_label "MR_SW2"
+    (shape bidirectional)
+    (at 217.17 68.58 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "7372e109-340c-55ce-91c9-0878cde25095")
+  )
+  (wire
+    (pts
+      (xy 224.79 71.12)
+      (xy 217.17 71.12)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "56d8c5f4-eae4-5336-833b-33d5553c097e")
+  )
+  (global_label "MR_SW2"
+    (shape bidirectional)
+    (at 217.17 71.12 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "452ee3ec-2314-51c9-ad0c-ae4edd528e6e")
+  )
+  (wire
+    (pts
+      (xy 224.79 73.66)
+      (xy 217.17 73.66)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "99ca2ce7-9aa3-5e23-a43f-d8e3bcbbb251")
+  )
+  (global_label "MR_GATE_H2_0"
+    (shape bidirectional)
+    (at 217.17 73.66 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "70c9e171-0dfd-5ed8-a003-b179fd157ed2")
+  )
+  (wire
+    (pts
+      (xy 245.11 66.04)
+      (xy 252.73 66.04)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "dd986a0b-c94e-50b6-a15b-b4f19137e9d0")
+  )
+  (global_label "MOTOR_REG_RAW"
+    (shape bidirectional)
+    (at 252.73 66.04 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "90dc77e1-4d7c-568c-8234-5ddc90d8ed23")
+  )
+  (wire
+    (pts
+      (xy 245.11 68.58)
+      (xy 252.73 68.58)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "a0016b97-a445-56be-9814-b0940580498c")
+  )
+  (global_label "MOTOR_REG_RAW"
+    (shape bidirectional)
+    (at 252.73 68.58 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "98491bd9-f0d5-5839-94f7-eaeb33c9ba49")
+  )
+  (wire
+    (pts
+      (xy 245.11 71.12)
+      (xy 252.73 71.12)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "032b48e1-2456-5b26-ba48-27e0dafb35d4")
+  )
+  (global_label "MOTOR_REG_RAW"
+    (shape bidirectional)
+    (at 252.73 71.12 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "412fb3bc-9460-5cc4-af95-59099f32610c")
+  )
+  (wire
+    (pts
+      (xy 245.11 73.66)
+      (xy 252.73 73.66)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "abc0230f-221f-501d-8a91-405a06777b4e")
+  )
+  (global_label "MOTOR_REG_RAW"
+    (shape bidirectional)
+    (at 252.73 73.66 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "a91d4f0f-cc52-538b-bd6c-7625b7b75432")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 234.95 176.53 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "2ad35c5c-c742-5ac8-914c-177e88a6a727")
+    (property "Reference" "R505"
+      (at 241.29999999999998 175.26 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "0 / gate resistor tuning"
+      (at 241.29999999999998 177.8 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 234.95 176.53 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 234.95 176.53 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 234.95 176.53 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 234.95 176.53 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412/28ae0a1d-062e-581f-bc89-a9c916a58d9a"
+          (reference "R505")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 234.95 171.45)
+      (xy 234.95 167.64)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "80367521-46bb-51ff-9d3a-34637578a2db")
+  )
+  (global_label "MR_HDRV2"
+    (shape bidirectional)
+    (at 234.95 167.64 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "6cd15e16-aa69-5d34-8c62-e4c5f550c2b1")
+  )
+  (wire
+    (pts
+      (xy 234.95 181.61)
+      (xy 234.95 185.42)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "9cf95ce3-eab9-503b-bacc-69e594f15aee")
+  )
+  (global_label "MR_GATE_H2_0"
+    (shape bidirectional)
+    (at 234.95 185.42 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "dcde6ce9-62ab-530f-a589-8d1745c2b511")
+  )
+  (symbol
+    (lib_id "LGV2:Power_NMOS_8")
+    (at 234.95 129.54 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "a45268b5-5bcb-5a59-9c69-6831266a47da")
+    (property "Reference" "Q506"
+      (at 234.95 118.10999999999999 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "CSD17573Q5B"
+      (at 234.95 120.64999999999999 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 234.95 129.54 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" "https://www.ti.com/product/CSD17573Q5B"
+      (at 234.95 129.54 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" "CSD17573Q5B"
+      (at 234.95 129.54 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "candidate"
+      (at 234.95 129.54 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412/28ae0a1d-062e-581f-bc89-a9c916a58d9a"
+          (reference "Q506")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 224.79 125.73)
+      (xy 217.17 125.73)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "10ab5bf7-ef5d-5ab5-b862-cb060f3b2074")
+  )
+  (global_label "MR_SW2"
+    (shape bidirectional)
+    (at 217.17 125.73 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "c8e1aa3c-0b0a-555a-b8ce-d40ebee88776")
+  )
+  (wire
+    (pts
+      (xy 224.79 128.27)
+      (xy 217.17 128.27)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "091052af-aff2-5ee2-a136-fdf52ea7815b")
+  )
+  (global_label "MR_SW2"
+    (shape bidirectional)
+    (at 217.17 128.27 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "b00ae3db-4880-5d13-b659-245cdba81090")
+  )
+  (wire
+    (pts
+      (xy 224.79 130.81)
+      (xy 217.17 130.81)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "9d2daea6-8434-5082-ae8b-f551821dc337")
+  )
+  (global_label "MR_SW2"
+    (shape bidirectional)
+    (at 217.17 130.81 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "65f48d89-8d49-5a42-a654-b7743b208a2f")
+  )
+  (wire
+    (pts
+      (xy 224.79 133.35)
+      (xy 217.17 133.35)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "d6c71a6e-80f6-5fa0-80c4-55ce7ba4914a")
+  )
+  (global_label "MR_GATE_H2_1"
+    (shape bidirectional)
+    (at 217.17 133.35 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "ebc1acc4-c1e4-5043-9c82-795a5bd86bbb")
+  )
+  (wire
+    (pts
+      (xy 245.11 125.73)
+      (xy 252.73 125.73)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "9ebb130e-a457-5874-b656-096f9f91d246")
+  )
+  (global_label "MOTOR_REG_RAW"
+    (shape bidirectional)
+    (at 252.73 125.73 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "826b9c61-4810-5233-b9b9-2c6576aad8e0")
+  )
+  (wire
+    (pts
+      (xy 245.11 128.27)
+      (xy 252.73 128.27)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "afead2f6-473e-544c-b8b9-f7ed17cb11b3")
+  )
+  (global_label "MOTOR_REG_RAW"
+    (shape bidirectional)
+    (at 252.73 128.27 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "7d760bb7-598d-55dd-a506-a94398ac12e7")
+  )
+  (wire
+    (pts
+      (xy 245.11 130.81)
+      (xy 252.73 130.81)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "77bc6e69-b4e1-506c-a5f6-86904c0cc26a")
+  )
+  (global_label "MOTOR_REG_RAW"
+    (shape bidirectional)
+    (at 252.73 130.81 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "5a57dd9f-b1b7-50fd-b277-972fbca76b60")
+  )
+  (wire
+    (pts
+      (xy 245.11 133.35)
+      (xy 252.73 133.35)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "9c4f0e43-1263-50b9-a044-2ec6e5ae53a0")
+  )
+  (global_label "MOTOR_REG_RAW"
+    (shape bidirectional)
+    (at 252.73 133.35 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "fdc92a85-c565-534c-a6c0-843fb8d1ef8a")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 234.95 212.09 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "c82e9cee-8cc3-5194-a67d-d35d38593e80")
+    (property "Reference" "R506"
+      (at 241.29999999999998 210.82 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "0 / gate resistor tuning"
+      (at 241.29999999999998 213.36 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 234.95 212.09 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 234.95 212.09 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 234.95 212.09 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 234.95 212.09 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412/28ae0a1d-062e-581f-bc89-a9c916a58d9a"
+          (reference "R506")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 234.95 207.01)
+      (xy 234.95 203.2)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "1500bd6c-aa35-589e-a96a-b66ddd21c07b")
+  )
+  (global_label "MR_HDRV2"
+    (shape bidirectional)
+    (at 234.95 203.2 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "a0075363-49f9-5a53-8ed4-412e5c3ae5b2")
+  )
+  (wire
+    (pts
+      (xy 234.95 217.17)
+      (xy 234.95 220.98)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "395c1fc0-1e08-5eb4-b1d3-f7455d8157e8")
+  )
+  (global_label "MR_GATE_H2_1"
+    (shape bidirectional)
+    (at 234.95 220.98 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "e5ead3ce-1429-513e-bfe7-4e5f54b5e8ce")
+  )
+  (symbol
+    (lib_id "LGV2:Power_NMOS_8")
+    (at 330.2 69.85 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "db3c8b9c-9334-5aa7-b09c-eb9a85b381ed")
+    (property "Reference" "Q507"
+      (at 330.2 58.419999999999995 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "CSD17573Q5B"
+      (at 330.2 60.959999999999994 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 330.2 69.85 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" "https://www.ti.com/product/CSD17573Q5B"
+      (at 330.2 69.85 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" "CSD17573Q5B"
+      (at 330.2 69.85 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "candidate"
+      (at 330.2 69.85 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412/28ae0a1d-062e-581f-bc89-a9c916a58d9a"
+          (reference "Q507")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 320.04 66.04)
+      (xy 312.42 66.04)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "59fadc9c-709c-5fae-ae43-b610729a2ef7")
+  )
+  (global_label "MR_SENSE_HIGH"
+    (shape bidirectional)
+    (at 312.42 66.04 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "60fca209-3c7b-5487-b5a2-0bdb243df083")
+  )
+  (wire
+    (pts
+      (xy 320.04 68.58)
+      (xy 312.42 68.58)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "7fd375c4-a067-5a8d-9bb6-328c90b4e9eb")
+  )
+  (global_label "MR_SENSE_HIGH"
+    (shape bidirectional)
+    (at 312.42 68.58 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "f8d6529a-eb3b-5825-a3d9-d382587a5af7")
+  )
+  (wire
+    (pts
+      (xy 320.04 71.12)
+      (xy 312.42 71.12)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "b092c411-04c6-53fa-96df-15cae139aa98")
+  )
+  (global_label "MR_SENSE_HIGH"
+    (shape bidirectional)
+    (at 312.42 71.12 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "7330d556-7dcd-5b80-964d-5477104e29ac")
+  )
+  (wire
+    (pts
+      (xy 320.04 73.66)
+      (xy 312.42 73.66)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "911b5aa8-b618-5522-a0af-a0c6e6a036b3")
+  )
+  (global_label "MR_GATE_L2_0"
+    (shape bidirectional)
+    (at 312.42 73.66 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "4950e7b3-3b03-5988-a176-46b2474394e2")
+  )
+  (wire
+    (pts
+      (xy 340.36 66.04)
+      (xy 347.98 66.04)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "ef6d559b-d3a2-5c89-af15-5d6c38573db0")
+  )
+  (global_label "MR_SW2"
+    (shape bidirectional)
+    (at 347.98 66.04 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "477b434c-0c9b-5b40-9edc-969107864800")
+  )
+  (wire
+    (pts
+      (xy 340.36 68.58)
+      (xy 347.98 68.58)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "67519b96-2edf-5c6c-b225-e6b547ad45f9")
+  )
+  (global_label "MR_SW2"
+    (shape bidirectional)
+    (at 347.98 68.58 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "dbf40d44-4bed-503e-9a7b-eb02f3c462ce")
+  )
+  (wire
+    (pts
+      (xy 340.36 71.12)
+      (xy 347.98 71.12)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "42867254-207f-5a60-b6dd-36a552834bdd")
+  )
+  (global_label "MR_SW2"
+    (shape bidirectional)
+    (at 347.98 71.12 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "d2f0541f-fda5-507a-8562-8155ae7ab01d")
+  )
+  (wire
+    (pts
+      (xy 340.36 73.66)
+      (xy 347.98 73.66)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "96a8ad42-d564-517c-b67b-8b338c6b95fb")
+  )
+  (global_label "MR_SW2"
+    (shape bidirectional)
+    (at 347.98 73.66 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "08fbdd8f-7f06-5226-891d-9bcc8cb05031")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 330.2 176.53 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "ec6442b9-a2ba-5e5b-ba3f-fe38fe04060e")
+    (property "Reference" "R507"
+      (at 336.55 175.26 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "0 / gate resistor tuning"
+      (at 336.55 177.8 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 330.2 176.53 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 330.2 176.53 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 330.2 176.53 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 330.2 176.53 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412/28ae0a1d-062e-581f-bc89-a9c916a58d9a"
+          (reference "R507")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 330.2 171.45)
+      (xy 330.2 167.64)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "1f5d19c1-f2f1-54b2-b6c3-c10009e82bfe")
+  )
+  (global_label "MR_LDRV2"
+    (shape bidirectional)
+    (at 330.2 167.64 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "6f104e20-f21a-56ce-901f-1ff2ffb2fc37")
+  )
+  (wire
+    (pts
+      (xy 330.2 181.61)
+      (xy 330.2 185.42)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "13816bb1-bba6-575e-a999-1deb49021058")
+  )
+  (global_label "MR_GATE_L2_0"
+    (shape bidirectional)
+    (at 330.2 185.42 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "c94f9de5-1293-58e9-8c7f-d89769d9b9ea")
+  )
+  (symbol
+    (lib_id "LGV2:Power_NMOS_8")
+    (at 330.2 129.54 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "ae04a40e-0712-5805-b28e-146b3c31d9fb")
+    (property "Reference" "Q508"
+      (at 330.2 118.10999999999999 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "CSD17573Q5B"
+      (at 330.2 120.64999999999999 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 330.2 129.54 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" "https://www.ti.com/product/CSD17573Q5B"
+      (at 330.2 129.54 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" "CSD17573Q5B"
+      (at 330.2 129.54 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "candidate"
+      (at 330.2 129.54 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412/28ae0a1d-062e-581f-bc89-a9c916a58d9a"
+          (reference "Q508")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 320.04 125.73)
+      (xy 312.42 125.73)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "3d18ed66-1fae-5808-8360-8e2d065c97cd")
+  )
+  (global_label "MR_SENSE_HIGH"
+    (shape bidirectional)
+    (at 312.42 125.73 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "ff54a465-9932-5f26-9c20-840b041d1ed8")
+  )
+  (wire
+    (pts
+      (xy 320.04 128.27)
+      (xy 312.42 128.27)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "64bc0333-e624-5bcd-9d4d-e202f27ad39e")
+  )
+  (global_label "MR_SENSE_HIGH"
+    (shape bidirectional)
+    (at 312.42 128.27 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "6655b6fe-1fb3-5182-9304-f580b43f3fd6")
+  )
+  (wire
+    (pts
+      (xy 320.04 130.81)
+      (xy 312.42 130.81)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "f2c892ec-86e4-5d5a-b038-0f8ae5ba8e84")
+  )
+  (global_label "MR_SENSE_HIGH"
+    (shape bidirectional)
+    (at 312.42 130.81 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "e113281b-927b-52c6-9f88-15b498a0143c")
+  )
+  (wire
+    (pts
+      (xy 320.04 133.35)
+      (xy 312.42 133.35)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "db35e8b7-bbff-51f9-affb-2b54075f3b4e")
+  )
+  (global_label "MR_GATE_L2_1"
+    (shape bidirectional)
+    (at 312.42 133.35 0)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "f0f2edaf-a9fd-5d65-b46e-1c3cc3e08cb6")
+  )
+  (wire
+    (pts
+      (xy 340.36 125.73)
+      (xy 347.98 125.73)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "11ede9ab-10ba-5de7-bcd2-7b08a4a8fb41")
+  )
+  (global_label "MR_SW2"
+    (shape bidirectional)
+    (at 347.98 125.73 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "dbe5d45d-b450-5750-886e-59cf9be6454d")
+  )
+  (wire
+    (pts
+      (xy 340.36 128.27)
+      (xy 347.98 128.27)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "e5408454-eac2-50aa-9cc3-f82a95528606")
+  )
+  (global_label "MR_SW2"
+    (shape bidirectional)
+    (at 347.98 128.27 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "10c04d19-21cc-55e1-b585-238e4c4232fa")
+  )
+  (wire
+    (pts
+      (xy 340.36 130.81)
+      (xy 347.98 130.81)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "586589b2-2e26-5be9-9f34-52da402442b1")
+  )
+  (global_label "MR_SW2"
+    (shape bidirectional)
+    (at 347.98 130.81 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "c7cfc0e9-a1c6-5bb7-9083-2338d0abe5bc")
+  )
+  (wire
+    (pts
+      (xy 340.36 133.35)
+      (xy 347.98 133.35)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "906ebd3b-ffb1-5ef0-89c9-1a3af3a69377")
+  )
+  (global_label "MR_SW2"
+    (shape bidirectional)
+    (at 347.98 133.35 180)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "36175fcb-8a9f-5c5a-967a-ac48b8976945")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 330.2 212.09 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "94bbe460-0900-5fc1-879d-c20cfbc9713c")
+    (property "Reference" "R508"
+      (at 336.55 210.82 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "0 / gate resistor tuning"
+      (at 336.55 213.36 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 330.2 212.09 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 330.2 212.09 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 330.2 212.09 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 330.2 212.09 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412/28ae0a1d-062e-581f-bc89-a9c916a58d9a"
+          (reference "R508")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 330.2 207.01)
+      (xy 330.2 203.2)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "64828643-cfad-51af-a76e-a743ca24ce49")
+  )
+  (global_label "MR_LDRV2"
+    (shape bidirectional)
+    (at 330.2 203.2 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "40787746-0c01-5a1b-92e8-f89b99005b3e")
+  )
+  (wire
+    (pts
+      (xy 330.2 217.17)
+      (xy 330.2 220.98)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "0e357b30-c7d3-5e4a-9023-deee0941676d")
+  )
+  (global_label "MR_GATE_L2_1"
+    (shape bidirectional)
+    (at 330.2 220.98 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "7d6a79b0-3056-5bd9-9255-485cbc129a35")
+  )
+  (symbol
+    (lib_id "LGV2:L")
+    (at 39.37 250.19 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "eb8e6421-c829-5f18-ac18-70ea282ed710")
+    (property "Reference" "L501"
+      (at 45.72 248.92 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "2uH high-current; exact part from BOM review"
+      (at 45.72 251.46 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 39.37 250.19 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 39.37 250.19 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 39.37 250.19 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 39.37 250.19 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412/28ae0a1d-062e-581f-bc89-a9c916a58d9a"
+          (reference "L501")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 39.37 245.11)
+      (xy 39.37 241.3)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "f5317de9-0c90-5fcd-8ede-0b109840760a")
+  )
+  (global_label "MR_SW1"
+    (shape bidirectional)
+    (at 39.37 241.3 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "e4ab84b0-2448-56ba-b451-a737d29c5816")
+  )
+  (wire
+    (pts
+      (xy 39.37 255.27)
+      (xy 39.37 259.08)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "993bb567-7f0e-5197-8573-860462848750")
+  )
+  (global_label "MR_SW2"
+    (shape bidirectional)
+    (at 39.37 259.08 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "c48cd14f-2dbd-5d37-a2b9-c3f753a0a4f7")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 100.33 250.19 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "80209554-332d-5745-ac2f-688b13429e29")
+    (property "Reference" "R509"
+      (at 106.67999999999999 248.92 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "5m 1% / pulse and thermal rating pending"
+      (at 106.67999999999999 251.46 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_2512_6332Metric"
+      (at 100.33 250.19 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 100.33 250.19 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 100.33 250.19 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 100.33 250.19 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412/28ae0a1d-062e-581f-bc89-a9c916a58d9a"
+          (reference "R509")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 100.33 245.11)
+      (xy 100.33 241.3)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "a1716941-ba76-5e9d-b101-aa8a957529fa")
+  )
+  (global_label "MR_SENSE_HIGH"
+    (shape bidirectional)
+    (at 100.33 241.3 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "7a74bad7-5bdb-59b9-96d7-12f3e0afed94")
+  )
+  (wire
+    (pts
+      (xy 100.33 255.27)
+      (xy 100.33 259.08)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "6d17d1b0-2964-56cf-bd4b-85b98aa9b093")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 100.33 259.08 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "db3b7c85-feec-58ba-961d-c6379bcfa8ad")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 144.78 250.19 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "358a0ddf-43a9-5b96-af16-39efae738a68")
+    (property "Reference" "R510"
+      (at 151.13 248.92 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "5m 1% / pulse and thermal rating pending"
+      (at 151.13 251.46 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_2512_6332Metric"
+      (at 144.78 250.19 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 144.78 250.19 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 144.78 250.19 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 144.78 250.19 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412/28ae0a1d-062e-581f-bc89-a9c916a58d9a"
+          (reference "R510")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 144.78 245.11)
+      (xy 144.78 241.3)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "c95a9fa6-5584-5a76-a320-8c09d3c0a2ff")
+  )
+  (global_label "MR_SENSE_HIGH"
+    (shape bidirectional)
+    (at 144.78 241.3 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "f5c63d59-f0cc-53fd-aaf6-7b2b81db6e21")
+  )
+  (wire
+    (pts
+      (xy 144.78 255.27)
+      (xy 144.78 259.08)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "98b13202-05b1-5bf4-af07-478214680cd9")
+  )
+  (global_label "GND"
+    (shape bidirectional)
+    (at 144.78 259.08 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "4c366d2a-051f-5b9f-92a0-55f1cb13d312")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 199.39 250.19 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "c34fa566-1f87-526e-bc21-7d2bc2e6c183")
+    (property "Reference" "R511"
+      (at 205.73999999999998 248.92 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "5m 1% / output shunt, 20 A aggregate target"
+      (at 205.73999999999998 251.46 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_2512_6332Metric"
+      (at 199.39 250.19 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 199.39 250.19 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 199.39 250.19 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 199.39 250.19 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412/28ae0a1d-062e-581f-bc89-a9c916a58d9a"
+          (reference "R511")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 199.39 245.11)
+      (xy 199.39 241.3)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "3e83c7d8-8230-5654-8975-72afa3ebcc62")
+  )
+  (global_label "MOTOR_REG_RAW"
+    (shape bidirectional)
+    (at 199.39 241.3 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "815cf25e-ba57-5703-9691-ab386d1ebb79")
+  )
+  (wire
+    (pts
+      (xy 199.39 255.27)
+      (xy 199.39 259.08)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "7e78b263-a60c-599f-8ce4-620cd03ff63f")
+  )
+  (global_label "MOTOR_11V3"
+    (shape bidirectional)
+    (at 199.39 259.08 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "4a74795b-ccd4-5fdd-bbec-b9e1a0239c64")
+  )
+  (symbol
+    (lib_id "LGV2:R")
+    (at 245.11 250.19 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "21d5025a-20ab-5462-bcc8-3220d73cac96")
+    (property "Reference" "R512"
+      (at 251.46 248.92 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Value" "5m 1% / output shunt, 20 A aggregate target"
+      (at 251.46 251.46 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_2512_6332Metric"
+      (at 245.11 250.19 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Datasheet" ""
+      (at 245.11 250.19 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "MPN" ""
+      (at 245.11 250.19 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (property "Selection" "MPN_PENDING"
+      (at 245.11 250.19 0)
+      (effects
+        (font
+          (size 1.0 1.0)
+        )
+      )
+      (hide yes)
+    )
+    (instances
+      (project "little-guy-power"
+        (path "/12612dcf-3c73-5552-b7a9-b2b0965e2412/28ae0a1d-062e-581f-bc89-a9c916a58d9a"
+          (reference "R512")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire
+    (pts
+      (xy 245.11 245.11)
+      (xy 245.11 241.3)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "b60169c5-fe3c-5449-bfb6-10d1b6743032")
+  )
+  (global_label "MOTOR_REG_RAW"
+    (shape bidirectional)
+    (at 245.11 241.3 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "f8ae490e-b179-584b-bb02-bb34be438327")
+  )
+  (wire
+    (pts
+      (xy 245.11 255.27)
+      (xy 245.11 259.08)
+    )
+    (stroke
+      (width 0)
+      (type default)
+    )
+    (uuid "d57374bf-e734-5d72-aa11-2f7441df37c5")
+  )
+  (global_label "MOTOR_11V3"
+    (shape bidirectional)
+    (at 245.11 259.08 90)
+    (effects
+      (font
+        (size 0.9 0.9)
+      )
+      (justify left)
+    )
+    (uuid "ca25c21c-60e4-52a6-87fb-88132a006275")
+  )
+  (embedded_fonts no)
+)

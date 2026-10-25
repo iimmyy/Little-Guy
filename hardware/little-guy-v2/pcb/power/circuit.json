@@ -1,0 +1,4580 @@
+{
+  "revision": "A0.2-WIP",
+  "release": false,
+  "parts": [
+    {
+      "ref": "J101",
+      "value": "Front-door USB-C power/CC interface",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "USB_VBUS",
+        "2": "GND",
+        "3": "USB_CC1",
+        "4": "USB_CC2"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false
+    },
+    {
+      "ref": "U101",
+      "value": "TPS25751DREFR",
+      "footprint": "",
+      "mpn": "TPS25751DREFR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/tps25751.pdf",
+      "pins": {
+        "1": "PD_3V3",
+        "4": "PD_1V5",
+        "38": "AON_3V3",
+        "2": "PD_1V5",
+        "3": "PD_1V5",
+        "28": "USB_CC1",
+        "29": "USB_CC2",
+        "8": "HOST_SDA",
+        "9": "HOST_SCL",
+        "10": "PD_IRQ_N",
+        "16": "PD_SDA",
+        "17": "PD_SCL",
+        "18": "CHG_INT_N",
+        "11": "GND",
+        "12": "GND",
+        "14": "GND",
+        "31": "GND",
+        "39": "GND",
+        "23": "USB_VBUS",
+        "24": "USB_VBUS",
+        "25": "USB_VBUS",
+        "20": "USB_PD_IN",
+        "21": "USB_PD_IN",
+        "22": "USB_PD_IN",
+        "32": "PD_VBUS_5V",
+        "33": "PD_VBUS_5V",
+        "34": "AON_5V",
+        "35": "AON_5V",
+        "15": "PD_DRAIN",
+        "30": "PD_DRAIN",
+        "40": "PD_DRAIN",
+        "5": "GND",
+        "6": "GND",
+        "7": "GND",
+        "19": "GND",
+        "26": "GND",
+        "27": "GND",
+        "37": "GND",
+        "36": "GND",
+        "13": "GND"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false
+    },
+    {
+      "ref": "C101",
+      "value": "10u 10V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "GND"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false
+    },
+    {
+      "ref": "C102",
+      "value": "10u 10V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PD_3V3",
+        "2": "GND"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false
+    },
+    {
+      "ref": "C103",
+      "value": "10u 10V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PD_1V5",
+        "2": "GND"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false
+    },
+    {
+      "ref": "C104",
+      "value": "4u7 10V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PD_VBUS_5V",
+        "2": "GND"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false
+    },
+    {
+      "ref": "C105",
+      "value": "10u 10V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_5V",
+        "2": "GND"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false
+    },
+    {
+      "ref": "C106",
+      "value": "22u 35V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "USB_PD_IN",
+        "2": "GND"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false
+    },
+    {
+      "ref": "C107",
+      "value": "22u 35V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "USB_PD_IN",
+        "2": "GND"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false
+    },
+    {
+      "ref": "C108",
+      "value": "330p C0G 50V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "USB_CC1",
+        "2": "GND"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false
+    },
+    {
+      "ref": "C109",
+      "value": "330p C0G 50V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "USB_CC2",
+        "2": "GND"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false
+    },
+    {
+      "ref": "U102",
+      "value": "24LC512-I/SN (64 KB)",
+      "footprint": "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
+      "mpn": "24LC512-I/SN",
+      "datasheet": "https://www.microchip.com/en-us/product/24lc512",
+      "pins": {
+        "1": "GND",
+        "2": "GND",
+        "3": "GND",
+        "4": "GND",
+        "5": "PD_SDA",
+        "6": "PD_SCL",
+        "7": "PD_EE_WP",
+        "8": "PD_3V3"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false
+    },
+    {
+      "ref": "C110",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PD_3V3",
+        "2": "GND"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false
+    },
+    {
+      "ref": "R101",
+      "value": "2k2 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PD_3V3",
+        "2": "PD_SDA"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false
+    },
+    {
+      "ref": "R102",
+      "value": "2k2 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PD_3V3",
+        "2": "PD_SCL"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false
+    },
+    {
+      "ref": "R103",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PD_EE_WP",
+        "2": "GND"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false
+    },
+    {
+      "ref": "R104",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PD_3V3",
+        "2": "CHG_INT_N"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false
+    },
+    {
+      "ref": "R105",
+      "value": "4k7 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "HOST_SDA"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false
+    },
+    {
+      "ref": "R106",
+      "value": "4k7 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "HOST_SCL"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false
+    },
+    {
+      "ref": "R107",
+      "value": "4k7 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "PD_IRQ_N"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false
+    },
+    {
+      "ref": "J102",
+      "value": "PD EEPROM programmer / no second controller during use",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PD_3V3",
+        "2": "GND",
+        "3": "PD_SCL",
+        "4": "PD_SDA",
+        "5": "PD_EE_WP"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false
+    },
+    {
+      "ref": "J103",
+      "value": "Spinal-cord host / charging supervision",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_5V",
+        "2": "GND",
+        "3": "HOST_SCL",
+        "4": "HOST_SDA",
+        "5": "PD_IRQ_N",
+        "6": "CHG_ALLOW",
+        "7": "PACK_TEMP_STATUS"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false
+    },
+    {
+      "ref": "R108",
+      "value": "10k 1% / isolate status from fault node",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_TEMP_OK",
+        "2": "PACK_TEMP_STATUS"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false
+    },
+    {
+      "ref": "#FLG223",
+      "value": "GND",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "GND"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false,
+      "annotation": true
+    },
+    {
+      "ref": "#FLG224",
+      "value": "USB_VBUS",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "USB_VBUS"
+      },
+      "sheet": "01-usb-pd",
+      "dnp": false,
+      "annotation": true
+    },
+    {
+      "ref": "U201",
+      "value": "BQ25798RQMR",
+      "footprint": "",
+      "mpn": "BQ25798RQMR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/bq25798.pdf",
+      "pins": {
+        "2": "CHG_VBUS",
+        "3": "CHG_VBUS",
+        "9": "USB_PD_IN",
+        "8": "WIRELESS_DC",
+        "11": "USB_ACDRV",
+        "10": "WLC_ACDRV",
+        "29": "CHG_PMID",
+        "5": "CHG_REGN",
+        "6": "GND",
+        "7": "GND",
+        "14": "PD_SCL",
+        "15": "PD_SDA",
+        "20": "CHG_PROG",
+        "17": "CHG_REGN",
+        "13": "CHG_CE_N",
+        "12": "CHG_QON_N",
+        "27": "GND",
+        "4": "CHG_BOOT1",
+        "28": "CHG_SW1",
+        "19": "CHG_BOOT2",
+        "26": "CHG_SW2",
+        "25": "LOGIC_SYS",
+        "18": "CHG_BATP",
+        "22": "PACK_PROTECTED",
+        "23": "PACK_PROTECTED",
+        "24": "CHG_SDRV",
+        "1": "CHG_STAT_N",
+        "21": "CHG_INT_N",
+        "16": "PACK_NTC_MAIN"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "Q201",
+      "value": "Input NMOS / select rating",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "USB_ACDRV",
+        "2": "USB_FET_MID",
+        "3": "USB_PD_IN"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "Q202",
+      "value": "Reverse-blocking NMOS / select rating",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "USB_ACDRV",
+        "2": "USB_FET_MID",
+        "3": "CHG_VBUS"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "Q203",
+      "value": "Input NMOS / select rating",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "WLC_ACDRV",
+        "2": "WLC_FET_MID",
+        "3": "WIRELESS_DC"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "Q204",
+      "value": "Reverse-blocking NMOS / select rating",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "WLC_ACDRV",
+        "2": "WLC_FET_MID",
+        "3": "CHG_VBUS"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "C201",
+      "value": "10u 35V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CHG_VBUS",
+        "2": "GND"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "C202",
+      "value": "10u 35V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CHG_VBUS",
+        "2": "GND"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "C203",
+      "value": "10u 35V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CHG_PMID",
+        "2": "GND"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "C204",
+      "value": "10u 35V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CHG_PMID",
+        "2": "GND"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "C205",
+      "value": "10u 25V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LOGIC_SYS",
+        "2": "GND"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "C206",
+      "value": "10u 25V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LOGIC_SYS",
+        "2": "GND"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "C207",
+      "value": "10u 25V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LOGIC_SYS",
+        "2": "GND"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "C208",
+      "value": "10u 25V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LOGIC_SYS",
+        "2": "GND"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "C209",
+      "value": "10u 25V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LOGIC_SYS",
+        "2": "GND"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "C210",
+      "value": "10u 25V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "C211",
+      "value": "10u 25V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "C212",
+      "value": "4u7 10V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CHG_REGN",
+        "2": "GND"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "C213",
+      "value": "100n 50V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CHG_VBUS",
+        "2": "GND"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "C214",
+      "value": "100n 50V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CHG_PMID",
+        "2": "GND"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "C215",
+      "value": "100n 50V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LOGIC_SYS",
+        "2": "GND"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "C216",
+      "value": "100n 50V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "C217",
+      "value": "47n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CHG_BOOT1",
+        "2": "CHG_SW1"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "C218",
+      "value": "47n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CHG_BOOT2",
+        "2": "CHG_SW2"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "C219",
+      "value": "1n 50V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CHG_SDRV",
+        "2": "GND"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "L201",
+      "value": "1uH / Isat and DCR selection pending",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CHG_SW1",
+        "2": "CHG_SW2"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "R201",
+      "value": "100 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "CHG_BATP"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "R202",
+      "value": "10k5 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CHG_PROG",
+        "2": "GND"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "R203",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "CHG_QON_N"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "R204",
+      "value": "5k23 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CHG_REGN",
+        "2": "PACK_NTC_MAIN"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "R205",
+      "value": "30k1 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_NTC_MAIN",
+        "2": "GND"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "J201",
+      "value": "Pack primary 103AT-2 NTC (must touch cells)",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_NTC_MAIN",
+        "2": "GND"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "J202",
+      "value": "Wireless receiver DC; select matched receiver/coil",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "WIRELESS_DC",
+        "2": "GND"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "J203",
+      "value": "Fused/protected 3S pack / NOT bare cells",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_FROM_BMS",
+        "2": "GND"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "R206",
+      "value": "2k2 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "CHG_LED_A"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "D201",
+      "value": "Charge status LED",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CHG_STAT_N",
+        "2": "CHG_LED_A"
+      },
+      "sheet": "02-charger",
+      "dnp": false
+    },
+    {
+      "ref": "#FLG335",
+      "value": "CHG_VBUS",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CHG_VBUS"
+      },
+      "sheet": "02-charger",
+      "dnp": false,
+      "annotation": true
+    },
+    {
+      "ref": "#FLG336",
+      "value": "PACK_FROM_BMS",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_FROM_BMS"
+      },
+      "sheet": "02-charger",
+      "dnp": false,
+      "annotation": true
+    },
+    {
+      "ref": "#FLG337",
+      "value": "PACK_PROTECTED",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED"
+      },
+      "sheet": "02-charger",
+      "dnp": false,
+      "annotation": true
+    },
+    {
+      "ref": "U301",
+      "value": "TPS54531DDAR",
+      "footprint": "Package_SO:SOIC-8-1EP_3.9x4.9mm_P1.27mm_EP2.29x3mm",
+      "mpn": "TPS54531DDAR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/tps54531.pdf",
+      "pins": {
+        "2": "LOGIC_SYS",
+        "3": "AON_BUCK_EN",
+        "4": "AON_SS",
+        "6": "AON_COMP",
+        "7": "GND",
+        "9": "GND",
+        "1": "AON_BOOT",
+        "8": "AON_SW",
+        "5": "AON_FB"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "L301",
+      "value": "4u7 / >=5 A thermal, saturation selection pending",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_SW",
+        "2": "AON_5V"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "D301",
+      "value": "CDBC540-G",
+      "footprint": "Diode_SMD:D_SMC",
+      "mpn": "CDBC540-G",
+      "datasheet": "https://www.comchiptech.com/admin/files/product/QW-BB012%20CDBC520-G~5100-G%20RevB522561.pdf",
+      "pins": {
+        "1": "AON_SW",
+        "2": "GND"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "R301",
+      "value": "665k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LOGIC_SYS",
+        "2": "AON_BUCK_EN"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "R302",
+      "value": "130k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_BUCK_EN",
+        "2": "GND"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "R303",
+      "value": "10k2 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_5V",
+        "2": "AON_FB"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "R304",
+      "value": "1k96 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_FB",
+        "2": "GND"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "R305",
+      "value": "37k4 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_COMP",
+        "2": "AON_COMP_RC"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "C301",
+      "value": "4u7 50V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LOGIC_SYS",
+        "2": "GND"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "C302",
+      "value": "4u7 50V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LOGIC_SYS",
+        "2": "GND"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "C303",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_BOOT",
+        "2": "AON_SW"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "C304",
+      "value": "10n 50V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_SS",
+        "2": "GND"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "C305",
+      "value": "2n2 50V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_COMP_RC",
+        "2": "GND"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "C306",
+      "value": "22p C0G",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_COMP",
+        "2": "GND"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "C307",
+      "value": "100u 10V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_5V",
+        "2": "GND"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "C308",
+      "value": "47u 16V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_5V",
+        "2": "GND"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "C309",
+      "value": "47u 16V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_5V",
+        "2": "GND"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "U302",
+      "value": "TLV75533PDBVR",
+      "footprint": "Package_TO_SOT_SMD:SOT-23-5",
+      "mpn": "TLV75533PDBVR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/tlv755p.pdf",
+      "pins": {
+        "1": "AON_5V",
+        "3": "AON_5V",
+        "2": "GND",
+        "5": "AON_3V3",
+        "4": null
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "C310",
+      "value": "1u 10V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_5V",
+        "2": "GND"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "C311",
+      "value": "1u 10V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "GND"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "U303",
+      "value": "SN74LVC1G00DBVR",
+      "footprint": "Package_TO_SOT_SMD:SOT-23-5",
+      "mpn": "SN74LVC1G00DBVR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/sn74lvc1g00.pdf",
+      "pins": {
+        "1": "CHG_ALLOW",
+        "2": "PACK_TEMP_OK",
+        "3": "GND",
+        "4": "CHG_CE_N",
+        "5": "AON_3V3"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "R306",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CHG_ALLOW",
+        "2": "GND"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "R307",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_TEMP_OK",
+        "2": "GND"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "R308",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CHG_REGN",
+        "2": "CHG_CE_N"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "C312",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "GND"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false
+    },
+    {
+      "ref": "#FLG425",
+      "value": "AON_5V",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_5V"
+      },
+      "sheet": "03-housekeeping",
+      "dnp": false,
+      "annotation": true
+    },
+    {
+      "ref": "U401",
+      "value": "LM5176PWPR",
+      "footprint": "",
+      "mpn": "LM5176PWPR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/lm5176.pdf",
+      "pins": {
+        "1": "MOTOR_REG_EN",
+        "2": "MR_VIN_BIAS",
+        "3": "MR_VINSNS",
+        "4": "MR_MODE",
+        "5": "GND",
+        "6": "MR_RT",
+        "7": "MR_SLOPE",
+        "8": "MR_SS",
+        "9": "MR_COMP",
+        "10": "GND",
+        "11": "MR_FB",
+        "12": "MOTOR_REG_RAW",
+        "13": "MR_ISNS_N",
+        "14": "MR_ISNS_P",
+        "15": "MR_CSG",
+        "16": "MR_CS",
+        "17": "MOTOR_REG_PG",
+        "18": "MR_SW2",
+        "19": "MR_HDRV2",
+        "20": "MR_BOOT2",
+        "21": "MR_LDRV2",
+        "22": "GND",
+        "23": "MR_VCC",
+        "24": "MOTOR_11V3",
+        "25": "MR_LDRV1",
+        "26": "MR_BOOT1",
+        "27": "MR_HDRV1",
+        "28": "MR_SW1",
+        "29": "GND"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "R401",
+      "value": "2k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "MR_VINSNS"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "R402",
+      "value": "10 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_BIAS_DIODE",
+        "2": "MR_VIN_BIAS"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "R403",
+      "value": "33k2 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_RT",
+        "2": "GND"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "R404",
+      "value": "93k1 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_MODE",
+        "2": "GND"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "R405",
+      "value": "6k04 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_COMP_RC",
+        "2": "GND"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "R406",
+      "value": "262k 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MOTOR_11V3",
+        "2": "MR_FB"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "R407",
+      "value": "20k 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_FB",
+        "2": "GND"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "R408",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "MOTOR_REG_PG"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "R409",
+      "value": "100 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_SENSE_HIGH",
+        "2": "MR_CS"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "R410",
+      "value": "100 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "GND",
+        "2": "MR_CSG"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "R411",
+      "value": "100 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MOTOR_REG_RAW",
+        "2": "MR_ISNS_P"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "R412",
+      "value": "100 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MOTOR_11V3",
+        "2": "MR_ISNS_N"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "R413",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MOTOR_REG_EN",
+        "2": "GND"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "C401",
+      "value": "100n 50V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_VIN_BIAS",
+        "2": "GND"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "C402",
+      "value": "4u7 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_VCC",
+        "2": "GND"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "C403",
+      "value": "150p C0G",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_RT",
+        "2": "GND"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "C404",
+      "value": "33n 50V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_COMP",
+        "2": "MR_COMP_RC"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "C405",
+      "value": "1n2 C0G",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_COMP",
+        "2": "GND"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "C406",
+      "value": "22n 50V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_SS",
+        "2": "GND"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "C407",
+      "value": "220p C0G",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_SLOPE",
+        "2": "GND"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "C408",
+      "value": "47p C0G",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_CS",
+        "2": "MR_CSG"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "C409",
+      "value": "330n 50V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_ISNS_P",
+        "2": "MR_ISNS_N"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "C410",
+      "value": "220n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_BOOT1",
+        "2": "MR_SW1"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "C411",
+      "value": "220n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_BOOT2",
+        "2": "MR_SW2"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "D401",
+      "value": "Schottky bootstrap / exact selection pending",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "MR_BIAS_DIODE"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "D402",
+      "value": "Schottky bootstrap / exact selection pending",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_VCC",
+        "2": "MR_BOOT1"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "D403",
+      "value": "Schottky bootstrap / exact selection pending",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_VCC",
+        "2": "MR_BOOT2"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "J401",
+      "value": "Regulator enable / independent motor-cut gate",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MOTOR_REG_EN",
+        "2": "GND",
+        "3": "MOTOR_REG_PG"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false
+    },
+    {
+      "ref": "#FLG529",
+      "value": "MR_VIN_BIAS",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_VIN_BIAS"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false,
+      "annotation": true
+    },
+    {
+      "ref": "#FLG530",
+      "value": "MOTOR_11V3",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MOTOR_11V3"
+      },
+      "sheet": "04-motor-controller",
+      "dnp": false,
+      "annotation": true
+    },
+    {
+      "ref": "Q501",
+      "value": "CSD19502Q5B",
+      "footprint": "",
+      "mpn": "CSD19502Q5B",
+      "datasheet": "https://www.ti.com/product/CSD19502Q5B",
+      "pins": {
+        "1": "MR_SW1",
+        "2": "MR_SW1",
+        "3": "MR_SW1",
+        "4": "MR_GATE_H1_0",
+        "5": "PACK_PROTECTED",
+        "6": "PACK_PROTECTED",
+        "7": "PACK_PROTECTED",
+        "8": "PACK_PROTECTED"
+      },
+      "sheet": "05-motor-bridge",
+      "dnp": false
+    },
+    {
+      "ref": "R501",
+      "value": "0 / gate resistor tuning",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_HDRV1",
+        "2": "MR_GATE_H1_0"
+      },
+      "sheet": "05-motor-bridge",
+      "dnp": false
+    },
+    {
+      "ref": "Q502",
+      "value": "CSD19502Q5B",
+      "footprint": "",
+      "mpn": "CSD19502Q5B",
+      "datasheet": "https://www.ti.com/product/CSD19502Q5B",
+      "pins": {
+        "1": "MR_SW1",
+        "2": "MR_SW1",
+        "3": "MR_SW1",
+        "4": "MR_GATE_H1_1",
+        "5": "PACK_PROTECTED",
+        "6": "PACK_PROTECTED",
+        "7": "PACK_PROTECTED",
+        "8": "PACK_PROTECTED"
+      },
+      "sheet": "05-motor-bridge",
+      "dnp": false
+    },
+    {
+      "ref": "R502",
+      "value": "0 / gate resistor tuning",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_HDRV1",
+        "2": "MR_GATE_H1_1"
+      },
+      "sheet": "05-motor-bridge",
+      "dnp": false
+    },
+    {
+      "ref": "Q503",
+      "value": "CSD19502Q5B",
+      "footprint": "",
+      "mpn": "CSD19502Q5B",
+      "datasheet": "https://www.ti.com/product/CSD19502Q5B",
+      "pins": {
+        "1": "MR_SENSE_HIGH",
+        "2": "MR_SENSE_HIGH",
+        "3": "MR_SENSE_HIGH",
+        "4": "MR_GATE_L1_0",
+        "5": "MR_SW1",
+        "6": "MR_SW1",
+        "7": "MR_SW1",
+        "8": "MR_SW1"
+      },
+      "sheet": "05-motor-bridge",
+      "dnp": false
+    },
+    {
+      "ref": "R503",
+      "value": "0 / gate resistor tuning",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_LDRV1",
+        "2": "MR_GATE_L1_0"
+      },
+      "sheet": "05-motor-bridge",
+      "dnp": false
+    },
+    {
+      "ref": "Q504",
+      "value": "CSD19502Q5B",
+      "footprint": "",
+      "mpn": "CSD19502Q5B",
+      "datasheet": "https://www.ti.com/product/CSD19502Q5B",
+      "pins": {
+        "1": "MR_SENSE_HIGH",
+        "2": "MR_SENSE_HIGH",
+        "3": "MR_SENSE_HIGH",
+        "4": "MR_GATE_L1_1",
+        "5": "MR_SW1",
+        "6": "MR_SW1",
+        "7": "MR_SW1",
+        "8": "MR_SW1"
+      },
+      "sheet": "05-motor-bridge",
+      "dnp": false
+    },
+    {
+      "ref": "R504",
+      "value": "0 / gate resistor tuning",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_LDRV1",
+        "2": "MR_GATE_L1_1"
+      },
+      "sheet": "05-motor-bridge",
+      "dnp": false
+    },
+    {
+      "ref": "Q505",
+      "value": "CSD17573Q5B",
+      "footprint": "",
+      "mpn": "CSD17573Q5B",
+      "datasheet": "https://www.ti.com/product/CSD17573Q5B",
+      "pins": {
+        "1": "MR_SW2",
+        "2": "MR_SW2",
+        "3": "MR_SW2",
+        "4": "MR_GATE_H2_0",
+        "5": "MOTOR_REG_RAW",
+        "6": "MOTOR_REG_RAW",
+        "7": "MOTOR_REG_RAW",
+        "8": "MOTOR_REG_RAW"
+      },
+      "sheet": "05-motor-bridge",
+      "dnp": false
+    },
+    {
+      "ref": "R505",
+      "value": "0 / gate resistor tuning",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_HDRV2",
+        "2": "MR_GATE_H2_0"
+      },
+      "sheet": "05-motor-bridge",
+      "dnp": false
+    },
+    {
+      "ref": "Q506",
+      "value": "CSD17573Q5B",
+      "footprint": "",
+      "mpn": "CSD17573Q5B",
+      "datasheet": "https://www.ti.com/product/CSD17573Q5B",
+      "pins": {
+        "1": "MR_SW2",
+        "2": "MR_SW2",
+        "3": "MR_SW2",
+        "4": "MR_GATE_H2_1",
+        "5": "MOTOR_REG_RAW",
+        "6": "MOTOR_REG_RAW",
+        "7": "MOTOR_REG_RAW",
+        "8": "MOTOR_REG_RAW"
+      },
+      "sheet": "05-motor-bridge",
+      "dnp": false
+    },
+    {
+      "ref": "R506",
+      "value": "0 / gate resistor tuning",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_HDRV2",
+        "2": "MR_GATE_H2_1"
+      },
+      "sheet": "05-motor-bridge",
+      "dnp": false
+    },
+    {
+      "ref": "Q507",
+      "value": "CSD17573Q5B",
+      "footprint": "",
+      "mpn": "CSD17573Q5B",
+      "datasheet": "https://www.ti.com/product/CSD17573Q5B",
+      "pins": {
+        "1": "MR_SENSE_HIGH",
+        "2": "MR_SENSE_HIGH",
+        "3": "MR_SENSE_HIGH",
+        "4": "MR_GATE_L2_0",
+        "5": "MR_SW2",
+        "6": "MR_SW2",
+        "7": "MR_SW2",
+        "8": "MR_SW2"
+      },
+      "sheet": "05-motor-bridge",
+      "dnp": false
+    },
+    {
+      "ref": "R507",
+      "value": "0 / gate resistor tuning",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_LDRV2",
+        "2": "MR_GATE_L2_0"
+      },
+      "sheet": "05-motor-bridge",
+      "dnp": false
+    },
+    {
+      "ref": "Q508",
+      "value": "CSD17573Q5B",
+      "footprint": "",
+      "mpn": "CSD17573Q5B",
+      "datasheet": "https://www.ti.com/product/CSD17573Q5B",
+      "pins": {
+        "1": "MR_SENSE_HIGH",
+        "2": "MR_SENSE_HIGH",
+        "3": "MR_SENSE_HIGH",
+        "4": "MR_GATE_L2_1",
+        "5": "MR_SW2",
+        "6": "MR_SW2",
+        "7": "MR_SW2",
+        "8": "MR_SW2"
+      },
+      "sheet": "05-motor-bridge",
+      "dnp": false
+    },
+    {
+      "ref": "R508",
+      "value": "0 / gate resistor tuning",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_LDRV2",
+        "2": "MR_GATE_L2_1"
+      },
+      "sheet": "05-motor-bridge",
+      "dnp": false
+    },
+    {
+      "ref": "L501",
+      "value": "2uH high-current; exact part from BOM review",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_SW1",
+        "2": "MR_SW2"
+      },
+      "sheet": "05-motor-bridge",
+      "dnp": false
+    },
+    {
+      "ref": "R509",
+      "value": "5m 1% / pulse and thermal rating pending",
+      "footprint": "Resistor_SMD:R_2512_6332Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_SENSE_HIGH",
+        "2": "GND"
+      },
+      "sheet": "05-motor-bridge",
+      "dnp": false
+    },
+    {
+      "ref": "R510",
+      "value": "5m 1% / pulse and thermal rating pending",
+      "footprint": "Resistor_SMD:R_2512_6332Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MR_SENSE_HIGH",
+        "2": "GND"
+      },
+      "sheet": "05-motor-bridge",
+      "dnp": false
+    },
+    {
+      "ref": "R511",
+      "value": "5m 1% / output shunt, 20 A aggregate target",
+      "footprint": "Resistor_SMD:R_2512_6332Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MOTOR_REG_RAW",
+        "2": "MOTOR_11V3"
+      },
+      "sheet": "05-motor-bridge",
+      "dnp": false
+    },
+    {
+      "ref": "R512",
+      "value": "5m 1% / output shunt, 20 A aggregate target",
+      "footprint": "Resistor_SMD:R_2512_6332Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MOTOR_REG_RAW",
+        "2": "MOTOR_11V3"
+      },
+      "sheet": "05-motor-bridge",
+      "dnp": false
+    },
+    {
+      "ref": "C501",
+      "value": "4u7 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "06-motor-capacitors",
+      "dnp": false
+    },
+    {
+      "ref": "C502",
+      "value": "4u7 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "06-motor-capacitors",
+      "dnp": false
+    },
+    {
+      "ref": "C503",
+      "value": "4u7 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "06-motor-capacitors",
+      "dnp": false
+    },
+    {
+      "ref": "C504",
+      "value": "4u7 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "06-motor-capacitors",
+      "dnp": false
+    },
+    {
+      "ref": "C505",
+      "value": "4u7 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "06-motor-capacitors",
+      "dnp": false
+    },
+    {
+      "ref": "C506",
+      "value": "4u7 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "06-motor-capacitors",
+      "dnp": false
+    },
+    {
+      "ref": "C507",
+      "value": "4u7 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "06-motor-capacitors",
+      "dnp": false
+    },
+    {
+      "ref": "C508",
+      "value": "4u7 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "06-motor-capacitors",
+      "dnp": false
+    },
+    {
+      "ref": "C509",
+      "value": "4u7 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "06-motor-capacitors",
+      "dnp": false
+    },
+    {
+      "ref": "C510",
+      "value": "4u7 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "06-motor-capacitors",
+      "dnp": false
+    },
+    {
+      "ref": "C511",
+      "value": "4u7 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "06-motor-capacitors",
+      "dnp": false
+    },
+    {
+      "ref": "C512",
+      "value": "4u7 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "06-motor-capacitors",
+      "dnp": false
+    },
+    {
+      "ref": "C513",
+      "value": "22u 25V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MOTOR_REG_RAW",
+        "2": "GND"
+      },
+      "sheet": "06-motor-capacitors",
+      "dnp": false
+    },
+    {
+      "ref": "C514",
+      "value": "22u 25V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MOTOR_REG_RAW",
+        "2": "GND"
+      },
+      "sheet": "06-motor-capacitors",
+      "dnp": false
+    },
+    {
+      "ref": "C515",
+      "value": "22u 25V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MOTOR_REG_RAW",
+        "2": "GND"
+      },
+      "sheet": "06-motor-capacitors",
+      "dnp": false
+    },
+    {
+      "ref": "C516",
+      "value": "22u 25V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MOTOR_REG_RAW",
+        "2": "GND"
+      },
+      "sheet": "06-motor-capacitors",
+      "dnp": false
+    },
+    {
+      "ref": "C517",
+      "value": "22u 25V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MOTOR_REG_RAW",
+        "2": "GND"
+      },
+      "sheet": "06-motor-capacitors",
+      "dnp": false
+    },
+    {
+      "ref": "C518",
+      "value": "22u 25V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MOTOR_REG_RAW",
+        "2": "GND"
+      },
+      "sheet": "06-motor-capacitors",
+      "dnp": false
+    },
+    {
+      "ref": "C519",
+      "value": "330u 25V polymer / exact ESR pending",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MOTOR_11V3",
+        "2": "GND"
+      },
+      "sheet": "06-motor-capacitors",
+      "dnp": false
+    },
+    {
+      "ref": "C520",
+      "value": "330u 25V polymer / exact ESR pending",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MOTOR_11V3",
+        "2": "GND"
+      },
+      "sheet": "06-motor-capacitors",
+      "dnp": false
+    },
+    {
+      "ref": "C521",
+      "value": "330u 25V polymer / exact ESR pending",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MOTOR_11V3",
+        "2": "GND"
+      },
+      "sheet": "06-motor-capacitors",
+      "dnp": false
+    },
+    {
+      "ref": "J601",
+      "value": "External input damping test point",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "06-motor-capacitors",
+      "dnp": false
+    },
+    {
+      "ref": "U701",
+      "value": "TPS552892RYQR",
+      "footprint": "",
+      "mpn": "TPS552892RYQR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/tps552892.pdf",
+      "pins": {
+        "1": "JETSON_EN",
+        "2": "GND",
+        "3": "JETSON_PG_N",
+        "4": "JETSON_CC_N",
+        "5": "GND",
+        "6": "JREG_FSW",
+        "7": "LOGIC_SYS",
+        "9": "GND",
+        "14": "JREG_FB",
+        "15": "JREG_COMP",
+        "16": null,
+        "17": "GND",
+        "21": null,
+        "8": "JREG_SW1",
+        "10": "JREG_SW2",
+        "11": "JETSON_RAW",
+        "12": "JETSON_RAW",
+        "13": "JETSON_12V",
+        "18": "JREG_VCC",
+        "19": "JREG_BOOT2",
+        "20": "JREG_BOOT1"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "L701",
+      "value": "4u7 / >=10 A saturation target",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "JREG_SW1",
+        "2": "JREG_SW2"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "R701",
+      "value": "16m5 1% 1W / current limit",
+      "footprint": "Resistor_SMD:R_2512_6332Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "JETSON_RAW",
+        "2": "JETSON_12V"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "R702",
+      "value": "100k 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "JETSON_12V",
+        "2": "JREG_FB"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "R703",
+      "value": "11k1 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "JREG_FB",
+        "2": "GND"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "R704",
+      "value": "49k9 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "JREG_FSW",
+        "2": "GND"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "R705",
+      "value": "4k87 1% / initial",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "JREG_COMP",
+        "2": "JREG_COMP_RC"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "R706",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "JETSON_EN",
+        "2": "GND"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "R707",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "JETSON_PG_N"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "R708",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "JETSON_CC_N"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "C701",
+      "value": "22u 25V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LOGIC_SYS",
+        "2": "GND"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "C702",
+      "value": "22u 25V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LOGIC_SYS",
+        "2": "GND"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "C703",
+      "value": "47u 25V X7R / verify effective capacitance",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "JETSON_RAW",
+        "2": "GND"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "C704",
+      "value": "47u 25V X7R / verify effective capacitance",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "JETSON_RAW",
+        "2": "GND"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "C705",
+      "value": "47u 25V X7R / verify effective capacitance",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "JETSON_RAW",
+        "2": "GND"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "C706",
+      "value": "47u 25V X7R / verify effective capacitance",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "JETSON_RAW",
+        "2": "GND"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "C707",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "JREG_BOOT1",
+        "2": "JREG_SW1"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "C708",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "JREG_BOOT2",
+        "2": "JREG_SW2"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "C709",
+      "value": "4u7 10V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "JREG_VCC",
+        "2": "GND"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "C710",
+      "value": "39n 50V / initial",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "JREG_COMP_RC",
+        "2": "GND"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "C711",
+      "value": "220p C0G / initial",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "JREG_COMP",
+        "2": "GND"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "C712",
+      "value": "100n 50V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LOGIC_SYS",
+        "2": "GND"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "J701",
+      "value": "Jetson carrier power / connector selection pending",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "JETSON_12V",
+        "2": "GND"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "J702",
+      "value": "Spinal-cord power sequencing",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "JETSON_EN",
+        "2": "JETSON_PG_N",
+        "3": "JETSON_CC_N",
+        "4": "GND"
+      },
+      "sheet": "07-jetson-feed",
+      "dnp": false
+    },
+    {
+      "ref": "U801",
+      "value": "LM61495RPHR",
+      "footprint": "",
+      "mpn": "LM61495RPHR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/lm61495.pdf",
+      "pins": {
+        "1": "GND",
+        "2": "PACK_PROTECTED",
+        "3": "HAND_LEFT_RBOOT",
+        "4": "HAND_LEFT_BOOT",
+        "5": "HAND_LEFT_5V7",
+        "6": "HAND_LEFT_VCC",
+        "7": "HAND_LEFT_FB",
+        "8": "GND",
+        "9": "HAND_LEFT_VCC",
+        "10": "HAND_LEFT_PG_N",
+        "11": "GND",
+        "12": "GND",
+        "13": "HAND_LEFT_ENABLE",
+        "14": "PACK_PROTECTED",
+        "15": "GND",
+        "16": "HAND_LEFT_SW"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "L801",
+      "value": "4u7 / saturation >= switch short-circuit limit",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_LEFT_SW",
+        "2": "HAND_LEFT_5V7"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "R801",
+      "value": "0 / gate slew tuning",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_LEFT_RBOOT",
+        "2": "HAND_LEFT_BOOT"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "R802",
+      "value": "100k 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_LEFT_5V7",
+        "2": "HAND_LEFT_FB"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "R803",
+      "value": "21k3 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_LEFT_FB",
+        "2": "GND"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "R804",
+      "value": "4k99 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_LEFT_5V7",
+        "2": "HAND_LEFT_FF_RC"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "R805",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_LEFT_ENABLE",
+        "2": "GND"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "R806",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "HAND_LEFT_PG_N"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "C801",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_LEFT_BOOT",
+        "2": "HAND_LEFT_SW"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "C802",
+      "value": "1u 10V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_LEFT_VCC",
+        "2": "GND"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "C803",
+      "value": "15p C0G / loop check required",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_LEFT_FF_RC",
+        "2": "HAND_LEFT_FB"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "C804",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_LEFT_5V7",
+        "2": "GND"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "C805",
+      "value": "470n 50V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "C806",
+      "value": "470n 50V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "C807",
+      "value": "10u 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "C808",
+      "value": "10u 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "C809",
+      "value": "10u 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "C810",
+      "value": "10u 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "C811",
+      "value": "47u 16V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_LEFT_5V7",
+        "2": "GND"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "C812",
+      "value": "47u 16V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_LEFT_5V7",
+        "2": "GND"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "C813",
+      "value": "47u 16V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_LEFT_5V7",
+        "2": "GND"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "C814",
+      "value": "47u 16V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_LEFT_5V7",
+        "2": "GND"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "J801",
+      "value": "Power output / branch and cable protection pending",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_LEFT_5V7",
+        "2": "GND"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "J802",
+      "value": "Hardware-gated enable and power-good",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_LEFT_ENABLE",
+        "2": "HAND_LEFT_PG_N",
+        "3": "GND"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false
+    },
+    {
+      "ref": "#FLG924",
+      "value": "HAND_LEFT_5V7",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_LEFT_5V7"
+      },
+      "sheet": "08-hand-left",
+      "dnp": false,
+      "annotation": true
+    },
+    {
+      "ref": "U901",
+      "value": "LM61495RPHR",
+      "footprint": "",
+      "mpn": "LM61495RPHR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/lm61495.pdf",
+      "pins": {
+        "1": "GND",
+        "2": "PACK_PROTECTED",
+        "3": "HAND_RIGHT_RBOOT",
+        "4": "HAND_RIGHT_BOOT",
+        "5": "HAND_RIGHT_5V7",
+        "6": "HAND_RIGHT_VCC",
+        "7": "HAND_RIGHT_FB",
+        "8": "GND",
+        "9": "HAND_RIGHT_VCC",
+        "10": "HAND_RIGHT_PG_N",
+        "11": "GND",
+        "12": "GND",
+        "13": "HAND_RIGHT_ENABLE",
+        "14": "PACK_PROTECTED",
+        "15": "GND",
+        "16": "HAND_RIGHT_SW"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "L901",
+      "value": "4u7 / saturation >= switch short-circuit limit",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_RIGHT_SW",
+        "2": "HAND_RIGHT_5V7"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "R901",
+      "value": "0 / gate slew tuning",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_RIGHT_RBOOT",
+        "2": "HAND_RIGHT_BOOT"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "R902",
+      "value": "100k 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_RIGHT_5V7",
+        "2": "HAND_RIGHT_FB"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "R903",
+      "value": "21k3 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_RIGHT_FB",
+        "2": "GND"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "R904",
+      "value": "4k99 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_RIGHT_5V7",
+        "2": "HAND_RIGHT_FF_RC"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "R905",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_RIGHT_ENABLE",
+        "2": "GND"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "R906",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "HAND_RIGHT_PG_N"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "C901",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_RIGHT_BOOT",
+        "2": "HAND_RIGHT_SW"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "C902",
+      "value": "1u 10V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_RIGHT_VCC",
+        "2": "GND"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "C903",
+      "value": "15p C0G / loop check required",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_RIGHT_FF_RC",
+        "2": "HAND_RIGHT_FB"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "C904",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_RIGHT_5V7",
+        "2": "GND"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "C905",
+      "value": "470n 50V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "C906",
+      "value": "470n 50V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "C907",
+      "value": "10u 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "C908",
+      "value": "10u 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "C909",
+      "value": "10u 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "C910",
+      "value": "10u 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "C911",
+      "value": "47u 16V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_RIGHT_5V7",
+        "2": "GND"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "C912",
+      "value": "47u 16V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_RIGHT_5V7",
+        "2": "GND"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "C913",
+      "value": "47u 16V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_RIGHT_5V7",
+        "2": "GND"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "C914",
+      "value": "47u 16V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_RIGHT_5V7",
+        "2": "GND"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "J901",
+      "value": "Power output / branch and cable protection pending",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_RIGHT_5V7",
+        "2": "GND"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "J902",
+      "value": "Hardware-gated enable and power-good",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_RIGHT_ENABLE",
+        "2": "HAND_RIGHT_PG_N",
+        "3": "GND"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false
+    },
+    {
+      "ref": "#FLG1024",
+      "value": "HAND_RIGHT_5V7",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_RIGHT_5V7"
+      },
+      "sheet": "09-hand-right",
+      "dnp": false,
+      "annotation": true
+    },
+    {
+      "ref": "U1401",
+      "value": "LM61495RPHR",
+      "footprint": "",
+      "mpn": "LM61495RPHR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/lm61495.pdf",
+      "pins": {
+        "1": "GND",
+        "2": "PACK_PROTECTED",
+        "3": "PERIPHERAL_RBOOT",
+        "4": "PERIPHERAL_BOOT",
+        "5": "PERIPHERAL_5V0",
+        "6": "PERIPHERAL_VCC",
+        "7": "PERIPHERAL_FB",
+        "8": "GND",
+        "9": "PERIPHERAL_VCC",
+        "10": "PERIPHERAL_PG_N",
+        "11": "GND",
+        "12": "GND",
+        "13": "PERIPHERAL_ENABLE",
+        "14": "PACK_PROTECTED",
+        "15": "GND",
+        "16": "PERIPHERAL_SW"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "L1401",
+      "value": "4u7 / saturation >= switch short-circuit limit",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PERIPHERAL_SW",
+        "2": "PERIPHERAL_5V0"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "R1401",
+      "value": "0 / gate slew tuning",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PERIPHERAL_RBOOT",
+        "2": "PERIPHERAL_BOOT"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "R1402",
+      "value": "100k 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PERIPHERAL_5V0",
+        "2": "PERIPHERAL_FB"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "R1403",
+      "value": "24k9 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PERIPHERAL_FB",
+        "2": "GND"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "R1404",
+      "value": "4k99 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PERIPHERAL_5V0",
+        "2": "PERIPHERAL_FF_RC"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "R1405",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PERIPHERAL_ENABLE",
+        "2": "GND"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "R1406",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "PERIPHERAL_PG_N"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "C1401",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PERIPHERAL_BOOT",
+        "2": "PERIPHERAL_SW"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "C1402",
+      "value": "1u 10V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PERIPHERAL_VCC",
+        "2": "GND"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "C1403",
+      "value": "15p C0G / loop check required",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PERIPHERAL_FF_RC",
+        "2": "PERIPHERAL_FB"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "C1404",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PERIPHERAL_5V0",
+        "2": "GND"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "C1405",
+      "value": "470n 50V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "C1406",
+      "value": "470n 50V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "C1407",
+      "value": "10u 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "C1408",
+      "value": "10u 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "C1409",
+      "value": "10u 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "C1410",
+      "value": "10u 50V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "GND"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "C1411",
+      "value": "47u 16V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PERIPHERAL_5V0",
+        "2": "GND"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "C1412",
+      "value": "47u 16V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PERIPHERAL_5V0",
+        "2": "GND"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "C1413",
+      "value": "47u 16V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PERIPHERAL_5V0",
+        "2": "GND"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "C1414",
+      "value": "47u 16V X7R",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PERIPHERAL_5V0",
+        "2": "GND"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "J1401",
+      "value": "Power output / branch and cable protection pending",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PERIPHERAL_5V0",
+        "2": "GND"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "J1402",
+      "value": "Hardware-gated enable and power-good",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PERIPHERAL_ENABLE",
+        "2": "PERIPHERAL_PG_N",
+        "3": "GND"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false
+    },
+    {
+      "ref": "#FLG1524",
+      "value": "PERIPHERAL_5V0",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PERIPHERAL_5V0"
+      },
+      "sheet": "14-hand-peripheral",
+      "dnp": false,
+      "annotation": true
+    },
+    {
+      "ref": "U1001",
+      "value": "SN74LVC74APWR",
+      "footprint": "Package_SO:TSSOP-14_4.4x5mm_P0.65mm",
+      "mpn": "SN74LVC74APWR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/sn74lvc74a.pdf",
+      "pins": {
+        "1": "MOTOR_CLEAR_N",
+        "2": "AON_3V3",
+        "3": "MOTOR_ARM",
+        "4": "AON_3V3",
+        "5": "MOTOR_ARMED",
+        "6": null,
+        "7": "GND",
+        "8": null,
+        "9": null,
+        "10": "AON_3V3",
+        "11": "GND",
+        "12": "GND",
+        "13": "GND",
+        "14": "AON_3V3"
+      },
+      "sheet": "10-motor-cut",
+      "dnp": false
+    },
+    {
+      "ref": "U1002",
+      "value": "SN74LVC08APWR",
+      "footprint": "Package_SO:TSSOP-14_4.4x5mm_P0.65mm",
+      "mpn": "SN74LVC08APWR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/sn74lvc08a.pdf",
+      "pins": {
+        "1": "MOTOR_ARMED",
+        "2": "MOTOR_REG_REQUEST",
+        "3": "MOTOR_REG_EN",
+        "4": "MOTOR_ARMED",
+        "5": "HAND_LEFT_REQUEST",
+        "6": "HAND_LEFT_ENABLE",
+        "9": "MOTOR_ARMED",
+        "10": "HAND_RIGHT_REQUEST",
+        "8": "HAND_RIGHT_ENABLE",
+        "12": "MOTOR_ARMED",
+        "13": "LEG_REQUEST",
+        "11": "LEG_SWITCH_ENABLE",
+        "7": "GND",
+        "14": "AON_3V3"
+      },
+      "sheet": "10-motor-cut",
+      "dnp": false
+    },
+    {
+      "ref": "U1003",
+      "value": "TLV803EA30DBZR / verify orderability",
+      "footprint": "Package_TO_SOT_SMD:SOT-23",
+      "mpn": "TLV803EA30DBZR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/tlv803e.pdf",
+      "pins": {
+        "1": "GND",
+        "2": "MOTOR_CLEAR_N",
+        "3": "AON_3V3"
+      },
+      "sheet": "10-motor-cut",
+      "dnp": false
+    },
+    {
+      "ref": "R1001",
+      "value": "3k3 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "CUT_LOOP_FEED"
+      },
+      "sheet": "10-motor-cut",
+      "dnp": false
+    },
+    {
+      "ref": "R1002",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MOTOR_CLEAR_N",
+        "2": "GND"
+      },
+      "sheet": "10-motor-cut",
+      "dnp": false
+    },
+    {
+      "ref": "R1003",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MOTOR_ARM",
+        "2": "GND"
+      },
+      "sheet": "10-motor-cut",
+      "dnp": false
+    },
+    {
+      "ref": "R1004",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MOTOR_REG_REQUEST",
+        "2": "GND"
+      },
+      "sheet": "10-motor-cut",
+      "dnp": false
+    },
+    {
+      "ref": "R1005",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_LEFT_REQUEST",
+        "2": "GND"
+      },
+      "sheet": "10-motor-cut",
+      "dnp": false
+    },
+    {
+      "ref": "R1006",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "HAND_RIGHT_REQUEST",
+        "2": "GND"
+      },
+      "sheet": "10-motor-cut",
+      "dnp": false
+    },
+    {
+      "ref": "R1007",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LEG_REQUEST",
+        "2": "GND"
+      },
+      "sheet": "10-motor-cut",
+      "dnp": false
+    },
+    {
+      "ref": "C1001",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "GND"
+      },
+      "sheet": "10-motor-cut",
+      "dnp": false
+    },
+    {
+      "ref": "C1002",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "GND"
+      },
+      "sheet": "10-motor-cut",
+      "dnp": false
+    },
+    {
+      "ref": "C1003",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "GND"
+      },
+      "sheet": "10-motor-cut",
+      "dnp": false
+    },
+    {
+      "ref": "J1001",
+      "value": "Normally-closed cut loop / opens to clear",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "CUT_LOOP_FEED",
+        "2": "MOTOR_CLEAR_N"
+      },
+      "sheet": "10-motor-cut",
+      "dnp": false
+    },
+    {
+      "ref": "J1002",
+      "value": "Spinal-cord arm and rail requests",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "GND",
+        "2": "MOTOR_ARM",
+        "3": "MOTOR_REG_REQUEST",
+        "4": "HAND_LEFT_REQUEST",
+        "5": "HAND_RIGHT_REQUEST",
+        "6": "LEG_REQUEST",
+        "7": "MOTOR_ARMED",
+        "8": "UPPER_REQUEST",
+        "9": "MOTOR_CLEAR_N",
+        "10": "JETSON_EN",
+        "11": "PERIPHERAL_ENABLE",
+        "12": "PACK_ALERT_N"
+      },
+      "sheet": "10-motor-cut",
+      "dnp": false
+    },
+    {
+      "ref": "U1101",
+      "value": "INA228AIDGSR",
+      "footprint": "Package_SO:MSOP-10_3x3mm_P0.5mm",
+      "mpn": "INA228AIDGSR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/ina228.pdf",
+      "pins": {
+        "1": "GND",
+        "2": "GND",
+        "3": "PACK_ALERT_N",
+        "4": "HOST_SDA",
+        "5": "HOST_SCL",
+        "6": "AON_3V3",
+        "7": "GND",
+        "8": "PACK_FROM_BMS",
+        "9": "PACK_SENSE_N",
+        "10": "PACK_SENSE_P"
+      },
+      "sheet": "11-pack-meter",
+      "dnp": false
+    },
+    {
+      "ref": "R1101",
+      "value": "1m 0.5% / >=4 W target, exact part pending",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_FROM_BMS",
+        "2": "PACK_PROTECTED"
+      },
+      "sheet": "11-pack-meter",
+      "dnp": false
+    },
+    {
+      "ref": "R1102",
+      "value": "10 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_FROM_BMS",
+        "2": "PACK_SENSE_P"
+      },
+      "sheet": "11-pack-meter",
+      "dnp": false
+    },
+    {
+      "ref": "R1103",
+      "value": "10 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_PROTECTED",
+        "2": "PACK_SENSE_N"
+      },
+      "sheet": "11-pack-meter",
+      "dnp": false
+    },
+    {
+      "ref": "R1104",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "PACK_ALERT_N"
+      },
+      "sheet": "11-pack-meter",
+      "dnp": false
+    },
+    {
+      "ref": "C1101",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_SENSE_P",
+        "2": "PACK_SENSE_N"
+      },
+      "sheet": "11-pack-meter",
+      "dnp": false
+    },
+    {
+      "ref": "C1102",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "GND"
+      },
+      "sheet": "11-pack-meter",
+      "dnp": false
+    },
+    {
+      "ref": "J1101",
+      "value": "Controller metering interrupt",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "PACK_ALERT_N",
+        "2": "GND"
+      },
+      "sheet": "11-pack-meter",
+      "dnp": false
+    },
+    {
+      "ref": "U1201",
+      "value": "TLV1704PWR",
+      "footprint": "Package_SO:TSSOP-14_4.4x5mm_P0.65mm",
+      "mpn": "TLV1704PWR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/tlv1704.pdf",
+      "pins": {
+        "4": "TEMP_HOT_REF",
+        "5": "NTC_SEG1",
+        "6": "NTC_SEG1",
+        "7": "TEMP_COLD_REF",
+        "8": "TEMP_HOT_REF",
+        "9": "NTC_SEG2",
+        "10": "NTC_SEG2",
+        "11": "TEMP_COLD_REF",
+        "1": "PACK_TEMP_OK",
+        "2": "PACK_TEMP_OK",
+        "3": "AON_3V3",
+        "12": "GND",
+        "13": "PACK_TEMP_OK",
+        "14": "PACK_TEMP_OK"
+      },
+      "sheet": "12-pack-temperature",
+      "dnp": false
+    },
+    {
+      "ref": "U1202",
+      "value": "TLV1704PWR",
+      "footprint": "Package_SO:TSSOP-14_4.4x5mm_P0.65mm",
+      "mpn": "TLV1704PWR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/tlv1704.pdf",
+      "pins": {
+        "4": "TEMP_HOT_REF",
+        "5": "NTC_SEG3",
+        "6": "NTC_SEG3",
+        "7": "TEMP_COLD_REF",
+        "8": "AON_3V3",
+        "9": "GND",
+        "10": "AON_3V3",
+        "11": "GND",
+        "1": "PACK_TEMP_OK",
+        "2": "PACK_TEMP_OK",
+        "3": "AON_3V3",
+        "12": "GND",
+        "13": null,
+        "14": null
+      },
+      "sheet": "12-pack-temperature",
+      "dnp": false
+    },
+    {
+      "ref": "R1201",
+      "value": "19k1 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "TEMP_HOT_REF"
+      },
+      "sheet": "12-pack-temperature",
+      "dnp": false
+    },
+    {
+      "ref": "R1202",
+      "value": "10k 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "TEMP_HOT_REF",
+        "2": "GND"
+      },
+      "sheet": "12-pack-temperature",
+      "dnp": false
+    },
+    {
+      "ref": "R1203",
+      "value": "10k 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "TEMP_COLD_REF"
+      },
+      "sheet": "12-pack-temperature",
+      "dnp": false
+    },
+    {
+      "ref": "R1204",
+      "value": "26k1 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "TEMP_COLD_REF",
+        "2": "GND"
+      },
+      "sheet": "12-pack-temperature",
+      "dnp": false
+    },
+    {
+      "ref": "R1205",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "PACK_TEMP_OK"
+      },
+      "sheet": "12-pack-temperature",
+      "dnp": false
+    },
+    {
+      "ref": "R1206",
+      "value": "10k 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "NTC_SEG1"
+      },
+      "sheet": "12-pack-temperature",
+      "dnp": false
+    },
+    {
+      "ref": "C1201",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "NTC_SEG1",
+        "2": "GND"
+      },
+      "sheet": "12-pack-temperature",
+      "dnp": false
+    },
+    {
+      "ref": "J1201",
+      "value": "103AT-2 segment 1",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "NTC_SEG1",
+        "2": "GND"
+      },
+      "sheet": "12-pack-temperature",
+      "dnp": false
+    },
+    {
+      "ref": "R1207",
+      "value": "10k 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "NTC_SEG2"
+      },
+      "sheet": "12-pack-temperature",
+      "dnp": false
+    },
+    {
+      "ref": "C1202",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "NTC_SEG2",
+        "2": "GND"
+      },
+      "sheet": "12-pack-temperature",
+      "dnp": false
+    },
+    {
+      "ref": "J1202",
+      "value": "103AT-2 segment 2",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "NTC_SEG2",
+        "2": "GND"
+      },
+      "sheet": "12-pack-temperature",
+      "dnp": false
+    },
+    {
+      "ref": "R1208",
+      "value": "10k 0.1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "NTC_SEG3"
+      },
+      "sheet": "12-pack-temperature",
+      "dnp": false
+    },
+    {
+      "ref": "C1203",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "NTC_SEG3",
+        "2": "GND"
+      },
+      "sheet": "12-pack-temperature",
+      "dnp": false
+    },
+    {
+      "ref": "J1203",
+      "value": "103AT-2 segment 3",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "NTC_SEG3",
+        "2": "GND"
+      },
+      "sheet": "12-pack-temperature",
+      "dnp": false
+    },
+    {
+      "ref": "C1204",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "GND"
+      },
+      "sheet": "12-pack-temperature",
+      "dnp": false
+    },
+    {
+      "ref": "C1205",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "GND"
+      },
+      "sheet": "12-pack-temperature",
+      "dnp": false
+    },
+    {
+      "ref": "Q1301",
+      "value": "Si7149DP-T1-GE3",
+      "footprint": "",
+      "mpn": "SI7149DP-T1-GE3",
+      "datasheet": "https://www.vishay.com/docs/68934/si7149dp.pdf",
+      "pins": {
+        "1": "MOTOR_11V3",
+        "2": "MOTOR_11V3",
+        "3": "MOTOR_11V3",
+        "4": "LEG_GATE",
+        "5": "LEG_PRE_FUSE",
+        "6": "LEG_PRE_FUSE",
+        "7": "LEG_PRE_FUSE",
+        "8": "LEG_PRE_FUSE"
+      },
+      "sheet": "13-motor-branches",
+      "dnp": false
+    },
+    {
+      "ref": "Q1302",
+      "value": "Si7149DP-T1-GE3",
+      "footprint": "",
+      "mpn": "SI7149DP-T1-GE3",
+      "datasheet": "https://www.vishay.com/docs/68934/si7149dp.pdf",
+      "pins": {
+        "1": "MOTOR_11V3",
+        "2": "MOTOR_11V3",
+        "3": "MOTOR_11V3",
+        "4": "LEG_GATE",
+        "5": "LEG_PRE_FUSE",
+        "6": "LEG_PRE_FUSE",
+        "7": "LEG_PRE_FUSE",
+        "8": "LEG_PRE_FUSE"
+      },
+      "sheet": "13-motor-branches",
+      "dnp": false
+    },
+    {
+      "ref": "Q1303",
+      "value": "MMBT3904-7-F",
+      "footprint": "Package_TO_SOT_SMD:SOT-23",
+      "mpn": "MMBT3904-7-F",
+      "datasheet": "https://www.diodes.com/assets/Datasheets/MMBT3904.pdf",
+      "pins": {
+        "1": "LEG_DRIVE_B",
+        "2": "GND",
+        "3": "LEG_DRIVE_C"
+      },
+      "sheet": "13-motor-branches",
+      "dnp": false
+    },
+    {
+      "ref": "R1301",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LEG_SWITCH_ENABLE",
+        "2": "LEG_DRIVE_B"
+      },
+      "sheet": "13-motor-branches",
+      "dnp": false
+    },
+    {
+      "ref": "R1302",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LEG_DRIVE_B",
+        "2": "GND"
+      },
+      "sheet": "13-motor-branches",
+      "dnp": false
+    },
+    {
+      "ref": "R1303",
+      "value": "4k7 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LEG_GATE",
+        "2": "LEG_DRIVE_C"
+      },
+      "sheet": "13-motor-branches",
+      "dnp": false
+    },
+    {
+      "ref": "R1304",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MOTOR_11V3",
+        "2": "LEG_GATE"
+      },
+      "sheet": "13-motor-branches",
+      "dnp": false
+    },
+    {
+      "ref": "C1301",
+      "value": "220n 50V / inrush tuning",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LEG_GATE",
+        "2": "LEG_PRE_FUSE"
+      },
+      "sheet": "13-motor-branches",
+      "dnp": false
+    },
+    {
+      "ref": "F1301",
+      "value": "Branch fuse / rating and holder pending",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LEG_PRE_FUSE",
+        "2": "LEG_11V3"
+      },
+      "sheet": "13-motor-branches",
+      "dnp": false
+    },
+    {
+      "ref": "J1301",
+      "value": "LEG power to protected harness",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "LEG_11V3",
+        "2": "GND"
+      },
+      "sheet": "13-motor-branches",
+      "dnp": false
+    },
+    {
+      "ref": "Q1351",
+      "value": "Si7149DP-T1-GE3",
+      "footprint": "",
+      "mpn": "SI7149DP-T1-GE3",
+      "datasheet": "https://www.vishay.com/docs/68934/si7149dp.pdf",
+      "pins": {
+        "1": "MOTOR_11V3",
+        "2": "MOTOR_11V3",
+        "3": "MOTOR_11V3",
+        "4": "UPPER_GATE",
+        "5": "UPPER_PRE_FUSE",
+        "6": "UPPER_PRE_FUSE",
+        "7": "UPPER_PRE_FUSE",
+        "8": "UPPER_PRE_FUSE"
+      },
+      "sheet": "13-motor-branches",
+      "dnp": false
+    },
+    {
+      "ref": "Q1352",
+      "value": "Si7149DP-T1-GE3",
+      "footprint": "",
+      "mpn": "SI7149DP-T1-GE3",
+      "datasheet": "https://www.vishay.com/docs/68934/si7149dp.pdf",
+      "pins": {
+        "1": "MOTOR_11V3",
+        "2": "MOTOR_11V3",
+        "3": "MOTOR_11V3",
+        "4": "UPPER_GATE",
+        "5": "UPPER_PRE_FUSE",
+        "6": "UPPER_PRE_FUSE",
+        "7": "UPPER_PRE_FUSE",
+        "8": "UPPER_PRE_FUSE"
+      },
+      "sheet": "13-motor-branches",
+      "dnp": false
+    },
+    {
+      "ref": "Q1353",
+      "value": "MMBT3904-7-F",
+      "footprint": "Package_TO_SOT_SMD:SOT-23",
+      "mpn": "MMBT3904-7-F",
+      "datasheet": "https://www.diodes.com/assets/Datasheets/MMBT3904.pdf",
+      "pins": {
+        "1": "UPPER_DRIVE_B",
+        "2": "GND",
+        "3": "UPPER_DRIVE_C"
+      },
+      "sheet": "13-motor-branches",
+      "dnp": false
+    },
+    {
+      "ref": "R1351",
+      "value": "10k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "UPPER_SWITCH_ENABLE",
+        "2": "UPPER_DRIVE_B"
+      },
+      "sheet": "13-motor-branches",
+      "dnp": false
+    },
+    {
+      "ref": "R1352",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "UPPER_DRIVE_B",
+        "2": "GND"
+      },
+      "sheet": "13-motor-branches",
+      "dnp": false
+    },
+    {
+      "ref": "R1353",
+      "value": "4k7 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "UPPER_GATE",
+        "2": "UPPER_DRIVE_C"
+      },
+      "sheet": "13-motor-branches",
+      "dnp": false
+    },
+    {
+      "ref": "R1354",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "MOTOR_11V3",
+        "2": "UPPER_GATE"
+      },
+      "sheet": "13-motor-branches",
+      "dnp": false
+    },
+    {
+      "ref": "C1351",
+      "value": "220n 50V / inrush tuning",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "UPPER_GATE",
+        "2": "UPPER_PRE_FUSE"
+      },
+      "sheet": "13-motor-branches",
+      "dnp": false
+    },
+    {
+      "ref": "F1351",
+      "value": "Branch fuse / rating and holder pending",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "UPPER_PRE_FUSE",
+        "2": "UPPER_11V3"
+      },
+      "sheet": "13-motor-branches",
+      "dnp": false
+    },
+    {
+      "ref": "J1351",
+      "value": "UPPER power to protected harness",
+      "footprint": "",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "UPPER_11V3",
+        "2": "GND"
+      },
+      "sheet": "13-motor-branches",
+      "dnp": false
+    },
+    {
+      "ref": "U1301",
+      "value": "SN74LVC1G08DBVR",
+      "footprint": "Package_TO_SOT_SMD:SOT-23-5",
+      "mpn": "SN74LVC1G08DBVR",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/sn74lvc1g08.pdf",
+      "pins": {
+        "1": "MOTOR_ARMED",
+        "2": "UPPER_REQUEST",
+        "3": "GND",
+        "4": "UPPER_SWITCH_ENABLE",
+        "5": "AON_3V3"
+      },
+      "sheet": "13-motor-branches",
+      "dnp": false
+    },
+    {
+      "ref": "R1391",
+      "value": "100k 1%",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "UPPER_REQUEST",
+        "2": "GND"
+      },
+      "sheet": "13-motor-branches",
+      "dnp": false
+    },
+    {
+      "ref": "C1391",
+      "value": "100n 16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "mpn": "",
+      "datasheet": "",
+      "pins": {
+        "1": "AON_3V3",
+        "2": "GND"
+      },
+      "sheet": "13-motor-branches",
+      "dnp": false
+    }
+  ]
+}
