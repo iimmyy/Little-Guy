@@ -159,9 +159,23 @@ in [the power-board first pass](pcb/power/README.md).
 |---|---|---|
 | Screen EDO E555HBM2 5.55" AMOLED + HDMI board | decided | C$87.68 combo (AliExpress, 2026-10-25); 26 g panel |
 | DisplayPort to HDMI (carrier has DP) | open | |
-| Ear speakers, 2 x 40 mm full-range | decided (size) | driver not picked; Immy browses AliExpress, I check size/depth/specs |
-| Woofer, 2" long-throw, sealed chamber, lower back | decided (size) | driver not picked |
-| Amplifier | candidate | TI TAS5805M (2 x 23 W, I2S, built-in EQ); a 2.1 system needs a third channel: open |
+| Ear speakers, 2 x 40 mm full-range | decided (2026-10-25) | Dayton Audio CE40-4: 40 mm round, 23 mm deep, 4 ohm, 10 W RMS (20 W max), 150 Hz-20 kHz, 80 dB, ~45 g; US$5.98 each at Parts Express, 483 in stock (checked 2026-10-25). Ear cup depth budget is 22 mm: 1 mm deeper cup in CAD. AliExpress 40 mm drivers checked and rejected: AIYIMA 1.5" 10 W is 31 mm deep with a 40 mm SQUARE frame (57 mm across the corners, Fs 180 Hz); SOTAMIA lists no size |
+| Woofer, 2" long-throw, lower back, with 2 passive radiators | decided (Immy, 2026-10-25: Flip-style, "the flip sounded pretty damn good to me"; 3" mini-sub tested and does not fit) | Tang Band W2-2355S (Immy found it): 56.9 mm across, 27.9 mm deep, 0.2 lb listed (~91 g, may include packing), 4 ohm, 10 W RMS, Fs 80 Hz, Qts 0.56, Vas 0.113 L, Xmax 5 mm, 72 dB; US$39.40 at Parts Express, in stock (checked 2026-10-25; CAD with shipping not checked). Chamber printed to the shell's shape behind and beside the battery (~0.42 L, woofer-pr-fit-1025); two thin 2" passive radiators (<= 15 mm deep, together >= 13 cm3 of air, about 2x the woofer's 6.6) facing out his left and right sides, opposed so their shaking cancels (IMU) |
+| Amplifier | decided (Immy, 2026-10-25: "i want real bass if imma do it imma do it right") | two TI TAS5805M chips on our own board, not bought modules: one in stereo for the two ears, one bridged (PBTL, both halves into one speaker) for the woofer; I2S from the Jetson, I2C for setup and the built-in EQ, powered straight off the 3S battery (chip takes 4.5-26.4 V). Rejected: 3 x MAX98357A (3.2 W each at 5 V, too weak for bass). Board space: the amp's kept spot, low front behind the door |
+
+### Sound order list (2026-10-25)
+
+| Part | Qty | Where | Price | Status |
+|---|---|---|---|---|
+| Tang Band W2-2355S 2" woofer (Parts Express 264-819) | 1 | lower back | US$39.40 | to order |
+| Dayton Audio CE40-4 40 mm full-range (Parts Express 285-155) | 2 | ears | US$5.98 each | to order |
+| 57 mm passive radiator pair, rubber membrane with counterweight (AliExpress 1005008187381769, max 1 per shopper) | 1 pair | left and right sides | C$1.71 | to order |
+| TI TAS5805M amp chips | 2 | our own board (Astra) | US$2.63 each at DigiKey (snippet, recheck) | on the PCB, not bought separately |
+
+Parts Express prices are in USD; the CAD total with shipping and duty shows at checkout. Passive radiators per the
+listing's drawing: 57.5 mm across, 47.5 mm surround, 35.5 mm centre, about 5-7 mm thin; travel not listed, so the
+pair may move a bit less air than the 13 cm3 target and the amp's limiter caps the loudest bass. Backup woofer if
+needed: SOTAMIA 4580 racetrack 20 W (JBL Flip 6 replacement size).
 
 ## 6. Talking to the world
 
@@ -231,10 +245,10 @@ house (JLCPCB/PCBWay class); prices checked live when ordering.
 
 | Board | Status | Where | Job | First size estimate |
 |---|---|---|---|---|
-| Power board | [ours: A0.2 schematic draft](pcb/power/README.md); layout/test pending | chest, lying flat on top of the battery stack, under the Jetson (fit 2026-10-25; gap or spacer so it doesn't warm the cells) | battery in; separately switched leg and upper buses (11.28 V nominal draft to leave margin below STS3250 12 V max); hand supplies (5.695 V nominal draft); clean Jetson feed; 5 V peripherals; hardware cut; USB-C PD + 3S charger; wireless input reserved; current/energy meter and three-segment temperature interlock. BMS, wireless receiver and transient protection remain open | ~60 x 80 mm, ~40 g; unverified |
-| Spinal-cord board | [ours: A0.2 schematic draft](pcb/spinal/README.md); layout/test pending | chest, middle height, standing up in front of the Jetson (fit 2026-10-25) | socketed Teensy 4.1 selected for capture; four half-duplex TTL interfaces; LSM6DSOX; four MPR121s; sensor mux and foot/room/edge branches; independent watchdog; USB to Jetson. Firmware, socket/header part selection and physical fit remain open | ~50 x 70 mm, ~30 g; unverified |
-| Head board | [ours: A0.2 schematic draft](pcb/head/README.md); layout/test pending | the diamond on top of the head | XVF3800 + four IM69D130 PDM mics, QSPI flash, sequenced supplies and USB. Head-A acoustic targets and channel order captured; board perimeter/mounting, package review, firmware and acoustic tuning remain open; GNSS antenna absent from this draft | fits the diamond, ~10 g; unverified |
-| Foot boards | [ours: A0.2 schematic draft](pcb/foot/README.md); layout/test pending | one in each foot; identical PCB twice | two ADS122C04 ADCs multiplex four full bridges; separate toe VL53L4CD supply; six-conductor cable. Exact cells, conversion performance and sole mechanics remain open | ~25 x 40 mm, ~5 g each; unverified |
+| Power board | [ours: A0.3 schematic draft](pcb/power/README.md); layout/test pending | chest, lying flat on top of the battery stack, under the Jetson (fit 2026-10-25; gap or spacer so it doesn't warm the cells) | battery in; separately switched leg and upper buses (11.28 V nominal draft to leave margin below STS3250 12 V max); hand supplies (5.695 V nominal draft); clean Jetson feed; 5 V peripherals; hardware cut; USB-C PD + 3S charger; wireless input reserved; current/energy meter and three-segment temperature interlock. BMS, wireless receiver and transient protection remain open | ~60 x 80 mm, ~40 g; unverified |
+| Spinal-cord board | [ours: A0.3 schematic draft](pcb/spinal/README.md); layout/test pending | chest, middle height, standing up in front of the Jetson (fit 2026-10-25) | socketed Teensy 4.1 selected for capture; four half-duplex TTL interfaces; LSM6DSOX; four MPR121s; sensor mux and foot/room/edge branches; independent watchdog; USB to Jetson. Firmware, socket/header part selection and physical fit remain open | ~50 x 70 mm, ~30 g; unverified |
+| Head board | [ours: A0.3 schematic draft](pcb/head/README.md); layout/test pending | the diamond on top of the head | XVF3800 + four IM69D130 PDM mics, QSPI flash, sequenced supplies and USB. Head-A acoustic targets and channel order captured; board perimeter/mounting, package review, firmware and acoustic tuning remain open; GNSS antenna absent from this draft | fits the diamond, ~10 g; unverified |
+| Foot boards | [ours: A0.3 schematic draft](pcb/foot/README.md); layout/test pending | one in each foot; identical PCB twice | two ADS122C04 ADCs multiplex four full bridges; separate toe VL53L4CD supply; six-conductor cable. Exact cells, conversion performance and sole mechanics remain open | ~25 x 40 mm, ~5 g each; unverified |
 | BMS (cell protection) | buy if one fits the spine, else ours | on the battery spine | over/under-voltage, over-current, cell balance, temperature cut | off-the-shelf 3S boards ~50 x 20 mm |
 | Jetson carrier | buy | chest | Forecr DSBOARD-ORNXS (section 3) | 61 x 91 mm, 43 g |
 | Screen driver, amp, LTE modem, cameras, depth camera | buy | head / chest | modules on the list above | per part |

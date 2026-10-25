@@ -69,7 +69,8 @@ def score(want, c):
             "front_high": -x * 2 - z,
             "middle": abs(z - 0.07) + abs(x - T.CX),
             "front": -x * 2 + z * 0.5,
-            "high": -z}[want]
+            "high": -z,
+            "low_back": x * 3 + z}[want]
 
 
 def search(parts, step=0.0025):
@@ -79,7 +80,8 @@ def search(parts, step=0.0025):
     for name in order:
         kind, size, g, src, want = parts[name]
         best = None
-        for perm in set(itertools.permutations(size)):
+        perms = [size] if kind == "woofer" else set(itertools.permutations(size))   # woofer: its face points back
+        for perm in perms:
             h = np.array(perm) / 2000
             for x in np.arange(-0.10, 0.045, step):      # back wall to front wall, chest +2 cm
                 for z in np.arange(0.0, 0.15, step):

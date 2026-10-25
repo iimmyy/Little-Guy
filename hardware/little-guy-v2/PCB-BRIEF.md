@@ -107,6 +107,16 @@ insulating spacer between board and pack. The pelvis has no free room (waist and
   Board perimeter, port offsets, gaskets and mounts remain engineering work.
 - The GNSS antenna for the LTE module's GPS can ride on this board (high, under plastic).
 
+### 5. Audio amp (owner decision 2026-10-25: "i want real bass ... do it right")
+
+- Two TI TAS5805M: chip 1 stereo (left ear, right ear: 40 mm full-range, 4 ohm candidate Dayton CE40-4), chip 2
+  bridged mono (PBTL) for the 2" long-throw woofer in the lower back (driver still being picked).
+- I2S audio from the Jetson; I2C for setup and EQ; supply straight from the 3S pack (9.0-12.6 V; chip PVDD
+  4.5-26.4 V). The same played signal must reach the head mic board as the echo reference.
+- Placement: the chest fit search keeps a 45 x 35 x 12 mm, ~15 g space low at the front, behind the door. It can be
+  its own small board there or part of another board; the designer decides.
+- Bought modules were rejected: no TAS5805M breakout was found, and 3 x MAX98357A (3.2 W at 5 V) is too weak for bass.
+
 ## Keep-outs that touch the boards
 
 - No copper (touch pads, ground pours) over the seat charging coil, over the screen, or near the LTE / GNSS / Wi-Fi
