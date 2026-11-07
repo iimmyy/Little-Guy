@@ -2,13 +2,13 @@
 <export version="E">
   <design>
     <source>little-guy-spinal.kicad_sch</source>
-    <date>2026-10-25T14:32:24</date>
+    <date>2026-10-25T14:49:30</date>
     <tool>Eeschema 10.0.6</tool>
     <sheet number="1" name="/" tstamps="/">
       <title_block>
         <title>Little Guy V2 - spinal-cord board</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>little-guy-spinal.kicad_sch</source>
         <comment number="1" value="INCOMPLETE - NOT FOR FABRICATION" />
@@ -26,7 +26,7 @@
       <title_block>
         <title>Teensy 4.1 / power-board controls</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>01-controller.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -44,7 +44,7 @@
       <title_block>
         <title>Half-duplex TTL buses 1</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>02-servo-buses-1.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -62,7 +62,7 @@
       <title_block>
         <title>Half-duplex TTL buses 2</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>03-servo-buses-2.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -80,7 +80,7 @@
       <title_block>
         <title>Sensor mux / IMU / foot cabling</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>04-sensor-buses.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -98,7 +98,7 @@
       <title_block>
         <title>Sensor branch pull-ups / fitting options</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>10-sensor-pullups.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -116,7 +116,7 @@
       <title_block>
         <title>SPI IMU / independent watchdog</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>05-imu-watchdog.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -134,7 +134,7 @@
       <title_block>
         <title>Touch electrodes 1-12</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>06-touch-1.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -152,7 +152,7 @@
       <title_block>
         <title>Touch electrodes 13-24</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>07-touch-2.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -170,7 +170,7 @@
       <title_block>
         <title>Touch electrodes 25-36</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>08-touch-3.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -188,7 +188,7 @@
       <title_block>
         <title>Touch electrodes 37-48</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>09-touch-4.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -206,7 +206,7 @@
       <title_block>
         <title>Hardware-gated servo transmit enables</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>11-transmit-cut.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />

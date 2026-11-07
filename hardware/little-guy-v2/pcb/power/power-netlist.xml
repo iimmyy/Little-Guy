@@ -2,13 +2,13 @@
 <export version="E">
   <design>
     <source>little-guy-power.kicad_sch</source>
-    <date>2026-10-25T14:32:24</date>
+    <date>2026-10-25T14:49:30</date>
     <tool>Eeschema 10.0.6</tool>
     <sheet number="1" name="/" tstamps="/">
       <title_block>
         <title>Little Guy V2 - power board</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>little-guy-power.kicad_sch</source>
         <comment number="1" value="INCOMPLETE - NOT FOR FABRICATION" />
@@ -26,7 +26,7 @@
       <title_block>
         <title>USB-C PD / configuration</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>01-usb-pd.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -44,7 +44,7 @@
       <title_block>
         <title>3S charger / dual input</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>02-charger.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -62,7 +62,7 @@
       <title_block>
         <title>Always-on 5 V / charge permission</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>03-housekeeping.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -80,7 +80,7 @@
       <title_block>
         <title>Motor buck-boost control</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>04-motor-controller.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -98,7 +98,7 @@
       <title_block>
         <title>Motor buck-boost bridge</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>05-motor-bridge.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -116,7 +116,7 @@
       <title_block>
         <title>Motor reservoir / damping</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>06-motor-capacitors.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -134,7 +134,7 @@
       <title_block>
         <title>Regulated Jetson supply</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>07-jetson-feed.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -152,7 +152,7 @@
       <title_block>
         <title>Left hand supply</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>08-hand-left.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -170,7 +170,7 @@
       <title_block>
         <title>Right hand supply</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>09-hand-right.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -188,7 +188,7 @@
       <title_block>
         <title>Peripheral 5 V supply</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>14-hand-peripheral.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -206,7 +206,7 @@
       <title_block>
         <title>Motor-cut latch / control</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>10-motor-cut.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -224,7 +224,7 @@
       <title_block>
         <title>Pack current / energy meter</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>11-pack-meter.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -242,7 +242,7 @@
       <title_block>
         <title>Three-segment charge temperature interlock</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>12-pack-temperature.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -260,7 +260,7 @@
       <title_block>
         <title>Leg and upper-body switching</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>13-motor-branches.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />

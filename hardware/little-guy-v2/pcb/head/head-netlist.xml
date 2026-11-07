@@ -2,13 +2,13 @@
 <export version="E">
   <design>
     <source>little-guy-head.kicad_sch</source>
-    <date>2026-10-25T14:32:24</date>
+    <date>2026-10-25T14:49:29</date>
     <tool>Eeschema 10.0.6</tool>
     <sheet number="1" name="/" tstamps="/">
       <title_block>
         <title>Little Guy V2 - head microphone board</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>little-guy-head.kicad_sch</source>
         <comment number="1" value="INCOMPLETE - NOT FOR FABRICATION" />
@@ -26,7 +26,7 @@
       <title_block>
         <title>XVF3800 / QSPI / USB / clock</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>01-voice-processor.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -44,7 +44,7 @@
       <title_block>
         <title>Audio supplies / core buck / PLL filtering</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>02-supplies.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -62,7 +62,7 @@
       <title_block>
         <title>Three-rail supervision / reset logic</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>03-power-supervision.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -80,7 +80,7 @@
       <title_block>
         <title>Processor local decoupling / PLL filter</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>04-decoupling.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -98,7 +98,7 @@
       <title_block>
         <title>Four PDM microphones / head-A geometry targets</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>05-microphones.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />

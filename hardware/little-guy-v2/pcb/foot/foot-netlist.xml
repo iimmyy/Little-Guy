@@ -2,13 +2,13 @@
 <export version="E">
   <design>
     <source>little-guy-foot.kicad_sch</source>
-    <date>2026-10-25T14:32:24</date>
+    <date>2026-10-25T14:49:29</date>
     <tool>Eeschema 10.0.6</tool>
     <sheet number="1" name="/" tstamps="/">
       <title_block>
         <title>Little Guy V2 - foot board</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>little-guy-foot.kicad_sch</source>
         <comment number="1" value="INCOMPLETE - NOT FOR FABRICATION" />
@@ -26,7 +26,7 @@
       <title_block>
         <title>Foot power / single cable / toe ranging</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>01-foot-interface.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -44,7 +44,7 @@
       <title_block>
         <title>Bridge pair 1 / ratiometric ADC</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>02-bridges-1.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />
@@ -62,7 +62,7 @@
       <title_block>
         <title>Bridge pair 2 / ratiometric ADC</title>
         <company />
-        <rev>A0.2-WIP</rev>
+        <rev>A0.3-WIP</rev>
         <date>2026-10-25</date>
         <source>03-bridges-2.kicad_sch</source>
         <comment number="1" value="DESIGN IN PROGRESS - NOT FOR FABRICATION" />

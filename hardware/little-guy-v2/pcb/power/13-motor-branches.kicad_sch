@@ -7,7 +7,7 @@
   (title_block
     (title "Leg and upper-body switching")
     (date "2026-10-25")
-    (rev "A0.2-WIP")
+    (rev "A0.3-WIP")
     (comment 1 "DESIGN IN PROGRESS - NOT FOR FABRICATION")
   )
   (lib_symbols

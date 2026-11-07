@@ -1,9 +1,12 @@
 """Check head-plane targets, firmware units and physical-to-logical microphone order."""
 from pathlib import Path
-import json,math,re,xml.etree.ElementTree as ET
+import argparse,hashlib,json,math,re,xml.etree.ElementTree as ET
 from schematic import REVISION
 
 ROOT=Path(__file__).resolve().parents[1]
+parser=argparse.ArgumentParser()
+parser.add_argument('--verify-sources',action='store_true',help='Also require the live repo scene, brief, generator and fit study hashes to match the capture')
+args=parser.parse_args()
 head=ROOT/'head'
 g=json.loads((head/'microphone-geometry.json').read_text())
 spec=json.loads((head/'microphone-targets.json').read_text())
@@ -24,6 +27,8 @@ require('Tilt and plane error agree with supplied approximate dimensions',
 require('Acoustic target snapshot records owner-frozen points',spec.get('owner_frozen') is True)
 require('Front/back along the tilted plane preserves the 3D baseline',
         abs(g['front_back_board_plane_mm']-math.dist(spec['mic_order'][0]['target_head_mm'],spec['mic_order'][1]['target_head_mm']))<.001)
+require('Projected front/back span agrees with the rounded frozen-brief value',
+        abs(g['front_back_board_plane_mm']-spec['owner_dimensions']['front_back_plane_approx_mm'])<=.050001)
 for m in g['microphones']:
     r=m['reference'];source=m['target_head_mm'];projected=m['projected_head_mm'];error=m['signed_normal_residual_mm']
     require(r+' projection and residual reconstruct the CAD target',
@@ -43,8 +48,14 @@ pn={(n.get('ref'),n.get('pin')):net.get('name') for net in tree.findall('./nets/
 for m in g['microphones']:
     require(m['reference']+' physical data net matches declared logical mic and XMOS pin',
             pn.get((m['reference'],'1'))==pn.get(('U101',str(m['xvf3800_pin'])))==m['pdm_net']==f"PDM_DATA{m['logical_index']}")
+if args.verify_sources:
+    repo=ROOT.parents[2]
+    for key in ['scene','generator','brief','fit_check_script','fit_report']:
+        path=repo/spec['source'][key]
+        require(key+' live source hash matches the recaptured frozen snapshot',
+                path.is_file() and hashlib.sha256(path.read_bytes()).hexdigest()==spec['source'][key+'_sha256'])
 report={'revision':REVISION,'geometry_id':g['geometry_id'],'hardware_validated':False,'firmware_built':False,
-        'fabrication_released':False,'checks':checks,'maximum_normal_residual_mm':g['maximum_normal_residual_mm'],
+        'fabrication_released':False,'live_source_hashes_verified':args.verify_sources,'checks':checks,'maximum_normal_residual_mm':g['maximum_normal_residual_mm'],
         'tilt_front_up_deg':g['tilt_front_up_deg'],'front_back_board_plane_mm':g['front_back_board_plane_mm'],
         'limits':'Checks target math, units and captured nets; does not validate acoustic performance, package origins, enclosure fit, mounts or firmware channel mapping on hardware.'}
 (head/'geometry-audit.json').write_text(json.dumps(report,indent=2)+'\n')

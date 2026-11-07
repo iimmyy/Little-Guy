@@ -1,9 +1,10 @@
 {
-  "revision": "A0.2-WIP",
-  "geometry_id": "head-A-diamond-2026-10-25",
+  "revision": "A0.3-WIP",
+  "geometry_id": "head-A-diamond-frozen-2026-10-25-v1",
   "hardware_validated": false,
   "firmware_built": false,
   "fabrication_released": false,
+  "live_source_hashes_verified": true,
   "checks": [
     {
       "requirement": "Array axes are orthonormal",
@@ -22,7 +23,15 @@
       "passed": true
     },
     {
+      "requirement": "Acoustic target snapshot records owner-frozen points",
+      "passed": true
+    },
+    {
       "requirement": "Front/back along the tilted plane preserves the 3D baseline",
+      "passed": true
+    },
+    {
+      "requirement": "Projected front/back span agrees with the rounded frozen-brief value",
       "passed": true
     },
     {
@@ -34,11 +43,19 @@
       "passed": true
     },
     {
+      "requirement": "MK501 captured CAD point agrees with the frozen brief rounding",
+      "passed": true
+    },
+    {
       "requirement": "MK502 projection and residual reconstruct the CAD target",
       "passed": true
     },
     {
       "requirement": "MK502 acoustic target lies on the common plane and uses KiCad Y flip",
+      "passed": true
+    },
+    {
+      "requirement": "MK502 captured CAD point agrees with the frozen brief rounding",
       "passed": true
     },
     {
@@ -50,11 +67,19 @@
       "passed": true
     },
     {
+      "requirement": "MK503 captured CAD point agrees with the frozen brief rounding",
+      "passed": true
+    },
+    {
       "requirement": "MK504 projection and residual reconstruct the CAD target",
       "passed": true
     },
     {
       "requirement": "MK504 acoustic target lies on the common plane and uses KiCad Y flip",
+      "passed": true
+    },
+    {
+      "requirement": "MK504 captured CAD point agrees with the frozen brief rounding",
       "passed": true
     },
     {
@@ -80,10 +105,30 @@
     {
       "requirement": "MK504 physical data net matches declared logical mic and XMOS pin",
       "passed": true
+    },
+    {
+      "requirement": "scene live source hash matches the recaptured frozen snapshot",
+      "passed": true
+    },
+    {
+      "requirement": "generator live source hash matches the recaptured frozen snapshot",
+      "passed": true
+    },
+    {
+      "requirement": "brief live source hash matches the recaptured frozen snapshot",
+      "passed": true
+    },
+    {
+      "requirement": "fit_check_script live source hash matches the recaptured frozen snapshot",
+      "passed": true
+    },
+    {
+      "requirement": "fit_report live source hash matches the recaptured frozen snapshot",
+      "passed": true
     }
   ],
-  "maximum_normal_residual_mm": 0.23312773346827775,
-  "tilt_front_up_deg": 11.015563126432495,
-  "front_back_board_plane_mm": 63.163513055520674,
+  "maximum_normal_residual_mm": 0.3356874064754658,
+  "tilt_front_up_deg": 11.361875931633605,
+  "front_back_board_plane_mm": 59.15876751042187,
   "limits": "Checks target math, units and captured nets; does not validate acoustic performance, package origins, enclosure fit, mounts or firmware channel mapping on hardware."
 }

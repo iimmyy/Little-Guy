@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.kicad.org/erc.v1.json",
   "coordinate_units": "mm",
-  "date": "2026-10-25T14:32:25",
+  "date": "2026-10-25T14:49:31",
   "ignored_checks": [
     {
       "description": "Global label only appears once in the schematic",
@@ -44,7 +44,7 @@
                 "x": 1.651,
                 "y": 0.9906
               },
-              "uuid": "1541ba80-6977-4020-a3c2-1dd50295107f"
+              "uuid": "5846cab2-debf-441b-84dc-36cd7b47d9b6"
             },
             {
               "description": "Symbol #FLG223 Pin 1 [SOURCE, Power output, Line]",
@@ -52,7 +52,7 @@
                 "x": 0.3175,
                 "y": 0.3937
               },
-              "uuid": "daf67bd2-e084-4e78-b776-923020340666"
+              "uuid": "188d44eb-d8e5-47b5-805d-b96d2f8eaed1"
             }
           ],
           "severity": "warning",
@@ -67,7 +67,7 @@
                 "x": 1.651,
                 "y": 1.016
               },
-              "uuid": "7bb7ec20-c957-4207-96ee-7b352caf9575"
+              "uuid": "a084f731-4ceb-4feb-9d47-e75859086f7e"
             },
             {
               "description": "Symbol #FLG223 Pin 1 [SOURCE, Power output, Line]",
@@ -75,7 +75,7 @@
                 "x": 0.3175,
                 "y": 0.3937
               },
-              "uuid": "daf67bd2-e084-4e78-b776-923020340666"
+              "uuid": "188d44eb-d8e5-47b5-805d-b96d2f8eaed1"
             }
           ],
           "severity": "warning",
@@ -90,7 +90,7 @@
                 "x": 1.651,
                 "y": 1.0414
               },
-              "uuid": "42f24247-187c-47ce-b942-8d12c56edfcf"
+              "uuid": "7534ac70-93e5-4784-a7f8-9d4e8680c2e9"
             },
             {
               "description": "Symbol #FLG223 Pin 1 [SOURCE, Power output, Line]",
@@ -98,7 +98,7 @@
                 "x": 0.3175,
                 "y": 0.3937
               },
-              "uuid": "daf67bd2-e084-4e78-b776-923020340666"
+              "uuid": "188d44eb-d8e5-47b5-805d-b96d2f8eaed1"
             }
           ],
           "severity": "warning",
@@ -113,7 +113,7 @@
                 "x": 1.651,
                 "y": 1.0668
               },
-              "uuid": "50692ee3-2078-4168-8c8e-1fcf19c50a5c"
+              "uuid": "d550231d-66a3-430a-80b3-2949a241c43b"
             },
             {
               "description": "Symbol #FLG223 Pin 1 [SOURCE, Power output, Line]",
@@ -121,7 +121,7 @@
                 "x": 0.3175,
                 "y": 0.3937
               },
-              "uuid": "daf67bd2-e084-4e78-b776-923020340666"
+              "uuid": "188d44eb-d8e5-47b5-805d-b96d2f8eaed1"
             }
           ],
           "severity": "warning",
@@ -136,7 +136,7 @@
                 "x": 1.651,
                 "y": 1.0922
               },
-              "uuid": "f81e5840-0a5e-494b-8f7b-668bdd402581"
+              "uuid": "87abd8ef-b4ce-40cc-a4b5-d8a0e5ea2d6e"
             },
             {
               "description": "Symbol #FLG223 Pin 1 [SOURCE, Power output, Line]",
@@ -144,7 +144,7 @@
                 "x": 0.3175,
                 "y": 0.3937
               },
-              "uuid": "daf67bd2-e084-4e78-b776-923020340666"
+              "uuid": "188d44eb-d8e5-47b5-805d-b96d2f8eaed1"
             }
           ],
           "severity": "warning",
@@ -159,7 +159,7 @@
                 "x": 1.651,
                 "y": 1.1176
               },
-              "uuid": "93ce38cf-a31f-4780-908b-367e3c763c1d"
+              "uuid": "0604b763-193d-4885-9a57-bdb3d5e42e9b"
             },
             {
               "description": "Symbol #FLG223 Pin 1 [SOURCE, Power output, Line]",
@@ -167,7 +167,7 @@
                 "x": 0.3175,
                 "y": 0.3937
               },
-              "uuid": "daf67bd2-e084-4e78-b776-923020340666"
+              "uuid": "188d44eb-d8e5-47b5-805d-b96d2f8eaed1"
             }
           ],
           "severity": "warning",
@@ -182,7 +182,7 @@
                 "x": 1.651,
                 "y": 1.143
               },
-              "uuid": "afa695e2-c327-4e27-a336-03d6e360f001"
+              "uuid": "45ad0e5b-c7cf-407c-899d-9987d760a11c"
             },
             {
               "description": "Symbol #FLG223 Pin 1 [SOURCE, Power output, Line]",
@@ -190,7 +190,7 @@
                 "x": 0.3175,
                 "y": 0.3937
               },
-              "uuid": "daf67bd2-e084-4e78-b776-923020340666"
+              "uuid": "188d44eb-d8e5-47b5-805d-b96d2f8eaed1"
             }
           ],
           "severity": "warning",
@@ -205,7 +205,7 @@
                 "x": 1.651,
                 "y": 1.1684
               },
-              "uuid": "8d10c231-a6a9-4d49-935e-b0e092753630"
+              "uuid": "d4dbd680-b373-448c-8a55-d21f00b3541f"
             },
             {
               "description": "Symbol #FLG223 Pin 1 [SOURCE, Power output, Line]",
@@ -213,7 +213,7 @@
                 "x": 0.3175,
                 "y": 0.3937
               },
-              "uuid": "daf67bd2-e084-4e78-b776-923020340666"
+              "uuid": "188d44eb-d8e5-47b5-805d-b96d2f8eaed1"
             }
           ],
           "severity": "warning",
@@ -228,7 +228,7 @@
                 "x": 1.651,
                 "y": 1.1938
               },
-              "uuid": "753ccb1a-b101-4e46-bcc7-02ba162d8b3e"
+              "uuid": "963e5fa6-04b9-4f26-b9c7-e154a3131741"
             },
             {
               "description": "Symbol #FLG223 Pin 1 [SOURCE, Power output, Line]",
@@ -236,7 +236,7 @@
                 "x": 0.3175,
                 "y": 0.3937
               },
-              "uuid": "daf67bd2-e084-4e78-b776-923020340666"
+              "uuid": "188d44eb-d8e5-47b5-805d-b96d2f8eaed1"
             }
           ],
           "severity": "warning",
@@ -257,7 +257,7 @@
                 "x": 1.2446,
                 "y": 1.0033
               },
-              "uuid": "581594fc-fc54-4dd8-bcb2-b3c33a2147e6"
+              "uuid": "931e2688-e141-4bab-8d59-f5300c04cb18"
             },
             {
               "description": "Symbol #FLG223 Pin 1 [SOURCE, Power output, Line]",
@@ -265,7 +265,7 @@
                 "x": 0.3175,
                 "y": 0.3937
               },
-              "uuid": "daf67bd2-e084-4e78-b776-923020340666"
+              "uuid": "188d44eb-d8e5-47b5-805d-b96d2f8eaed1"
             }
           ],
           "severity": "warning",
@@ -280,7 +280,7 @@
                 "x": 1.2446,
                 "y": 1.0287
               },
-              "uuid": "1fabf1b2-946e-4963-9796-61973622280f"
+              "uuid": "b0027b8a-066a-4306-9af9-77e9bc419bf3"
             },
             {
               "description": "Symbol #FLG223 Pin 1 [SOURCE, Power output, Line]",
@@ -288,7 +288,7 @@
                 "x": 0.3175,
                 "y": 0.3937
               },
-              "uuid": "daf67bd2-e084-4e78-b776-923020340666"
+              "uuid": "188d44eb-d8e5-47b5-805d-b96d2f8eaed1"
             }
           ],
           "severity": "warning",

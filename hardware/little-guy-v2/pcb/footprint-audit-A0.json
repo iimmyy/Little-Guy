@@ -1,5 +1,5 @@
 {
-  "revision": "A0.2-WIP",
+  "revision": "A0.3-WIP",
   "hardware_validated": false,
   "fabrication_released": false,
   "scope": "Pad identifiers, one diode polarity anchor, Teensy nominal 2D geometry and XMOS paddle geometry/orientation. Other package dimensions, ratings, assembly, stencil and physical fit remain open.",

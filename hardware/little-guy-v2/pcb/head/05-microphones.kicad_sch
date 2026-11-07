@@ -7,7 +7,7 @@
   (title_block
     (title "Four PDM microphones / head-A geometry targets")
     (date "2026-10-25")
-    (rev "A0.2-WIP")
+    (rev "A0.3-WIP")
     (comment 1 "DESIGN IN PROGRESS - NOT FOR FABRICATION")
   )
   (lib_symbols
@@ -369,7 +369,7 @@
     )
     (uuid "a35914e9-e6c7-5e92-83d7-7450bf897201")
   )
-  (text "Shared 3.072 MHz clock; all SELECT pins grounded. Custom firmware must use the channel order below.\nHead-A CAD targets: 100.000 mm left/right, 63.164 mm front/back along an 11.016 deg tilted plane.\nSee microphone-geometry.json and mic_geometries.fragment.yaml. Outline, package offsets and gaskets remain open."
+  (text "Shared 3.072 MHz clock; all SELECT pins grounded. Custom firmware must use the channel order below.\nFrozen head-A targets: 100.000 mm left/right, 59.159 mm front/back on an 11.362 deg plane.\nSee microphone-geometry.json and mic_geometries.fragment.yaml. Outline, package offsets and gaskets remain open."
     (at 15 24 0)
     (effects
       (font
@@ -377,7 +377,7 @@
       )
       (justify left)
     )
-    (uuid "536aa761-e155-558e-9a9a-5b1a145c17ef")
+    (uuid "4e16dd90-569a-551e-aa87-26bb525c0f4c")
   )
   (symbol
     (lib_id "LGV2:R")
@@ -492,7 +492,7 @@
     )
     (uuid "5d81d3de-28b1-57ba-aa8d-5ce010089e6c")
   )
-  (text "MIC0: FRONT / array X=0.000, Y=31.627 mm; Z=0"
+  (text "MIC0: FRONT / array X=0.000, Y=29.647 mm; Z=0"
     (at 35 95 0)
     (effects
       (font
@@ -500,7 +500,7 @@
       )
       (justify left)
     )
-    (uuid "10253851-415a-527a-b23e-d84293454baa")
+    (uuid "bb482d1a-3deb-5198-81ae-9964943d70f0")
   )
   (symbol
     (lib_id "LGV2:IM69D130")
@@ -794,7 +794,7 @@
     )
     (uuid "204f7233-6a4a-59e5-b385-b6a88bb47ff6")
   )
-  (text "MIC1: BACK / array X=0.000, Y=-31.537 mm; Z=0"
+  (text "MIC1: BACK / array X=0.000, Y=-29.512 mm; Z=0"
     (at 225 95 0)
     (effects
       (font
@@ -802,7 +802,7 @@
       )
       (justify left)
     )
-    (uuid "4dd599ce-40ab-5533-b0de-79f2355119fb")
+    (uuid "970008c5-dd59-59e6-8a19-24001bb1c418")
   )
   (symbol
     (lib_id "LGV2:IM69D130")
@@ -1096,7 +1096,7 @@
     )
     (uuid "f5611505-5617-5212-946c-cb66132f8e6e")
   )
-  (text "MIC2: LEFT / array X=-50.000, Y=-0.045 mm; Z=0"
+  (text "MIC2: LEFT / array X=-50.000, Y=-0.067 mm; Z=0"
     (at 35 190 0)
     (effects
       (font
@@ -1104,7 +1104,7 @@
       )
       (justify left)
     )
-    (uuid "2e112263-ace0-55c9-b3ef-f6c8f1b35c28")
+    (uuid "d29ced42-aa23-5080-b928-2bc863742c07")
   )
   (symbol
     (lib_id "LGV2:IM69D130")
@@ -1398,7 +1398,7 @@
     )
     (uuid "380ac554-e741-5562-bc45-3703356468b9")
   )
-  (text "MIC3: RIGHT / array X=50.000, Y=-0.045 mm; Z=0"
+  (text "MIC3: RIGHT / array X=50.000, Y=-0.067 mm; Z=0"
     (at 225 190 0)
     (effects
       (font
@@ -1406,7 +1406,7 @@
       )
       (justify left)
     )
-    (uuid "85df72c5-7dd8-59ee-913c-9b1e1b910bb9")
+    (uuid "6a1453df-450c-554e-b6ca-6d81c798095a")
   )
   (symbol
     (lib_id "LGV2:IM69D130")
