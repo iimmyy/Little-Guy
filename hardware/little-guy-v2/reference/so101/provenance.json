@@ -1,0 +1,53 @@
+{
+  "retrieved": "2026-10-21",
+  "repository": "https://github.com/TheRobotStudio/SO-ARM100",
+  "commit": "a758567c3978dfeefe282ede0500085a48fe8f78",
+  "license": "Apache-2.0; full LICENSE retained",
+  "notice_paths": [],
+  "purpose": "Inspect original two-sided STS3215 joint geometry for possible adaptation; no Little Guy fit claimed",
+  "assembly_guide": "https://huggingface.co/docs/lerobot/main/en/assemble_so101",
+  "files": [
+    {
+      "path": "LICENSE",
+      "url": "https://raw.githubusercontent.com/TheRobotStudio/SO-ARM100/a758567c3978dfeefe282ede0500085a48fe8f78/LICENSE",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "bytes": 11357,
+      "modified": false
+    },
+    {
+      "path": "README.md",
+      "url": "https://raw.githubusercontent.com/TheRobotStudio/SO-ARM100/a758567c3978dfeefe282ede0500085a48fe8f78/README.md",
+      "sha256": "7e9bdd089aab15532f7304e65e748707315aaee359204143e3997ecfc568d01e",
+      "bytes": 26605,
+      "modified": false
+    },
+    {
+      "path": "STEP/SO101/Rotation_Pitch_SO101.step",
+      "url": "https://raw.githubusercontent.com/TheRobotStudio/SO-ARM100/a758567c3978dfeefe282ede0500085a48fe8f78/STEP/SO101/Rotation_Pitch_SO101.step",
+      "sha256": "a392681efb05bf4009c17115a9b3e37bbee9d2fcfe25e2066b11b95aaa380915",
+      "bytes": 370844,
+      "modified": false
+    },
+    {
+      "path": "STEP/SO101/Motor_holder_SO101_Base.step",
+      "url": "https://raw.githubusercontent.com/TheRobotStudio/SO-ARM100/a758567c3978dfeefe282ede0500085a48fe8f78/STEP/SO101/Motor_holder_SO101_Base.step",
+      "sha256": "fb2ef4603324ddea53ab655f6ecd48c7f5a72dd7603e57e92c60c0a8e67a9083",
+      "bytes": 352248,
+      "modified": false
+    },
+    {
+      "path": "STEP/SO101/Upper_arm_SO101.step",
+      "url": "https://raw.githubusercontent.com/TheRobotStudio/SO-ARM100/a758567c3978dfeefe282ede0500085a48fe8f78/STEP/SO101/Upper_arm_SO101.step",
+      "sha256": "efa19a6dd2ccb459248500c76629cfa840630e7e15d9e146394d31da1525dd61",
+      "bytes": 551437,
+      "modified": false
+    },
+    {
+      "path": "STEP/SO101/SO101 Assembly.step",
+      "url": "https://raw.githubusercontent.com/TheRobotStudio/SO-ARM100/a758567c3978dfeefe282ede0500085a48fe8f78/STEP/SO101/SO101%20Assembly.step",
+      "sha256": "f754be35708382b05ce65768ae33c612f91dca11ad19d14807dc637eb944ba3d",
+      "bytes": 20496014,
+      "modified": false
+    }
+  ]
+}

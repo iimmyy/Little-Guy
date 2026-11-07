@@ -1,0 +1,148 @@
+(footprint "SGM2019_SOT23_5_Manufacturer_Recommended"
+  (version 20241229)
+  (generator "pcbnew")
+  (layer "F.Cu")
+  (descr "SGM2019 page15 SOT23-5 recommended lands. Exact donor lands unverified; courtyard project allowance.")
+  (property "Reference" "REF**"
+    (at 0 -2.4 0)
+    (layer "F.SilkS")
+    (effects
+      (font
+        (size 0.8 0.8)
+        (thickness 0.12)
+      )
+    )
+  )
+  (property "Value" "SGM2019_SOT23_5_Manufacturer_Recommended"
+    (at 0 2.4 0)
+    (layer "F.Fab")
+    (effects
+      (font
+        (size 0.8 0.8)
+        (thickness 0.12)
+      )
+    )
+    (hide yes)
+  )
+  (attr smd)
+  (fp_line
+    (start -0.8 -1.11)
+    (end -0.45 -1.46)
+    (stroke
+      (width 0.1)
+      (type solid)
+    )
+    (layer "F.Fab")
+    (uuid "009cde7a-132c-5695-94b8-babec5266cee")
+  )
+  (fp_line
+    (start -0.45 -1.46)
+    (end 0.8 -1.46)
+    (stroke
+      (width 0.1)
+      (type solid)
+    )
+    (layer "F.Fab")
+    (uuid "18db70aa-daa9-58a5-94f8-87b68182ab24")
+  )
+  (fp_line
+    (start 0.8 -1.46)
+    (end 0.8 1.46)
+    (stroke
+      (width 0.1)
+      (type solid)
+    )
+    (layer "F.Fab")
+    (uuid "cf20966d-0b0f-5cdb-9a91-3c413fab81ba")
+  )
+  (fp_line
+    (start 0.8 1.46)
+    (end -0.8 1.46)
+    (stroke
+      (width 0.1)
+      (type solid)
+    )
+    (layer "F.Fab")
+    (uuid "7dd2465d-6427-5ce4-af29-a85b226daffe")
+  )
+  (fp_line
+    (start -0.8 1.46)
+    (end -0.8 -1.11)
+    (stroke
+      (width 0.1)
+      (type solid)
+    )
+    (layer "F.Fab")
+    (uuid "f9a62e7c-ca6c-50e4-b294-29221f0215a7")
+  )
+  (fp_line
+    (start -2.05 -1.75)
+    (end 2.05 -1.75)
+    (stroke
+      (width 0.05)
+      (type solid)
+    )
+    (layer "F.CrtYd")
+    (uuid "457a12b8-7f6d-558b-bc3a-f6e78c1051e3")
+  )
+  (fp_line
+    (start 2.05 -1.75)
+    (end 2.05 1.75)
+    (stroke
+      (width 0.05)
+      (type solid)
+    )
+    (layer "F.CrtYd")
+    (uuid "a6ec90ef-f1cc-52e3-8d8b-af022d8a46b8")
+  )
+  (fp_line
+    (start 2.05 1.75)
+    (end -2.05 1.75)
+    (stroke
+      (width 0.05)
+      (type solid)
+    )
+    (layer "F.CrtYd")
+    (uuid "a2f930b7-7f55-5a3c-9a7d-6d95a293fab8")
+  )
+  (fp_line
+    (start -2.05 1.75)
+    (end -2.05 -1.75)
+    (stroke
+      (width 0.05)
+      (type solid)
+    )
+    (layer "F.CrtYd")
+    (uuid "421c9f4f-d888-524a-b3a9-52b0e840d14f")
+  )
+  (pad "1" smd rect
+    (at -1.295 -0.95)
+    (size 0.99 0.69)
+    (layers "F.Cu" "F.Paste" "F.Mask")
+    (uuid "c8f87476-c82f-5f6e-9c0e-6958ffbeac99")
+  )
+  (pad "2" smd rect
+    (at -1.295 0)
+    (size 0.99 0.69)
+    (layers "F.Cu" "F.Paste" "F.Mask")
+    (uuid "adddeb2c-5733-5093-93f9-866ded841821")
+  )
+  (pad "3" smd rect
+    (at -1.295 0.95)
+    (size 0.99 0.69)
+    (layers "F.Cu" "F.Paste" "F.Mask")
+    (uuid "4faf07c7-e252-5b3d-9ccd-053e12ed9dab")
+  )
+  (pad "4" smd rect
+    (at 1.295 0.95)
+    (size 0.99 0.69)
+    (layers "F.Cu" "F.Paste" "F.Mask")
+    (uuid "9e403bd3-8683-5425-aa1a-10a77b9fee51")
+  )
+  (pad "5" smd rect
+    (at 1.295 -0.95)
+    (size 0.99 0.69)
+    (layers "F.Cu" "F.Paste" "F.Mask")
+    (uuid "877a1aff-edcc-5930-98b0-53a427168986")
+  )
+)

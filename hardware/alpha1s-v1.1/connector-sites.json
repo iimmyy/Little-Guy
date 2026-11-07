@@ -1,0 +1,527 @@
+{
+  "status": "photo_derived_visible_housing_envelopes_only",
+  "datum": "Front view, ports at top; PCB upper-left at 0,0 mm",
+  "kicad_origin_mm": [
+    340,
+    220
+  ],
+  "source": "reference/front-scaled.png",
+  "limitations": [
+    "Housing boundaries are not solder-pad boundaries.",
+    "Housing fronts may be elevated above the PCB; parallax affects apparent position.",
+    "Clipped envelopes do not establish complete body dimensions or footprint origins.",
+    "No manufacturer, series, pin numbering, footprint or electrical connection inferred."
+  ],
+  "sites": [
+    {
+      "site_id": "J2",
+      "reference_designator": "J2",
+      "description": "BAT connector",
+      "side": "front",
+      "visible_housing_box_mm": [
+        2.18,
+        23.89,
+        7.85,
+        35.38
+      ],
+      "source_box_px": [
+        85,
+        928,
+        305,
+        1375
+      ],
+      "clipped_by_photo_border": false,
+      "contact_count": 4,
+      "pin_numbering": null,
+      "footprint_origin_mm": null
+    },
+    {
+      "site_id": "J7",
+      "reference_designator": "J7",
+      "description": "Three-contact harness connector",
+      "side": "front",
+      "visible_housing_box_mm": [
+        2.14,
+        37.92,
+        7.89,
+        48.71
+      ],
+      "source_box_px": [
+        83,
+        1473,
+        306,
+        1892
+      ],
+      "clipped_by_photo_border": false,
+      "contact_count": 3,
+      "pin_numbering": null,
+      "footprint_origin_mm": null
+    },
+    {
+      "site_id": "J8",
+      "reference_designator": "J8",
+      "description": "Three-contact harness connector",
+      "side": "front",
+      "visible_housing_box_mm": [
+        1.96,
+        49.91,
+        7.89,
+        61.81
+      ],
+      "source_box_px": [
+        76,
+        1939,
+        306,
+        2401
+      ],
+      "clipped_by_photo_border": false,
+      "contact_count": 3,
+      "pin_numbering": null,
+      "footprint_origin_mm": null
+    },
+    {
+      "site_id": "J9",
+      "reference_designator": "J9",
+      "description": "Three-contact harness connector",
+      "side": "front",
+      "visible_housing_box_mm": [
+        65.17,
+        23.62,
+        70.79,
+        32.58
+      ],
+      "source_box_px": [
+        2532,
+        917,
+        2750,
+        1265
+      ],
+      "clipped_by_photo_border": false,
+      "contact_count": 3,
+      "pin_numbering": null,
+      "footprint_origin_mm": null
+    },
+    {
+      "site_id": "J10",
+      "reference_designator": "J10",
+      "description": "Three-contact harness connector",
+      "side": "front",
+      "visible_housing_box_mm": [
+        65.08,
+        36.94,
+        70.97,
+        46.97
+      ],
+      "source_box_px": [
+        2528,
+        1435,
+        2757,
+        1825
+      ],
+      "clipped_by_photo_border": false,
+      "contact_count": 3,
+      "pin_numbering": null,
+      "footprint_origin_mm": null
+    },
+    {
+      "site_id": "SPK",
+      "reference_designator": null,
+      "description": "Connector beside SPK label",
+      "side": "front",
+      "visible_housing_box_mm": [
+        5.35,
+        60.65,
+        15.91,
+        68.45
+      ],
+      "source_box_px": [
+        208,
+        2356,
+        618,
+        2659
+      ],
+      "clipped_by_photo_border": true,
+      "contact_count": null,
+      "pin_numbering": null,
+      "footprint_origin_mm": null
+    },
+    {
+      "site_id": "LED",
+      "reference_designator": null,
+      "description": "Connector beside LED label",
+      "side": "front",
+      "visible_housing_box_mm": [
+        65.53,
+        51.16,
+        72.08,
+        60.47
+      ],
+      "source_box_px": [
+        2545,
+        1987,
+        2800,
+        2349
+      ],
+      "clipped_by_photo_border": true,
+      "contact_count": null,
+      "pin_numbering": null,
+      "footprint_origin_mm": null
+    },
+    {
+      "site_id": "J13",
+      "reference_designator": "J13",
+      "description": "Card socket",
+      "side": "front",
+      "visible_housing_box_mm": [
+        27.99,
+        55.53,
+        43.91,
+        68.45
+      ],
+      "source_box_px": [
+        1087,
+        2157,
+        1706,
+        2659
+      ],
+      "clipped_by_photo_border": true,
+      "contact_count": null,
+      "pin_numbering": null,
+      "footprint_origin_mm": null
+    },
+    {
+      "site_id": "J3",
+      "reference_designator": "J3",
+      "description": "USB socket",
+      "side": "front",
+      "visible_housing_box_mm": [
+        24.43,
+        0.0,
+        32.5,
+        8.07
+      ],
+      "source_box_px": [
+        949,
+        0,
+        1262,
+        313
+      ],
+      "clipped_by_photo_border": true,
+      "contact_count": null,
+      "pin_numbering": null,
+      "footprint_origin_mm": null
+    },
+    {
+      "site_id": "SW1",
+      "reference_designator": "SW1",
+      "description": "Slide switch",
+      "side": "front",
+      "visible_housing_box_mm": [
+        34.99,
+        0.0,
+        49.03,
+        6.19
+      ],
+      "source_box_px": [
+        1359,
+        0,
+        1905,
+        241
+      ],
+      "clipped_by_photo_border": true,
+      "contact_count": null,
+      "pin_numbering": null,
+      "footprint_origin_mm": null
+    },
+    {
+      "site_id": "SW2",
+      "reference_designator": "SW2",
+      "description": "Small switch",
+      "side": "front",
+      "visible_housing_box_mm": [
+        13.11,
+        0.0,
+        20.82,
+        5.88
+      ],
+      "source_box_px": [
+        509,
+        0,
+        809,
+        229
+      ],
+      "clipped_by_photo_border": true,
+      "contact_count": null,
+      "pin_numbering": null,
+      "footprint_origin_mm": null
+    },
+    {
+      "site_id": "DC_IN",
+      "reference_designator": null,
+      "description": "Barrel power socket",
+      "side": "front",
+      "visible_housing_box_mm": [
+        50.37,
+        0.0,
+        61.38,
+        12.39
+      ],
+      "source_box_px": [
+        1957,
+        0,
+        2384,
+        481
+      ],
+      "clipped_by_photo_border": true,
+      "contact_count": null,
+      "pin_numbering": null,
+      "footprint_origin_mm": null
+    }
+  ],
+  "native_items": [
+    {
+      "site_id": "J2",
+      "uuid": "98230647-0f18-43ab-b15c-15bcec1b5cae"
+    },
+    {
+      "site_id": "J2",
+      "uuid": "78879655-45da-4b00-b9a1-294dd3ef81b3"
+    },
+    {
+      "site_id": "J2",
+      "uuid": "9ba3e2f6-e924-401a-9898-d5e88af49018"
+    },
+    {
+      "site_id": "J2",
+      "uuid": "9a6136d1-7a67-44bd-880c-302188a56371"
+    },
+    {
+      "site_id": "J2",
+      "uuid": "fbcc6b2e-73b9-47cd-88f0-a2e72b5511b9"
+    },
+    {
+      "site_id": "J7",
+      "uuid": "b3f00420-7f10-4968-83c0-e57ad0f84bf5"
+    },
+    {
+      "site_id": "J7",
+      "uuid": "a1a55a40-d165-4aa9-89ac-b3c4f6b6ab87"
+    },
+    {
+      "site_id": "J7",
+      "uuid": "732cb53d-7411-4a7d-89d6-d28d990079f8"
+    },
+    {
+      "site_id": "J7",
+      "uuid": "49ef6f23-107f-403e-ba61-2067554dc385"
+    },
+    {
+      "site_id": "J7",
+      "uuid": "4d5a0a25-7bd4-493d-8c76-270a8a3f7972"
+    },
+    {
+      "site_id": "J8",
+      "uuid": "6404bd1a-3553-46da-b279-309fa896f89a"
+    },
+    {
+      "site_id": "J8",
+      "uuid": "118f5ec7-a955-4bdc-8f41-5b0bfeb806a6"
+    },
+    {
+      "site_id": "J8",
+      "uuid": "ff83b930-8310-467d-8105-ce9232d29ee9"
+    },
+    {
+      "site_id": "J8",
+      "uuid": "0557b75a-39c1-47f6-8b90-b5abfb232559"
+    },
+    {
+      "site_id": "J8",
+      "uuid": "d5f74164-6df3-4c9f-9337-2b71b061b966"
+    },
+    {
+      "site_id": "J9",
+      "uuid": "3254d8ee-90d2-4f16-912e-f75e8654301e"
+    },
+    {
+      "site_id": "J9",
+      "uuid": "db7cc603-e8ff-49a6-8df3-6fb9f85ea139"
+    },
+    {
+      "site_id": "J9",
+      "uuid": "5df1d850-0e84-468b-b697-bfa5fdf5ca18"
+    },
+    {
+      "site_id": "J9",
+      "uuid": "56d32161-218d-4633-ae1d-d99901a8ec09"
+    },
+    {
+      "site_id": "J9",
+      "uuid": "86103232-fecb-4791-a201-46b2e5e86982"
+    },
+    {
+      "site_id": "J10",
+      "uuid": "ba0c78ad-8cfb-4ee1-9620-5c7b34338705"
+    },
+    {
+      "site_id": "J10",
+      "uuid": "3f1f564a-9a97-45e1-86f4-2d921dcc44f7"
+    },
+    {
+      "site_id": "J10",
+      "uuid": "62dfc47d-4dc4-4b16-a1b9-f7abb2c3382f"
+    },
+    {
+      "site_id": "J10",
+      "uuid": "c45db4b7-cafe-428a-9698-637da70c19cc"
+    },
+    {
+      "site_id": "J10",
+      "uuid": "99ee321d-cf83-4a7d-a845-fe53d41d56e3"
+    },
+    {
+      "site_id": "SPK",
+      "uuid": "7d2f300d-0784-4d1d-9e55-60edef9452fa"
+    },
+    {
+      "site_id": "SPK",
+      "uuid": "fe71161a-ec9e-4364-aef5-0325f20cde3c"
+    },
+    {
+      "site_id": "SPK",
+      "uuid": "d127ff6c-8941-48ff-8f25-6e239b668e33"
+    },
+    {
+      "site_id": "SPK",
+      "uuid": "d7d36fcd-6856-4f8a-942f-a2dbeeaa83b7"
+    },
+    {
+      "site_id": "SPK",
+      "uuid": "faa1f4ca-70d5-43b5-b03a-39817d381b8d"
+    },
+    {
+      "site_id": "LED",
+      "uuid": "8fa51151-3cdd-4a00-bfe4-4c59f3909c9e"
+    },
+    {
+      "site_id": "LED",
+      "uuid": "7bba322d-55b1-4c90-a35c-db166fd2c3fa"
+    },
+    {
+      "site_id": "LED",
+      "uuid": "749b400e-cd30-433d-9db3-771ec6ca7076"
+    },
+    {
+      "site_id": "LED",
+      "uuid": "6badac4f-1d43-43c8-8d4f-73d33ff13c7c"
+    },
+    {
+      "site_id": "LED",
+      "uuid": "4ad7f8cd-cdbe-4770-af69-07d13377f30d"
+    },
+    {
+      "site_id": "J13",
+      "uuid": "9b5d5f26-32f1-4f79-9ab6-c2aae189e219"
+    },
+    {
+      "site_id": "J13",
+      "uuid": "864924a7-771e-49ba-abfd-89e007388aea"
+    },
+    {
+      "site_id": "J13",
+      "uuid": "f62ee059-8cf4-4047-bf9f-7f6cf4d5277b"
+    },
+    {
+      "site_id": "J13",
+      "uuid": "b5b04012-f60b-4132-86fc-f2112d57fb77"
+    },
+    {
+      "site_id": "J13",
+      "uuid": "1c2da401-86c7-4689-a5d0-929784f10ae5"
+    },
+    {
+      "site_id": "J3",
+      "uuid": "dbb770ea-523a-4802-a83b-686ab83bb25f"
+    },
+    {
+      "site_id": "J3",
+      "uuid": "25868bac-82be-4c19-a2aa-8b631b0ba6fa"
+    },
+    {
+      "site_id": "J3",
+      "uuid": "80ca60de-35f8-4901-94f5-f2623d1a168e"
+    },
+    {
+      "site_id": "J3",
+      "uuid": "c9dfa1f5-e2f6-4e04-9c7e-9c46636b3f07"
+    },
+    {
+      "site_id": "J3",
+      "uuid": "343b7292-1085-46e5-b4b2-cea0b817c897"
+    },
+    {
+      "site_id": "SW1",
+      "uuid": "a63e0f01-4818-4392-999c-733f7674591a"
+    },
+    {
+      "site_id": "SW1",
+      "uuid": "ef7e8081-a29d-4320-bf7e-8dd03b9c49d6"
+    },
+    {
+      "site_id": "SW1",
+      "uuid": "d952099a-a0d5-4c50-9eac-38226d584f2b"
+    },
+    {
+      "site_id": "SW1",
+      "uuid": "3a4e4c08-9fdb-4386-8d78-80f85da78021"
+    },
+    {
+      "site_id": "SW1",
+      "uuid": "ac13bed7-a3ca-4ad9-a114-4b5cbc72fac1"
+    },
+    {
+      "site_id": "SW2",
+      "uuid": "41fec484-feca-4133-953f-0e2e8fc63544"
+    },
+    {
+      "site_id": "SW2",
+      "uuid": "151c47e7-9847-4ac8-b6b0-b2836f5573b3"
+    },
+    {
+      "site_id": "SW2",
+      "uuid": "645ea5ed-d221-43bf-8027-6b77e590a144"
+    },
+    {
+      "site_id": "SW2",
+      "uuid": "73ed45f6-be37-46d7-b6d0-7b485b99ec40"
+    },
+    {
+      "site_id": "SW2",
+      "uuid": "3dc22da4-51a7-46a1-8071-108624d100ab"
+    },
+    {
+      "site_id": "DC_IN",
+      "uuid": "e3de5423-1c1d-43ad-ba95-12d59f0068c8"
+    },
+    {
+      "site_id": "DC_IN",
+      "uuid": "fa27ebcd-5531-4e73-85b8-86b5e722dc3e"
+    },
+    {
+      "site_id": "DC_IN",
+      "uuid": "8eb760c3-707b-4b16-a32c-6e56cfdff0b6"
+    },
+    {
+      "site_id": "DC_IN",
+      "uuid": "ac0ee8f1-16b3-4651-9baa-cc7b30402c36"
+    },
+    {
+      "site_id": "DC_IN",
+      "uuid": "95900982-5397-41cc-b7f1-b46303068c2a"
+    },
+    {
+      "site_id": "legend",
+      "uuid": "8a813c32-d02e-4194-974c-d273dc85166a"
+    }
+  ]
+}

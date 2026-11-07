@@ -1,0 +1,548 @@
+{
+  "date": "2026-10-18",
+  "source": "passive-observations.csv",
+  "added": [
+    {
+      "reference": "R1",
+      "value": "51k",
+      "ohms": "51000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-54s.png"
+    },
+    {
+      "reference": "R3",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "u1-area-readings-2026-10-18.json; reference/bourns-crp0603-marking.pdf p3"
+    },
+    {
+      "reference": "R4",
+      "value": "56k",
+      "ohms": "56000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "u1-area-readings-2026-10-18.json; reference/bourns-crp0603-marking.pdf p3"
+    },
+    {
+      "reference": "R5",
+      "value": "7.5k",
+      "ohms": "7500",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "u1-area-readings-2026-10-18.json; reference/bourns-crp0603-marking.pdf p3"
+    },
+    {
+      "reference": "R6",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-54s.png"
+    },
+    {
+      "reference": "R7",
+      "value": "27",
+      "ohms": "27",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-12s.png"
+    },
+    {
+      "reference": "R8",
+      "value": "2M",
+      "ohms": "2000000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-fullscan-2026-10-18.json; reference/video-4512/fullscan/frame-122.png"
+    },
+    {
+      "reference": "R9",
+      "value": "0.02",
+      "ohms": "0.02",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "reference/parts/back-power.png"
+    },
+    {
+      "reference": "R10",
+      "value": "0.02",
+      "ohms": "0.02",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "reference/parts/back-power.png"
+    },
+    {
+      "reference": "R11",
+      "value": "470k",
+      "ohms": "470000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-34s.png"
+    },
+    {
+      "reference": "R12",
+      "value": "3.9",
+      "ohms": "3.9",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "reference/parts/back-power.png"
+    },
+    {
+      "reference": "R13",
+      "value": "499k",
+      "ohms": "499000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-fullscan-2026-10-18.json; reference/video-4512/fullscan/frame-122.png"
+    },
+    {
+      "reference": "R14",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-54s.png"
+    },
+    {
+      "reference": "R15",
+      "value": "3.9",
+      "ohms": "3.9",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "reference/parts/back-power.png"
+    },
+    {
+      "reference": "R16",
+      "value": "1k",
+      "ohms": "1000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-54s.png"
+    },
+    {
+      "reference": "R17",
+      "value": "75k",
+      "ohms": "75000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-34s.png"
+    },
+    {
+      "reference": "R18",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-54s.png"
+    },
+    {
+      "reference": "R20",
+      "value": "4.02k",
+      "ohms": "4020",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-fullscan-2026-10-18.json; reference/video-4512/fullscan/frame-122.png"
+    },
+    {
+      "reference": "R21",
+      "value": "0.02",
+      "ohms": "0.02",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-54s.png"
+    },
+    {
+      "reference": "R23",
+      "value": "10",
+      "ohms": "10",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-fullscan-2026-10-18.json; reference/video-4512/fullscan/frame-122.png"
+    },
+    {
+      "reference": "R24",
+      "value": "4.99k",
+      "ohms": "4990",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-fullscan-2026-10-18.json; reference/video-4512/fullscan/frame-124.png"
+    },
+    {
+      "reference": "R26",
+      "value": "4.64k",
+      "ohms": "4640",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-fullscan-2026-10-18.json; reference/video-4512/fullscan/frame-124.png"
+    },
+    {
+      "reference": "R31",
+      "value": "100k",
+      "ohms": "100000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-42s.png"
+    },
+    {
+      "reference": "R32",
+      "value": "100k",
+      "ohms": "100000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-42s.png"
+    },
+    {
+      "reference": "R34",
+      "value": "51k",
+      "ohms": "51000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-fullscan-2026-10-18.json; reference/video-4512/fullscan/frame-124.png"
+    },
+    {
+      "reference": "R35",
+      "value": "15k",
+      "ohms": "15000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-42s.png"
+    },
+    {
+      "reference": "R40",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-06s.png"
+    },
+    {
+      "reference": "R44",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-06s.png"
+    },
+    {
+      "reference": "R47",
+      "value": "27",
+      "ohms": "27",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-fullscan-2026-10-18.json; reference/video-4512/fullscan/frame-098.png"
+    },
+    {
+      "reference": "R48",
+      "value": "27",
+      "ohms": "27",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-fullscan-2026-10-18.json; reference/video-4512/fullscan/frame-098.png"
+    },
+    {
+      "reference": "R52",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-74s.png"
+    },
+    {
+      "reference": "R54",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-74s.png"
+    },
+    {
+      "reference": "R56",
+      "value": "Unknown",
+      "ohms": "",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-16s.png"
+    },
+    {
+      "reference": "R59",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-16s.png"
+    },
+    {
+      "reference": "R60",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-16s.png"
+    },
+    {
+      "reference": "R62",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "reference/parts/back-power.png"
+    },
+    {
+      "reference": "R66",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-42s.png"
+    },
+    {
+      "reference": "R67",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-16s.png"
+    },
+    {
+      "reference": "R72",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-74s.png"
+    },
+    {
+      "reference": "R74",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-26s.png"
+    },
+    {
+      "reference": "R75",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-26s.png"
+    },
+    {
+      "reference": "R76",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-26s.png"
+    },
+    {
+      "reference": "R78",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-34s.png"
+    },
+    {
+      "reference": "R80",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-34s.png"
+    },
+    {
+      "reference": "R82",
+      "value": "27",
+      "ohms": "27",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-34s.png"
+    },
+    {
+      "reference": "R98",
+      "value": "0",
+      "ohms": "0",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-30s.png"
+    },
+    {
+      "reference": "R102",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-16s.png"
+    },
+    {
+      "reference": "R103",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-42s.png"
+    },
+    {
+      "reference": "R109",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-12s.png"
+    },
+    {
+      "reference": "R123",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-12s.png"
+    },
+    {
+      "reference": "R124",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-12s.png"
+    },
+    {
+      "reference": "R125",
+      "value": "1k",
+      "ohms": "1000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-06s.png"
+    },
+    {
+      "reference": "R126",
+      "value": "100k",
+      "ohms": "100000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-02s.png"
+    },
+    {
+      "reference": "R127",
+      "value": "100k",
+      "ohms": "100000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-06s.png"
+    },
+    {
+      "reference": "R128",
+      "value": "27",
+      "ohms": "27",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-34s.png"
+    },
+    {
+      "reference": "R129",
+      "value": "27",
+      "ohms": "27",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-34s.png"
+    },
+    {
+      "reference": "R130",
+      "value": "27",
+      "ohms": "27",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-12s.png"
+    },
+    {
+      "reference": "R135",
+      "value": "4.7k",
+      "ohms": "4700",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-06s.png"
+    },
+    {
+      "reference": "R136",
+      "value": "470k",
+      "ohms": "470000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-06s.png"
+    },
+    {
+      "reference": "R137",
+      "value": "470k",
+      "ohms": "470000",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-06s.png"
+    },
+    {
+      "reference": "R143",
+      "value": "4.7k",
+      "ohms": "4700",
+      "sheet": "recovered-resistors-back.kicad_sch",
+      "source": "video-readings-2026-10-18.json; reference/video-4512/frame-02s.png"
+    },
+    {
+      "reference": "R28",
+      "value": "4.7k",
+      "ohms": "4700",
+      "sheet": "recovered-resistors-front.kicad_sch",
+      "source": "reference/parts/front-upper-wide.png"
+    },
+    {
+      "reference": "R107",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-front.kicad_sch",
+      "source": "reference/parts/front-middle-wide.png"
+    },
+    {
+      "reference": "R110",
+      "value": "Unknown",
+      "ohms": "",
+      "sheet": "recovered-resistors-front.kicad_sch",
+      "source": "reference/parts/front-middle-wide.png"
+    },
+    {
+      "reference": "R111",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-front.kicad_sch",
+      "source": "reference/parts/front-middle-wide.png"
+    },
+    {
+      "reference": "R112",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-front.kicad_sch",
+      "source": "reference/parts/front-middle-wide.png"
+    },
+    {
+      "reference": "R115",
+      "value": "Unknown",
+      "ohms": "",
+      "sheet": "recovered-resistors-front.kicad_sch",
+      "source": "reference/parts/front-upper-wide.png"
+    },
+    {
+      "reference": "R116",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-front.kicad_sch",
+      "source": "reference/parts/front-upper-wide.png"
+    },
+    {
+      "reference": "R117",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-front.kicad_sch",
+      "source": "reference/parts/front-upper-wide.png"
+    },
+    {
+      "reference": "R134",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-front.kicad_sch",
+      "source": "reference/parts/front-middle-wide.png"
+    },
+    {
+      "reference": "R144",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-front.kicad_sch",
+      "source": "reference/parts/front-middle-wide.png"
+    },
+    {
+      "reference": "R145",
+      "value": "10k",
+      "ohms": "10000",
+      "sheet": "recovered-resistors-front.kicad_sch",
+      "source": "reference/parts/front-middle-wide.png"
+    }
+  ],
+  "excluded": [
+    {
+      "reference": "R58",
+      "reason": "Reference conflict between two photographed sites"
+    }
+  ],
+  "limits": [
+    "No newly inferred connections.",
+    "Resistor terminal numbering is provisional until physical pads are mapped.",
+    "Decoded nominal values are not measurements; tolerance, ratings and exact packages remain unresolved."
+  ],
+  "validation": {
+    "symbols_total": 101,
+    "numbered_pins_total": 385,
+    "sheets_total": 4,
+    "new_resistors": 72,
+    "new_decoded_values": 69,
+    "new_unknown_values": [
+      "R56",
+      "R110",
+      "R115"
+    ],
+    "previously_entered_resistors": [
+      "R49",
+      "R50",
+      "R61",
+      "R65"
+    ],
+    "intercomponent_nets": 8,
+    "netlist": "All new reference/value pairs match source;144 new pins remain isolated;8 original intercomponent nets unchanged;no duplicate references.",
+    "erc": {
+      "pin_not_connected": 362,
+      "pin_not_driven": 34,
+      "power_pin_not_driven": 30,
+      "other": 0
+    },
+    "visual": "Four-page PDF rendered and reviewed; root hierarchy links clear of notes; all resistor labels visible."
+  }
+}

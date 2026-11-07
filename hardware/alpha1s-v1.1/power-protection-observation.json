@@ -1,0 +1,74 @@
+{
+  "site_id": "CENTRAL_YELLOW",
+  "reference_designator": null,
+  "source": "reference/front-scaled.png",
+  "source_sha256": "0be5236cf0fcfc8fd9010b5238dff4a01dd098f07138822550bad247b1cb5d78",
+  "crop_box_px": [
+    762,
+    485,
+    1974,
+    1194
+  ],
+  "crop_rotation_degrees_ccw": 90,
+  "crop": "reference/power/central-yellow-marking.png",
+  "crop_sha256": "208215d97e18d7668637f56c046263321240eadaf7a8ba3584d564aa3993d88a",
+  "photo_observation": {
+    "upper_line": "logo-like mark followed by 16",
+    "lower_line": "GF1000-like; first character faint",
+    "construction": "Yellow coated flat two-lead through-hole component laid over front of PCB"
+  },
+  "identification": {
+    "candidate_manufacturer": "Raychem / Tyco Electronics",
+    "candidate_part": "RGEF1000",
+    "candidate_function": "Polymeric positive-temperature-coefficient resettable overcurrent protection device",
+    "status": "strong_photo_supported_candidate_not_physically_confirmed",
+    "reason": "16 and GF1000-like text, two-lead body shape and older marking specification are consistent. Photo logo is too faint for independent confirmation.",
+    "ordering_suffix": null
+  },
+  "candidate_datasheet_ratings": {
+    "maximum_voltage_V": 16,
+    "hold_current_A_at_25C": 10,
+    "trip_current_A_at_25C": 17,
+    "maximum_fault_current_A": 100,
+    "initial_resistance_ohm_at_25C": [
+      0.004,
+      0.007
+    ]
+  },
+  "sources": [
+    {
+      "file": "reference/power/rgef1000-scd25199-rev-b-2005.pdf",
+      "sha256": "b893655637d1a79f15e5982111d619351648bcc28dcaec15e041a8d91885e9fd",
+      "author": "Tyco Electronics / Raychem Circuit Protection",
+      "document": "SCD 25199 Rev B, 2005-06-29",
+      "url": "https://www.ftcelectronics.com.ua/datasheets-e4/RGEF1000K.pdf",
+      "source_role": "Manufacturer-authored specification retrieved from distributor mirror. Despite URL filename, document heading specifies RGEF1000."
+    },
+    {
+      "url": "https://www.littelfuse.com/assetdocs/littelfuse-ptc-radial-leaded-rgef-datasheet?assetguid=453af5cb-13ee-438c-afaa-f2302ee28ec8",
+      "document": "RGEF datasheet revised 2022-10-26",
+      "source_role": "Current manufacturer cross-check of ratings; later G10 marking differs from older GF1000."
+    },
+    {
+      "url": "https://www.littelfuse.com/assetdocs/ur-xgpu2-e74889?assetguid=2681724b-db11-4432-93fc-23dfda6dc4e6",
+      "source_role": "Manufacturer-hosted UL record explicitly associates GF1000 or G10 markings with RGEF1000."
+    }
+  ],
+  "nets": null,
+  "footprint": null,
+  "remaining_work": [
+    "Confirm marking and donor reference designator.",
+    "Verify exact variant and installed lead geometry.",
+    "Trace both terminals to establish protection path.",
+    "No whole-board current rating or Q6A power budget can be inferred from this component rating."
+  ],
+  "external_teardown_lead_2026_10_20": {
+    "reported_part": "JDT A16-1000",
+    "sources": [
+      "http://www.xzlrobot.com/c7127.html",
+      "https://www.icspec.com/news/1860380"
+    ],
+    "status": "reported_in_external_teardown_not_confirmed_on_donor",
+    "comparison": "Donor observed marking is 16 / GF1000-like; preserve existing RGEF1000 candidate. No electrical equivalence established."
+  }
+}

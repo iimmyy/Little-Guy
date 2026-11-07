@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "Alpha1S")(type "KiCad")(uri "${KIPRJMOD}/alpha1s.pretty")(options "")(descr "Alpha 1S recovery library; donor match requires verification"))
+)

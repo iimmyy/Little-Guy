@@ -1,0 +1,107 @@
+{
+  "date": "2026-10-20",
+  "schematic": "bluetooth-region.kicad_sch",
+  "connections": [
+    [
+      "U10.20",
+      "R101.1"
+    ],
+    [
+      "U10.21",
+      "R88.2"
+    ]
+  ],
+  "passive_terminal_convention": "Pin1 left, pin2 right with donor BM77 label upright. Applies R85/R88/R100/R101.",
+  "evidence": "Visible short copper neck from far-right upper module pad20 to R101 left terminal, and next pad21 to R88 right terminal. Checked independent front photograph and front-scaled image rotated180.",
+  "resistors": {
+    "R101": {
+      "marking": "270",
+      "schematic_value": "27"
+    },
+    "R88": {
+      "marking": "0",
+      "schematic_value": "0"
+    },
+    "R100": {
+      "marking": "270",
+      "schematic_value": "27"
+    },
+    "R85": {
+      "marking": "102",
+      "schematic_value": "1k"
+    }
+  },
+  "sources": [
+    {
+      "path": "reference/front-scaled.png",
+      "sha256": "0be5236cf0fcfc8fd9010b5238dff4a01dd098f07138822550bad247b1cb5d78"
+    },
+    {
+      "path": "reference/front.jpg",
+      "sha256": "3670095703bc54aaa1bf37994a0b735a5abb262926df433c575bff89a5992775"
+    },
+    {
+      "path": "reference/bluetooth/module-region.png",
+      "sha256": "f4c646d97da1104af7357d5d96225b82aacb491b05ef7e33415bbaff90760073"
+    },
+    {
+      "path": "reference/bluetooth/module-independent.png",
+      "sha256": "2adaddb428d4ff814f299bfd5c6d746b6e9eab8494df3160791645f5dcedc56f"
+    },
+    {
+      "path": "reference/bm77-datasheet-2015.pdf",
+      "sha256": "3cf1e7c56afc3999e800f705c02004698eb476e40d492a208c6a28efdc2efa0a"
+    }
+  ],
+  "crop_derivation": {
+    "module-region.png": "front-scaled.png rotated180, crop1150x920 at1450,1670",
+    "module-independent.png": "front.jpg crop650x500 at300,100, scaled2x"
+  },
+  "limits": [
+    "Photo-traced, not electrically measured.",
+    "Resistor values decoded from markings; package, tolerance and rating unresolved.",
+    "Opposite resistor terminals and other branches unresolved.",
+    "R100 and R85 have no recovered connections.",
+    "No direct MCU connection established."
+  ],
+  "board_net_changes": [
+    [
+      "U10",
+      "20",
+      "unconnected-(U10-RXD-Pad20)",
+      "Net-(U10-RXD)"
+    ],
+    [
+      "U10",
+      "21",
+      "unconnected-(U10-TXD-Pad21)",
+      "Net-(U10-TXD)"
+    ]
+  ],
+  "validation": {
+    "symbols": 107,
+    "numbered_pins": 397,
+    "sheets": 6,
+    "intercomponent_nets": 13,
+    "preservation": "All previous multi-terminal net memberships preserved exactly; two new pairs only.",
+    "duplicate_references": 0,
+    "erc": {
+      "pin_not_connected": 362,
+      "pin_not_driven": 31,
+      "power_pin_not_driven": 29
+    },
+    "board": {
+      "footprints": 8,
+      "pads": 144,
+      "tracks": 0,
+      "vias": 0,
+      "geometry_or_library_violations": 0,
+      "missing_footprints": 99,
+      "other_parity": 0
+    },
+    "visual": "Updated root and Bluetooth PDF pages rendered and reviewed; no overlaps.",
+    "review_pdf": "review/alpha1s-schematic-2026-10-20.pdf"
+  },
+  "module_pin_source": "Microchip BM77 Data Sheet v2.1.1, 2015-Jun16, Figure1-3/Table1-1; existing local manufacturer reference.",
+  "status": "entered_and_checked"
+}

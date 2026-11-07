@@ -1,0 +1,577 @@
+{
+  "date": "2026-10-18",
+  "source_video": {
+    "file": "reference/video-4512/IMG_4512.MOV",
+    "original_path": "IMG_4512.MOV (kept local)",
+    "sha256": "8d1fd887ebcc4eeb10ba7d3fe7231cf5b6224cee4dfe90723c431a3f2638c8ed",
+    "duration_seconds": 81.89,
+    "stored_video_dimensions": [
+      1920,
+      1080
+    ],
+    "displayed_frame_dimensions": [
+      1080,
+      1920
+    ]
+  },
+  "orientation": "Video has wide board edge at top; 180 degrees relative to back-scaled.png. User left/right descriptions use video orientation. Existing board datum unchanged.",
+  "frames": [
+    {
+      "file": "reference/video-4512/frame-02s.png",
+      "time_seconds": 2,
+      "sha256": "d84fd43f3d13472fd7c7f3e81c3fb6036bd98f00f410664aa475c7b8bdd998ab"
+    },
+    {
+      "file": "reference/video-4512/frame-06s.png",
+      "time_seconds": 6,
+      "sha256": "946b6c4fa1aa78179275db2719417a607abb9cc50b0ad3e3ac3827d59494a688"
+    },
+    {
+      "file": "reference/video-4512/frame-12s.png",
+      "time_seconds": 12,
+      "sha256": "660cbb8c33b59c7f9672f5b7ce9cb71f9da51d55d4b96e619183481214c8febf"
+    },
+    {
+      "file": "reference/video-4512/frame-16s.png",
+      "time_seconds": 16,
+      "sha256": "93d74be3a3a788d840adf4a714413506c333d6850b624417215bc30e8bc2b471"
+    },
+    {
+      "file": "reference/video-4512/frame-22s.png",
+      "time_seconds": 22,
+      "sha256": "1b0d522d98e70edc942b710250250711a41d9e24d7734f73d77843519c2914d6"
+    },
+    {
+      "file": "reference/video-4512/frame-26s.png",
+      "time_seconds": 26,
+      "sha256": "406e8b7dfc0c358fea3fe761c59d23d5c9c62334a523af74c1b8f5b6e341b23f"
+    },
+    {
+      "file": "reference/video-4512/frame-30s.png",
+      "time_seconds": 30,
+      "sha256": "2aabd7668445c85cd10969eee52cc3f56afbcaaeb6b4c1ce72daaaf20a84a382"
+    },
+    {
+      "file": "reference/video-4512/frame-34s.png",
+      "time_seconds": 34,
+      "sha256": "bd8db239d1c7607b58bb50ca59153042f98ae4d533bfb4ad62523d70aac83c2b"
+    },
+    {
+      "file": "reference/video-4512/frame-42s.png",
+      "time_seconds": 42,
+      "sha256": "da56dc619b352b2298c6758c484f5edce37a228296a54845efc0082dd3a339f3"
+    },
+    {
+      "file": "reference/video-4512/frame-54s.png",
+      "time_seconds": 54,
+      "sha256": "07d859bf8847fc4768aac749d2268d5803268dff84c1b19be8edea5997f4457f"
+    },
+    {
+      "file": "reference/video-4512/frame-66s.png",
+      "time_seconds": 66,
+      "sha256": "72adbc992dee4d047bc9a984a82965f69970e528645410c57861b8330e5cb95e"
+    },
+    {
+      "file": "reference/video-4512/frame-74s.png",
+      "time_seconds": 74,
+      "sha256": "491b91f18299eb72daf175115c02791c78e9e01029703d44de11121ed8009239"
+    }
+  ],
+  "components": [
+    {
+      "reference": "U12",
+      "observed_marking": "PAM8003 / THC51674",
+      "part": "PAM8003",
+      "frame_seconds": 2,
+      "user_reading": "PAM8-003, THC5-16-74",
+      "status": "existing_identity_confirmed_by_user_and_video"
+    },
+    {
+      "reference": "U1",
+      "observed_marking": "04=92Y",
+      "part": null,
+      "frame_seconds": 22,
+      "lead_count": 6,
+      "status": "marking_and_six_leads_visually_confirmed_identity_unresolved",
+      "note": "Literal zero retained. Video corroborates previous user reading."
+    },
+    {
+      "reference": "U9",
+      "observed_marking": "C25R",
+      "part": "SN74LVC2G125",
+      "frame_seconds": 30,
+      "lead_count": 8,
+      "manufacturer": "Texas Instruments",
+      "status": "identified_from_video_marking_and_manufacturer_table",
+      "function": "Dual non-inverting buffer with independent active-low output enables and three-state outputs",
+      "package": "DCU VSSOP-8 supported by marking and photo body size; exact procurement suffix unassigned",
+      "datasheet": "reference/sn74lvc2g125-datasheet.pdf",
+      "datasheet_pins": {
+        "1": "1OE_N",
+        "2": "1A",
+        "3": "2Y",
+        "4": "GND",
+        "5": "2A",
+        "6": "1Y",
+        "7": "2OE_N",
+        "8": "VCC"
+      },
+      "pin1_observation": "Package dot is upper-left in frame-30s; lower-right in back-scaled.png."
+    },
+    {
+      "reference": "U13",
+      "observed_marking": "YJ33",
+      "part": "SGM2019-3.3",
+      "frame_seconds": 22,
+      "lead_count": 5,
+      "manufacturer": "SG Micro",
+      "status": "identified_from_video_marking_and_manufacturer_table",
+      "function": "3.3 V low-dropout linear voltage regulator",
+      "package": "SOT-23-5 consistent with photo body size; SC70-5 shares marking, so verify physical size before assigning ordering suffix",
+      "datasheet": "reference/sgm2019-datasheet.pdf",
+      "datasheet_pins": {
+        "1": "IN",
+        "2": "GND",
+        "3": "EN",
+        "4": "BP",
+        "5": "OUT"
+      },
+      "pin1_observation": "Top-left in frame-22s; lower-right in back-scaled.png.",
+      "pin1_basis": "SGM2019 page 4 explicitly determines pin 1 from YJxx text orientation."
+    },
+    {
+      "reference": "U14",
+      "observed_marking": "YJ33",
+      "part": "SGM2019-3.3",
+      "frame_seconds": 16,
+      "lead_count": 5,
+      "manufacturer": "SG Micro",
+      "status": "identified_from_video_marking_and_manufacturer_table",
+      "function": "3.3 V low-dropout linear voltage regulator",
+      "package": "SOT-23-5 consistent with photo body size; SC70-5 shares marking, so verify physical size before assigning ordering suffix",
+      "datasheet": "reference/sgm2019-datasheet.pdf",
+      "datasheet_pins": {
+        "1": "IN",
+        "2": "GND",
+        "3": "EN",
+        "4": "BP",
+        "5": "OUT"
+      },
+      "pin1_observation": "Bottom-right in frame-16s; upper-left in back-scaled.png.",
+      "pin1_basis": "SGM2019 page 4 explicitly determines pin 1 from YJxx text orientation."
+    },
+    {
+      "reference": "Q12",
+      "observed_marking": "J3",
+      "part": null,
+      "frame_seconds": 6,
+      "lead_count": 3,
+      "status": "marking_known_identity_unresolved"
+    },
+    {
+      "reference": "Q7",
+      "observed_marking": "J3",
+      "part": null,
+      "frame_seconds": 16,
+      "lead_count": 3,
+      "status": "marking_known_identity_unresolved"
+    },
+    {
+      "reference": "Q11",
+      "observed_marking": "J3",
+      "part": null,
+      "frame_seconds": 74,
+      "lead_count": 3,
+      "status": "marking_known_identity_unresolved"
+    }
+  ],
+  "resistors": [
+    {
+      "reference": "R143",
+      "observed_marking": "472",
+      "nominal_ohms_from_marking": 4700,
+      "frame_seconds": 2,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R126",
+      "observed_marking": "104",
+      "nominal_ohms_from_marking": 100000,
+      "frame_seconds": 2,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R125",
+      "observed_marking": "102",
+      "nominal_ohms_from_marking": 1000,
+      "frame_seconds": 6,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R135",
+      "observed_marking": "472",
+      "nominal_ohms_from_marking": 4700,
+      "frame_seconds": 6,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R127",
+      "observed_marking": "104",
+      "nominal_ohms_from_marking": 100000,
+      "frame_seconds": 6,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R137",
+      "observed_marking": "474",
+      "nominal_ohms_from_marking": 470000,
+      "frame_seconds": 6,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R136",
+      "observed_marking": "474",
+      "nominal_ohms_from_marking": 470000,
+      "frame_seconds": 6,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R44",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame_seconds": 6,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R40",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame_seconds": 6,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R109",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame_seconds": 12,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R123",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame_seconds": 12,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R124",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame_seconds": 12,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R59",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame_seconds": 16,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R60",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame_seconds": 16,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R67",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame_seconds": 16,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R103",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame_seconds": 42,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R102",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame_seconds": 16,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R76",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame_seconds": 26,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R74",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame_seconds": 26,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R75",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame_seconds": 26,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R98",
+      "observed_marking": "0",
+      "nominal_ohms_from_marking": 0,
+      "frame_seconds": 30,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R7",
+      "observed_marking": "270",
+      "nominal_ohms_from_marking": 27,
+      "frame_seconds": 12,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R130",
+      "observed_marking": "270",
+      "nominal_ohms_from_marking": 27,
+      "frame_seconds": 12,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R58",
+      "observed_marking": "270",
+      "nominal_ohms_from_marking": null,
+      "frame_seconds": 34,
+      "status": "reference_conflict_value_unassigned",
+      "superseded_reference_assignment": "video-fullscan-2026-10-18.json records a reference conflict; 270 is retained only as a location-specific observation.",
+      "original_nominal_ohms_at_header_site": 27
+    },
+    {
+      "reference": "R128",
+      "observed_marking": "270",
+      "nominal_ohms_from_marking": 27,
+      "frame_seconds": 34,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R129",
+      "observed_marking": "270",
+      "nominal_ohms_from_marking": 27,
+      "frame_seconds": 34,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R80",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame_seconds": 34,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R78",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame_seconds": 34,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R82",
+      "observed_marking": "270",
+      "nominal_ohms_from_marking": 27,
+      "frame_seconds": 34,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R11",
+      "observed_marking": "474",
+      "nominal_ohms_from_marking": 470000,
+      "frame_seconds": 34,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R17",
+      "observed_marking": "85C",
+      "nominal_ohms_from_marking": 75000,
+      "frame_seconds": 34,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R66",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame_seconds": 42,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R31",
+      "observed_marking": "01D",
+      "nominal_ohms_from_marking": 100000,
+      "frame_seconds": 42,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R32",
+      "observed_marking": "01D",
+      "nominal_ohms_from_marking": 100000,
+      "frame_seconds": 42,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R35",
+      "observed_marking": "18C",
+      "nominal_ohms_from_marking": 15000,
+      "frame_seconds": 42,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R21",
+      "observed_marking": "R020",
+      "nominal_ohms_from_marking": 0.02,
+      "frame_seconds": 54,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R1",
+      "observed_marking": "513",
+      "nominal_ohms_from_marking": 51000,
+      "frame_seconds": 54,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R6",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame_seconds": 54,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R14",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame_seconds": 54,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R16",
+      "observed_marking": "102",
+      "nominal_ohms_from_marking": 1000,
+      "frame_seconds": 54,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R18",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame_seconds": 54,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R52",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame_seconds": 74,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R54",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame_seconds": 74,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R72",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame_seconds": 74,
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R56",
+      "observed_marking": "201 (user); 201 / 102 rotation ambiguity",
+      "nominal_ohms_from_marking": null,
+      "frame_seconds": 16,
+      "status": "marking_orientation_ambiguous_value_unassigned",
+      "note": "Preserve user reading 201, which would decode to 200 ohms. Rotated code 102 would decode to 1 kohm; no electrical check yet."
+    }
+  ],
+  "unmarked_components_reported": [
+    "C77",
+    "C71",
+    "C69",
+    "C72",
+    "C70",
+    "C33",
+    "C83",
+    "C81",
+    "C82",
+    "C48"
+  ],
+  "limitations": [
+    "Unmarked capacitor appearance does not establish capacitance, dielectric or voltage rating.",
+    "Short transistor code J3 does not uniquely identify manufacturer, part or pinout.",
+    "Photo-visible tracks are not yet a complete connectivity map.",
+    "No capacitor values, wiring, board layers or measured voltages inferred from typical application circuits."
+  ],
+  "unnamed_user_readings_resolved": {
+    "right_of_U12": [
+      "R125: 102",
+      "R135: 472",
+      "R127: 104"
+    ],
+    "left_of_Q7": "R60: 103"
+  },
+  "documents": [
+    {
+      "file": "reference/sgm2019-datasheet.pdf",
+      "sha256": "ad49e6737a2020d61f2f488ce4d515f3b3d7fac4193be67b333b507c6baa1a8e",
+      "official_url": "https://www.sg-micro.com/rect/assets/7da5804a-f54d-4ca1-8da5-7edb5881f7ad/SGM2019.pdf",
+      "revision": "April 2016 Rev C.1",
+      "used_pages": [
+        2,
+        4
+      ]
+    },
+    {
+      "file": "reference/sn74lvc2g125-datasheet.pdf",
+      "sha256": "15dab14095892f561bc7407dde6c7fb2fb75d92c6bdafc34e949e5dca1fed340",
+      "official_url": "https://www.ti.com/lit/ds/symlink/sn74lvc2g125.pdf",
+      "revision": "SCES204Q March 2017 plus current package addendum",
+      "used_pages": [
+        4
+      ],
+      "marking_evidence": "Package option addendum C25R for DCU options; exact reel/finish suffix not established."
+    }
+  ],
+  "native_schematic_update": {
+    "references_added": [
+      "U9",
+      "U13",
+      "U14"
+    ],
+    "symbols_total": 16,
+    "numbered_package_pins": 202,
+    "intercomponent_wires": 0,
+    "new_footprints_assigned": false,
+    "svg_export": "successful",
+    "visual_review": "Reopened native schematic; three new symbols and moved evidence note readable, no overlaps.",
+    "erc": {
+      "total": 257,
+      "pin_not_connected": 195,
+      "pin_not_driven": 32,
+      "power_pin_not_driven": 30,
+      "other_categories": 0
+    }
+  },
+  "full_duration_followup": "video-fullscan-2026-10-18.json"
+}

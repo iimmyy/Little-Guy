@@ -1,0 +1,432 @@
+{
+  "date": "2026-10-18",
+  "source": "Direct user reading of physical donor in this chat",
+  "components": [
+    {
+      "reference": "Q2",
+      "reported_part_marking": "F9310",
+      "reported_logo": "I, unusual symbol, R",
+      "reported_other_characters": [
+        "P52411Y1S1 (initial uncertain reading)",
+        "P524HY1S1 (revised reading; underscore-like mark also described)"
+      ],
+      "part": "IRF9310",
+      "manufacturer": "International Rectifier (Infineon)",
+      "function": "P-channel power MOSFET",
+      "package": "SO-8",
+      "status": "identified_from_user_reading_and_manufacturer_documentation",
+      "ordering_suffix": null,
+      "datasheet": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irf9310-datasheet-en.pdf",
+      "datasheet_pins": {
+        "1": "S",
+        "2": "S",
+        "3": "S",
+        "4": "G",
+        "5": "D",
+        "6": "D",
+        "7": "D",
+        "8": "D"
+      }
+    },
+    {
+      "reference": "Q1",
+      "reported_part_marking": "F9310",
+      "reported_logo": "I, unusual symbol, R",
+      "reported_other_characters": [
+        "P524HYS1; underscore-like mark",
+        "User explicitly says same as Q2; H clearly visible"
+      ],
+      "part": "IRF9310",
+      "manufacturer": "International Rectifier (Infineon)",
+      "function": "P-channel power MOSFET",
+      "package": "SO-8",
+      "status": "identified_from_user_reading_and_manufacturer_documentation",
+      "ordering_suffix": null,
+      "datasheet": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irf9310-datasheet-en.pdf",
+      "datasheet_pins": {
+        "1": "S",
+        "2": "S",
+        "3": "S",
+        "4": "G",
+        "5": "D",
+        "6": "D",
+        "7": "D",
+        "8": "D"
+      }
+    },
+    {
+      "reference": "U4",
+      "reported_part_marking": "MS6324G",
+      "reported_logo": "MOSA",
+      "reported_other_characters": [
+        "1306490"
+      ],
+      "part": "MS6324G",
+      "manufacturer": "MOSA",
+      "function": "16-bit stereo I2S voltage-output DAC",
+      "package": "SOP8",
+      "status": "identified_from_user_reading_and_manufacturer_marking_table",
+      "ordering_variants": [
+        "MS6324GTR",
+        "MS6324GU"
+      ],
+      "datasheet": "https://www.mosanalog.com/spec/MS6324_26.pdf",
+      "datasheet_pins": {
+        "1": "BCK",
+        "2": "WS",
+        "3": "DATA",
+        "4": "GND",
+        "5": "VDD",
+        "6": "VOL",
+        "7": "Cap",
+        "8": "VOR"
+      }
+    },
+    {
+      "reference": "U3",
+      "reported_reading_verbatim": "B Q two four one three three T I four A I C four V nine G four",
+      "reported_part_marking": "BQ24133",
+      "reported_manufacturer_marking": "TI",
+      "reported_other_characters": [
+        "4AIC4V9G4-like; spoken characters preserved above; spacing and ambiguous I/1 not independently resolved"
+      ],
+      "part": "BQ24133",
+      "manufacturer": "Texas Instruments",
+      "function": "Stand-alone synchronous buck Li-ion/Li-polymer battery charger",
+      "package": "RGY 24-pin VQFN with exposed thermal pad",
+      "status": "identified_from_user_reading_and_manufacturer_documentation",
+      "ordering_suffix": null,
+      "datasheet": "https://www.ti.com/lit/ds/symlink/bq24133.pdf",
+      "limitations": [
+        "Part identity confirmed; donor pin-1 orientation and connectivity remain unverified.",
+        "CELL configuration and current settings have not been recovered.",
+        "Secondary characters do not establish an ordering suffix or production date."
+      ]
+    },
+    {
+      "reference": "U8",
+      "reported_reading_verbatim": "ARMX and then STM 32F103 RDT6 GH2 1F 9 3 C H N G H 4 4 4 and then I see a little ST logo in the bottom right.",
+      "reported_part_marking": "STM32F103 RDT6",
+      "reported_logo": "ST, bottom right in user viewing orientation",
+      "reported_other_characters": [
+        "ARMX",
+        "GH2 1F 9 3 C H N G H 4 4 4"
+      ],
+      "part": "STM32F103RDT6",
+      "manufacturer": "STMicroelectronics",
+      "function": "Arm Cortex-M3 microcontroller",
+      "package": "LQFP64",
+      "status": "identified_from_user_reading_and_manufacturer_documentation",
+      "datasheet": "https://www.st.com/resource/en/datasheet/stm32f103rd.pdf",
+      "ordering_code_decode": {
+        "R": "64 pins",
+        "D": "384 Kbytes Flash",
+        "T": "LQFP",
+        "6": "-40 to +85 C"
+      },
+      "decode_source": "ST DS5792 Rev 13, page 135, ordering information; read via official web PDF",
+      "limitations": [
+        "Secondary markings retained as reported; spacing, ambiguous characters and production codes not decoded.",
+        "Part identity does not recover firmware, donor wiring or physical pin-1 orientation."
+      ]
+    },
+    {
+      "reference": "U1",
+      "reported_part_marking": "04=92Y",
+      "reported_reading_verbatim": "zero four nine two Y; equals separator also explicitly reported",
+      "reported_lead_count": 6,
+      "part": "Unresolved",
+      "status": "marking_known_identity_unresolved",
+      "detail": "u1-area-readings-2026-10-18.json",
+      "excluded_part": "RT8057AGJ5: five-lead package conflicts with six-lead donor",
+      "video_observation": {
+        "reference": "U1",
+        "observed_marking": "04=92Y",
+        "part": null,
+        "frame_seconds": 22,
+        "lead_count": 6,
+        "status": "marking_and_six_leads_visually_confirmed_identity_unresolved",
+        "note": "Literal zero retained. Video corroborates previous user reading."
+      },
+      "video_evidence": "video-readings-2026-10-18.json"
+    },
+    {
+      "reference": "U12",
+      "video_observation": {
+        "reference": "U12",
+        "observed_marking": "PAM8003 / THC51674",
+        "part": "PAM8003",
+        "frame_seconds": 2,
+        "user_reading": "PAM8-003, THC5-16-74",
+        "status": "existing_identity_confirmed_by_user_and_video"
+      },
+      "part": "PAM8003",
+      "status": "existing_identity_confirmed_by_user_and_video",
+      "video_evidence": "video-readings-2026-10-18.json"
+    },
+    {
+      "reference": "U9",
+      "video_observation": {
+        "reference": "U9",
+        "observed_marking": "C25R",
+        "part": "SN74LVC2G125",
+        "frame_seconds": 30,
+        "lead_count": 8,
+        "manufacturer": "Texas Instruments",
+        "status": "identified_from_video_marking_and_manufacturer_table",
+        "function": "Dual non-inverting buffer with independent active-low output enables and three-state outputs",
+        "package": "DCU VSSOP-8 supported by marking and photo body size; exact procurement suffix unassigned",
+        "datasheet": "reference/sn74lvc2g125-datasheet.pdf",
+        "datasheet_pins": {
+          "1": "1OE_N",
+          "2": "1A",
+          "3": "2Y",
+          "4": "GND",
+          "5": "2A",
+          "6": "1Y",
+          "7": "2OE_N",
+          "8": "VCC"
+        },
+        "pin1_observation": "Package dot is upper-left in frame-30s; lower-right in back-scaled.png."
+      },
+      "part": "SN74LVC2G125",
+      "status": "identified_from_video_marking_and_manufacturer_table",
+      "manufacturer": "Texas Instruments",
+      "function": "Dual non-inverting buffer with independent active-low output enables and three-state outputs",
+      "datasheet_pins": {
+        "1": "1OE_N",
+        "2": "1A",
+        "3": "2Y",
+        "4": "GND",
+        "5": "2A",
+        "6": "1Y",
+        "7": "2OE_N",
+        "8": "VCC"
+      },
+      "video_evidence": "video-readings-2026-10-18.json"
+    },
+    {
+      "reference": "U13",
+      "video_observation": {
+        "reference": "U13",
+        "observed_marking": "YJ33",
+        "part": "SGM2019-3.3",
+        "frame_seconds": 22,
+        "lead_count": 5,
+        "manufacturer": "SG Micro",
+        "status": "identified_from_video_marking_and_manufacturer_table",
+        "function": "3.3 V low-dropout linear voltage regulator",
+        "package": "SOT-23-5 consistent with photo body size; SC70-5 shares marking, so verify physical size before assigning ordering suffix",
+        "datasheet": "reference/sgm2019-datasheet.pdf",
+        "datasheet_pins": {
+          "1": "IN",
+          "2": "GND",
+          "3": "EN",
+          "4": "BP",
+          "5": "OUT"
+        },
+        "pin1_observation": "Top-left in frame-22s; lower-right in back-scaled.png.",
+        "pin1_basis": "SGM2019 page 4 explicitly determines pin 1 from YJxx text orientation."
+      },
+      "part": "SGM2019-3.3",
+      "status": "identified_from_video_marking_and_manufacturer_table",
+      "manufacturer": "SG Micro",
+      "function": "3.3 V low-dropout linear voltage regulator",
+      "datasheet_pins": {
+        "1": "IN",
+        "2": "GND",
+        "3": "EN",
+        "4": "BP",
+        "5": "OUT"
+      },
+      "video_evidence": "video-readings-2026-10-18.json"
+    },
+    {
+      "reference": "U14",
+      "video_observation": {
+        "reference": "U14",
+        "observed_marking": "YJ33",
+        "part": "SGM2019-3.3",
+        "frame_seconds": 16,
+        "lead_count": 5,
+        "manufacturer": "SG Micro",
+        "status": "identified_from_video_marking_and_manufacturer_table",
+        "function": "3.3 V low-dropout linear voltage regulator",
+        "package": "SOT-23-5 consistent with photo body size; SC70-5 shares marking, so verify physical size before assigning ordering suffix",
+        "datasheet": "reference/sgm2019-datasheet.pdf",
+        "datasheet_pins": {
+          "1": "IN",
+          "2": "GND",
+          "3": "EN",
+          "4": "BP",
+          "5": "OUT"
+        },
+        "pin1_observation": "Bottom-right in frame-16s; upper-left in back-scaled.png.",
+        "pin1_basis": "SGM2019 page 4 explicitly determines pin 1 from YJxx text orientation."
+      },
+      "part": "SGM2019-3.3",
+      "status": "identified_from_video_marking_and_manufacturer_table",
+      "manufacturer": "SG Micro",
+      "function": "3.3 V low-dropout linear voltage regulator",
+      "datasheet_pins": {
+        "1": "IN",
+        "2": "GND",
+        "3": "EN",
+        "4": "BP",
+        "5": "OUT"
+      },
+      "video_evidence": "video-readings-2026-10-18.json"
+    },
+    {
+      "reference": "Q12",
+      "video_observation": {
+        "reference": "Q12",
+        "observed_marking": "J3",
+        "part": null,
+        "frame_seconds": 6,
+        "lead_count": 3,
+        "status": "marking_known_identity_unresolved"
+      },
+      "video_evidence": "video-readings-2026-10-18.json"
+    },
+    {
+      "reference": "Q7",
+      "video_observation": {
+        "reference": "Q7",
+        "observed_marking": "J3",
+        "part": null,
+        "frame_seconds": 16,
+        "lead_count": 3,
+        "status": "marking_known_identity_unresolved"
+      },
+      "video_evidence": "video-readings-2026-10-18.json"
+    },
+    {
+      "reference": "Q11",
+      "video_observation": {
+        "reference": "Q11",
+        "observed_marking": "J3",
+        "part": null,
+        "frame_seconds": 74,
+        "lead_count": 3,
+        "status": "marking_known_identity_unresolved"
+      },
+      "video_evidence": "video-readings-2026-10-18.json"
+    },
+    {
+      "reference": "Q3",
+      "observed_marking": "1733",
+      "part": "CSD17313Q2",
+      "manufacturer": "Texas Instruments",
+      "status": "identified_from_video_marking_and_manufacturer_table",
+      "function": "30 V N-channel power MOSFET",
+      "package": "Q2 / DQK WSON 2 x 2 mm; six perimeter contacts plus two underside lands",
+      "ordering_suffix": null,
+      "datasheet_pins": {
+        "1": "D",
+        "2": "D",
+        "3": "G",
+        "4": "S",
+        "5": "D",
+        "6": "D",
+        "7": "S",
+        "8": "D"
+      },
+      "frame": "reference/video-4512/fullscan/frame-124.png",
+      "orientation_status": "Q3 and Q4 are rotated oppositely in video; board pad1 orientation still needs explicit confirmation.",
+      "limitations": [
+        "Exact order/reel suffix not determined from marking.",
+        "No donor nets assigned from typical charger circuit.",
+        "Physical underside lands obscured by mounted device."
+      ],
+      "evidence": "mosfet-video-identifications-2026-10-18.json"
+    },
+    {
+      "reference": "Q4",
+      "observed_marking": "1733",
+      "part": "CSD17313Q2",
+      "manufacturer": "Texas Instruments",
+      "status": "identified_from_video_marking_and_manufacturer_table",
+      "function": "30 V N-channel power MOSFET",
+      "package": "Q2 / DQK WSON 2 x 2 mm; six perimeter contacts plus two underside lands",
+      "ordering_suffix": null,
+      "datasheet_pins": {
+        "1": "D",
+        "2": "D",
+        "3": "G",
+        "4": "S",
+        "5": "D",
+        "6": "D",
+        "7": "S",
+        "8": "D"
+      },
+      "frame": "reference/video-4512/fullscan/frame-122.png",
+      "orientation_status": "Q3 and Q4 are rotated oppositely in video; board pad1 orientation still needs explicit confirmation.",
+      "limitations": [
+        "Exact order/reel suffix not determined from marking.",
+        "No donor nets assigned from typical charger circuit.",
+        "Physical underside lands obscured by mounted device."
+      ],
+      "evidence": "mosfet-video-identifications-2026-10-18.json"
+    }
+  ],
+  "limitations": [
+    "Other characters are retained as spoken, not normalized into exact manufacturing codes.",
+    "Package pin functions do not establish donor net connections or board orientation.",
+    "No manufacturing date decoded from secondary markings.",
+    "MOSFET ordering/finish suffix not established by spoken reading."
+  ],
+  "documents": [
+    {
+      "file": "reference/ms6324-26-rev2.pdf",
+      "sha256": "01298e8441efb83a62cbe36d00d91f5b25cad0067c9a600903d9e36aa9e291e1",
+      "author": "MOSA",
+      "revision": "2",
+      "official_url": "https://www.mosanalog.com/spec/MS6324_26.pdf",
+      "retrieval_url": "https://datasheet4u.com/pdf/1096277/MS6324.pdf",
+      "note": "Manufacturer-authored PDF from mirror after official direct download returned HTTP 500; content cross-checked with official web-readable PDF, pp 1-2."
+    },
+    {
+      "file": "reference/irf9310-pd97437a-2010.pdf",
+      "sha256": "48adc72ebfe9e1311d092a60ebc2a1bee2f9196b3fbd7b11e6b53092faab0dca",
+      "author": "International Rectifier",
+      "revision": "PD-97437A; first page dated 2010-03-19",
+      "official_url": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irf9310-datasheet-en.pdf",
+      "retrieval_url": "https://datasheet4u.com/pdf/1519498/IRF9310.pdf",
+      "used_pages": [
+        1,
+        7
+      ],
+      "note": "Manufacturer document mirrored by datasheet4u. Visually verified source/gate/drain pin assignment and marking diagram. No donor date code decoded."
+    },
+    {
+      "file": "reference/bq24133-datasheet-rev-d.pdf",
+      "sha256": "e9edd50ef4421c1e48c2e0b5aa1a840caa013f78f8ea68726006f4b8e2a8203a",
+      "author": "Texas Instruments",
+      "revision": "SLUSAF7D, September 2020",
+      "official_url": "https://www.ti.com/lit/ds/symlink/bq24133.pdf",
+      "note": "Previously saved official document; pin map checked during candidate recovery. Marking table and package cross-checked for direct U3 reading."
+    }
+  ],
+  "native_schematic": {
+    "references_added": [
+      "U4",
+      "Q1",
+      "Q2"
+    ],
+    "symbols_total": 16,
+    "intercomponent_wires": 0,
+    "footprints_assigned_to_new_symbols": false,
+    "references_identity_confirmed": [
+      "U3",
+      "U8"
+    ],
+    "numbered_package_pins": 202,
+    "latest_references_added": [
+      "U9",
+      "U13",
+      "U14"
+    ],
+    "latest_evidence": "video-readings-2026-10-18.json"
+  }
+}

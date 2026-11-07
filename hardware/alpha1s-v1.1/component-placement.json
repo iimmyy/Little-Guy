@@ -1,0 +1,551 @@
+{
+  "units": "mm",
+  "status": "photo_derived_package_body_positions_only",
+  "datum": "Front view, ports at top, overall PCB upper-left at 0,0",
+  "kicad_origin_mm": [
+    340,
+    220
+  ],
+  "method": "Manual body-edge selection in calibrated front/back photographs; back x coordinates mirrored into front-view datum. No leads, pads or nets inferred.",
+  "limitations": [
+    "Image body boxes are approximate, not nominal package dimensions.",
+    "No drilling or copper is defined by these markers.",
+    "Q1/Q2/U4/U8/U9/U10/U12/U13/U14 have native footprints at photo-derived centers. U4/U8 use KiCad reference lands; other seven use manufacturer land drawings. Exact donor lands and centers remain unverified."
+  ],
+  "components": [
+    {
+      "reference": "U10",
+      "side": "front",
+      "part": "BM77SPP03MC2",
+      "identity_status": "photo_label",
+      "source": "reference/front-scaled.png",
+      "source_body_box_px": [
+        1915,
+        1755,
+        2513,
+        2219
+      ],
+      "body_box_front_view_mm": [
+        49.3,
+        45.19,
+        64.68,
+        57.13
+      ],
+      "body_center_front_view_mm": [
+        57.0,
+        51.2
+      ],
+      "pin1_confirmed": true,
+      "orientation_evidence": "Unique missing pad between29and30 lies near right end of lower row; seven-pad row lies left. Manufacturer Fig1-3 matches 90 degrees clockwise in front-scaled photo.",
+      "native_footprint": "Alpha1S:BM77SPP03MC2_Manufacturer_Recommended",
+      "native_placement_status": "photo_derived_center_confirmed_orientation_manufacturer_lands_not_donor_verified"
+    },
+    {
+      "reference": "U8",
+      "side": "back",
+      "part": "STM32F103RDT6",
+      "identity_status": "confirmed_user_marking_and_manufacturer_documentation",
+      "source": "reference/back-scaled.png",
+      "source_body_box_px": [
+        468,
+        1425,
+        861,
+        1811
+      ],
+      "body_box_front_view_mm": [
+        49.93,
+        36.68,
+        60.04,
+        46.61
+      ],
+      "body_center_front_view_mm": [
+        55.0,
+        41.6
+      ],
+      "pin1_confirmed": true,
+      "identity_evidence": "chip-readings-2026-10-18.json; direct physical reading by user",
+      "orientation_evidence": "ST TN1433 Rev7 section4.4 resolves the two corner dots using text orientation. Upright text: lower-left. Back-scaled photo text is upside down: upper-right. Mirrored front datum: upper-left. See mcu-pcb-placement-2026-10-18.json.",
+      "native_footprint": "Alpha1S:STM32_LQFP64_KiCad_Reference",
+      "native_placement_status": "photo_derived_center_confirmed_orientation_kicad_reference_lands_not_donor_verified"
+    },
+    {
+      "reference": "U3",
+      "side": "back",
+      "part": "BQ24133",
+      "identity_status": "confirmed_user_marking_and_manufacturer_documentation",
+      "source": "reference/back-scaled.png",
+      "source_body_box_px": [
+        1148,
+        1080,
+        1375,
+        1226
+      ],
+      "body_box_front_view_mm": [
+        36.69,
+        27.81,
+        42.53,
+        31.55
+      ],
+      "body_center_front_view_mm": [
+        39.6,
+        29.7
+      ],
+      "pin1_confirmed": false,
+      "identity_evidence": "chip-readings-2026-10-18.json; direct physical reading by user",
+      "orientation_evidence": "A small pale dot is visible near the upper-right body corner in back-scaled.png (ports/narrow end up), corresponding to the lower-left corner in U3-marking-crop.png. This may be the package index mark, but photo clarity is insufficient to confirm it. No pad numbers or footprint angle assigned."
+    },
+    {
+      "reference": "U12",
+      "side": "back",
+      "part": "PAM8003",
+      "identity_status": "existing_identity_confirmed_by_user_and_video",
+      "source": "reference/back-scaled.png",
+      "source_body_box_px": [
+        1955,
+        2121,
+        2119,
+        2505
+      ],
+      "body_box_front_view_mm": [
+        17.52,
+        54.59,
+        21.75,
+        64.48
+      ],
+      "body_center_front_view_mm": [
+        19.6,
+        59.5
+      ],
+      "pin1_confirmed": true,
+      "reported_marking": "PAM8003 / THC51674",
+      "identity_evidence": "video-readings-2026-10-18.json",
+      "orientation_evidence": "Package dot upper-left in frame007/frame02s; lower-right in back-scaled photo.",
+      "native_footprint": "Alpha1S:PAM8003_SO16_Manufacturer_Recommended",
+      "native_placement_status": "photo_derived_center_confirmed_orientation_manufacturer_lands_not_donor_verified"
+    },
+    {
+      "reference": "U1",
+      "side": "back",
+      "part": "Unresolved",
+      "identity_status": "marking_known_identity_unresolved",
+      "source": "reference/back-scaled.png",
+      "source_body_box_px": [
+        2184,
+        1426,
+        2315,
+        1503
+      ],
+      "body_box_front_view_mm": [
+        12.48,
+        36.72,
+        15.87,
+        38.68
+      ],
+      "body_center_front_view_mm": [
+        14.2,
+        37.7
+      ],
+      "pin1_confirmed": false,
+      "reported_marking": "04=92Y",
+      "reported_lead_count": 6,
+      "identity_evidence": "video-readings-2026-10-18.json"
+    },
+    {
+      "reference": "U4",
+      "side": "back",
+      "part": "MS6324G",
+      "identity_status": "identified_from_user_reading_and_manufacturer_marking_table",
+      "source": "reference/back-scaled.png",
+      "source_body_box_px": [
+        1018,
+        2268,
+        1193,
+        2455
+      ],
+      "body_box_front_view_mm": [
+        41.37,
+        58.38,
+        45.87,
+        63.19
+      ],
+      "body_center_front_view_mm": [
+        43.6,
+        60.8
+      ],
+      "pin1_confirmed": true,
+      "identity_evidence": "chip-readings-2026-10-18.json",
+      "orientation_evidence": "Pin1 dot lower-right in video022/026; upper-left in back-scaled photo and upper-right in front datum.",
+      "native_footprint": "Alpha1S:MS6324G_SOIC8_KiCad_Reference",
+      "native_placement_status": "photo_derived_center_confirmed_orientation_kicad_reference_lands_not_donor_verified"
+    },
+    {
+      "reference": "U9",
+      "side": "back",
+      "part": "SN74LVC2G125",
+      "identity_status": "identified_from_video_marking_and_manufacturer_table",
+      "source": "reference/back-scaled.png",
+      "source_body_box_px": [
+        1629,
+        1458,
+        1718,
+        1548
+      ],
+      "body_box_front_view_mm": [
+        27.86,
+        37.52,
+        30.13,
+        39.84
+      ],
+      "body_center_front_view_mm": [
+        29.0,
+        38.7
+      ],
+      "pin1_confirmed": true,
+      "reported_marking": "C25R",
+      "identity_evidence": "video-readings-2026-10-18.json",
+      "orientation_evidence": "Package dot is upper-left in frame-30s; lower-right in back-scaled.png. Package index dot visible in video; pin map in manufacturer document.",
+      "native_footprint": "Alpha1S:SN74LVC2G125_DCU8_Manufacturer_Land_Example",
+      "native_placement_status": "photo_derived_center_confirmed_orientation_manufacturer_lands_not_donor_verified"
+    },
+    {
+      "reference": "U13",
+      "side": "back",
+      "part": "SGM2019-3.3",
+      "identity_status": "identified_from_video_marking_and_manufacturer_table",
+      "source": "reference/back-scaled.png",
+      "source_body_box_px": [
+        2100,
+        1828,
+        2166,
+        1935
+      ],
+      "body_box_front_view_mm": [
+        16.31,
+        47.06,
+        18.01,
+        49.82
+      ],
+      "body_center_front_view_mm": [
+        17.2,
+        48.4
+      ],
+      "pin1_confirmed": true,
+      "reported_marking": "YJ33",
+      "identity_evidence": "video-readings-2026-10-18.json",
+      "orientation_evidence": "Top-left in frame-22s; lower-right in back-scaled.png. SGM2019 page 4 explicitly determines pin 1 from YJxx text orientation.",
+      "native_footprint": "Alpha1S:SGM2019_SOT23_5_Manufacturer_Recommended",
+      "native_placement_status": "photo_derived_center_confirmed_orientation_manufacturer_lands_not_donor_verified"
+    },
+    {
+      "reference": "U14",
+      "side": "back",
+      "part": "SGM2019-3.3",
+      "identity_status": "identified_from_video_marking_and_manufacturer_table",
+      "source": "reference/back-scaled.png",
+      "source_body_box_px": [
+        424,
+        2060,
+        494,
+        2171
+      ],
+      "body_box_front_view_mm": [
+        59.38,
+        53.03,
+        61.16,
+        55.88
+      ],
+      "body_center_front_view_mm": [
+        60.3,
+        54.5
+      ],
+      "pin1_confirmed": true,
+      "reported_marking": "YJ33",
+      "identity_evidence": "video-readings-2026-10-18.json",
+      "orientation_evidence": "Bottom-right in frame-16s; upper-left in back-scaled.png. SGM2019 page 4 explicitly determines pin 1 from YJxx text orientation.",
+      "native_footprint": "Alpha1S:SGM2019_SOT23_5_Manufacturer_Recommended",
+      "native_placement_status": "photo_derived_center_confirmed_orientation_manufacturer_lands_not_donor_verified"
+    },
+    {
+      "reference": "Q1",
+      "side": "back",
+      "part": "IRF9310",
+      "identity_status": "identified_from_user_reading_and_manufacturer_documentation",
+      "source": "reference/back-scaled.png",
+      "source_body_box_px": [
+        1697,
+        717,
+        1898,
+        869
+      ],
+      "body_box_front_view_mm": [
+        23.22,
+        18.45,
+        28.4,
+        22.37
+      ],
+      "body_center_front_view_mm": [
+        25.8,
+        20.4
+      ],
+      "pin1_confirmed": true,
+      "identity_evidence": "chip-readings-2026-10-18.json",
+      "orientation_evidence": "Package dot lower-left in video frame142, hence upper-right in back-scaled.png; IRF9310 top-view pin map checked against manufacturer document. See power-connections-2026-10-18.json.",
+      "native_footprint": "Alpha1S:IRF9310_SO8_Manufacturer_Recommended",
+      "native_placement_status": "photo_derived_center_confirmed_orientation_manufacturer_lands_not_donor_verified"
+    },
+    {
+      "reference": "Q2",
+      "side": "back",
+      "part": "IRF9310",
+      "identity_status": "identified_from_user_reading_and_manufacturer_documentation",
+      "source": "reference/back-scaled.png",
+      "source_body_box_px": [
+        1472,
+        713,
+        1690,
+        867
+      ],
+      "body_box_front_view_mm": [
+        28.57,
+        18.36,
+        34.19,
+        22.33
+      ],
+      "body_center_front_view_mm": [
+        31.4,
+        20.3
+      ],
+      "pin1_confirmed": true,
+      "identity_evidence": "chip-readings-2026-10-18.json",
+      "orientation_evidence": "Package dot lower-left in frame142; upper-right in back-scaled photo.",
+      "native_footprint": "Alpha1S:IRF9310_SO8_Manufacturer_Recommended",
+      "native_placement_status": "photo_derived_center_confirmed_orientation_manufacturer_lands_not_donor_verified"
+    }
+  ],
+  "native_items": [
+    {
+      "reference": "U10",
+      "uuid": "a612b83c-cc23-4b55-badf-e6633f4ba643"
+    },
+    {
+      "reference": "U10",
+      "uuid": "5f9f3007-d306-483a-9890-456f79a6253a"
+    },
+    {
+      "reference": "U10",
+      "uuid": "a80a6783-d9b6-4495-98c7-9509b867d73e"
+    },
+    {
+      "reference": "U10",
+      "uuid": "cdd789d2-ba16-4040-b281-45e230f25357"
+    },
+    {
+      "reference": "U10",
+      "uuid": "243fff88-c1a6-4d82-8d5f-264cc877ff3e"
+    },
+    {
+      "reference": "U8",
+      "uuid": "b02fc0a3-5f36-486e-b6f1-282ad4b42614"
+    },
+    {
+      "reference": "U8",
+      "uuid": "9f02166a-a10b-48bf-905f-d5f63ee1330a"
+    },
+    {
+      "reference": "U8",
+      "uuid": "e99e19e1-457b-4484-b6a6-fa0d5b9c3ec3"
+    },
+    {
+      "reference": "U8",
+      "uuid": "e2a56074-40f4-42ef-a726-896eee39b781"
+    },
+    {
+      "reference": "U8",
+      "uuid": "3317bd1c-3beb-4446-b551-0cc313d54352"
+    },
+    {
+      "reference": "U3",
+      "uuid": "bc827096-0fbb-4d16-8e9c-74b6543b65e4"
+    },
+    {
+      "reference": "U3",
+      "uuid": "563e9d66-1fae-4f25-ba4e-83ff2760833a"
+    },
+    {
+      "reference": "U3",
+      "uuid": "83946134-bb37-4f44-bae3-a19ad8023245"
+    },
+    {
+      "reference": "U3",
+      "uuid": "b1dd5f07-512a-4162-9646-87575126c0bc"
+    },
+    {
+      "reference": "U3",
+      "uuid": "fc798f77-9738-48f4-af96-60304916bcfd"
+    },
+    {
+      "reference": "U12",
+      "uuid": "0dcb5395-2e45-4a44-b0fa-c84cd12c62a1"
+    },
+    {
+      "reference": "U12",
+      "uuid": "9dbaa0bf-23f4-40ce-8d29-1a22b1e0eba5"
+    },
+    {
+      "reference": "U12",
+      "uuid": "93db7a72-c577-41e8-b888-27dd873040b0"
+    },
+    {
+      "reference": "U12",
+      "uuid": "b7dd2bdc-f33a-4489-813a-7d138d032c57"
+    },
+    {
+      "reference": "U12",
+      "uuid": "76e75003-666d-4e75-b955-0c73e59a0b53"
+    },
+    {
+      "reference": "U1",
+      "uuid": "2cb25cf9-c2a7-443f-9de1-cfb5e8d1606d"
+    },
+    {
+      "reference": "U1",
+      "uuid": "15ba4421-119a-42de-bfd8-15e07c6b4ddb"
+    },
+    {
+      "reference": "U1",
+      "uuid": "7e520577-ec70-4bd3-b26e-0d64ef8a86bc"
+    },
+    {
+      "reference": "U1",
+      "uuid": "7dd77a97-ac28-4ad3-9c71-f82f8639a53b"
+    },
+    {
+      "reference": "U1",
+      "uuid": "43eb11bb-33bb-4f28-ab3c-7eb2f25cb45e"
+    },
+    {
+      "reference": "U4",
+      "uuid": "0612e4b4-77d3-4b9e-89ae-109d13d2dbe6"
+    },
+    {
+      "reference": "U4",
+      "uuid": "a79346b6-1e50-481d-b1a4-9ef9712ed0a6"
+    },
+    {
+      "reference": "U4",
+      "uuid": "ac4abf17-9661-421c-a05d-b5af35c49664"
+    },
+    {
+      "reference": "U4",
+      "uuid": "ac78548a-6af9-41af-bcb4-7ac424cb7415"
+    },
+    {
+      "reference": "U4",
+      "uuid": "5c564109-7e86-431a-b334-e52621f5df78"
+    },
+    {
+      "reference": "U9",
+      "uuid": "07c2b56e-4b5f-475f-9afc-064b52bccd44"
+    },
+    {
+      "reference": "U9",
+      "uuid": "3fde303f-cb4b-44ce-a546-5b6a41871103"
+    },
+    {
+      "reference": "U9",
+      "uuid": "fa858f2d-9535-494c-8596-884b7e2d3dac"
+    },
+    {
+      "reference": "U9",
+      "uuid": "a90bcb23-5921-470b-8817-e111f0af2f0a"
+    },
+    {
+      "reference": "U9",
+      "uuid": "aa3b03a9-5b8e-4a8d-a0f7-11778abbe9b3"
+    },
+    {
+      "reference": "U13",
+      "uuid": "c184fec6-59f0-4692-a979-616e58664d48"
+    },
+    {
+      "reference": "U13",
+      "uuid": "8dd071be-e5d1-463b-afee-6011e8c49456"
+    },
+    {
+      "reference": "U13",
+      "uuid": "10b0ddd0-2083-4f0f-86f1-75b0955264a0"
+    },
+    {
+      "reference": "U13",
+      "uuid": "74d8e235-3242-48db-bf22-883750d9ddec"
+    },
+    {
+      "reference": "U13",
+      "uuid": "ea25d003-82e2-4995-a908-fffe066daf1c"
+    },
+    {
+      "reference": "U14",
+      "uuid": "10ecdcb3-f0e1-4c1a-90cf-66036d89378d"
+    },
+    {
+      "reference": "U14",
+      "uuid": "fdbd2163-6ab7-4084-8364-603302a3bf25"
+    },
+    {
+      "reference": "U14",
+      "uuid": "328f22cb-b774-4d76-bba5-e8db4bd7a0fc"
+    },
+    {
+      "reference": "U14",
+      "uuid": "3c0d612d-8081-4aa3-a21c-c9b65699bff6"
+    },
+    {
+      "reference": "U14",
+      "uuid": "fb0d6605-4ead-4790-9720-faf52feec106"
+    },
+    {
+      "reference": "Q1",
+      "uuid": "db8f59a7-2180-42be-9f67-fed74148d6c8"
+    },
+    {
+      "reference": "Q1",
+      "uuid": "87f25714-ee1f-47c5-8dd1-acbde327fd57"
+    },
+    {
+      "reference": "Q1",
+      "uuid": "0fc5c358-6592-4a52-a8d9-8403f65f8055"
+    },
+    {
+      "reference": "Q1",
+      "uuid": "78298af9-1069-41d7-b4e0-ad0b6ccae7da"
+    },
+    {
+      "reference": "Q1",
+      "uuid": "072c66a5-49e3-457c-a350-c65a6ac198fe"
+    },
+    {
+      "reference": "Q2",
+      "uuid": "ad744849-556b-49cf-acdc-e7421a247542"
+    },
+    {
+      "reference": "Q2",
+      "uuid": "19206ae1-da91-4e8d-9cfb-f9d9909dd010"
+    },
+    {
+      "reference": "Q2",
+      "uuid": "1fad618b-af0d-4c8a-92de-a5799f572f91"
+    },
+    {
+      "reference": "Q2",
+      "uuid": "15d66b8c-f4e0-4eb0-922f-783b9c97767c"
+    },
+    {
+      "reference": "Q2",
+      "uuid": "a1685126-08b5-4331-9d39-c331d49c55f2"
+    },
+    {
+      "reference": "legend",
+      "uuid": "a5fdee9a-316e-4583-aef9-bffeb599b057"
+    }
+  ]
+}

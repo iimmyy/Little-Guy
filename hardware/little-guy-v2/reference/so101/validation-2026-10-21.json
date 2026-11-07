@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-21",
+  "scope": "Pinned third-party geometry inspection; no fitted Little Guy bracket produced",
+  "checks": [
+    "All six pinned upstream files match recorded hashes and sizes",
+    "Three individual parts each one valid solid; bounds match assessment",
+    "Five assembly components have 36.85mm two-fitting outer span; one has single 2.1mm fitting",
+    "Preview regenerated from saved tessellation using persisted renderer and visually inspected",
+    "Local assessment links resolve"
+  ],
+  "physical_fit_verified": false,
+  "whole_assembly_validity_checked": false,
+  "manufacturing_ready": false,
+  "files_sha256": {
+    "provenance.json": "546baf7fee8706a4f1c3fe556fdb960083dd476ca017b91311c3db0afe4d8bc8",
+    "inspection.json": "a4bb229f217c68f85634080b0cebea65026559d90da0068f26ece1159271a541",
+    "assembly-inspection.json": "f1fa0fd26c8fd40e2ad242659b7ba8d0ef0756bc7569a07bd5793bac86d7be9f",
+    "parts-review.png": "48c3b37c7b8003995de86b78ad9cc78f4ff415f89a63eb5fde9d6298d59bdf3c",
+    "reuse-assessment.md": "73c9775af0ee246b08b8883d5342bc6a91b46ebc7c59d138c50fcb9e45cfb3d9"
+  }
+}

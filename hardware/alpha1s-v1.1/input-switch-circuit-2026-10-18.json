@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-18",
+  "source": "power-connections-2026-10-18.json and passive-observations.csv",
+  "schematic": "input-switch-region.kicad_sch",
+  "q10_status": "Unresolved device with three observed physical terminals; no B/E/C assigned",
+  "q10_terminal_convention": {
+    "A": "upper-left in frame138",
+    "B": "lower-left in frame138",
+    "C": "right in frame138"
+  },
+  "connections": [
+    [
+      "Q10.A",
+      "R49.1"
+    ],
+    [
+      "Q10.B",
+      "R49.2"
+    ]
+  ],
+  "r49_terminal_convention": {
+    "1": "top in frame138",
+    "2": "bottom in frame138"
+  },
+  "resistor_values_ohms": {
+    "R49": 10000.0,
+    "R50": 1000.0,
+    "R65": 10000.0,
+    "R61": 1000.0
+  },
+  "limits": [
+    "Observed surface connections, not electrically measured.",
+    "Q10.C and all R50/R65/R61 nets unrecovered.",
+    "No exact Q10 identity, manufacturer pin numbers or footprint assigned.",
+    "These are partial net memberships; other donor branches may exist."
+  ],
+  "validation": {
+    "native_symbols": 29,
+    "numbered_symbol_pins": 241,
+    "wire_segments": 21,
+    "inter_component_nets": 8,
+    "netlist": "Both Q10/R49 pairs and all six earlier pairs match exactly; unresolved pins remain isolated.",
+    "svg_export": "Both root and child sheets exported successfully.",
+    "erc": {
+      "pin_not_connected": 218,
+      "pin_not_driven": 34,
+      "power_pin_not_driven": 30
+    },
+    "gui": "Root and child sheets reopened and visually checked; readable labels and connections."
+  }
+}

@@ -29,3 +29,20 @@ app/src/main/assets/models/
 vendor/qualcomm/
 *.litertlm
 tools/menubar/Settings.swift
+
+# Local tool state and logs
+.claude/
+MUJOCO_LOG.TXT
+
+# Teardown photos, video and other companies' files stay local (datasheets, FCC filings, vendor CAD).
+# The Alpha 1S board file holds two board photos, so only its schematics and notes are tracked.
+hardware/alpha1s-v1.1/reference/
+hardware/alpha1s-v1.1/review/*.png
+hardware/alpha1s-v1.1/review/*.html
+hardware/alpha1s-v1.1/alpha1s-original.kicad_pcb
+hardware/little-guy-v2/reference/**/*.pdf
+hardware/little-guy-v2/reference/**/*.step
+hardware/little-guy-v2/reference/**/*.zip
+hardware/little-guy-v2/reference/**/*.dxf
+hardware/little-guy-v2/reference/**/*.png
+hardware/little-guy-v2/reference/so101/LICENSE

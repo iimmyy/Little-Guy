@@ -1,0 +1,84 @@
+{
+  "reference": "Q1",
+  "part": "IRF9310",
+  "footprint": "Alpha1S:IRF9310_SO8_Manufacturer_Recommended",
+  "status": "placed_manufacturer_lands_photo_derived_center_donor_lands_unverified",
+  "position_kicad_mm": [
+    365.8,
+    240.4
+  ],
+  "position_front_datum_mm": [
+    25.8,
+    20.4
+  ],
+  "position_source": "component-placement.json; source_body_box_px in reference/back-scaled.png",
+  "orientation_source": "Package dot upper-right in back-scaled.png, lower-left in video frame142",
+  "land_pattern_source": "reference/irf9310-pd97437a-2010.pdf page7",
+  "symbol_path": "/4687339a-8373-40c5-9066-28a31d4f03e7/0aeb70ec-245e-5da8-b7e2-8439eda33454",
+  "pad_nets": {
+    "3": "Net-(C68-Pad1)",
+    "5": "unconnected-(Q1-D-Pad5)",
+    "6": "unconnected-(Q1-D-Pad6)",
+    "7": "unconnected-(Q1-D-Pad7)",
+    "8": "unconnected-(Q1-D-Pad8)",
+    "4": "unconnected-(Q1-G-Pad4)",
+    "1": "unconnected-(Q1-S-Pad1)",
+    "2": "unconnected-(Q1-S-Pad2)"
+  },
+  "limits": [
+    "Photo-derived center is approximate.",
+    "Manufacturer recommended lands are not verified exact donor lands.",
+    "Seven pad nets are explicitly unconnected in the partial schematic.",
+    "No copper tracks added."
+  ],
+  "side": "B.Cu",
+  "orientation_kicad_degrees": -90.0,
+  "pad_centers_kicad_mm": {
+    "1": [
+      363.895,
+      238.06
+    ],
+    "2": [
+      365.165,
+      238.06
+    ],
+    "3": [
+      366.435,
+      238.06
+    ],
+    "4": [
+      367.705,
+      238.06
+    ],
+    "5": [
+      367.705,
+      242.74
+    ],
+    "6": [
+      366.435,
+      242.74
+    ],
+    "7": [
+      365.165,
+      242.74
+    ],
+    "8": [
+      363.895,
+      242.74
+    ]
+  },
+  "validation": {
+    "native_footprints": 1,
+    "copper_pads": 8,
+    "tracks": 0,
+    "via_count": 0,
+    "pin1": "Top-left in front-view board coordinates, matching upper-right when looking at the back photo.",
+    "symbol_link": "Schematic footprint ID, UUID path and all eight pad net names verified.",
+    "drc_geometric_violations": 0,
+    "schematic_parity": {
+      "missing_footprint": 28
+    },
+    "scope": "Checks cover the one placed footprint only; remaining circuit and layout are incomplete.",
+    "gui": "Reopened and visually checked Q1 pads, B.Cu side, -90 degree orientation and source position."
+  }
+}

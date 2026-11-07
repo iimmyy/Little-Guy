@@ -1,0 +1,352 @@
+{
+  "source": "video-readings-2026-10-18.json",
+  "review_method": "164 frames sampled at 2 fps across the entire 81.89-second recording, reviewed on nine chronological overview sheets; selected details inspected at full resolution. This is a sampled full-duration review, not inspection of every source frame.",
+  "timing_note": "Sample times are approximate output-grid times; source selection may differ by up to one sampling interval.",
+  "frames": [
+    {
+      "file": "reference/video-4512/fullscan/frame-030.png",
+      "sample_index": 30,
+      "approximate_time_seconds": 14.5,
+      "sha256": "e71f85dd6cf0d608edd21424320f0649d9f85d86c709b382e2ff3abab10bbf80"
+    },
+    {
+      "file": "reference/video-4512/fullscan/frame-047.png",
+      "sample_index": 47,
+      "approximate_time_seconds": 23.0,
+      "sha256": "d750dc9be192deb020a1f0b5ed2efb9af83e152a257d3cf802892ff413c03b1c"
+    },
+    {
+      "file": "reference/video-4512/fullscan/frame-067.png",
+      "sample_index": 67,
+      "approximate_time_seconds": 33.0,
+      "sha256": "6f74fa720dd03338e905050e15d25d37a391c020de83112c8027418a23d87eb9"
+    },
+    {
+      "file": "reference/video-4512/fullscan/frame-098.png",
+      "sample_index": 98,
+      "approximate_time_seconds": 48.5,
+      "sha256": "7190e1c95b8738f7aa46464fe50a6b3def301c9387f86fe31657190b0be2938a"
+    },
+    {
+      "file": "reference/video-4512/fullscan/frame-122.png",
+      "sample_index": 122,
+      "approximate_time_seconds": 60.5,
+      "sha256": "bb72707f98e44a15179182246489ede3a7d4003b50c4f7048c4f64e003e9c8c0"
+    },
+    {
+      "file": "reference/video-4512/fullscan/frame-124.png",
+      "sample_index": 124,
+      "approximate_time_seconds": 61.5,
+      "sha256": "18b1d43cb9795f0452fdc4ffe507d89a4a2cc6fb061ffe72b8e6ed473f50ce6c"
+    },
+    {
+      "file": "reference/video-4512/fullscan/frame-128.png",
+      "sample_index": 128,
+      "approximate_time_seconds": 63.5,
+      "sha256": "200751da4cdd92a2c13305e46ed9827588a3ad543f6a0c96e7c01faab554ba5c"
+    },
+    {
+      "file": "reference/video-4512/fullscan/frame-132.png",
+      "sample_index": 132,
+      "approximate_time_seconds": 65.5,
+      "sha256": "0d9ff4d48444ee43b14df79d71f3b5699fd70409a412847cdfe9491b1699944f"
+    },
+    {
+      "file": "reference/video-4512/fullscan/frame-140.png",
+      "sample_index": 140,
+      "approximate_time_seconds": 69.5,
+      "sha256": "5946b62526addc4d22aaeee22c3bcd4f9889be7be9edc00f9658001425194de3"
+    }
+  ],
+  "resistors": [
+    {
+      "reference": "R47",
+      "observed_marking": "270",
+      "nominal_ohms_from_marking": 27,
+      "frame": "reference/video-4512/fullscan/frame-098.png",
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R48",
+      "observed_marking": "270",
+      "nominal_ohms_from_marking": 27,
+      "frame": "reference/video-4512/fullscan/frame-098.png",
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R50",
+      "observed_marking": "102",
+      "nominal_ohms_from_marking": 1000,
+      "frame": "reference/video-4512/fullscan/frame-140.png",
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R49",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame": "reference/video-4512/fullscan/frame-140.png",
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R65",
+      "observed_marking": "103",
+      "nominal_ohms_from_marking": 10000,
+      "frame": "reference/video-4512/fullscan/frame-140.png",
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R61",
+      "observed_marking": "102",
+      "nominal_ohms_from_marking": 1000,
+      "frame": "reference/video-4512/fullscan/frame-140.png",
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R24",
+      "observed_marking": "68B",
+      "nominal_ohms_from_marking": 4990,
+      "frame": "reference/video-4512/fullscan/frame-124.png",
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R26",
+      "observed_marking": "65B",
+      "nominal_ohms_from_marking": 4640,
+      "frame": "reference/video-4512/fullscan/frame-124.png",
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R13",
+      "observed_marking": "68D",
+      "nominal_ohms_from_marking": 499000,
+      "frame": "reference/video-4512/fullscan/frame-122.png",
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R8",
+      "observed_marking": "30E",
+      "nominal_ohms_from_marking": 2000000,
+      "frame": "reference/video-4512/fullscan/frame-122.png",
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R20",
+      "observed_marking": "59B",
+      "nominal_ohms_from_marking": 4020,
+      "frame": "reference/video-4512/fullscan/frame-122.png",
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R23",
+      "observed_marking": "100",
+      "nominal_ohms_from_marking": 10,
+      "frame": "reference/video-4512/fullscan/frame-122.png",
+      "status": "marking_decoded_not_measured"
+    },
+    {
+      "reference": "R34",
+      "observed_marking": "513",
+      "nominal_ohms_from_marking": 51000,
+      "frame": "reference/video-4512/fullscan/frame-124.png",
+      "status": "marking_decoded_not_measured"
+    }
+  ],
+  "other_markings": [
+    {
+      "reference": "Q10",
+      "observed_marking": "1YD with trailing m-like character",
+      "lead_count": 3,
+      "part": null,
+      "frame": 140,
+      "note": "Leading character appears 1; exact manufacturer and device unresolved."
+    },
+    {
+      "reference": "Q4",
+      "observed_marking": "1733 / 54H / WCCW",
+      "lead_count": 6,
+      "part": null,
+      "frame": 122
+    },
+    {
+      "reference": "Q3",
+      "observed_marking": "1733 with secondary lines similar to Q4; device rotated 180 degrees",
+      "lead_count": 6,
+      "part": null,
+      "frame": 124
+    },
+    {
+      "reference": "Y1",
+      "observed_marking": "SCTF / 8.000",
+      "frame": 128,
+      "note": "Confirms existing frequency marking; load capacitance and exact ordering code unknown."
+    },
+    {
+      "reference": null,
+      "location": "Horizontal resistor directly below C55 and above C11, left of R8 in video orientation",
+      "observed_marking": "01E",
+      "nominal_ohms_from_marking": 1000000,
+      "frame": 124,
+      "note": "Reference obscured; not inserted into reference-keyed register."
+    },
+    {
+      "reference": null,
+      "location": "Horizontal resistor directly below C11 and left of R13 in video orientation",
+      "observed_marking": "59B",
+      "nominal_ohms_from_marking": 4020,
+      "frame": 122,
+      "note": "Reference obscured; not inserted into reference-keyed register."
+    }
+  ],
+  "reference_conflicts": [
+    {
+      "reference_text": "R58",
+      "locations": [
+        {
+          "location": "First of three horizontal 270 resistors directly below the nine-hole header; left of R128/R129",
+          "marking": "270",
+          "nominal_ohms_at_site": 27,
+          "frame": 67
+        },
+        {
+          "location": "Three-resistor cluster immediately right of Y1 in video orientation; nearby labels R55/R58/R131",
+          "markings_left_to_right": [
+            "103",
+            "243",
+            "513"
+          ],
+          "frame": 132,
+          "note": "Reference-to-part mapping remains unresolved."
+        }
+      ],
+      "action": "Withdraw unique R58 nominal assignment until reference conflict resolved. Preserve original 270 observation by location; do not silently choose a reference or value."
+    }
+  ],
+  "visible_connections": [
+    {
+      "from_reference": "U13",
+      "from_pin": 5,
+      "to_reference": "C79",
+      "to_pad_in_frame": "left",
+      "frame": 47,
+      "status": "short_surface_connection_visually_supported_not_electrically_measured",
+      "basis": "Visible short copper between adjacent pads; IC pin numbering from saved SGM2019 datasheet and established marking orientation.",
+      "limitation": "Capacitor pad numbering and value unassigned; no assertion about other branches or the opposite capacitor terminal."
+    },
+    {
+      "from_reference": "U13",
+      "from_pin": 4,
+      "to_reference": "C80",
+      "to_pad_in_frame": "left",
+      "frame": 47,
+      "status": "short_surface_connection_visually_supported_not_electrically_measured",
+      "basis": "Visible short copper between adjacent pads; IC pin numbering from saved SGM2019 datasheet and established marking orientation.",
+      "limitation": "Capacitor pad numbering and value unassigned; no assertion about other branches or the opposite capacitor terminal."
+    },
+    {
+      "from_reference": "U14",
+      "from_pin": 1,
+      "to_reference": "C82",
+      "to_pad_in_frame": "top",
+      "frame": 30,
+      "status": "short_surface_connection_visually_supported_not_electrically_measured",
+      "basis": "Visible short copper between adjacent pads; IC pin numbering from saved SGM2019 datasheet and established marking orientation.",
+      "limitation": "Capacitor pad numbering and value unassigned; no assertion about other branches or the opposite capacitor terminal."
+    },
+    {
+      "from_reference": "U14",
+      "from_pin": 4,
+      "to_reference": "C81",
+      "to_pad_in_frame": "bottom",
+      "frame": 30,
+      "status": "short_surface_connection_visually_supported_not_electrically_measured",
+      "basis": "Visible short copper between adjacent pads; IC pin numbering from saved SGM2019 datasheet and established marking orientation.",
+      "limitation": "Capacitor pad numbering and value unassigned; no assertion about other branches or the opposite capacitor terminal."
+    },
+    {
+      "from_reference": "U14",
+      "from_pin": 5,
+      "to_reference": "C83",
+      "to_pad_in_frame": "bottom",
+      "frame": 30,
+      "status": "short_surface_connection_visually_supported_not_electrically_measured",
+      "basis": "Visible short copper between adjacent pads; IC pin numbering from saved SGM2019 datasheet and established marking orientation.",
+      "limitation": "Capacitor pad numbering and value unassigned; no assertion about other branches or the opposite capacitor terminal."
+    }
+  ],
+  "unpopulated_sites": [
+    {
+      "reference": "U6",
+      "frame": 98,
+      "observation": "Exposed pads with no mounted component visible",
+      "status": "visibly_unpopulated_reason_unknown",
+      "land_observation": "Seven perimeter lands on each of four sides (28 total), plus central exposed land; package dimensions not measured."
+    },
+    {
+      "reference": "R38",
+      "frame": 98,
+      "observation": "Exposed pads with no mounted component visible",
+      "status": "visibly_unpopulated_reason_unknown"
+    },
+    {
+      "reference": "R36",
+      "frame": 98,
+      "observation": "Exposed pads with no mounted component visible",
+      "status": "visibly_unpopulated_reason_unknown"
+    },
+    {
+      "reference": "R46",
+      "frame": 98,
+      "observation": "Exposed pads with no mounted component visible",
+      "status": "visibly_unpopulated_reason_unknown"
+    },
+    {
+      "reference": "R45",
+      "frame": 98,
+      "observation": "Exposed pads with no mounted component visible",
+      "status": "visibly_unpopulated_reason_unknown"
+    },
+    {
+      "reference": "R42",
+      "frame": 98,
+      "observation": "Exposed pads with no mounted component visible",
+      "status": "visibly_unpopulated_reason_unknown"
+    },
+    {
+      "reference": "C39",
+      "frame": 98,
+      "observation": "Exposed pads with no mounted component visible",
+      "status": "visibly_unpopulated_reason_unknown"
+    },
+    {
+      "reference": "C38",
+      "frame": 98,
+      "observation": "Exposed pads with no mounted component visible",
+      "status": "visibly_unpopulated_reason_unknown"
+    },
+    {
+      "reference": "C42",
+      "frame": 98,
+      "observation": "Exposed pads with no mounted component visible",
+      "status": "visibly_unpopulated_reason_unknown"
+    },
+    {
+      "reference": "C43",
+      "frame": 98,
+      "observation": "Exposed pads with no mounted component visible",
+      "status": "visibly_unpopulated_reason_unknown"
+    },
+    {
+      "reference": "R53",
+      "frame": 98,
+      "observation": "Exposed pads with no mounted component visible",
+      "status": "visibly_unpopulated_reason_unknown"
+    },
+    {
+      "reference": "C44",
+      "frame": 98,
+      "observation": "Exposed pads with no mounted component visible",
+      "status": "visibly_unpopulated_reason_unknown"
+    }
+  ],
+  "decoding_source": "reference/bourns-crp0603-marking.pdf page 3; marking convention only, not manufacturer or tolerance identification."
+}

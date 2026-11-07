@@ -1,0 +1,8 @@
+# KiCad local state, locks, and automatic project history
+*.kicad_prl
+*.lck
+~*.lck
+.history/
+*-backups/
+_autosave-*
+*.bak

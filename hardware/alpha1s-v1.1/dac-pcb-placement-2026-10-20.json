@@ -1,0 +1,107 @@
+{
+  "date": "2026-10-20",
+  "parts": [
+    {
+      "reference": "U4",
+      "footprint": "Alpha1S:MS6324G_SOIC8_KiCad_Reference",
+      "side": "B.Cu",
+      "position_kicad_mm": [
+        383.6,
+        280.8
+      ],
+      "angle_degrees": 180,
+      "orientation_evidence": "Pin1 dot at lower-right in video frames022/026. Upper-left in back-scaled photo, upper-right in mirrored front datum.",
+      "symbol_path": "/4687339a-8373-40c5-9066-28a31d4f03e7/56b2dd67-104e-5bbd-a0f6-32c0ea9f8a5f",
+      "pad_nets": {
+        "1": "unconnected-(U4-BCK-Pad1)",
+        "2": "unconnected-(U4-WS-Pad2)",
+        "3": "unconnected-(U4-DATA-Pad3)",
+        "4": "unconnected-(U4-GND-Pad4)",
+        "5": "unconnected-(U4-VDD-Pad5)",
+        "6": "unconnected-(U4-VOL-Pad6)",
+        "7": "unconnected-(U4-Cap-Pad7)",
+        "8": "unconnected-(U4-VOR-Pad8)"
+      },
+      "pad_centers_kicad_mm": {
+        "1": [
+          386.075,
+          278.895
+        ],
+        "2": [
+          386.075,
+          280.165
+        ],
+        "3": [
+          386.075,
+          281.435
+        ],
+        "4": [
+          386.075,
+          282.705
+        ],
+        "5": [
+          381.125,
+          282.705
+        ],
+        "6": [
+          381.125,
+          281.435
+        ],
+        "7": [
+          381.125,
+          280.165
+        ],
+        "8": [
+          381.125,
+          278.895
+        ]
+      }
+    }
+  ],
+  "status": "placed_linked_and_checked",
+  "limits": [
+    "KiCad reference lands are not measured donor lands.",
+    "Centers are approximate photo-derived positions.",
+    "No tracks or vias added."
+  ],
+  "validation": {
+    "native_footprints": 9,
+    "copper_pads": 152,
+    "new_pad_count": 8,
+    "tracks": 0,
+    "vias": 0,
+    "intercomponent_nets": 13,
+    "existing_connections": "All thirteen intercomponent net memberships preserved.",
+    "drc_geometry_or_library_violations": 0,
+    "schematic_parity": {
+      "missing_footprint": 98
+    },
+    "live_api": "All8 pad coordinates and net names match the saved record.",
+    "gui": "Reopened board and selected U4; verified B.Cu,383.6x280.8mm,180degrees and upper-right pin1 in front datum."
+  },
+  "sources": [
+    {
+      "path": "reference/ms6324-26-rev2.pdf",
+      "sha256": "01298e8441efb83a62cbe36d00d91f5b25cad0067c9a600903d9e36aa9e291e1"
+    },
+    {
+      "path": "reference/back-scaled.png",
+      "sha256": "4d999acadbc6b0b07c20d98d2722984a1519ceb81e6741034dfee7fedc38cfb6"
+    },
+    {
+      "path": "reference/video-4512/fullscan/frame-022.png",
+      "sha256": "47addb06e50173b75c22a5b05f19e037b5838b1b97d17e7917d6b77972a2fc7b"
+    },
+    {
+      "path": "reference/video-4512/fullscan/frame-026.png",
+      "sha256": "e4a9baa58ba8410ba39eba1cdf54dc0def5e1a555978d4d97bea5b419ef1ab62"
+    }
+  ],
+  "land_source": {
+    "source_path": "KiCad footprints/Package_SO.pretty/SOIC-8_3.9x4.9mm_P1.27mm.kicad_mod",
+    "sha256": "074ecb2092b24fa4b4b9cdd7c926fc587b0d7d6d21e7341e57935fd42d36894f",
+    "credit": "KiCad footprint library contributors",
+    "changes": "Renamed project copy; removed 3D model, user text, silkscreen triangle and generator property; copper geometry retained.",
+    "scope": "Reference lands matching MOSA SOP8 package envelope; not manufacturer recommended lands or exact measured donor pads."
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "status": "photo_markings_not_electrically_measured",
+  "source": "reference/front-scaled.png",
+  "source_sha256": "0be5236cf0fcfc8fd9010b5238dff4a01dd098f07138822550bad247b1cb5d78",
+  "datum": "Front view with ports at top; board bounding box top-left is 0,0 mm",
+  "marking_interpretation_sources": [
+    {
+      "url": "https://datasheets.kyocera-avx.com/TAJ.pdf",
+      "pages": [
+        1,
+        2
+      ],
+      "use": "107 is 100 uF in the pF coding scheme; C is 16 V in this manufacturer convention; band marks anode. This does not establish donor series."
+    }
+  ],
+  "limitations": [
+    "Manufacturer and exact series not confirmed.",
+    "Voltage and band polarity interpretations are conditional on the AVX marking convention.",
+    "No capacitance, ESR, tolerance, height, pad geometry or connectivity measured.",
+    "Crop boxes include silkscreen and solder; they are not component body dimensions."
+  ],
+  "components": [
+    {
+      "reference": "C23",
+      "side": "front",
+      "marking": "107 C",
+      "secondary_line": "unassigned; appears 80AT4-like",
+      "nominal_capacitance_uF_from_marking": 100,
+      "candidate_voltage_V": 16,
+      "voltage_status": "conditional_marking_decode_not_confirmed",
+      "visible_band_side_in_front_view": "left",
+      "candidate_positive_terminal_side": "left",
+      "manufacturer": null,
+      "series": null,
+      "tolerance_percent": null,
+      "footprint": null,
+      "nets": null,
+      "source_crop_box_px": [
+        390,
+        1073,
+        848,
+        1376
+      ],
+      "crop_file": "reference/capacitors/C23.png",
+      "crop_sha256": "fa18e343423d5b326df5f62852c54dc5f1130683c23f4465671b26ca4e67da5d"
+    },
+    {
+      "reference": "C64",
+      "side": "front",
+      "marking": "107 C",
+      "secondary_line": "unassigned; appears 80AT4-like",
+      "nominal_capacitance_uF_from_marking": 100,
+      "candidate_voltage_V": 16,
+      "voltage_status": "conditional_marking_decode_not_confirmed",
+      "visible_band_side_in_front_view": "left",
+      "candidate_positive_terminal_side": "left",
+      "manufacturer": null,
+      "series": null,
+      "tolerance_percent": null,
+      "footprint": null,
+      "nets": null,
+      "source_crop_box_px": [
+        381,
+        1497,
+        814,
+        1792
+      ],
+      "crop_file": "reference/capacitors/C64.png",
+      "crop_sha256": "3f3cb0a05181050b62d6da522fe53a2f8f21da65a11fbcbdcf6a327ccd7a2122"
+    },
+    {
+      "reference": "C65",
+      "side": "front",
+      "marking": "107 C",
+      "secondary_line": "unassigned; appears 80AT4-like",
+      "nominal_capacitance_uF_from_marking": 100,
+      "candidate_voltage_V": 16,
+      "voltage_status": "conditional_marking_decode_not_confirmed",
+      "visible_band_side_in_front_view": "left",
+      "candidate_positive_terminal_side": "left",
+      "manufacturer": null,
+      "series": null,
+      "tolerance_percent": null,
+      "footprint": null,
+      "nets": null,
+      "source_crop_box_px": [
+        377,
+        1922,
+        814,
+        2268
+      ],
+      "crop_file": "reference/capacitors/C65.png",
+      "crop_sha256": "f6bea6f186590bc8aa0792f1504c2fbef49afc1000eec15eb67e8ae5b0ff6033"
+    },
+    {
+      "reference": "C66",
+      "side": "front",
+      "marking": "107 C",
+      "secondary_line": "unassigned; appears 80AT4-like",
+      "nominal_capacitance_uF_from_marking": 100,
+      "candidate_voltage_V": 16,
+      "voltage_status": "conditional_marking_decode_not_confirmed",
+      "visible_band_side_in_front_view": "right",
+      "candidate_positive_terminal_side": "right",
+      "manufacturer": null,
+      "series": null,
+      "tolerance_percent": null,
+      "footprint": null,
+      "nets": null,
+      "source_crop_box_px": [
+        2043,
+        892,
+        2476,
+        1229
+      ],
+      "crop_file": "reference/capacitors/C66.png",
+      "crop_sha256": "45775d9165b378ea31a7754a3b7a7761dacedd8df70bd6686826641261aa6d9c"
+    },
+    {
+      "reference": "C67",
+      "side": "front",
+      "marking": "107 C",
+      "secondary_line": "unassigned; appears 80AT4-like",
+      "nominal_capacitance_uF_from_marking": 100,
+      "candidate_voltage_V": 16,
+      "voltage_status": "conditional_marking_decode_not_confirmed",
+      "visible_band_side_in_front_view": "right",
+      "candidate_positive_terminal_side": "right",
+      "manufacturer": null,
+      "series": null,
+      "tolerance_percent": null,
+      "footprint": null,
+      "nets": null,
+      "source_crop_box_px": [
+        2043,
+        1229,
+        2476,
+        1463
+      ],
+      "crop_file": "reference/capacitors/C67.png",
+      "crop_sha256": "80ee3c420dd79ea721a6dc7f25746a56b84a2b9cf95880723a3c9810efc55ce3"
+    }
+  ]
+}

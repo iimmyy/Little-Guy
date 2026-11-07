@@ -1,0 +1,135 @@
+{
+  "date": "2026-10-20",
+  "status": "prepared_unmeasured",
+  "source": "reference/back-scaled.png",
+  "source_sha256": "4d999acadbc6b0b07c20d98d2722984a1519ceb81e6741034dfee7fedc38cfb6",
+  "points": {
+    "A": {
+      "pixel": [
+        412,
+        2110
+      ],
+      "description": "U14 pin2, middle lead on three-lead side"
+    },
+    "B": {
+      "pixel": [
+        520,
+        2068
+      ],
+      "description": "U14 pin5, upper lead on two-lead side"
+    },
+    "C": {
+      "pixel": [
+        584,
+        2068
+      ],
+      "description": "C83 upper terminal, schematic pin1"
+    },
+    "D": {
+      "pixel": [
+        338,
+        2007
+      ],
+      "description": "C82 upper terminal, schematic pin2"
+    },
+    "E": {
+      "pixel": [
+        583,
+        2133
+      ],
+      "description": "C83 lower terminal, schematic pin2"
+    },
+    "F": {
+      "pixel": [
+        2190,
+        1868
+      ],
+      "description": "U13 pin2, middle lead on three-lead side"
+    },
+    "G": {
+      "pixel": [
+        2156,
+        2121
+      ],
+      "description": "U12 pin8, uppermost right lead"
+    },
+    "H": {
+      "pixel": [
+        1000,
+        2421
+      ],
+      "description": "U4 pin4, lowermost left lead"
+    }
+  },
+  "tests": [
+    {
+      "id": "C00",
+      "a": "Probe tip",
+      "b": "Probe tip",
+      "purpose": "Touch probes together; record the lead/contact baseline.",
+      "result": null
+    },
+    {
+      "id": "C01",
+      "a": "B",
+      "b": "C",
+      "purpose": "Check an already photo-traced short connection before testing unknowns.",
+      "result": null
+    },
+    {
+      "id": "C02",
+      "a": "A",
+      "b": "D",
+      "purpose": "Test whether C82 opposite terminal joins U14 ground.",
+      "result": null
+    },
+    {
+      "id": "C03",
+      "a": "A",
+      "b": "E",
+      "purpose": "Test whether C83 opposite terminal joins U14 ground.",
+      "result": null
+    },
+    {
+      "id": "C04",
+      "a": "A",
+      "b": "F",
+      "purpose": "Test whether the two regulator ground pins are connected.",
+      "result": null
+    },
+    {
+      "id": "C05",
+      "a": "A",
+      "b": "G",
+      "purpose": "Test amplifier signal ground against regulator ground.",
+      "result": null
+    },
+    {
+      "id": "C06",
+      "a": "A",
+      "b": "H",
+      "purpose": "Test DAC ground against regulator ground.",
+      "result": null
+    }
+  ],
+  "limits": [
+    "No electrical results yet.",
+    "Beep alone does not establish direct copper continuity.",
+    "No new donor nets entered.",
+    "Marked locations are manual photo selections; not physical coordinate measurements."
+  ],
+  "outputs": [
+    "review/continuity-first-pass.html",
+    "review/continuity-first-pass.csv",
+    "review/continuity-first-pass.md",
+    "review/continuity-u14.png",
+    "review/continuity-u13.png",
+    "review/continuity-u12.png",
+    "review/continuity-u4.png"
+  ],
+  "verification": {
+    "probe_markers": "All eight locations visually reviewed on the four annotated PNGs.",
+    "html_browser_test": "Not performed: local file navigation rejected by browser security policy. Static PNGs and Markdown provided.",
+    "electrical_measurements": "Not performed; all seven results remain null."
+  }
+}

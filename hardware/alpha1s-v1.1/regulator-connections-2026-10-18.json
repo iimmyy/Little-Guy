@@ -1,0 +1,80 @@
+{
+  "date": "2026-10-18",
+  "source": "video-fullscan-2026-10-18.json",
+  "status": "photo_traced_partial_nets_not_continuity_measured",
+  "capacitor_numbering": "All five are non-polarized schematic capacitor symbols. Pin1 is defined here as the photograph-relative terminal listed for each part; pin2 is its opposite. These numbers are a reconstruction convention, not donor markings.",
+  "connections": [
+    {
+      "ic": "U13",
+      "ic_pin": "5",
+      "capacitor": "C79",
+      "capacitor_pin": "1",
+      "physical_terminal_in_frame": "left",
+      "frame": "reference/video-4512/fullscan/frame-047.png",
+      "opposite_terminal_connection": null,
+      "value": null
+    },
+    {
+      "ic": "U13",
+      "ic_pin": "4",
+      "capacitor": "C80",
+      "capacitor_pin": "1",
+      "physical_terminal_in_frame": "left",
+      "frame": "reference/video-4512/fullscan/frame-047.png",
+      "opposite_terminal_connection": null,
+      "value": null
+    },
+    {
+      "ic": "U14",
+      "ic_pin": "5",
+      "capacitor": "C83",
+      "capacitor_pin": "1",
+      "physical_terminal_in_frame": "bottom",
+      "frame": "reference/video-4512/fullscan/frame-030.png",
+      "opposite_terminal_connection": null,
+      "value": null
+    },
+    {
+      "ic": "U14",
+      "ic_pin": "4",
+      "capacitor": "C81",
+      "capacitor_pin": "1",
+      "physical_terminal_in_frame": "bottom",
+      "frame": "reference/video-4512/fullscan/frame-030.png",
+      "opposite_terminal_connection": null,
+      "value": null
+    },
+    {
+      "ic": "U14",
+      "ic_pin": "1",
+      "capacitor": "C82",
+      "capacitor_pin": "1",
+      "physical_terminal_in_frame": "top",
+      "frame": "reference/video-4512/fullscan/frame-030.png",
+      "opposite_terminal_connection": null,
+      "value": null
+    }
+  ],
+  "limits": [
+    "Capacitance, dielectric, voltage rating, manufacturer and footprint unassigned.",
+    "Opposite terminals deliberately left open because their connections have not been recovered.",
+    "Each pair records an observed segment, not proof that the complete donor net has only these two nodes.",
+    "No ground, supply or enable net assignments inferred from a typical application schematic."
+  ],
+  "validation": {
+    "native_symbols": 23,
+    "numbered_symbol_pins": 228,
+    "wire_segments": 14,
+    "inter_component_nets": 5,
+    "netlist": "Five expected regulator/capacitor pairs verified exactly; all five opposite capacitor pins are singleton unconnected nets. Existing internal stacked-pin groups in U3/U8 are not inter-component connections.",
+    "svg_export": "success",
+    "native_gui": "Reopened and visually reviewed; symbols, wires and labels readable.",
+    "erc": {
+      "total": 275,
+      "pin_not_connected": 211,
+      "pin_not_driven": 34,
+      "power_pin_not_driven": 30,
+      "other_categories": 0
+    }
+  }
+}

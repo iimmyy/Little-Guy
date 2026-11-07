@@ -1,0 +1,342 @@
+{
+  "date": "2026-10-18",
+  "parts": [
+    {
+      "reference": "Q2",
+      "footprint": "Alpha1S:IRF9310_SO8_Manufacturer_Recommended",
+      "side": "B.Cu",
+      "position_kicad_mm": [
+        371.4,
+        240.3
+      ],
+      "angle_degrees": -90,
+      "orientation_evidence": "Package dot lower-left in frame142; upper-right in back-scaled photo.",
+      "symbol_path": "/4687339a-8373-40c5-9066-28a31d4f03e7/5f991b92-2cf8-5161-a5f1-2166c05a4d1d",
+      "pad_nets": {
+        "1": "unconnected-(Q2-S-Pad1)",
+        "2": "unconnected-(Q2-S-Pad2)",
+        "3": "unconnected-(Q2-S-Pad3)",
+        "4": "unconnected-(Q2-G-Pad4)",
+        "5": "unconnected-(Q2-D-Pad5)",
+        "6": "unconnected-(Q2-D-Pad6)",
+        "7": "unconnected-(Q2-D-Pad7)",
+        "8": "unconnected-(Q2-D-Pad8)"
+      },
+      "pad_centers_kicad_mm": {
+        "1": [
+          369.495,
+          237.96
+        ],
+        "2": [
+          370.765,
+          237.96
+        ],
+        "3": [
+          372.035,
+          237.96
+        ],
+        "4": [
+          373.305,
+          237.96
+        ],
+        "5": [
+          373.305,
+          242.64
+        ],
+        "6": [
+          372.035,
+          242.64
+        ],
+        "7": [
+          370.765,
+          242.64
+        ],
+        "8": [
+          369.495,
+          242.64
+        ]
+      }
+    },
+    {
+      "reference": "U12",
+      "footprint": "Alpha1S:PAM8003_SO16_Manufacturer_Recommended",
+      "side": "B.Cu",
+      "position_kicad_mm": [
+        359.6,
+        279.5
+      ],
+      "angle_degrees": 0,
+      "orientation_evidence": "Package dot upper-left in frame007/frame02s; lower-right in back-scaled photo.",
+      "symbol_path": "/4687339a-8373-40c5-9066-28a31d4f03e7/6ff31163-985a-55ed-9014-502883baadbf/fe9e373b-b2ff-5db1-84bf-306e25627520",
+      "pad_nets": {
+        "1": "unconnected-(U12-PVDDL-Pad1)",
+        "2": "unconnected-(U12--OUTL-Pad2)",
+        "3": "unconnected-(U12-PGNDL-Pad3)",
+        "4": "unconnected-(U12-+OUTL-Pad4)",
+        "5": "Net-(U12-~{SHDN})",
+        "6": "Net-(U12-VREF)",
+        "7": "Net-(U12-INL)",
+        "8": "unconnected-(U12-GND-Pad8)",
+        "9": "unconnected-(U12-VDD-Pad9)",
+        "10": "unconnected-(U12-INR-Pad10)",
+        "11": "unconnected-(U12-NC-Pad11)",
+        "12": "unconnected-(U12-VOLUME-Pad12)",
+        "13": "unconnected-(U12-+OUTR-Pad13)",
+        "14": "unconnected-(U12-PGNDR-Pad14)",
+        "15": "unconnected-(U12--OUTR-Pad15)",
+        "16": "unconnected-(U12-PVDDR-Pad16)"
+      },
+      "pad_centers_kicad_mm": {
+        "1": [
+          357.125,
+          283.945
+        ],
+        "2": [
+          357.125,
+          282.675
+        ],
+        "3": [
+          357.125,
+          281.405
+        ],
+        "4": [
+          357.125,
+          280.135
+        ],
+        "5": [
+          357.125,
+          278.865
+        ],
+        "6": [
+          357.125,
+          277.595
+        ],
+        "7": [
+          357.125,
+          276.325
+        ],
+        "8": [
+          357.125,
+          275.055
+        ],
+        "9": [
+          362.075,
+          275.055
+        ],
+        "10": [
+          362.075,
+          276.325
+        ],
+        "11": [
+          362.075,
+          277.595
+        ],
+        "12": [
+          362.075,
+          278.865
+        ],
+        "13": [
+          362.075,
+          280.135
+        ],
+        "14": [
+          362.075,
+          281.405
+        ],
+        "15": [
+          362.075,
+          282.675
+        ],
+        "16": [
+          362.075,
+          283.945
+        ]
+      }
+    },
+    {
+      "reference": "U10",
+      "footprint": "Alpha1S:BM77SPP03MC2_Manufacturer_Recommended",
+      "side": "F.Cu",
+      "position_kicad_mm": [
+        397,
+        271.2
+      ],
+      "angle_degrees": -90,
+      "orientation_evidence": "Unique missing pad between29and30 lies near right end of lower row; seven-pad row lies left. Manufacturer Fig1-3 matches 90 degrees clockwise in front-scaled photo.",
+      "symbol_path": "/4687339a-8373-40c5-9066-28a31d4f03e7/5436eb54-e53d-5ede-a9d0-d84ba1bc2202",
+      "pad_nets": {
+        "1": "unconnected-(U10-GND-Pad1)",
+        "2": "unconnected-(U10-BAT_IN-Pad2)",
+        "3": "unconnected-(U10-SW_BTN-Pad3)",
+        "4": "unconnected-(U10-LDO33_O-Pad4)",
+        "5": "unconnected-(U10-VDD_IO-Pad5)",
+        "6": "unconnected-(U10-LDO18_O-Pad6)",
+        "7": "unconnected-(U10-WAKEUP-Pad7)",
+        "8": "unconnected-(U10-PMULDO_O-Pad8)",
+        "9": "unconnected-(U10-P04-Pad9)",
+        "10": "unconnected-(U10-P15-Pad10)",
+        "11": "unconnected-(U10-P12{slash}SCL-Pad11)",
+        "12": "unconnected-(U10-P13{slash}SDA-Pad12)",
+        "13": "unconnected-(U10-P17{slash}CTS-Pad13)",
+        "14": "unconnected-(U10-P05-Pad14)",
+        "15": "unconnected-(U10-P00{slash}RTS-Pad15)",
+        "16": "unconnected-(U10-P20-Pad16)",
+        "17": "unconnected-(U10-P24-Pad17)",
+        "18": "unconnected-(U10-EAN-Pad18)",
+        "19": "unconnected-(U10-RST_N-Pad19)",
+        "20": "unconnected-(U10-RXD-Pad20)",
+        "21": "unconnected-(U10-TXD-Pad21)",
+        "22": "unconnected-(U10-P31-Pad22)",
+        "23": "unconnected-(U10-P32-Pad23)",
+        "24": "unconnected-(U10-P33-Pad24)",
+        "25": "unconnected-(U10-P34-Pad25)",
+        "26": "unconnected-(U10-P36-Pad26)",
+        "27": "unconnected-(U10-P37-Pad27)",
+        "28": "unconnected-(U10-LED1-Pad28)",
+        "29": "unconnected-(U10-GND-Pad29)",
+        "30": "unconnected-(U10-BT_RF-Pad30)"
+      },
+      "pad_centers_kicad_mm": {
+        "1": [
+          403.4,
+          265.45
+        ],
+        "2": [
+          402.3,
+          265.45
+        ],
+        "3": [
+          401.2,
+          265.45
+        ],
+        "4": [
+          400.1,
+          265.45
+        ],
+        "5": [
+          399.0,
+          265.45
+        ],
+        "6": [
+          397.9,
+          265.45
+        ],
+        "7": [
+          396.8,
+          265.45
+        ],
+        "8": [
+          395.7,
+          265.45
+        ],
+        "9": [
+          394.6,
+          265.45
+        ],
+        "10": [
+          393.5,
+          265.45
+        ],
+        "11": [
+          392.4,
+          265.45
+        ],
+        "12": [
+          391.3,
+          265.45
+        ],
+        "13": [
+          389.75,
+          267.9
+        ],
+        "14": [
+          389.75,
+          269.0
+        ],
+        "15": [
+          389.75,
+          270.1
+        ],
+        "16": [
+          389.75,
+          271.2
+        ],
+        "17": [
+          389.75,
+          272.3
+        ],
+        "18": [
+          389.75,
+          273.4
+        ],
+        "19": [
+          389.75,
+          274.5
+        ],
+        "20": [
+          391.3,
+          276.95
+        ],
+        "21": [
+          392.4,
+          276.95
+        ],
+        "22": [
+          393.5,
+          276.95
+        ],
+        "23": [
+          394.6,
+          276.95
+        ],
+        "24": [
+          395.7,
+          276.95
+        ],
+        "25": [
+          396.8,
+          276.95
+        ],
+        "26": [
+          397.9,
+          276.95
+        ],
+        "27": [
+          399.0,
+          276.95
+        ],
+        "28": [
+          400.1,
+          276.95
+        ],
+        "29": [
+          401.2,
+          276.95
+        ],
+        "30": [
+          403.4,
+          276.95
+        ]
+      }
+    }
+  ],
+  "status": "placed_linked_and_checked",
+  "limits": [
+    "Manufacturer lands are not measured donor lands.",
+    "Centers are approximate photo-derived positions.",
+    "No tracks or vias added."
+  ],
+  "net_encoding_note": "KiCad PCB canonical names use {slash} for slashes inside U10 pin labels; XML exports decode these to /.",
+  "validation": {
+    "native_footprints": 7,
+    "copper_pads": 80,
+    "tracks": 0,
+    "vias": 0,
+    "new_pad_count": 54,
+    "drc_geometry_or_library_violations": 0,
+    "schematic_parity_missing_footprints": 95,
+    "other_parity_issues": 0,
+    "live_api": "All54 new pads match recorded world coordinates and net names; seven footprints loaded.",
+    "gui": "Q2, U12 and U10 selected and visually checked in reopened editor."
+  }
+}

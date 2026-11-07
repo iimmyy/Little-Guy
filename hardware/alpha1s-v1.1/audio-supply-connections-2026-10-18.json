@@ -1,0 +1,75 @@
+{
+  "date": "2026-10-18",
+  "schematic": "audio-amplifier-region.kicad_sch",
+  "expanded_net": [
+    "U12.9",
+    "U13.5",
+    "C76.1",
+    "C79.1"
+  ],
+  "existing_net_preserved": [
+    "U13.4",
+    "C80.1"
+  ],
+  "terminal_convention": "C76,C79,C80 pin1=left terminal in frame007/frame06s; pin2=right.",
+  "evidence": "Continuous visible surface copper from amplifier bottom-right lead9 to C76 left pad, descending and bending toward U13 upper-right output5 and C79 left pad. Short separate neck joins U13 lower-right bypass4 to C80 left pad. Checked frame06s with frame007/008.",
+  "limits": [
+    "Photo-traced; not electrically measured.",
+    "Capacitances and opposite terminals unresolved.",
+    "No ground or other branches inferred."
+  ],
+  "sources": [
+    {
+      "path": "reference/video-4512/frame-06s.png",
+      "sha256": "946b6c4fa1aa78179275db2719417a607abb9cc50b0ad3e3ac3827d59494a688"
+    },
+    {
+      "path": "reference/video-4512/fullscan/frame-007.png",
+      "sha256": "32ec2c151c552d27234cdeb79f78c79eadbde8572aeb5ac45ba5815fe71f22a9"
+    },
+    {
+      "path": "reference/video-4512/fullscan/frame-008.png",
+      "sha256": "a8991e7aa5d2f2b43ff13185cde14185c65faeb625122fe2b6212e3e4971f77b"
+    }
+  ],
+  "board_net_changes": [
+    [
+      "U13",
+      "5",
+      "Net-(U13-OUT)",
+      "Net-(U12-VDD)"
+    ],
+    [
+      "U12",
+      "9",
+      "unconnected-(U12-VDD-Pad9)",
+      "Net-(U12-VDD)"
+    ]
+  ],
+  "validation": {
+    "symbols": 103,
+    "numbered_pins": 389,
+    "sheets": 5,
+    "intercomponent_nets": 11,
+    "changed_net": "Existing U13.5-C79.1 net expanded to include U12.9 and new C76.1. All other net memberships preserved exactly.",
+    "duplicate_references": 0,
+    "erc": {
+      "pin_not_connected": 358,
+      "pin_not_driven": 32,
+      "power_pin_not_driven": 29,
+      "other": 0
+    },
+    "board": {
+      "footprints": 8,
+      "pads": 144,
+      "tracks": 0,
+      "vias": 0,
+      "geometry_or_library_violations": 0,
+      "missing_footprints": 95,
+      "other_parity": 0
+    },
+    "visual": "Updated root and audio PDF pages rendered and reviewed; no overlaps.",
+    "inventory_components": 136
+  },
+  "status": "entered_and_checked"
+}

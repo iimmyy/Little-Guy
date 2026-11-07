@@ -1,0 +1,19 @@
+id,target,measurement,conditions,result,units,evidence
+M01,Board,Outline dimensions and cutouts,Partial dimensions recorded in M01L/W/N/D; shoulder offsets and corner radii pending,,mm,
+M01L,Board,Overall length,User caliper report; ports end defined as top,68.45,mm,User message 2026-10-17
+M01W,Board,Maximum width,User caliper report,72.08,mm,User message 2026-10-17
+M01N,Board,Narrow top width,User caliper report; USB and charging end,56.15,mm,User message 2026-10-17
+M01D,Board,Top edge to widening shoulders,Approximate user report; refine before manufacturing,15,mm,User message 2026-10-17
+M02,Board,Thickness,User caliper report of bare PCB thickness,1.64,mm,User message 2026-10-18: 1.64mm
+M03,Mounting holes,Centers and diameters relative to chosen datum,All four hole diameters recorded in M03D; hole centers pending,,mm,
+M03D,All four mounting holes,Diameter,User reports all four holes are the same diameter,3.20,mm,User messages 2026-10-18: 3.20 for the circle; all four holes are the same
+M04,Connectors,Pitch mating key and height,All power disconnected,,mm,
+M05,Battery,Full label voltage capacity and chemistry,Photograph label without opening pack,,,
+M06,Adapter,Output rating and polarity,Photograph label,,,
+M07,J2 BAT,Map four contacts and ground continuity,All power disconnected; positions referenced from marked plus end; not pin numbers,,,
+M08,Power rails,Record voltage at verified test points,Original supply arrangement after contact mapping,,V,
+M09,J7-J10,Map ground supply and signal contacts,All power disconnected for continuity mapping,,,
+M10,Servo interface,Signal levels timing and captured messages,Supported donor after supply and signal identification,,,
+M11,Board,Layer count and hidden connectivity,Non-destructive inspection first,,,
+M12,U8 and U3,Complete chip markings,Direct reading of physical donor chips by user,U8 STM32F103RDT6; U3 BQ24133,,User readings 2026-10-18; chip-readings-2026-10-18.json
+M13,Replica firmware,Establish compatible firmware source or implementation,Identify controller and readout constraints before acquisition,,,

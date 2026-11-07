@@ -1,0 +1,296 @@
+{
+  "reference": "J6",
+  "status": "photo_recovered_geometry_not_measured",
+  "populated": false,
+  "visible_holes": 9,
+  "pattern": "Two rows, five columns, missing position 10",
+  "pitch_candidate_mm": 2.0,
+  "pitch_evidence": {
+    "front": {
+      "column_pitch_mm": 2.019,
+      "row_pitch_mm": 2.04
+    },
+    "back": {
+      "column_pitch_mm": 2.026,
+      "row_pitch_mm": 1.956
+    }
+  },
+  "drill_diameter_mm": null,
+  "pad_diameter_mm": null,
+  "nominal_pitch_confirmed": false,
+  "datum": "Front view, ports at top; PCB upper-left 0,0 mm",
+  "numbering_evidence": "Silkscreen end labels interpreted as 1/2/9 and square pad 1; intermediate odd/even sequence inferred. Confirm against donor before assigning nets.",
+  "front_photo_pin_rows": [
+    [
+      1,
+      3,
+      5,
+      7,
+      9
+    ],
+    [
+      2,
+      4,
+      6,
+      8,
+      null
+    ]
+  ],
+  "contacts": [
+    {
+      "pin": 1,
+      "front_crop_center_px": [
+        94,
+        97
+      ],
+      "back_crop_center_px": [
+        375,
+        70
+      ],
+      "front_view_from_front_mm": [
+        29.167,
+        45.719
+      ],
+      "front_view_from_back_mm": [
+        29.656,
+        45.693
+      ],
+      "draft_center_mm": [
+        29.41,
+        45.71
+      ],
+      "two_view_difference_mm": 0.49,
+      "electrical_net": null
+    },
+    {
+      "pin": 2,
+      "front_crop_center_px": [
+        94,
+        176
+      ],
+      "back_crop_center_px": [
+        376,
+        146
+      ],
+      "front_view_from_front_mm": [
+        29.167,
+        47.753
+      ],
+      "front_view_from_back_mm": [
+        29.63,
+        47.65
+      ],
+      "draft_center_mm": [
+        29.4,
+        47.7
+      ],
+      "two_view_difference_mm": 0.475,
+      "electrical_net": null
+    },
+    {
+      "pin": 3,
+      "front_crop_center_px": [
+        173,
+        97
+      ],
+      "back_crop_center_px": [
+        297,
+        70
+      ],
+      "front_view_from_front_mm": [
+        31.2,
+        45.719
+      ],
+      "front_view_from_back_mm": [
+        31.664,
+        45.693
+      ],
+      "draft_center_mm": [
+        31.43,
+        45.71
+      ],
+      "two_view_difference_mm": 0.464,
+      "electrical_net": null
+    },
+    {
+      "pin": 4,
+      "front_crop_center_px": [
+        172,
+        176
+      ],
+      "back_crop_center_px": [
+        297,
+        146
+      ],
+      "front_view_from_front_mm": [
+        31.175,
+        47.753
+      ],
+      "front_view_from_back_mm": [
+        31.664,
+        47.65
+      ],
+      "draft_center_mm": [
+        31.42,
+        47.7
+      ],
+      "two_view_difference_mm": 0.5,
+      "electrical_net": null
+    },
+    {
+      "pin": 5,
+      "front_crop_center_px": [
+        251,
+        97
+      ],
+      "back_crop_center_px": [
+        218,
+        69
+      ],
+      "front_view_from_front_mm": [
+        33.208,
+        45.719
+      ],
+      "front_view_from_back_mm": [
+        33.697,
+        45.668
+      ],
+      "draft_center_mm": [
+        33.45,
+        45.69
+      ],
+      "two_view_difference_mm": 0.492,
+      "electrical_net": null
+    },
+    {
+      "pin": 6,
+      "front_crop_center_px": [
+        251,
+        176
+      ],
+      "back_crop_center_px": [
+        218,
+        145
+      ],
+      "front_view_from_front_mm": [
+        33.208,
+        47.753
+      ],
+      "front_view_from_back_mm": [
+        33.697,
+        47.624
+      ],
+      "draft_center_mm": [
+        33.45,
+        47.69
+      ],
+      "two_view_difference_mm": 0.506,
+      "electrical_net": null
+    },
+    {
+      "pin": 7,
+      "front_crop_center_px": [
+        330,
+        96
+      ],
+      "back_crop_center_px": [
+        139,
+        69
+      ],
+      "front_view_from_front_mm": [
+        35.242,
+        45.693
+      ],
+      "front_view_from_back_mm": [
+        35.731,
+        45.668
+      ],
+      "draft_center_mm": [
+        35.49,
+        45.68
+      ],
+      "two_view_difference_mm": 0.49,
+      "electrical_net": null
+    },
+    {
+      "pin": 8,
+      "front_crop_center_px": [
+        329,
+        176
+      ],
+      "back_crop_center_px": [
+        139,
+        145
+      ],
+      "front_view_from_front_mm": [
+        35.216,
+        47.753
+      ],
+      "front_view_from_back_mm": [
+        35.731,
+        47.624
+      ],
+      "draft_center_mm": [
+        35.47,
+        47.69
+      ],
+      "two_view_difference_mm": 0.531,
+      "electrical_net": null
+    },
+    {
+      "pin": 9,
+      "front_crop_center_px": [
+        408,
+        97
+      ],
+      "back_crop_center_px": [
+        61,
+        68
+      ],
+      "front_view_from_front_mm": [
+        37.25,
+        45.719
+      ],
+      "front_view_from_back_mm": [
+        37.739,
+        45.642
+      ],
+      "draft_center_mm": [
+        37.49,
+        45.68
+      ],
+      "two_view_difference_mm": 0.495,
+      "electrical_net": null
+    }
+  ],
+  "native_items": [
+    "72e19995-b2a9-4631-a1bc-85de71ce5619",
+    "4bbf07f6-c0c0-4ea0-8850-9e5ac273795c",
+    "9a483324-cffd-4908-bf84-aee09caba608",
+    "c21c231b-5006-413b-9bd3-cf8fe4429a77",
+    "415dab10-570d-41b1-bcde-8e1ab1b94eac",
+    "a8082708-19c9-40b3-a777-72505de0541b",
+    "43d6ce41-1a98-410d-9b4f-8b9042bb749b",
+    "beefe3c1-3e66-4b17-b345-690632dfc646",
+    "1457bd33-45c1-4d0c-ac12-9195a84dd3ff",
+    "07ca7f0a-61e9-4d20-8117-a1abe58d3594",
+    "882e7a7d-d82a-4c24-a737-c1f396eadd71",
+    "92801c37-aade-45c7-8384-01189e884757",
+    "e0a1e1fc-a292-4242-ad3f-6a946b20bfef",
+    "95f8591c-2f12-47eb-935b-c85af08da213",
+    "0c5cc3a5-4eef-4b34-a96b-6776bb256593",
+    "dcc668ee-b16a-4b4b-91e6-69502c99afd1",
+    "e27b3a96-56da-41fe-b94a-94ac3caa38a1",
+    "e315ce63-2773-4d0f-b5ba-c1f8be148960",
+    "fe36b8c0-14f9-4f2c-9c42-9c5960fb4f34",
+    "6af49992-a482-4a4b-98c4-895f3e624d09",
+    "50471183-cff8-41fe-9111-3d0049b49d19",
+    "e3a444f7-545c-4e76-ae9a-d870292299d8",
+    "a72ba332-3fb7-4a4f-a0f2-10790b5c2de6",
+    "a507f972-8569-465a-a20b-aa4119b65475",
+    "fab163a4-fcba-45c1-bd1f-e45b35a96a59",
+    "b96348b0-74f4-4569-a145-b9bdcfb2260c",
+    "a2a319b3-16f7-4789-8d26-dbe6b1809095",
+    "9ba6a238-5121-45ad-9979-405f9c7d6324"
+  ]
+}

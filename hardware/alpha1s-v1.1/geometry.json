@@ -1,0 +1,51 @@
+{
+  "units": "mm",
+  "source": "User caliper readings, 2026-10-17 and 2026-10-18",
+  "orientation": "Switches, USB and charging socket at the top",
+  "length": {
+    "value": 68.45,
+    "status": "user_reported"
+  },
+  "maximum_width": {
+    "value": 72.08,
+    "status": "user_reported"
+  },
+  "narrow_top_width": {
+    "value": 56.15,
+    "status": "user_reported",
+    "note": "Later spoken as 56 mm; initial precise reading retained"
+  },
+  "narrow_top_depth": {
+    "value": 15.0,
+    "status": "approximate_user_reported"
+  },
+  "left_shoulder_offset": {
+    "value": null,
+    "status": "unmeasured"
+  },
+  "right_shoulder_offset": {
+    "value": null,
+    "status": "unmeasured"
+  },
+  "corner_radii": {
+    "value": null,
+    "status": "unmeasured"
+  },
+  "thickness": {
+    "value": 1.64,
+    "status": "user_reported",
+    "source": "User message 2026-10-18: 1.64mm"
+  },
+  "derived_combined_shoulder_offsets": 15.93,
+  "draft_only": {
+    "symmetric_neck_offset": 7.965,
+    "note": "Centered only for the review sketch; individual shoulders not measured. Sharp corners are placeholders."
+  },
+  "mounting_hole_diameter": {
+    "value": 3.2,
+    "count": 4,
+    "status": "user_reported",
+    "source": "User caliper reading and clarification 2026-10-18: all four holes are the same",
+    "note": "Applies to all four mounting holes. Center coordinates remain unmeasured."
+  }
+}

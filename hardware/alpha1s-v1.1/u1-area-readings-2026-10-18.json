@@ -1,0 +1,77 @@
+{
+  "date": "2026-10-18",
+  "source": "Direct user reading of physical donor in this chat",
+  "U1": {
+    "reported_markings_verbatim": [
+      "04 equals 9 2 Y",
+      "zero four equals",
+      "zero four nine two Y"
+    ],
+    "normalized_marking": "04=92Y",
+    "normalization_note": "Equals separator explicitly supplied twice; latest repetition spells the alphanumeric characters 0492Y. First character explicitly zero, not G or C.",
+    "lead_count": 6,
+    "lead_count_evidence": "User confirmed three on each side",
+    "part": null,
+    "status": "marking_recorded_identity_unresolved",
+    "excluded_matches": [
+      {
+        "part": "RT8057AGJ5",
+        "reason": "Manufacturer 04= marking matches, but TSOT-23-5 has five leads; physical donor has six.",
+        "source": "reference/rt8057a-ds8057a-01.pdf, pages 1-2"
+      }
+    ],
+    "limitations": [
+      "Do not substitute a different character for the confirmed zero.",
+      "No date decoded from 92Y.",
+      "No pin map, footprint or connectivity assigned."
+    ]
+  },
+  "L1": {
+    "reported_marking": "H dot",
+    "reference_confirmed_by_user": true,
+    "nominal_inductance_uH": null,
+    "status": "reference_and_marking_recorded_value_unknown"
+  },
+  "resistors": [
+    {
+      "reference": "R3",
+      "marking": "103",
+      "nominal_ohms": 10000,
+      "decode": "10 x 10^3",
+      "scheme": "three-digit"
+    },
+    {
+      "reference": "R4",
+      "marking": "563",
+      "nominal_ohms": 56000,
+      "decode": "56 x 10^3",
+      "scheme": "three-digit"
+    },
+    {
+      "reference": "R5",
+      "marking": "85B",
+      "nominal_ohms": 7500,
+      "decode": "EIA-96 code 85 = 750, B = x10",
+      "scheme": "EIA-96"
+    }
+  ],
+  "resistor_limitations": [
+    "Nominal values decoded from user markings, not electrically measured.",
+    "Actual manufacturer, package, tolerance, power rating and donor connections remain unresolved.",
+    "Bourns document used only to verify coding conventions; it does not identify donor resistors as Bourns."
+  ],
+  "documents": [
+    {
+      "file": "reference/rt8057a-ds8057a-01.pdf",
+      "sha256": "3d446ff934c9aaecd73b262ac0c009978a1734a4099f17ec835c2f586745b80f",
+      "official_url": "https://www.richtek.com/assets/product_file/RT8057A/DS8057A-01.pdf",
+      "author": "Richtek"
+    },
+    {
+      "file": "reference/bourns-crp0603-marking.pdf",
+      "sha256": "812669928411e0e1464aa9eef5d99f37d3bae1917ed2852c41f82ca62ee5cbdf",
+      "official_url": "https://www.bourns.com/pdfs/CRP0603.pdf",
+      "author": "Bourns"
+    }
+  ]
+}

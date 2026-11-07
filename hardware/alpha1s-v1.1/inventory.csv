@@ -1,0 +1,141 @@
+reference,observation,identification_status,source,remaining_work
+PCB,ALPHA 1S V1.1 / 2015-01-04,photo_visible,reference/IMG_4501.heic,Measure outline thickness and layer count
+U8,STM32F103 RDT6 and ST logo read directly by user,identified_from_user_reading_and_manufacturer_documentation,Direct user reading 2026-10-18; chip-readings-2026-10-18.json; ST DS5792 Rev 13,"Recover donor connections, orientation and land geometry; establish replica firmware source"
+U10,BM77SPP03MC2 label,photo_visible_label,reference/IMG_4501.heic,Verify module pin mapping supply and UART configuration
+J2,BAT four-contact connector with nearby plus/minus marks,photo_visible,reference/IMG_4501.heic,Map every contact and measure pitch; electrical assignments unknown
+J7,Three-contact connector,candidate_servo_connection,reference/IMG_4501.heic,Confirm harness destination pinout pitch and current
+J8,Three-contact connector,candidate_servo_connection,reference/IMG_4501.heic,Confirm harness destination pinout pitch and current
+J9,Three-contact connector,candidate_servo_connection,reference/IMG_4501.heic,Confirm harness destination pinout pitch and current
+J10,Three-contact connector,candidate_servo_connection,reference/IMG_4501.heic,Confirm harness destination pinout pitch and current
+J3,Small USB socket,photo_visible,reference/IMG_4501.heic,Confirm connector variant wiring and enumeration
+J6,Unpopulated two-row nine-hole header; tenth position absent; photo pitch near 2 mm,photo_geometry_recovered_pin_sequence_partly_inferred,reference/connectors/J6.png; reference/connectors/J6-back.png,Measure nominal pitch drill/pad diameters; verify inferred pin numbering and electrical nets
+J13,Card socket,candidate_microSD_socket,reference/IMG_4501.heic,Confirm socket variant footprint and wiring
+SPK,Two-contact connector labelled SPK,photo_visible,reference/IMG_4501.heic,Read reference designator and map audio circuit
+LED,Connector labelled LED,photo_visible,reference/IMG_4501.heic,Read reference designator and map contacts
+U3,BQ24133 / TI / 4AIC4V9G4-like secondary marking read by user; 24-pad package,identified_from_user_reading_and_manufacturer_documentation,Direct user reading 2026-10-18; chip-readings-2026-10-18.json; reference/bq24133-datasheet-rev-d.pdf,"Confirm donor orientation, pad geometry and wiring; CELL setting, current-setting components and thermal-pad connections untraced"
+U12,PAM8003 / THC51674; PAM8003,existing_identity_confirmed_by_user_and_video,video-readings-2026-10-18.json,Trace donor connections and verify package/land geometry
+Y1,SCTF 8.000 marking,photo_visible_frequency_marking,reference/IMG_4502.heic,Confirm oscillator or crystal package and full pin configuration
+U1,04=92Y; identity unresolved,marking_and_six_leads_visually_confirmed_identity_unresolved,video-readings-2026-10-18.json,Identify exact device and pin map; do not infer from short marking alone
+U4,MOSA MS6324G; 16-bit stereo I2S voltage-output DAC; SOP8,identified_from_user_reading_and_manufacturer_marking_table,chip-readings-2026-10-18.json; https://www.mosanalog.com/spec/MS6324_26.pdf,Trace donor nets; verify pin-1 orientation and exact donor land geometry; ordering suffix remains to be resolved
+U9,C25R; SN74LVC2G125,identified_from_video_marking_and_manufacturer_table,video-readings-2026-10-18.json,Trace donor connections and verify package/land geometry
+U13,YJ33; SGM2019-3.3,identified_from_video_marking_and_manufacturer_table,video-readings-2026-10-18.json,Trace donor connections and verify package/land geometry
+U14,YJ33; SGM2019-3.3,identified_from_video_marking_and_manufacturer_table,video-readings-2026-10-18.json,Trace donor connections and verify package/land geometry
+R9,R020 -> 0.02 ohm nominal,marking_decoded_not_measured,reference/parts/back-power.png,"Confirm package, tolerance, power rating and connectivity; no resistance measurement performed"
+R10,R020 -> 0.02 ohm nominal,marking_decoded_not_measured,reference/parts/back-power.png,"Confirm package, tolerance, power rating and connectivity; no resistance measurement performed"
+R12,3R9 -> 3.9 ohm nominal,marking_decoded_not_measured,reference/parts/back-power.png,"Confirm package, tolerance, power rating and connectivity; no resistance measurement performed"
+R15,3R9 -> 3.9 ohm nominal,marking_decoded_not_measured,reference/parts/back-power.png,"Confirm package, tolerance, power rating and connectivity; no resistance measurement performed"
+R62,103 -> 10000 ohm nominal,marking_decoded_not_measured,reference/parts/back-power.png,"Confirm package, tolerance, power rating and connectivity; no resistance measurement performed"
+R116,103 -> 10000 ohm nominal,marking_decoded_not_measured,reference/parts/front-upper-wide.png,"Confirm package, tolerance, power rating and connectivity; no resistance measurement performed"
+R117,103 -> 10000 ohm nominal,marking_decoded_not_measured,reference/parts/front-upper-wide.png,"Confirm package, tolerance, power rating and connectivity; no resistance measurement performed"
+R28,472 -> 4700 ohm nominal,marking_decoded_not_measured,reference/parts/front-upper-wide.png,"Confirm package, tolerance, power rating and connectivity; no resistance measurement performed"
+R107,103 -> 10000 ohm nominal,marking_decoded_not_measured,reference/parts/front-middle-wide.png,"Confirm package, tolerance, power rating and connectivity; no resistance measurement performed"
+R134,103 -> 10000 ohm nominal,marking_decoded_not_measured,reference/parts/front-middle-wide.png,"Confirm package, tolerance, power rating and connectivity; no resistance measurement performed"
+R111,103 -> 10000 ohm nominal,marking_decoded_not_measured,reference/parts/front-middle-wide.png,"Confirm package, tolerance, power rating and connectivity; no resistance measurement performed"
+R112,103 -> 10000 ohm nominal,marking_decoded_not_measured,reference/parts/front-middle-wide.png,"Confirm package, tolerance, power rating and connectivity; no resistance measurement performed"
+R144,103 -> 10000 ohm nominal,marking_decoded_not_measured,reference/parts/front-middle-wide.png,"Confirm package, tolerance, power rating and connectivity; no resistance measurement performed"
+R145,103 -> 10000 ohm nominal,marking_decoded_not_measured,reference/parts/front-middle-wide.png,"Confirm package, tolerance, power rating and connectivity; no resistance measurement performed"
+R115,102 / 201,marking_ambiguous_value_unassigned,reference/parts/front-upper-wide.png,Resolve marking orientation before assigning 1 kohm or 200 ohm
+R31,01D -> 100000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R32,01D -> 100000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R35,18C -> 15000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R24,68B -> 4990 ohm nominal,marking_decoded_not_measured,video-fullscan-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R26,65B -> 4640 ohm nominal,marking_decoded_not_measured,video-fullscan-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R23,100 -> 10 ohm nominal,marking_decoded_not_measured,video-fullscan-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R110,220 / 022,marking_ambiguous_value_unassigned,reference/parts/front-middle-wide.png,Resolve marking orientation before assigning value
+SW1,"Slide switch, visible three board terminals",photo_visible_exact_part_unknown,reference/connectors/ports.png; connector-sites.json,"Confirm exact part, full housing dimensions, pin geometry and electrical assignments"
+SW2,Small switch near USB socket,photo_visible_exact_part_unknown,reference/connectors/ports.png; connector-sites.json,"Confirm exact part, full housing dimensions, pin geometry and electrical assignments"
+DC_IN,Barrel power socket; reference designator unreadable,photo_visible_exact_part_unknown,reference/connectors/ports.png; connector-sites.json,"Confirm exact part, full housing dimensions, pin geometry and electrical assignments"
+C23,107 C; 100 uF nominal code; 16 V candidate under AVX marking convention,capacitance_marking_decoded_voltage_and_series_pending,reference/capacitors/C23.png; capacitor-observations.json,"Confirm manufacturer/series, voltage, tolerance, ESR, package, polarity and connectivity"
+C64,107 C; 100 uF nominal code; 16 V candidate under AVX marking convention,capacitance_marking_decoded_voltage_and_series_pending,reference/capacitors/C64.png; capacitor-observations.json,"Confirm manufacturer/series, voltage, tolerance, ESR, package, polarity and connectivity"
+C65,107 C; 100 uF nominal code; 16 V candidate under AVX marking convention,capacitance_marking_decoded_voltage_and_series_pending,reference/capacitors/C65.png; capacitor-observations.json,"Confirm manufacturer/series, voltage, tolerance, ESR, package, polarity and connectivity"
+C66,107 C; 100 uF nominal code; 16 V candidate under AVX marking convention,capacitance_marking_decoded_voltage_and_series_pending,reference/capacitors/C66.png; capacitor-observations.json,"Confirm manufacturer/series, voltage, tolerance, ESR, package, polarity and connectivity"
+C67,107 C; 100 uF nominal code; 16 V candidate under AVX marking convention,capacitance_marking_decoded_voltage_and_series_pending,reference/capacitors/C67.png; capacitor-observations.json,"Confirm manufacturer/series, voltage, tolerance, ESR, package, polarity and connectivity"
+CENTRAL_YELLOW,16 / GF1000-like marking; Raychem RGEF1000 resettable protection device candidate; donor reference unreadable,strong_photo_supported_candidate_not_physically_confirmed,reference/power/central-yellow-marking.png; power-protection-observation.json,"Confirm marking, donor reference, exact variant, lead geometry and both terminal nets"
+Q2,International Rectifier (Infineon) IRF9310; P-channel power MOSFET; SO-8,identified_from_user_reading_and_manufacturer_documentation,chip-readings-2026-10-18.json; https://www.infineon.com/assets/row/public/documents/24/49/infineon-irf9310-datasheet-en.pdf,Trace donor nets and verify exact donor lands; orientation established from frame142; ordering suffix unresolved
+Q1,International Rectifier (Infineon) IRF9310; P-channel power MOSFET; SO-8,identified_from_user_reading_and_manufacturer_documentation,chip-readings-2026-10-18.json; https://www.infineon.com/assets/row/public/documents/24/49/infineon-irf9310-datasheet-en.pdf,Trace donor nets; verify pin-1 orientation and exact donor land geometry; ordering suffix remains to be resolved
+R3,103 -> 10000 ohm nominal,user_marking_decoded_not_measured,u1-area-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R4,563 -> 56000 ohm nominal,user_marking_decoded_not_measured,u1-area-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R5,85B -> 7500 ohm nominal,user_marking_decoded_not_measured,u1-area-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+L1,H dot; user confirms reference L1 beside U1,reference_and_marking_known_value_unknown,u1-area-readings-2026-10-18.json,"Determine inductance, current ratings, DCR, package and connections"
+Q12,J3; identity unresolved,marking_known_identity_unresolved,video-readings-2026-10-18.json,Identify exact device and pin map; do not infer from short marking alone
+Q7,J3; identity unresolved,marking_known_identity_unresolved,video-readings-2026-10-18.json,Identify exact device and pin map; do not infer from short marking alone
+Q11,J3; identity unresolved,marking_known_identity_unresolved,video-readings-2026-10-18.json,Identify exact device and pin map; do not infer from short marking alone
+R143,472 -> 4700 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R126,104 -> 100000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R125,102 -> 1000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R135,472 -> 4700 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R127,104 -> 100000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R137,474 -> 470000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R136,474 -> 470000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R44,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R40,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R109,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R123,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R124,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R59,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R60,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R67,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R103,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R102,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R76,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R74,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R75,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R98,0 -> 0 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R7,270 -> 27 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R130,270 -> 27 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R58,270 observed at header site; conflicting R58-like label near Y1,reference_conflict_value_unassigned,video-fullscan-2026-10-18.json,Resolve physical reference mapping; see location-specific observations
+R128,270 -> 27 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R129,270 -> 27 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R80,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R78,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R82,270 -> 27 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R11,474 -> 470000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R17,85C -> 75000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R66,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R21,R020 -> 0.02 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R1,513 -> 51000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R6,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R14,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R16,102 -> 1000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R18,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R52,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R54,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R72,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R56,201 (user); 201 / 102 rotation ambiguity,marking_orientation_ambiguous_value_unassigned,video-readings-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R47,270 -> 27 ohm nominal,marking_decoded_not_measured,video-fullscan-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R48,270 -> 27 ohm nominal,marking_decoded_not_measured,video-fullscan-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R50,102 -> 1000 ohm nominal,marking_decoded_not_measured,video-fullscan-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R49,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-fullscan-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R65,103 -> 10000 ohm nominal,marking_decoded_not_measured,video-fullscan-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R61,102 -> 1000 ohm nominal,marking_decoded_not_measured,video-fullscan-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R13,68D -> 499000 ohm nominal,marking_decoded_not_measured,video-fullscan-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R8,30E -> 2000000 ohm nominal,marking_decoded_not_measured,video-fullscan-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R20,59B -> 4020 ohm nominal,marking_decoded_not_measured,video-fullscan-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+R34,513 -> 51000 ohm nominal,marking_decoded_not_measured,video-fullscan-2026-10-18.json,"Confirm package, tolerance, power rating and connectivity"
+Q10,1YD with trailing m-like character; L8550Q PNP family candidate,manufacturer_document_supported_candidate_not_unique_donor_identification,power-connections-2026-10-18.json,Identify exact device and pin map; verify package
+Q4,1733 -> Texas Instruments CSD17313Q2; N-channel MOSFET; 2x2 mm WSON,identified_from_video_marking_and_manufacturer_table,mosfet-video-identifications-2026-10-18.json,Trace donor nets; verify pin1 orientation and land geometry; order suffix unassigned
+Q3,1733 -> Texas Instruments CSD17313Q2; N-channel MOSFET; 2x2 mm WSON,identified_from_video_marking_and_manufacturer_table,mosfet-video-identifications-2026-10-18.json,Trace donor nets; verify pin1 orientation and land geometry; order suffix unassigned
+U6,Exposed pads with no mounted component visible,visibly_unpopulated_reason_unknown,video-fullscan-2026-10-18.json,Preserve donor population state; recover land geometry and connected traces
+R38,Exposed pads with no mounted component visible,visibly_unpopulated_reason_unknown,video-fullscan-2026-10-18.json,Preserve donor population state; recover land geometry and connected traces
+R36,Exposed pads with no mounted component visible,visibly_unpopulated_reason_unknown,video-fullscan-2026-10-18.json,Preserve donor population state; recover land geometry and connected traces
+R46,Exposed pads with no mounted component visible,visibly_unpopulated_reason_unknown,video-fullscan-2026-10-18.json,Preserve donor population state; recover land geometry and connected traces
+R45,Exposed pads with no mounted component visible,visibly_unpopulated_reason_unknown,video-fullscan-2026-10-18.json,Preserve donor population state; recover land geometry and connected traces
+R42,Exposed pads with no mounted component visible,visibly_unpopulated_reason_unknown,video-fullscan-2026-10-18.json,Preserve donor population state; recover land geometry and connected traces
+C39,Exposed pads with no mounted component visible,visibly_unpopulated_reason_unknown,video-fullscan-2026-10-18.json,Preserve donor population state; recover land geometry and connected traces
+C38,Exposed pads with no mounted component visible,visibly_unpopulated_reason_unknown,video-fullscan-2026-10-18.json,Preserve donor population state; recover land geometry and connected traces
+C42,Exposed pads with no mounted component visible,visibly_unpopulated_reason_unknown,video-fullscan-2026-10-18.json,Preserve donor population state; recover land geometry and connected traces
+C43,Exposed pads with no mounted component visible,visibly_unpopulated_reason_unknown,video-fullscan-2026-10-18.json,Preserve donor population state; recover land geometry and connected traces
+R53,Exposed pads with no mounted component visible,visibly_unpopulated_reason_unknown,video-fullscan-2026-10-18.json,Preserve donor population state; recover land geometry and connected traces
+C44,Exposed pads with no mounted component visible,visibly_unpopulated_reason_unknown,video-fullscan-2026-10-18.json,Preserve donor population state; recover land geometry and connected traces
+C79,Unmarked capacitor; left terminal in source frame connects to U13 pin5,photo_traced_connection_value_unknown,regulator-connections-2026-10-18.json,"Recover value, package and opposite-terminal connectivity; no continuity measurement performed"
+C80,Unmarked capacitor; left terminal in source frame connects to U13 pin4,photo_traced_connection_value_unknown,regulator-connections-2026-10-18.json,"Recover value, package and opposite-terminal connectivity; no continuity measurement performed"
+C83,Unmarked capacitor; bottom terminal in source frame connects to U14 pin5,photo_traced_connection_value_unknown,regulator-connections-2026-10-18.json,"Recover value, package and opposite-terminal connectivity; no continuity measurement performed"
+C81,Unmarked capacitor; bottom terminal in source frame connects to U14 pin4,photo_traced_connection_value_unknown,regulator-connections-2026-10-18.json,"Recover value, package and opposite-terminal connectivity; no continuity measurement performed"
+C82,Unmarked capacitor; top terminal in source frame connects to U14 pin1,photo_traced_connection_value_unknown,regulator-connections-2026-10-18.json,"Recover value, package and opposite-terminal connectivity; no continuity measurement performed"
+C68,Unmarked capacitor; top terminal in frame142 connected to Q1 source pin3,photo_traced_connection_value_unknown,power-connections-2026-10-18.json,Recover value package and opposite-terminal connection
+C69,Unmarked capacitor adjacent to PAM8003; right pad visually connected to U12.6,visible_capacitor_value_unknown,audio-amplifier-connections-2026-10-18.json; video frame007,Measure value and package; recover left terminal and other branches; verify continuity
+C76,Ceramic capacitor; value unknown; left terminal to U12 VDD pin9 and U13 output net,photo_observed_partial_net,audio-supply-connections-2026-10-18.json,Measure capacitance and package; recover opposite terminal and remaining branches
+R101,270 -> 27 ohm nominal,marking_decoded_not_measured,bluetooth-connections-2026-10-20.json,"Confirm package, tolerance, rating and remaining connectivity"
+R88,0 -> 0 ohm nominal,marking_decoded_not_measured,bluetooth-connections-2026-10-20.json,"Confirm package, tolerance, rating and remaining connectivity"
+R100,270 -> 27 ohm nominal,marking_decoded_not_measured,bluetooth-connections-2026-10-20.json,"Confirm package, tolerance, rating and remaining connectivity"
+R85,102 -> 1000 ohm nominal,marking_decoded_not_measured,bluetooth-connections-2026-10-20.json,"Confirm package, tolerance, rating and remaining connectivity"

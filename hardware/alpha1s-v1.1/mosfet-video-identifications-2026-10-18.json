@@ -1,0 +1,93 @@
+{
+  "date": "2026-10-18",
+  "document": {
+    "file": "reference/csd17313q2-datasheet.pdf",
+    "url": "https://www.ti.com/lit/ds/symlink/csd17313q2.pdf",
+    "sha256": "a833a4cc6cc5471d2aa2faaed97ab37414a66162131a496d4a33080ae818910f",
+    "revision": "SLPS260E March2010 revised September2015; package addendum10Nov2025",
+    "identity_evidence": "Official package addendum maps 1733 to CSD17313Q2 and reel/order variants; WSON six perimeter contacts consistent with donor video.",
+    "pin_evidence": "Page8 package diagram and explicit pinout table visually checked."
+  },
+  "components": [
+    {
+      "reference": "Q3",
+      "observed_marking": "1733",
+      "part": "CSD17313Q2",
+      "manufacturer": "Texas Instruments",
+      "status": "identified_from_video_marking_and_manufacturer_table",
+      "function": "30 V N-channel power MOSFET",
+      "package": "Q2 / DQK WSON 2 x 2 mm; six perimeter contacts plus two underside lands",
+      "ordering_suffix": null,
+      "datasheet_pins": {
+        "1": "D",
+        "2": "D",
+        "3": "G",
+        "4": "S",
+        "5": "D",
+        "6": "D",
+        "7": "S",
+        "8": "D"
+      },
+      "frame": "reference/video-4512/fullscan/frame-124.png",
+      "orientation_status": "Q3 and Q4 are rotated oppositely in video; board pad1 orientation still needs explicit confirmation.",
+      "limitations": [
+        "Exact order/reel suffix not determined from marking.",
+        "No donor nets assigned from typical charger circuit.",
+        "Physical underside lands obscured by mounted device."
+      ]
+    },
+    {
+      "reference": "Q4",
+      "observed_marking": "1733",
+      "part": "CSD17313Q2",
+      "manufacturer": "Texas Instruments",
+      "status": "identified_from_video_marking_and_manufacturer_table",
+      "function": "30 V N-channel power MOSFET",
+      "package": "Q2 / DQK WSON 2 x 2 mm; six perimeter contacts plus two underside lands",
+      "ordering_suffix": null,
+      "datasheet_pins": {
+        "1": "D",
+        "2": "D",
+        "3": "G",
+        "4": "S",
+        "5": "D",
+        "6": "D",
+        "7": "S",
+        "8": "D"
+      },
+      "frame": "reference/video-4512/fullscan/frame-122.png",
+      "orientation_status": "Q3 and Q4 are rotated oppositely in video; board pad1 orientation still needs explicit confirmation.",
+      "limitations": [
+        "Exact order/reel suffix not determined from marking.",
+        "No donor nets assigned from typical charger circuit.",
+        "Physical underside lands obscured by mounted device."
+      ]
+    }
+  ],
+  "unresolved_candidates": [
+    {
+      "reference": "Q10",
+      "observed_marking": "1YD with trailing m-like glyph",
+      "candidate": "L8550QLT1G family",
+      "status": "manufacturer_document_supported_candidate_not_unique_donor_identification",
+      "discovery_url": "https://www.alldatasheet.com/view_marking.jsp?Searchword=1YD",
+      "reason": "LRC manufacturer-authored PDF now obtained and marking/pin diagram checked. Donor manufacturer and trailing glyph remain unresolved.",
+      "followup_evidence": "power-connections-2026-10-18.json"
+    }
+  ],
+  "validation": {
+    "native_symbols": 18,
+    "numbered_symbol_pins": 218,
+    "wires": 0,
+    "existing_16_symbol_values_and_positions_preserved": true,
+    "svg_export": "success",
+    "native_gui_visual_review": "reopened and verified; Q4 moved above title block",
+    "erc": {
+      "total": 275,
+      "pin_not_connected": 211,
+      "pin_not_driven": 34,
+      "power_pin_not_driven": 30,
+      "other_categories": 0
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-18",
+  "source": "reference/video-4512/fullscan/frame-007.png",
+  "source_sha256": "32ec2c151c552d27234cdeb79f78c79eadbde8572aeb5ac45ba5815fe71f22a9",
+  "schematic": "audio-amplifier-region.kicad_sch",
+  "u12_pin1": "Upper-left in video frame007; lower-right in back-scaled photograph; lower-left in front board datum.",
+  "connections": [
+    [
+      "U12.5",
+      "R143.1"
+    ],
+    [
+      "U12.6",
+      "C69.1"
+    ],
+    [
+      "U12.7",
+      "R126.1"
+    ]
+  ],
+  "passive_pin1_convention": "Right terminal in frame007 for R143/C69/R126; pin2 is left terminal.",
+  "evidence": "Short local copper necks join each right passive pad to the corresponding fifth, sixth or seventh left-side amplifier lead; endpoints checked in frame007 and adjacent frame008.",
+  "limits": [
+    "Surface traces observed, not electrically measured.",
+    "Opposite passive terminals and additional branches unresolved.",
+    "C69 value unknown.",
+    "No supply or ground connections inferred from typical application."
+  ],
+  "crosscheck_source": "reference/video-4512/fullscan/frame-008.png",
+  "crosscheck_sha256": "a8991e7aa5d2f2b43ff13185cde14185c65faeb625122fe2b6212e3e4971f77b",
+  "validation": {
+    "symbols": 102,
+    "numbered_pins": 387,
+    "sheets": 5,
+    "intercomponent_nets": 11,
+    "netlist": "All three exact new pairs verified; eight old intercomponent nets unchanged; no duplicate references.",
+    "erc": {
+      "pin_not_connected": 358,
+      "pin_not_driven": 32,
+      "power_pin_not_driven": 30,
+      "other": 0
+    },
+    "visual": "Amplifier sheet and updated root rendered and reviewed."
+  }
+}

@@ -1,0 +1,391 @@
+{
+  "date": "2026-10-18",
+  "parts": [
+    {
+      "reference": "U8",
+      "footprint": "Alpha1S:STM32_LQFP64_KiCad_Reference",
+      "side": "B.Cu",
+      "position_kicad_mm": [
+        395,
+        261.6
+      ],
+      "angle_degrees": -90,
+      "orientation_evidence": "ST TN1433 Rev7 section4.4: pin1 bottom-left with upright text. Donor text upside down: upper-right in back-scaled.png, upper-left in front datum.",
+      "symbol_path": "/4687339a-8373-40c5-9066-28a31d4f03e7/6179dd46-e99f-542a-92c9-d985a51c01cd",
+      "pad_nets": {
+        "1": "unconnected-(U8-VBAT-Pad1)",
+        "2": "unconnected-(U8-PC13-Pad2)",
+        "3": "unconnected-(U8-PC14-Pad3)",
+        "4": "unconnected-(U8-PC15-Pad4)",
+        "5": "unconnected-(U8-PD0-Pad5)",
+        "6": "unconnected-(U8-PD1-Pad6)",
+        "7": "unconnected-(U8-NRST-Pad7)",
+        "8": "unconnected-(U8-PC0-Pad8)",
+        "9": "unconnected-(U8-PC1-Pad9)",
+        "10": "unconnected-(U8-PC2-Pad10)",
+        "11": "unconnected-(U8-PC3-Pad11)",
+        "12": "unconnected-(U8-VSSA-Pad12)",
+        "13": "unconnected-(U8-VDDA-Pad13)",
+        "14": "unconnected-(U8-PA0-Pad14)",
+        "15": "unconnected-(U8-PA1-Pad15)",
+        "16": "unconnected-(U8-PA2-Pad16)",
+        "17": "unconnected-(U8-PA3-Pad17)",
+        "18": "Net-(U8-VSS-Pad18)",
+        "19": "unconnected-(U8-VDD-Pad19)",
+        "20": "unconnected-(U8-PA4-Pad20)",
+        "21": "unconnected-(U8-PA5-Pad21)",
+        "22": "unconnected-(U8-PA6-Pad22)",
+        "23": "unconnected-(U8-PA7-Pad23)",
+        "24": "unconnected-(U8-PC4-Pad24)",
+        "25": "unconnected-(U8-PC5-Pad25)",
+        "26": "unconnected-(U8-PB0-Pad26)",
+        "27": "unconnected-(U8-PB1-Pad27)",
+        "28": "unconnected-(U8-PB2-Pad28)",
+        "29": "unconnected-(U8-PB10-Pad29)",
+        "30": "unconnected-(U8-PB11-Pad30)",
+        "31": "Net-(U8-VSS-Pad18)",
+        "32": "unconnected-(U8-VDD-Pad32)",
+        "33": "unconnected-(U8-PB12-Pad33)",
+        "34": "unconnected-(U8-PB13-Pad34)",
+        "35": "unconnected-(U8-PB14-Pad35)",
+        "36": "unconnected-(U8-PB15-Pad36)",
+        "37": "unconnected-(U8-PC6-Pad37)",
+        "38": "unconnected-(U8-PC7-Pad38)",
+        "39": "unconnected-(U8-PC8-Pad39)",
+        "40": "unconnected-(U8-PC9-Pad40)",
+        "41": "unconnected-(U8-PA8-Pad41)",
+        "42": "unconnected-(U8-PA9-Pad42)",
+        "43": "unconnected-(U8-PA10-Pad43)",
+        "44": "unconnected-(U8-PA11-Pad44)",
+        "45": "unconnected-(U8-PA12-Pad45)",
+        "46": "unconnected-(U8-PA13-Pad46)",
+        "47": "Net-(U8-VSS-Pad18)",
+        "48": "unconnected-(U8-VDD-Pad48)",
+        "49": "unconnected-(U8-PA14-Pad49)",
+        "50": "unconnected-(U8-PA15-Pad50)",
+        "51": "unconnected-(U8-PC10-Pad51)",
+        "52": "unconnected-(U8-PC11-Pad52)",
+        "53": "unconnected-(U8-PC12-Pad53)",
+        "54": "unconnected-(U8-PD2-Pad54)",
+        "55": "unconnected-(U8-PB3-Pad55)",
+        "56": "unconnected-(U8-PB4-Pad56)",
+        "57": "unconnected-(U8-PB5-Pad57)",
+        "58": "unconnected-(U8-PB6-Pad58)",
+        "59": "unconnected-(U8-PB7-Pad59)",
+        "60": "unconnected-(U8-BOOT0-Pad60)",
+        "61": "unconnected-(U8-PB8-Pad61)",
+        "62": "unconnected-(U8-PB9-Pad62)",
+        "63": "Net-(U8-VSS-Pad18)",
+        "64": "unconnected-(U8-VDD-Pad64)"
+      },
+      "pad_centers_kicad_mm": {
+        "1": [
+          391.25,
+          255.925
+        ],
+        "2": [
+          391.75,
+          255.925
+        ],
+        "3": [
+          392.25,
+          255.925
+        ],
+        "4": [
+          392.75,
+          255.925
+        ],
+        "5": [
+          393.25,
+          255.925
+        ],
+        "6": [
+          393.75,
+          255.925
+        ],
+        "7": [
+          394.25,
+          255.925
+        ],
+        "8": [
+          394.75,
+          255.925
+        ],
+        "9": [
+          395.25,
+          255.925
+        ],
+        "10": [
+          395.75,
+          255.925
+        ],
+        "11": [
+          396.25,
+          255.925
+        ],
+        "12": [
+          396.75,
+          255.925
+        ],
+        "13": [
+          397.25,
+          255.925
+        ],
+        "14": [
+          397.75,
+          255.925
+        ],
+        "15": [
+          398.25,
+          255.925
+        ],
+        "16": [
+          398.75,
+          255.925
+        ],
+        "17": [
+          400.675,
+          257.85
+        ],
+        "18": [
+          400.675,
+          258.35
+        ],
+        "19": [
+          400.675,
+          258.85
+        ],
+        "20": [
+          400.675,
+          259.35
+        ],
+        "21": [
+          400.675,
+          259.85
+        ],
+        "22": [
+          400.675,
+          260.35
+        ],
+        "23": [
+          400.675,
+          260.85
+        ],
+        "24": [
+          400.675,
+          261.35
+        ],
+        "25": [
+          400.675,
+          261.85
+        ],
+        "26": [
+          400.675,
+          262.35
+        ],
+        "27": [
+          400.675,
+          262.85
+        ],
+        "28": [
+          400.675,
+          263.35
+        ],
+        "29": [
+          400.675,
+          263.85
+        ],
+        "30": [
+          400.675,
+          264.35
+        ],
+        "31": [
+          400.675,
+          264.85
+        ],
+        "32": [
+          400.675,
+          265.35
+        ],
+        "33": [
+          398.75,
+          267.275
+        ],
+        "34": [
+          398.25,
+          267.275
+        ],
+        "35": [
+          397.75,
+          267.275
+        ],
+        "36": [
+          397.25,
+          267.275
+        ],
+        "37": [
+          396.75,
+          267.275
+        ],
+        "38": [
+          396.25,
+          267.275
+        ],
+        "39": [
+          395.75,
+          267.275
+        ],
+        "40": [
+          395.25,
+          267.275
+        ],
+        "41": [
+          394.75,
+          267.275
+        ],
+        "42": [
+          394.25,
+          267.275
+        ],
+        "43": [
+          393.75,
+          267.275
+        ],
+        "44": [
+          393.25,
+          267.275
+        ],
+        "45": [
+          392.75,
+          267.275
+        ],
+        "46": [
+          392.25,
+          267.275
+        ],
+        "47": [
+          391.75,
+          267.275
+        ],
+        "48": [
+          391.25,
+          267.275
+        ],
+        "49": [
+          389.325,
+          265.35
+        ],
+        "50": [
+          389.325,
+          264.85
+        ],
+        "51": [
+          389.325,
+          264.35
+        ],
+        "52": [
+          389.325,
+          263.85
+        ],
+        "53": [
+          389.325,
+          263.35
+        ],
+        "54": [
+          389.325,
+          262.85
+        ],
+        "55": [
+          389.325,
+          262.35
+        ],
+        "56": [
+          389.325,
+          261.85
+        ],
+        "57": [
+          389.325,
+          261.35
+        ],
+        "58": [
+          389.325,
+          260.85
+        ],
+        "59": [
+          389.325,
+          260.35
+        ],
+        "60": [
+          389.325,
+          259.85
+        ],
+        "61": [
+          389.325,
+          259.35
+        ],
+        "62": [
+          389.325,
+          258.85
+        ],
+        "63": [
+          389.325,
+          258.35
+        ],
+        "64": [
+          389.325,
+          257.85
+        ]
+      }
+    }
+  ],
+  "status": "placed_linked_and_checked",
+  "limits": [
+    "KiCad reference lands are not measured donor lands.",
+    "Centers are approximate photo-derived positions.",
+    "No tracks or vias added."
+  ],
+  "validation": {
+    "native_footprints": 8,
+    "copper_pads": 144,
+    "new_pad_count": 64,
+    "tracks": 0,
+    "vias": 0,
+    "intercomponent_nets": 11,
+    "existing_connections": "All eleven exact connections preserved.",
+    "drc_geometry_or_library_violations": 0,
+    "schematic_parity": {
+      "missing_footprint": 94
+    },
+    "live_api": "All64 pad coordinates and net names match the saved record.",
+    "gui": "Reopened board, selected U8, checked B.Cu,395x261.6mm,-90degrees against saved placement."
+  },
+  "orientation_source": {
+    "url": "https://www.st.com/resource/en/technical_note/tn1433-reference-device-marking-schematics-for-stm32-microcontrollers-and-microprocessors-stmicroelectronics.pdf",
+    "document": "ST TN1433 Rev7 December2025 section4.4 figure7 page8",
+    "scope": "10x10mm LQFP64 pin1 corner relative to text. ST states pin1 localization applies despite marking variations.",
+    "retrieval": "Read through Exa and web text. Local PDF download failed; no local PDF claimed."
+  },
+  "package_source": {
+    "url": "https://www.st.com/resource/en/datasheet/stm32f103rd.pdf",
+    "document": "ST DS5792 Rev13",
+    "scope": "STM32F103RD LQFP64 package;10x10mm body."
+  },
+  "land_source": {
+    "library": "KiCad Package_QFP:LQFP-64_10x10mm_P0.5mm",
+    "source_path": "KiCad footprints/Package_QFP.pretty/LQFP-64_10x10mm_P0.5mm.kicad_mod",
+    "source_sha256": "f5a3abeefd7fdfa39fb685c0d80538f6fed111d00da42bf82decb0b6d2293101",
+    "credit": "KiCad footprint library contributors",
+    "changes": "Renamed local copy; removed optional 3D model, user text, generator field and silkscreen triangle; copper geometry unchanged.",
+    "geometry": "64 pads,0.5mm pitch,1.55x0.30mm lands,opposed row centers11.35mm; not measured donor lands."
+  },
+  "donor_images": [
+    {
+      "path": "reference/back-scaled.png",
+      "sha256": "4d999acadbc6b0b07c20d98d2722984a1519ceb81e6741034dfee7fedc38cfb6"
+    },
+    {
+      "path": "reference/parts/U8.png",
+      "sha256": "52717079d5bf845f9e333ba897e7dd5e5c8c0968254d68721b1f30f41b9f2fc3"
+    }
+  ]
+}

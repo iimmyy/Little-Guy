@@ -1,0 +1,8 @@
+id,point_a,point_b,purpose,reading,observation
+C00,Probe tip,Probe tip,Touch probes together; record the lead/contact baseline.,,
+C01,B,C,Check an already photo-traced short connection before testing unknowns.,,
+C02,A,D,Test whether C82 opposite terminal joins U14 ground.,,
+C03,A,E,Test whether C83 opposite terminal joins U14 ground.,,
+C04,A,F,Test whether the two regulator ground pins are connected.,,
+C05,A,G,Test amplifier signal ground against regulator ground.,,
+C06,A,H,Test DAC ground against regulator ground.,,

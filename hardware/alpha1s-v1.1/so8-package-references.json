@@ -1,0 +1,132 @@
+{
+  "status": "manufacturer_reference_only_not_verified_against_donor",
+  "IRF9310": {
+    "source": "reference/irf9310-pd97437a-2010.pdf",
+    "page": 7,
+    "footprint": "alpha1s.pretty/IRF9310_SO8_Manufacturer_Recommended.kicad_mod",
+    "pad_pitch_mm": 1.27,
+    "overall_pad_span_mm": 6.46,
+    "pad_column_center_separation_mm": 4.68,
+    "pads": [
+      {
+        "number": 1,
+        "center_mm": [
+          -2.34,
+          -1.905
+        ],
+        "size_mm": [
+          1.78,
+          0.72
+        ]
+      },
+      {
+        "number": 2,
+        "center_mm": [
+          -2.34,
+          -0.635
+        ],
+        "size_mm": [
+          1.78,
+          0.72
+        ]
+      },
+      {
+        "number": 3,
+        "center_mm": [
+          -2.34,
+          0.635
+        ],
+        "size_mm": [
+          1.78,
+          0.72
+        ]
+      },
+      {
+        "number": 4,
+        "center_mm": [
+          -2.34,
+          1.905
+        ],
+        "size_mm": [
+          1.78,
+          0.72
+        ]
+      },
+      {
+        "number": 5,
+        "center_mm": [
+          2.34,
+          1.905
+        ],
+        "size_mm": [
+          1.78,
+          0.72
+        ]
+      },
+      {
+        "number": 6,
+        "center_mm": [
+          2.34,
+          0.635
+        ],
+        "size_mm": [
+          1.78,
+          0.72
+        ]
+      },
+      {
+        "number": 7,
+        "center_mm": [
+          2.34,
+          -0.635
+        ],
+        "size_mm": [
+          1.78,
+          0.72
+        ]
+      },
+      {
+        "number": 8,
+        "center_mm": [
+          2.34,
+          -1.905
+        ],
+        "size_mm": [
+          1.78,
+          0.72
+        ]
+      }
+    ],
+    "body_nominal_midpoint_mm": [
+      3.9,
+      4.9
+    ],
+    "courtyard_note": "Project-chosen 7.0 x 5.5 mm box, not donor or manufacturer dimension."
+  },
+  "MS6324G": {
+    "source": "reference/ms6324-26-rev2.pdf",
+    "page": 10,
+    "body_width_mm": [
+      3.8,
+      4.0
+    ],
+    "body_length_mm": [
+      4.8,
+      5.0
+    ],
+    "lead_span_mm": [
+      5.8,
+      6.2
+    ],
+    "lead_pitch_mm": 1.27,
+    "height_mm": [
+      1.35,
+      1.75
+    ],
+    "footprint": "alpha1s.pretty/MS6324G_SOIC8_KiCad_Reference.kicad_mod",
+    "note": "Package envelope matches KiCad SOIC8 3.9x4.9mm 1.27mm pitch reference lands. Native U4 placed with donor pin1 dot orientation; exact donor lands remain unmeasured. MOSA provides no recommended pad pattern."
+  },
+  "remaining_work": [
+    "Compare reference/manufacturer lands with donor pads; Q1/Q2/U4 placed with confirmed orientation, exact land geometry unmeasured."
+  ]
+}

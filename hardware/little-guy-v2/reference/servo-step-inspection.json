@@ -1,0 +1,729 @@
+{
+  "source": "reference/ST3215-3D/ST3215.step",
+  "sha256": "58e38e4dc49f97df738c5f229f9aa8a7dce64a0a1d01335486a52d53e6017e8a",
+  "ocp_package_version": "7.9.3.1.1",
+  "units": "mm: STEP geometric context uses SI_UNIT(.MILLI.,.METRE.)",
+  "product_names": [
+    "SCS215",
+    "ZK_122",
+    "SG-ZIJI_15",
+    "XG-ZIJI_16",
+    "MOTOR-1723_3",
+    "PCB-CHAZUO_92",
+    "GE_27",
+    "\\X2\\91D15C5E823576D8FF089A7152A8FF09\\X0\\",
+    "\\X2\\91D15C5E823576D8FF084ECE52A8FF09\\X0\\"
+  ],
+  "transferred_roots": 1,
+  "solid_count": 8,
+  "assembly_brep_valid": false,
+  "assembly_bounds": {
+    "min_xyz_mm": [
+      -35.611704007722125,
+      -28.2,
+      -12.361704007723109
+    ],
+    "max_xyz_mm": [
+      9.611704007721999,
+      9.600000000000001,
+      12.361704007723109
+    ],
+    "size_xyz_mm": [
+      45.22340801544412,
+      37.8,
+      24.723408015446218
+    ]
+  },
+  "solids": [
+    {
+      "index": 0,
+      "min_xyz_mm": [
+        -35.611704007722125,
+        -15.100000099999999,
+        -12.361704007723109
+      ],
+      "max_xyz_mm": [
+        9.611704007721999,
+        -1.1999999999999973,
+        12.361704007723109
+      ],
+      "size_xyz_mm": [
+        45.22340801544412,
+        13.900000100000002,
+        24.723408015446218
+      ],
+      "brep_valid": true,
+      "brep_status": [
+        "BRepCheck_Status.BRepCheck_NoError"
+      ]
+    },
+    {
+      "index": 1,
+      "min_xyz_mm": [
+        -35.50000000001159,
+        -2.2,
+        -12.250000100000674
+      ],
+      "max_xyz_mm": [
+        9.5000001,
+        7.500000100000047,
+        12.250000100006316
+      ],
+      "size_xyz_mm": [
+        45.00000010001159,
+        9.700000100000047,
+        24.50000020000699
+      ],
+      "brep_valid": true,
+      "brep_status": [
+        "BRepCheck_Status.BRepCheck_NoError"
+      ]
+    },
+    {
+      "index": 2,
+      "min_xyz_mm": [
+        -35.61000000001409,
+        -28.2,
+        -12.360000100000462
+      ],
+      "max_xyz_mm": [
+        9.610000100000343,
+        -14.099999899999887,
+        12.360000100000383
+      ],
+      "size_xyz_mm": [
+        45.22000010001443,
+        14.100000100000113,
+        24.720000200000847
+      ],
+      "brep_valid": false,
+      "brep_status": [
+        "BRepCheck_Status.BRepCheck_SubshapeNotInShape"
+      ]
+    },
+    {
+      "index": 3,
+      "min_xyz_mm": [
+        -8.525,
+        -26.5,
+        -9.775
+      ],
+      "max_xyz_mm": [
+        8.5250001,
+        4.0,
+        7.275
+      ],
+      "size_xyz_mm": [
+        17.0500001,
+        30.5,
+        17.05
+      ],
+      "brep_valid": true,
+      "brep_status": [
+        "BRepCheck_Status.BRepCheck_NoError"
+      ]
+    },
+    {
+      "index": 4,
+      "min_xyz_mm": [
+        -33.8,
+        -20.5,
+        -10.55
+      ],
+      "max_xyz_mm": [
+        -4.999999999999844,
+        -13.3,
+        10.55
+      ],
+      "size_xyz_mm": [
+        28.800000000000153,
+        7.199999999999999,
+        21.1
+      ],
+      "brep_valid": true,
+      "brep_status": [
+        "BRepCheck_Status.BRepCheck_NoError"
+      ]
+    },
+    {
+      "index": 5,
+      "min_xyz_mm": [
+        -34.299884132741134,
+        -10.20000010000963,
+        -8.794629729013
+      ],
+      "max_xyz_mm": [
+        -16.700115867258862,
+        8.100000099999999,
+        8.794629729013002
+      ],
+      "size_xyz_mm": [
+        17.599768265482272,
+        18.300000200009627,
+        17.589259458026
+      ],
+      "brep_valid": true,
+      "brep_status": [
+        "BRepCheck_Status.BRepCheck_NoError"
+      ]
+    },
+    {
+      "index": 6,
+      "min_xyz_mm": [
+        -35.1,
+        5.099999900000001,
+        -9.6
+      ],
+      "max_xyz_mm": [
+        -15.9,
+        9.600000000000001,
+        9.6000000000019
+      ],
+      "size_xyz_mm": [
+        19.200000000000003,
+        4.5000001,
+        19.2000000000019
+      ],
+      "brep_valid": true,
+      "brep_status": [
+        "BRepCheck_Status.BRepCheck_NoError"
+      ],
+      "circular_edges": [
+        {
+          "radius_mm": 1.25,
+          "center_xyz_mm": [
+            -32.500002,
+            7.1,
+            0.0
+          ],
+          "axis_direction": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "radius_mm": 1.25,
+          "center_xyz_mm": [
+            -32.500002,
+            9.6,
+            0.0
+          ],
+          "axis_direction": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "radius_mm": 1.25,
+          "center_xyz_mm": [
+            -25.5,
+            7.1,
+            -7.000002
+          ],
+          "axis_direction": [
+            -0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "radius_mm": 1.25,
+          "center_xyz_mm": [
+            -25.5,
+            7.1,
+            7.000002
+          ],
+          "axis_direction": [
+            0.0,
+            1.0,
+            -0.0
+          ]
+        },
+        {
+          "radius_mm": 1.25,
+          "center_xyz_mm": [
+            -25.5,
+            9.6,
+            -7.000002
+          ],
+          "axis_direction": [
+            -0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "radius_mm": 1.25,
+          "center_xyz_mm": [
+            -25.5,
+            9.6,
+            7.000002
+          ],
+          "axis_direction": [
+            0.0,
+            1.0,
+            -0.0
+          ]
+        },
+        {
+          "radius_mm": 1.25,
+          "center_xyz_mm": [
+            -18.499998,
+            7.1,
+            0.0
+          ],
+          "axis_direction": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "radius_mm": 1.25,
+          "center_xyz_mm": [
+            -18.499998,
+            9.6,
+            0.0
+          ],
+          "axis_direction": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "radius_mm": 1.6,
+          "center_xyz_mm": [
+            -25.5,
+            8.1,
+            0.0
+          ],
+          "axis_direction": [
+            0.0,
+            -1.0,
+            0.0
+          ]
+        },
+        {
+          "radius_mm": 1.6,
+          "center_xyz_mm": [
+            -25.5,
+            9.6,
+            0.0
+          ],
+          "axis_direction": [
+            -0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "radius_mm": 2.6,
+          "center_xyz_mm": [
+            -25.5,
+            5.6,
+            0.0
+          ],
+          "axis_direction": [
+            0.0,
+            -1.0,
+            0.0
+          ]
+        },
+        {
+          "radius_mm": 2.6,
+          "center_xyz_mm": [
+            -25.5,
+            7.3,
+            0.0
+          ],
+          "axis_direction": [
+            0.0,
+            1.0,
+            -0.0
+          ]
+        },
+        {
+          "radius_mm": 3.1,
+          "center_xyz_mm": [
+            -25.5,
+            5.1,
+            0.0
+          ],
+          "axis_direction": [
+            0.0,
+            -1.0,
+            0.0
+          ]
+        },
+        {
+          "radius_mm": 3.1,
+          "center_xyz_mm": [
+            -25.5,
+            7.3,
+            0.0
+          ],
+          "axis_direction": [
+            0.0,
+            -1.0,
+            0.0
+          ]
+        },
+        {
+          "radius_mm": 3.1,
+          "center_xyz_mm": [
+            -25.5,
+            8.1,
+            0.0
+          ],
+          "axis_direction": [
+            0.0,
+            1.0,
+            -0.0
+          ]
+        },
+        {
+          "radius_mm": 5.1,
+          "center_xyz_mm": [
+            -25.5,
+            5.1,
+            0.0
+          ],
+          "axis_direction": [
+            -0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "radius_mm": 5.3,
+          "center_xyz_mm": [
+            -25.5,
+            5.3,
+            0.0
+          ],
+          "axis_direction": [
+            0.0,
+            -1.0,
+            0.0
+          ]
+        },
+        {
+          "radius_mm": 5.3,
+          "center_xyz_mm": [
+            -25.5,
+            7.1,
+            0.0
+          ],
+          "axis_direction": [
+            0.0,
+            1.0,
+            -0.0
+          ]
+        },
+        {
+          "radius_mm": 9.399999,
+          "center_xyz_mm": [
+            -25.5,
+            7.1,
+            0.0
+          ],
+          "axis_direction": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "radius_mm": 9.4,
+          "center_xyz_mm": [
+            -25.5,
+            9.6,
+            0.0
+          ],
+          "axis_direction": [
+            0.0,
+            -1.0,
+            0.0
+          ]
+        },
+        {
+          "radius_mm": 9.6,
+          "center_xyz_mm": [
+            -25.5,
+            7.300001,
+            0.0
+          ],
+          "axis_direction": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "radius_mm": 9.6,
+          "center_xyz_mm": [
+            -25.5,
+            9.4,
+            0.0
+          ],
+          "axis_direction": [
+            -0.0,
+            1.0,
+            0.0
+          ]
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "min_xyz_mm": [
+        -35.10000000000397,
+        -27.65000000000014,
+        -9.600000000004
+      ],
+      "max_xyz_mm": [
+        -15.899999999995972,
+        -24.300000000000043,
+        9.600000000004
+      ],
+      "size_xyz_mm": [
+        19.200000000008004,
+        3.3500000000000973,
+        19.200000000008
+      ],
+      "brep_valid": true,
+      "brep_status": [
+        "BRepCheck_Status.BRepCheck_NoError"
+      ],
+      "circular_edges": [
+        {
+          "radius_mm": 1.25,
+          "center_xyz_mm": [
+            -32.499998,
+            -27.65,
+            0.0
+          ],
+          "axis_direction": [
+            0.0,
+            -1.0,
+            -0.0
+          ]
+        },
+        {
+          "radius_mm": 1.25,
+          "center_xyz_mm": [
+            -32.499998,
+            -25.45,
+            0.0
+          ],
+          "axis_direction": [
+            -0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "radius_mm": 1.25,
+          "center_xyz_mm": [
+            -25.5,
+            -27.65,
+            -6.999998
+          ],
+          "axis_direction": [
+            0.0,
+            -1.0,
+            -0.0
+          ]
+        },
+        {
+          "radius_mm": 1.25,
+          "center_xyz_mm": [
+            -25.5,
+            -27.65,
+            6.999998
+          ],
+          "axis_direction": [
+            0.0,
+            -1.0,
+            -0.0
+          ]
+        },
+        {
+          "radius_mm": 1.25,
+          "center_xyz_mm": [
+            -25.5,
+            -25.45,
+            -6.999998
+          ],
+          "axis_direction": [
+            -0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "radius_mm": 1.25,
+          "center_xyz_mm": [
+            -25.5,
+            -25.45,
+            6.999998
+          ],
+          "axis_direction": [
+            -0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "radius_mm": 1.25,
+          "center_xyz_mm": [
+            -18.500002,
+            -27.65,
+            -0.0
+          ],
+          "axis_direction": [
+            0.0,
+            -1.0,
+            -0.0
+          ]
+        },
+        {
+          "radius_mm": 1.25,
+          "center_xyz_mm": [
+            -18.500002,
+            -25.45,
+            -0.0
+          ],
+          "axis_direction": [
+            -0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "radius_mm": 3.025,
+          "center_xyz_mm": [
+            -25.5,
+            -27.35,
+            -0.0
+          ],
+          "axis_direction": [
+            0.0,
+            -1.0,
+            -0.0
+          ]
+        },
+        {
+          "radius_mm": 3.025,
+          "center_xyz_mm": [
+            -25.5,
+            -24.3,
+            -0.0
+          ],
+          "axis_direction": [
+            0.0,
+            -1.0,
+            -0.0
+          ]
+        },
+        {
+          "radius_mm": 3.325,
+          "center_xyz_mm": [
+            -25.5,
+            -27.65,
+            -0.0
+          ],
+          "axis_direction": [
+            0.0,
+            -1.0,
+            -0.0
+          ]
+        },
+        {
+          "radius_mm": 4.46,
+          "center_xyz_mm": [
+            -25.5,
+            -25.45,
+            -0.0
+          ],
+          "axis_direction": [
+            0.0,
+            -1.0,
+            -0.0
+          ]
+        },
+        {
+          "radius_mm": 4.46,
+          "center_xyz_mm": [
+            -25.5,
+            -24.3,
+            -0.0
+          ],
+          "axis_direction": [
+            -0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "radius_mm": 9.4,
+          "center_xyz_mm": [
+            -25.5,
+            -27.65,
+            -0.0
+          ],
+          "axis_direction": [
+            -0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "radius_mm": 9.4,
+          "center_xyz_mm": [
+            -25.5,
+            -25.45,
+            0.0
+          ],
+          "axis_direction": [
+            0.0,
+            -1.0,
+            -0.0
+          ]
+        },
+        {
+          "radius_mm": 9.6,
+          "center_xyz_mm": [
+            -25.5,
+            -27.45,
+            -0.0
+          ],
+          "axis_direction": [
+            -0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "radius_mm": 9.6,
+          "center_xyz_mm": [
+            -25.5,
+            -25.65,
+            0.0
+          ],
+          "axis_direction": [
+            0.0,
+            -1.0,
+            -0.0
+          ]
+        }
+      ]
+    }
+  ],
+  "geometry_modified": false,
+  "physical_part_verified": false,
+  "scope": "Numerical inspection of the supplied SCS215-titled STEP only; not proof of ST-3215-C018 fit"
+}

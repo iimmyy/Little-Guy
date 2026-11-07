@@ -1,0 +1,10 @@
+{
+  "date": "2026-10-18",
+  "thickness_mm": 1.64,
+  "hole_diameter_mm": 3.2,
+  "hole_count": 4,
+  "representation": "Dwgs.User circles at existing photo-estimated centers; no drill features",
+  "native_board_parse": "KiCad SVG export succeeded; reopened PCB editor and visually checked H1-H4 circles",
+  "preservation": "Original native content identical apart from thickness field and six appended drawing objects",
+  "pcb_sha256": "b975505222675718b7de531ffd4126eb869956ab4f107184368cc2d118b9b870"
+}

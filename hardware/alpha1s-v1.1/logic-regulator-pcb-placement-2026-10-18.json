@@ -1,0 +1,165 @@
+{
+  "date": "2026-10-18",
+  "status": "placed_linked_and_checked",
+  "parts": [
+    {
+      "reference": "U9",
+      "footprint": "Alpha1S:SN74LVC2G125_DCU8_Manufacturer_Land_Example",
+      "side": "B.Cu",
+      "center_mm": [
+        369,
+        258.7
+      ],
+      "angle_degrees": 0,
+      "symbol_path": "/4687339a-8373-40c5-9066-28a31d4f03e7/1a7464bc-3b49-52b7-a33d-d4f7a63b64b9",
+      "pad_nets": {
+        "1": "unconnected-(U9-~{1OE}-Pad1)",
+        "2": "unconnected-(U9-1A-Pad2)",
+        "3": "unconnected-(U9-2Y-Pad3)",
+        "4": "unconnected-(U9-GND-Pad4)",
+        "8": "unconnected-(U9-VCC-Pad8)",
+        "7": "unconnected-(U9-~{2OE}-Pad7)",
+        "6": "unconnected-(U9-1Y-Pad6)",
+        "5": "unconnected-(U9-2A-Pad5)"
+      },
+      "pad_centers_mm": {
+        "1": [
+          367.45,
+          259.45
+        ],
+        "2": [
+          367.45,
+          258.95
+        ],
+        "3": [
+          367.45,
+          258.45
+        ],
+        "4": [
+          367.45,
+          257.95
+        ],
+        "8": [
+          370.55,
+          259.45
+        ],
+        "7": [
+          370.55,
+          258.95
+        ],
+        "6": [
+          370.55,
+          258.45
+        ],
+        "5": [
+          370.55,
+          257.95
+        ]
+      },
+      "land_source": "reference/sn74lvc2g125-datasheet.pdf page25"
+    },
+    {
+      "reference": "U13",
+      "footprint": "Alpha1S:SGM2019_SOT23_5_Manufacturer_Recommended",
+      "side": "B.Cu",
+      "center_mm": [
+        357.2,
+        268.4
+      ],
+      "angle_degrees": 0,
+      "symbol_path": "/4687339a-8373-40c5-9066-28a31d4f03e7/77786de4-6999-53b8-9fc5-1664909fb7ff",
+      "pad_nets": {
+        "1": "unconnected-(U13-IN-Pad1)",
+        "2": "unconnected-(U13-GND-Pad2)",
+        "3": "unconnected-(U13-EN-Pad3)",
+        "4": "Net-(U13-BP)",
+        "5": "Net-(U13-OUT)"
+      },
+      "pad_centers_mm": {
+        "1": [
+          355.905,
+          269.35
+        ],
+        "2": [
+          355.905,
+          268.4
+        ],
+        "3": [
+          355.905,
+          267.45
+        ],
+        "4": [
+          358.495,
+          267.45
+        ],
+        "5": [
+          358.495,
+          269.35
+        ]
+      },
+      "land_source": "reference/sgm2019-datasheet.pdf page15"
+    },
+    {
+      "reference": "U14",
+      "footprint": "Alpha1S:SGM2019_SOT23_5_Manufacturer_Recommended",
+      "side": "B.Cu",
+      "center_mm": [
+        400.3,
+        274.5
+      ],
+      "angle_degrees": 180,
+      "symbol_path": "/4687339a-8373-40c5-9066-28a31d4f03e7/a6067efb-b9c0-5b30-aa2e-2bb73c6879e3",
+      "pad_nets": {
+        "1": "Net-(U14-IN)",
+        "2": "unconnected-(U14-GND-Pad2)",
+        "3": "unconnected-(U14-EN-Pad3)",
+        "4": "Net-(U14-BP)",
+        "5": "Net-(U14-OUT)"
+      },
+      "pad_centers_mm": {
+        "1": [
+          401.595,
+          273.55
+        ],
+        "2": [
+          401.595,
+          274.5
+        ],
+        "3": [
+          401.595,
+          275.45
+        ],
+        "4": [
+          399.005,
+          275.45
+        ],
+        "5": [
+          399.005,
+          273.55
+        ]
+      },
+      "land_source": "reference/sgm2019-datasheet.pdf page15"
+    }
+  ],
+  "limits": [
+    "Manufacturer lands, not measured donor lands.",
+    "Photo-derived centers are approximate.",
+    "U13/U14 SOT23-5 based on photo body dimensions; physical caliper confirmation remains open.",
+    "No additional nets or routing inferred."
+  ],
+  "validation": {
+    "native_footprints": 4,
+    "copper_pads": 26,
+    "tracks": 0,
+    "vias": 0,
+    "drc_geometric_or_library_violations": 0,
+    "missing_footprint_parity_findings": 97,
+    "pad_net_and_center_check": "All18 new pads read through the live KiCad API and matched to schematic nets and calculated front-view coordinates.",
+    "gui": "Reopened and visually checked three selected footprints at photo body locations.",
+    "scope": "Partial reconstruction; donor lands, center accuracy, full circuit and routing are not verified."
+  },
+  "source_sha256": {
+    "reference/sgm2019-datasheet.pdf": "ad49e6737a2020d61f2f488ce4d515f3b3d7fac4193be67b333b507c6baa1a8e",
+    "reference/sn74lvc2g125-datasheet.pdf": "15dab14095892f561bc7407dde6c7fb2fb75d92c6bdafc34e949e5dca1fed340"
+  }
+}

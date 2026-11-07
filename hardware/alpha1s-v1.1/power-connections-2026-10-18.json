@@ -1,0 +1,104 @@
+{
+  "date": "2026-10-18",
+  "frames": [
+    {
+      "file": "reference/video-4512/fullscan/frame-138.png",
+      "approximate_time_seconds": 68.5,
+      "sha256": "9484f44adff83e9b3f3b7f4bc6db15a6cade8f8ff996405eea462a81e6f1e2d1"
+    },
+    {
+      "file": "reference/video-4512/fullscan/frame-142.png",
+      "approximate_time_seconds": 70.5,
+      "sha256": "9a843bc609469da304f0030169c5051ff863e5a6bc5fecbbce96317ec214a581"
+    }
+  ],
+  "connections": [
+    {
+      "from_reference": "Q1",
+      "from_pin": "3",
+      "from_function": "Source",
+      "to_reference": "C68",
+      "to_terminal_in_frame": "top",
+      "frame": 142,
+      "status": "short_surface_connection_visually_supported_not_measured",
+      "basis": "Package index dot at lower left establishes bottom-row pin1; third bottom lead runs directly down to C68 top pad. IRF9310 pin3 source from saved manufacturer document.",
+      "native_capacitor_pin_convention": {
+        "1": "top terminal in frame142",
+        "2": "bottom terminal in frame142; connectivity unknown"
+      }
+    },
+    {
+      "from_reference": "Q10",
+      "from_terminal_in_frame": "upper-left",
+      "to_reference": "R49",
+      "to_terminal_in_frame": "top",
+      "frames": [
+        138,
+        140,
+        142
+      ],
+      "status": "short_surface_connection_visually_supported_functional_pin_unassigned"
+    },
+    {
+      "from_reference": "Q10",
+      "from_terminal_in_frame": "lower-left",
+      "to_reference": "R49",
+      "to_terminal_in_frame": "bottom",
+      "frames": [
+        138,
+        140,
+        142
+      ],
+      "status": "short_surface_connection_visually_supported_functional_pin_unassigned"
+    }
+  ],
+  "q10_candidate": {
+    "observed_marking": "1YD with trailing m-like glyph",
+    "candidate": "L8550Q family PNP transistor",
+    "status": "manufacturer_document_supported_candidate_not_unique_donor_identification",
+    "manufacturer_of_document": "Leshan Radio Company (LRC)",
+    "document_file": "reference/l8550q-lrc.pdf",
+    "document_url": "https://xonstorage.z8.web.core.windows.net/pdf/leshan_l8550qlt1g_apr22_xonlink.pdf",
+    "document_sha256": "e70f5b2a9beb5956800f133028c6715fbf4be749440b27ab44fa6583de8954c4",
+    "document_origin": "Manufacturer-authored Rev.O hosted by distributor X-ON; page1 marking table and pin diagram visually checked.",
+    "candidate_pinmap": {
+      "1": "B",
+      "2": "E",
+      "3": "C"
+    },
+    "candidate_rating": "PNP, VCEO -25 V, IC -800 mA; Q gain group",
+    "marking_match": "1YD maps to L8550QLT1G/L8550QLT3G and S-prefix variants",
+    "remaining_ambiguity": "Donor manufacturer and trailing glyph not established; another supplier also lists same code/family. Candidate pin map not assigned to donor native symbol."
+  },
+  "resistor_readings": [
+    {
+      "reference": "R1",
+      "marking": "513",
+      "nominal_ohms_from_marking": 51000,
+      "frame": 142,
+      "status": "marking_decoded_not_measured",
+      "note": "Confirms existing R1 reading from frame54s; not a new register entry."
+    }
+  ],
+  "not_recovered": [
+    "Q3/Q4 traces disappear beneath the mounted packages or via fields; no new complete Q3/Q4 endpoint pair verified.",
+    "R1-to-Q1 gate path obscured by silkscreen; not added based on proximity.",
+    "Q10-R50 and Q10-R65 candidate paths not promoted without clearer endpoint continuity."
+  ],
+  "native_validation": {
+    "symbols": 24,
+    "numbered_pins": 230,
+    "wire_segments": 17,
+    "inter_component_nets": 6,
+    "netlist": "Q1.3-C68.1 verified and previous five pairs preserved exactly; C68.2 remains isolated.",
+    "gui": "Reopened and visually verified readable wires and labels.",
+    "svg_export": "success",
+    "erc": {
+      "total": 275,
+      "pin_not_connected": 211,
+      "pin_not_driven": 34,
+      "power_pin_not_driven": 30,
+      "other_categories": 0
+    }
+  }
+}

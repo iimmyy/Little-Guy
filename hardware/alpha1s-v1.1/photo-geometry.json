@@ -1,0 +1,246 @@
+{
+  "units": "mm",
+  "status": "photo_derived_draft_not_fabrication_verified",
+  "datum": "Front view; switches at top; origin at upper-left of overall bounding box",
+  "outline_source": "reference/IMG_4511 2.heic",
+  "method": "Green board segmentation; fill internal holes; convex lower-body envelope below 30 mm bridges non-green hole rims at board edges; mirror back view; normalize extents to caliper dimensions; simplify with 0.08 mm tolerance",
+  "outline_vertices": [
+    [
+      63.216,
+      0.0
+    ],
+    [
+      8.813,
+      0.0
+    ],
+    [
+      8.268,
+      0.518
+    ],
+    [
+      8.091,
+      0.948
+    ],
+    [
+      7.989,
+      2.869
+    ],
+    [
+      7.964,
+      9.289
+    ],
+    [
+      8.091,
+      13.258
+    ],
+    [
+      7.888,
+      14.117
+    ],
+    [
+      7.444,
+      14.61
+    ],
+    [
+      6.784,
+      14.939
+    ],
+    [
+      1.053,
+      14.989
+    ],
+    [
+      0.647,
+      15.166
+    ],
+    [
+      0.025,
+      15.71
+    ],
+    [
+      0.025,
+      65.379
+    ],
+    [
+      0.076,
+      68.033
+    ],
+    [
+      0.368,
+      68.45
+    ],
+    [
+      43.484,
+      68.45
+    ],
+    [
+      65.904,
+      68.324
+    ],
+    [
+      71.281,
+      68.223
+    ],
+    [
+      71.585,
+      68.096
+    ],
+    [
+      72.08,
+      67.628
+    ],
+    [
+      72.08,
+      24.481
+    ],
+    [
+      71.979,
+      24.329
+    ],
+    [
+      71.979,
+      17.454
+    ],
+    [
+      72.08,
+      15.634
+    ],
+    [
+      71.535,
+      15.09
+    ],
+    [
+      71.053,
+      14.838
+    ],
+    [
+      67.578,
+      14.863
+    ],
+    [
+      67.198,
+      15.04
+    ],
+    [
+      65.625,
+      14.989
+    ],
+    [
+      65.169,
+      14.913
+    ],
+    [
+      64.446,
+      14.244
+    ],
+    [
+      64.218,
+      13.409
+    ],
+    [
+      64.37,
+      8.784
+    ],
+    [
+      64.294,
+      1.555
+    ],
+    [
+      64.065,
+      0.695
+    ],
+    [
+      63.216,
+      0.0
+    ]
+  ],
+  "outline_area_mm2": 4692.65,
+  "mounting_holes": {
+    "top_left": {
+      "front_photo_center": [
+        3.931,
+        18.538
+      ],
+      "back_photo_center_mirrored": [
+        4.416,
+        18.395
+      ],
+      "draft_center": [
+        4.2,
+        18.5
+      ],
+      "between_photo_distance": 0.506,
+      "diameter": 3.2,
+      "marker": "H1",
+      "diameter_source": "User caliper reading and all-four-holes clarification, 2026-10-18",
+      "diameter_drawing_uuid": "2ecd61ff-1be2-46f0-bfaa-3daa2429474e"
+    },
+    "top_right": {
+      "front_photo_center": [
+        67.314,
+        18.416
+      ],
+      "back_photo_center_mirrored": [
+        67.695,
+        18.337
+      ],
+      "draft_center": [
+        67.5,
+        18.4
+      ],
+      "between_photo_distance": 0.389,
+      "diameter": 3.2,
+      "marker": "H2",
+      "diameter_source": "User caliper reading and all-four-holes clarification, 2026-10-18",
+      "diameter_drawing_uuid": "2dfd9a87-a4de-44f0-9cfe-0d4e50b0e489"
+    },
+    "bottom_left": {
+      "front_photo_center": [
+        1.484,
+        62.294
+      ],
+      "back_photo_center_mirrored": [
+        1.776,
+        62.482
+      ],
+      "draft_center": [
+        1.6,
+        62.4
+      ],
+      "between_photo_distance": 0.347,
+      "diameter": 3.2,
+      "marker": "H3",
+      "diameter_source": "User caliper reading and all-four-holes clarification, 2026-10-18",
+      "diameter_drawing_uuid": "babbb436-0291-4889-a020-53e8be6b0db0"
+    },
+    "bottom_right": {
+      "front_photo_center": [
+        70.383,
+        62.053
+      ],
+      "back_photo_center_mirrored": [
+        70.392,
+        61.795
+      ],
+      "draft_center": [
+        70.4,
+        61.9
+      ],
+      "between_photo_distance": 0.258,
+      "diameter": 3.2,
+      "marker": "H4",
+      "diameter_source": "User caliper reading and all-four-holes clarification, 2026-10-18",
+      "diameter_drawing_uuid": "05982740-1024-45e1-bd03-a3ed011f7028"
+    }
+  },
+  "hole_diameters": "All four 3.20 mm, user-reported 2026-10-18. Circles on Dwgs.User; not drill features. Centers remain photo-derived.",
+  "limitations": [
+    "Local feature locations are photo estimates.",
+    "Hole diameters and overall thickness are user-reported measurements. Hole plating and copper/dielectric stackup remain unresolved.",
+    "A manufacturer-ready reconstruction requires physical verification and recovered connectivity."
+  ],
+  "kicad_origin_mm": [
+    340,
+    220
+  ]
+}
