@@ -69,7 +69,8 @@ def read_note(dirfd, name):
 
 def answered():
     try:
-        return {json.loads(l)["to"] for l in open(os.path.join(STATE, "chat.jsonl"))}
+        with open(os.path.join(STATE, "chat.jsonl")) as history:
+            return {json.loads(line)["to"] for line in history}
     except (OSError, ValueError, KeyError):
         return set()
 
@@ -100,7 +101,7 @@ def reply(note):
     return "replied", to
 
 
-def act(raw, last_say):
+def act(raw, last_say, *, motion_handler=None):
     try:
         note = json.loads(raw)
     except ValueError:
@@ -108,6 +109,18 @@ def act(raw, last_say):
     if not isinstance(note, dict):
         return "drop", "not a valid note", last_say
     kind = note.get("kind")
+    if kind == "joint_targets":
+        # The installed run() path supplies no handler. A trusted host may
+        # inject the bounded controller dispatcher; notes cannot enable it.
+        if motion_handler is None:
+            return "drop", "movement is disabled", last_say
+        try:
+            motion_handler(note)
+        except Exception as error:
+            # A handler can fail after handing bytes to the bus. Do not claim
+            # that rejection guarantees nothing was delivered or moved.
+            return "failed", f"movement handling failed; delivery and motion unconfirmed: {str(error)[:200]}", last_say
+        return "submitted", "movement packet submitted; delivery and motion unconfirmed", last_say
     if kind == "say":
         text = clean(note.get("text"), MAX_SAY)
         if text is None:
