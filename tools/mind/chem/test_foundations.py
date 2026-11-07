@@ -23,10 +23,10 @@ import time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import engine as E
 
-# "wired" as Immy's paper defines it (2026-10-22; §8, §5.2.1, §3.4, §4): an NE system that is activated but poorly
-# regulated: the drive stays up AND the α2A/GIRK brake is worn, with the CRF/orexin loops feeding back into the LC.
-# Drive and brake are separate genes; "wired" is their interaction. The paper gives no numbers, so the levels are
-# picked by WIRED_RULE from the four features it names (the wired_* tests and high_tonic_pattern), never from a drug
+# "wired" (2026-10-22): an NE system that is activated but poorly regulated: the drive stays up AND the α2 brake on
+# the LC is weak (Simson & Weiss 1987), with the CRF/orexin loops feeding back into the LC.
+# Drive and brake are separate genes; "wired" is their interaction. There are no measured levels for it, so they are
+# picked by WIRED_RULE from its four features (the wired_* tests and high_tonic_pattern), never from a drug
 # result: the mildest pair (smallest |ln drive| + |ln brake|) that shows all four. Picked in
 # .run/results/mind/chem/*-wired-grid/ (2026-10-22).
 WIRED_RULE = "mildest (lc_drive, rx_a2a_auto) pair passing wired_background, wired_exaggerated, wired_persists, high_tonic_pattern"
@@ -416,11 +416,11 @@ def driven_pattern():
 
 
 @test("gain", "The wired pattern: loud background + REDUCED PHASIC-TO-TONIC CONTRAST (burst / background under 0.9x "
-      "an average egg's). Corrected 2026-10-22 with Immy: §3.4 of his paper says useful signals lose contrast against "
+      "an average egg's). Corrected 2026-10-22 with Immy: useful signals lose contrast against "
       "the raised background even when their release is intact, so the old endpoint 'weak useful bursts' (read as "
       "smaller absolute bursts; runs 1-7, kept as driven_pattern) assessed that mechanism wrongly. A correction to how "
       "the mechanism is assessed, not independent validation. Background and absolute burst are reported separately",
-      "what Immy sent (§3.4, §8) / checked (Aston-Jones & Cohen 2005)")
+      "Immy's design input / checked (Aston-Jones & Cohen 2005)")
 def high_tonic_pattern():
     ka, kw = egg().knobs(), egg("wired").knobs()
     ca, cw = ka["burst"] / ka["pupil"], kw["burst"] / kw["pupil"]
@@ -443,7 +443,7 @@ def _ne_challenge(kind, minutes, threat=0.5):
 
 @test("wired", "Wired, quiet: background NE modestly up at rest (+10% to +50% over an average egg; a resting floor "
       "should sit below a strong acute stressor, which raises rat prefrontal NE +50-115%)",
-      "what Immy sent (§5.2.1) / cutoff: modelling choice")
+      "Immy's design input / cutoff: modelling choice")
 def wired_background():
     a, w = egg(hour=10.0), egg("wired", hour=10.0)
     r = w.c["ne"] / a.c["ne"]
@@ -451,7 +451,7 @@ def wired_background():
 
 
 @test("wired", "Wired, challenged: exaggerated stress response (10 minutes of threat 0.5: NE rise at least 1.3x an "
-      "average egg's)", "what Immy sent (§5.2.1) / checked (Simson & Weiss 1987: a weaker α2 brake = bigger LC "
+      "average egg's)", "Immy's design input / checked (Simson & Weiss 1987: a weaker α2 brake = bigger LC "
       "responses) / cutoff: the same 1.3x as the other gain tests")
 def wired_exaggerated():
     ra, rw = _ne_challenge("average", 10)[2], _ne_challenge("wired", 10)[2]
@@ -1308,7 +1308,7 @@ def write_results(out_dir, rows):
     L = [f"# Chemistry foundations: section F tests ({time.strftime('%Y-%m-%d %H:%M')})", "",
          f"{n_pass} of {len(rows)} pass. Engine: `tools/mind/chem/engine.py`; tests: `tools/mind/chem/test_foundations.py`.",
          "Every pass rule was written before the run. Numbers are relative units (1 = an average egg at rest).", ""]
-    for g, title in (("bio", "Biology signatures"), ("gain", "Gain tests"), ("wired", "The wired phenotype (Immy's paper)"),
+    for g, title in (("bio", "Biology signatures"), ("gain", "Gain tests"), ("wired", "The wired phenotype"),
                      ("drug", "Drug challenges")):
         L += [f"## {title}", "", "| | test | what must happen | how sure | numbers |", "|---|---|---|---|---|"]
         for r in rows:
