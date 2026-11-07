@@ -14,6 +14,8 @@
 //       real odds (the policy his choices are trained on later), not one sampled word.
 //       "audio": ["a.wav", ...] (needs --mmproj, his ears): he hears each file where the prompt has the ears' marker
 //       (<__media__>), in order; wav, mp3 or flac.
+//       "recep": [n_layer x 3 floats] his receptors inside each room (focus, excitability, loudness multipliers; all
+//       1.0 = no change), or null = none. Only Gemma 4 graphs read them.
 //   {"op":"states", "prompt":<text>, "prefix":<text> (or "skip":K), "rooms":[...], "out":<path>, "mode":"mean"|"all"}
 //       -> {"n_tok": T}. Runs the text with no push and writes the outputs of the given rooms for the tokens after the
 //       prefix (K = the prefix's length in tokens) to <out>
@@ -171,6 +173,7 @@ int main(int argc, char ** argv) {
     }
     std::vector<float> cvec;
     std::string cvec_path;
+    std::vector<float> recep;                        // what is set now (empty = none)
 
     std::signal(SIGUSR1, on_hush);
     std::cout << json{{"ready", true}, {"n_embd", n_embd}, {"n_layer", n_layer}, {"ears", ears != nullptr}}.dump() << std::endl;
@@ -196,6 +199,17 @@ int main(int argc, char ** argv) {
                         throw std::runtime_error("llama_set_adapter_cvec failed");
                     }
                     cvec_path = path;
+                }
+                std::vector<float> want;
+                if (req.contains("recep") && !req["recep"].is_null()) {
+                    want = req["recep"].get<std::vector<float>>();
+                    if (want.size() != (size_t) n_layer * 3) { throw std::runtime_error("recep needs n_layer x 3 values"); }
+                }
+                if (want != recep) {
+                    if (llama_set_adapter_recep(think, want.empty() ? nullptr : want.data(), want.size()) != 0) {
+                        throw std::runtime_error("llama_set_adapter_recep failed");
+                    }
+                    recep = want;
                 }
                 llama_memory_clear(llama_get_memory(think), true);
                 llama_pos n_prompt = 0;

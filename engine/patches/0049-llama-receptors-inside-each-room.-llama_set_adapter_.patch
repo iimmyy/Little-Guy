@@ -1,0 +1,447 @@
+From 87f2afd12d905b539dd48bff9d49030ce2d6a2c2 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Sat, 7 Nov 2026 15:32:11 -0700
+Subject: [PATCH 49/50] llama: receptors inside each room.
+ llama_set_adapter_recep(ctx, data, len) sets per-layer multipliers at run
+ time, n_layer x 3 floats, or clears them with NULL: focus scales Q after rope
+ (attention sharpness; K is untouched, so the KV that later Gemma 4 layers
+ share stays valid), excite multiplies the FFN gate's scale before the GELU
+ (after the gate's LoRA), loud scales the attention block's post-norm write
+ before it joins the residual. All 1.0 leaves the output unchanged. Only Gemma
+ 4 graphs read them. Written 2026-10-23 for the receptors-in-the-model track
+ (LittleGuy tools/mind/receptors, lg-mind "recep"); committed 2026-11-07 as it
+ was then, not rebuilt or re-tested on that day.
+
+---
+ include/llama.h       |   8 ++++
+ src/llama-adapter.cpp | 102 ++++++++++++++++++++++++++++++++++++++++++
+ src/llama-adapter.h   |  34 ++++++++++++++
+ src/llama-context.cpp |  32 +++++++++++++
+ src/llama-context.h   |   5 +++
+ src/llama-graph.cpp   |  14 ++++++
+ src/llama-graph.h     |  13 ++++++
+ src/models/gemma4.cpp |  17 ++++++-
+ 8 files changed, 223 insertions(+), 2 deletions(-)
+
+diff --git a/include/llama.h b/include/llama.h
+index f723c9f..35d2019 100644
+--- a/include/llama.h
++++ b/include/llama.h
+@@ -700,6 +700,14 @@ extern "C" {
+                          int32_t   il_start,
+                          int32_t   il_end);
+ 
++    // Set per-layer multipliers, or clear them if data is NULL (supported by Gemma 4).
++    // data holds n_layer x 3 floats: attention sharpness, FFN gate gain, layer output gain.
++    // All 1.0 leaves the model's output unchanged.
++    LLAMA_API int32_t llama_set_adapter_recep(
++            struct llama_context * ctx,
++                     const float * data,
++                          size_t   len);
++
+     //
+     // Memory
+     //
+diff --git a/src/llama-adapter.cpp b/src/llama-adapter.cpp
+index 3e0fe66..356ea6b 100644
+--- a/src/llama-adapter.cpp
++++ b/src/llama-adapter.cpp
+@@ -133,6 +133,108 @@ bool llama_adapter_cvec::apply(
+     return true;
+ }
+ 
++// recep
++
++ggml_tensor * llama_adapter_recep::term_for(ggml_context * ctx, int il, llama_recep_term term) const {
++    if (!active || il < 0 || (size_t) il >= tensors.size()) {
++        return nullptr;
++    }
++
++    return ggml_view_1d(ctx, tensors[il], 1, term * ggml_element_size(tensors[il]));
++}
++
++ggml_tensor * llama_adapter_recep::apply_to(ggml_context * ctx, ggml_tensor * cur, int il, llama_recep_term term) const {
++    ggml_tensor * t = term_for(ctx, il, term);
++    if (t == nullptr) {
++        return cur;
++    }
++
++    return ggml_mul(ctx, cur, t);
++}
++
++bool llama_adapter_recep::init(const llama_model & model) {
++    const auto & hparams = model.hparams;
++
++    GGML_ASSERT(tensors.empty());
++    GGML_ASSERT(ctxs.empty());
++    GGML_ASSERT(bufs.empty());
++
++    std::map<ggml_backend_buffer_type_t, ggml_context *> ctx_map;
++    auto ctx_for_buft = [&](ggml_backend_buffer_type_t buft) -> ggml_context * {
++        auto it = ctx_map.find(buft);
++        if (it == ctx_map.end()) {
++            ggml_init_params params = {
++                /*.mem_size   =*/ hparams.n_layer()*ggml_tensor_overhead(),
++                /*.mem_buffer =*/ NULL,
++                /*.no_alloc   =*/ true,
++            };
++
++            ggml_context * ctx = ggml_init(params);
++            if (!ctx) {
++                return nullptr;
++            }
++
++            ctx_map[buft] = ctx;
++            ctxs.emplace_back(ctx);
++
++            return ctx;
++        }
++
++        return it->second;
++    };
++
++    tensors.reserve(hparams.n_layer());
++    for (size_t il = 0; il < hparams.n_layer(); il++) {
++        ggml_backend_buffer_type_t buft = model.select_buft(il);
++        ggml_context * ctx = ctx_for_buft(buft);
++        if (!ctx) {
++            LLAMA_LOG_ERROR("%s: failed to allocate context for receptor multipliers\n", __func__);
++            return false;
++        }
++        tensors.push_back(ggml_new_tensor_1d(ctx, GGML_TYPE_F32, LLAMA_RECEP_COUNT));
++    }
++
++    bufs.reserve(ctx_map.size());
++    for (auto it : ctx_map) {
++        ggml_backend_buffer_t buf = ggml_backend_alloc_ctx_tensors_from_buft(it.second, it.first);
++        if (!buf) {
++            LLAMA_LOG_ERROR("%s: failed to allocate buffer for receptor multipliers\n", __func__);
++            return false;
++        }
++        bufs.emplace_back(buf);
++    }
++
++    return true;
++}
++
++bool llama_adapter_recep::apply(const llama_model & model, const float * data, size_t len) {
++    const size_t n_layer = model.hparams.n_layer();
++
++    if (data == nullptr) {
++        active = false;
++        return true;
++    }
++
++    if (len != n_layer * LLAMA_RECEP_COUNT) {
++        LLAMA_LOG_ERROR("%s: expected %zu receptor multipliers, got %zu\n", __func__, n_layer * LLAMA_RECEP_COUNT, len);
++        return false;
++    }
++
++    if (tensors.empty()) {
++        if (!init(model)) {
++            return false;
++        }
++    }
++
++    for (size_t il = 0; il < n_layer; il++) {
++        ggml_backend_tensor_set(tensors[il], data + il * LLAMA_RECEP_COUNT, 0, LLAMA_RECEP_COUNT * sizeof(float));
++    }
++
++    active = true;
++
++    return true;
++}
++
+ // lora
+ 
+ llama_adapter_lora_weight * llama_adapter_lora::get_weight(ggml_tensor * w) {
+diff --git a/src/llama-adapter.h b/src/llama-adapter.h
+index f0b1e50..62c7f24 100644
+--- a/src/llama-adapter.h
++++ b/src/llama-adapter.h
+@@ -41,6 +41,40 @@ private:
+ 
+ using llama_adapter_cvec_ptr = std::shared_ptr<llama_adapter_cvec>;
+ 
++//
++// llama_adapter_recep
++//
++
++// per-layer multipliers set at run time: attention sharpness, FFN gate gain, layer output gain
++enum llama_recep_term {
++    LLAMA_RECEP_FOCUS  = 0,
++    LLAMA_RECEP_EXCITE = 1,
++    LLAMA_RECEP_LOUD   = 2,
++    LLAMA_RECEP_COUNT  = 3,
++};
++
++struct llama_adapter_recep {
++    // a view of one multiplier, nullptr when no multipliers are set
++    ggml_tensor * term_for(ggml_context * ctx, int il, llama_recep_term term) const;
++
++    ggml_tensor * apply_to(ggml_context * ctx, ggml_tensor * cur, int il, llama_recep_term term) const;
++
++    // data: n_layer x LLAMA_RECEP_COUNT floats, or nullptr to disable
++    bool apply(const llama_model & model, const float * data, size_t len);
++
++private:
++    bool init(const llama_model & model);
++
++    bool active = false;
++
++    std::vector<ggml_context_ptr> ctxs;
++    std::vector<ggml_backend_buffer_ptr> bufs;
++
++    std::vector<ggml_tensor *> tensors; // per layer, LLAMA_RECEP_COUNT values each
++};
++
++using llama_adapter_recep_ptr = std::shared_ptr<llama_adapter_recep>;
++
+ //
+ // llama_adapter_lora
+ //
+diff --git a/src/llama-context.cpp b/src/llama-context.cpp
+index 220240e..5994b08 100644
+--- a/src/llama-context.cpp
++++ b/src/llama-context.cpp
+@@ -35,6 +35,7 @@ llama_context::llama_context(
+               llama_context_params params) :
+     model(model),
+     cvec(std::make_unique<llama_adapter_cvec>()),
++    recep(std::make_unique<llama_adapter_recep>()),
+     loras(std::make_unique<llama_adapter_loras>()),
+     balloc(std::make_unique<llama_batch_allocr>(model.hparams.n_pos_per_embd())) {
+     // TODO warning when creating llama_context with awkward ctx size that is not a power of 2,
+@@ -1301,6 +1302,16 @@ bool llama_context::set_adapter_cvec(
+     return res;
+ }
+ 
++bool llama_context::set_adapter_recep(
++            const float * data,
++                 size_t   len) {
++    bool res = recep->apply(model, data, len);
++
++    sched_need_reserve = true;
++
++    return res;
++}
++
+ llm_graph_result * llama_context::process_ubatch(const llama_ubatch & ubatch, llm_graph_type gtype, llama_memory_context_i * mctx, ggml_status & ret) {
+     if (mctx && !mctx->apply()) {
+         LLAMA_LOG_ERROR("%s: failed to apply memory context\n", __func__);
+@@ -1315,8 +1326,13 @@ llm_graph_result * llama_context::process_ubatch(const llama_ubatch & ubatch, ll
+     // in order to correctly reuse a graph, it's full topology has to be uniquely determined by these parameters
+     const auto gparams = graph_params(res, ubatch, mctx, gtype);
+ 
++    // LG: LG_DECODE_TIMING=1 prints, per ubatch, whether the graph was reused and the time of each phase
++    static const bool lg_timing = getenv("LG_DECODE_TIMING") != nullptr;
++    const int64_t lg_t0 = lg_timing ? ggml_time_us() : 0;
++    bool lg_reused = false;
+     if (!graph_reuse_disable && res->can_reuse(gparams)) {
+         //LLAMA_LOG_DEBUG("%s: reusing previous graph\n", __func__);
++        lg_reused = true;
+ 
+         // with pipeline parallelism, the previous graph_compute_async may still be running
+         // on the GPU. we must synchronize before set_inputs to avoid overwriting input tensors
+@@ -1361,12 +1377,18 @@ llm_graph_result * llama_context::process_ubatch(const llama_ubatch & ubatch, ll
+         //LLAMA_LOG_INFO("graph set inputs time: %.3f ms\n", (ggml_time_us() - t_start_us)/1000.0);
+     }
+ 
++    const int64_t lg_t2 = lg_timing ? ggml_time_us() : 0;
+     const auto status = graph_compute(res->get_gf(), ubatch.n_tokens > 1);
+     if (status != GGML_STATUS_SUCCESS) {
+         LLAMA_LOG_ERROR("%s: failed to compute graph, compute status: %d\n", __func__, status);
+         ret = status;
+         return nullptr;
+     }
++    if (lg_timing) {
++        LLAMA_LOG_INFO("lg-decode: %d tokens, %d outputs, graph %s, plan+inputs %.2f ms, compute call %.2f ms\n",
++                       (int) ubatch.n_tokens, (int) n_outputs, lg_reused ? "reused" : "REBUILT",
++                       (lg_t2 - lg_t0) / 1000.0, (ggml_time_us() - lg_t2) / 1000.0);
++    }
+ 
+     ret = GGML_STATUS_SUCCESS;
+ 
+@@ -2408,6 +2430,7 @@ llm_graph_params llama_context::graph_params(
+         /*.sched       =*/ sched.get(),
+         /*.backend_cpu =*/ backend_cpu,
+         /*.cvec        =*/ cvec.get(),
++        /*.recep       =*/ recep.get(),
+         /*.loras       =*/ loras.get(),
+         /*.mctx        =*/ mctx,
+         /*.cross       =*/ &cross,
+@@ -3820,6 +3843,15 @@ int32_t llama_set_adapter_cvec(
+     return res ? 0 : -1;
+ }
+ 
++int32_t llama_set_adapter_recep(
++        llama_context * ctx,
++          const float * data,
++               size_t   len) {
++    bool res = ctx->set_adapter_recep(data, len);
++
++    return res ? 0 : -1;
++}
++
+ //
+ // memory
+ //
+diff --git a/src/llama-context.h b/src/llama-context.h
+index f8b7805..9b821b9 100644
+--- a/src/llama-context.h
++++ b/src/llama-context.h
+@@ -130,6 +130,10 @@ struct llama_context {
+                 int32_t   il_start,
+                 int32_t   il_end);
+ 
++    bool set_adapter_recep(
++            const float * data,
++                 size_t   len);
++
+     // process a single ubatch with a specific graph type
+     // if memory_context is provided, it will be applied first to the context's memory
+     // ret contains the status of the graph computation
+@@ -278,6 +282,7 @@ private:
+     llama_cparams cparams;
+ 
+     llama_adapter_cvec_ptr  cvec;
++    llama_adapter_recep_ptr recep;
+     llama_adapter_loras_ptr loras;
+ 
+     llama_cross cross; // TODO: tmp for handling cross-attention - need something better probably
+diff --git a/src/llama-graph.cpp b/src/llama-graph.cpp
+index 68c9e60..867046d 100644
+--- a/src/llama-graph.cpp
++++ b/src/llama-graph.cpp
+@@ -1059,6 +1059,7 @@ llm_graph_context::llm_graph_context(const llm_graph_params & params) :
+     sched            (params.sched),
+     backend_cpu      (params.backend_cpu),
+     cvec             (params.cvec),
++    recep            (params.recep),
+     loras            (params.loras),
+     mctx             (params.mctx),
+     cross            (params.cross),
+@@ -1082,6 +1083,19 @@ ggml_tensor * llm_graph_context::build_cvec(
+     return cvec->apply_to(ctx0, cur, il);
+ }
+ 
++ggml_tensor * llm_graph_context::build_recep_term(
++                 int   il,
++    llama_recep_term   term) const {
++    return recep ? recep->term_for(ctx0, il, term) : nullptr;
++}
++
++ggml_tensor * llm_graph_context::build_recep(
++         ggml_tensor * cur,
++                 int   il,
++    llama_recep_term   term) const {
++    return recep ? recep->apply_to(ctx0, cur, il, term) : cur;
++}
++
+ ggml_tensor * llm_graph_context::build_lora_mm(
+           ggml_tensor * w,
+           ggml_tensor * cur,
+diff --git a/src/llama-graph.h b/src/llama-graph.h
+index a6e8c39..f9aa805 100644
+--- a/src/llama-graph.h
++++ b/src/llama-graph.h
+@@ -599,6 +599,7 @@ struct llm_graph_params {
+     ggml_backend_t backend_cpu;
+ 
+     const llama_adapter_cvec     * cvec;
++    const llama_adapter_recep    * recep;
+     const llama_adapter_loras    * loras;
+     const llama_memory_context_i * mctx;
+     const llama_cross            * cross;
+@@ -695,6 +696,7 @@ struct llm_graph_params {
+             arch  == other.arch  &&
+             gtype == other.gtype &&
+             cvec  == other.cvec  &&
++            recep == other.recep &&
+             loras == other.loras &&
+             cross == other.cross;
+     }
+@@ -828,6 +830,7 @@ struct llm_graph_context {
+     ggml_backend_t backend_cpu; // TODO: needed by build_attn_mha, figure out a way to remove?
+ 
+     const llama_adapter_cvec     * cvec;
++    const llama_adapter_recep    * recep;
+     const llama_adapter_loras    * loras;
+     const llama_memory_context_i * mctx;
+     const llama_cross            * cross;
+@@ -854,6 +857,16 @@ struct llm_graph_context {
+              ggml_tensor * cur,
+                      int   il) const;
+ 
++    // one receptor multiplier for layer il, nullptr when none are set
++    ggml_tensor * build_recep_term(
++                     int   il,
++        llama_recep_term   term) const;
++
++    ggml_tensor * build_recep(
++             ggml_tensor * cur,
++                     int   il,
++        llama_recep_term   term) const;
++
+     // do mat_mul, while optionally apply lora and per-tensor scale
+     ggml_tensor * build_lora_mm(
+               ggml_tensor * w,
+diff --git a/src/models/gemma4.cpp b/src/models/gemma4.cpp
+index 43d104a..359a864 100644
+--- a/src/models/gemma4.cpp
++++ b/src/models/gemma4.cpp
+@@ -287,6 +287,9 @@ llama_model_gemma4::graph::graph(const llama_model & model, const llm_graph_para
+             Qcur = ggml_rope_ext(ctx0, Qcur, inp_pos, freq_factors, n_rot_l, rope_type, n_ctx_orig, freq_base_l, freq_scale_l,
+                                  ext_factor, attn_factor, beta_fast, beta_slow);
+             cb(Qcur, "Qcur_pos", il);
++
++            // scaling Q scales the attention logits; K stays untouched so shared KV is unaffected
++            Qcur = build_recep(Qcur, il, LLAMA_RECEP_FOCUS);
+         }
+ 
+         // self-attention
+@@ -334,9 +337,17 @@ llama_model_gemma4::graph::graph(const llama_model & model, const llm_graph_para
+                 LLM_NORM_RMS, il);
+         cb(cur, "attn_post_norm", il);
+ 
++        cur = build_recep(cur, il, LLAMA_RECEP_LOUD);
++
+         ggml_tensor * attn_out = ggml_add(ctx0, cur, inpL);
+         cb(attn_out, "attn_out", il);
+ 
++        // gate gain is applied after the gate's LoRA, before the GELU
++        ggml_tensor * ffn_gate_s = model.layers[il].ffn_gate_s;
++        if (ggml_tensor * gain = build_recep_term(il, LLAMA_RECEP_EXCITE)) {
++            ffn_gate_s = ffn_gate_s ? ggml_mul(ctx0, ffn_gate_s, gain) : gain;
++        }
++
+         // feed-forward network
+         const bool is_moe_layer = model.layers[il].ffn_gate_inp != nullptr;
+         if (is_moe_layer) {
+@@ -348,7 +359,7 @@ llama_model_gemma4::graph::graph(const llama_model & model, const llm_graph_para
+ 
+             cur_mlp = build_ffn(cur_mlp,
+                     model.layers[il].ffn_up,   nullptr, model.layers[il].ffn_up_s,
+-                    model.layers[il].ffn_gate, nullptr, model.layers[il].ffn_gate_s,
++                    model.layers[il].ffn_gate, nullptr, ffn_gate_s,
+                     model.layers[il].ffn_down, nullptr, model.layers[il].ffn_down_s,
+                     nullptr,
+                     LLM_FFN_GELU, LLM_FFN_PAR, il);
+@@ -400,7 +411,7 @@ llama_model_gemma4::graph::graph(const llama_model & model, const llm_graph_para
+ 
+             cur = build_ffn(cur,
+                     model.layers[il].ffn_up,   nullptr, model.layers[il].ffn_up_s,
+-                    model.layers[il].ffn_gate, nullptr, model.layers[il].ffn_gate_s,
++                    model.layers[il].ffn_gate, nullptr, ffn_gate_s,
+                     model.layers[il].ffn_down, nullptr, model.layers[il].ffn_down_s,
+                     nullptr,
+                     LLM_FFN_GELU, LLM_FFN_PAR, il);
+@@ -411,6 +422,8 @@ llama_model_gemma4::graph::graph(const llama_model & model, const llm_graph_para
+                 LLM_NORM_RMS, -1);
+         cb(cur, "ffn_post_norm", il);
+ 
++        cur = build_recep(cur, il, LLAMA_RECEP_LOUD);
++
+         // residual connection
+         cur = ggml_add(ctx0, cur, attn_out);
+ 

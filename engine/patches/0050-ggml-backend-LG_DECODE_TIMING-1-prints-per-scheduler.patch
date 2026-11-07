@@ -1,0 +1,47 @@
+From 46eb074077d2096cf142cccad03dad58e4b950e1 Mon Sep 17 00:00:00 2001
+From: iimmyy <i.a.martins001@gmail.com>
+Date: Sat, 7 Nov 2026 15:32:17 -0700
+Subject: [PATCH 50/50] ggml-backend: LG_DECODE_TIMING=1 prints, per scheduler
+ split, the backend, node and input counts, the time spent copying the split's
+ inputs and the time of the compute call, to see where a decode step's time
+ goes between backends. Off by default; no change to results.
+
+---
+ ggml/src/ggml-backend.cpp | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/ggml/src/ggml-backend.cpp b/ggml/src/ggml-backend.cpp
+index 8761592..38af136 100644
+--- a/ggml/src/ggml-backend.cpp
++++ b/ggml/src/ggml-backend.cpp
+@@ -1546,10 +1546,13 @@ static enum ggml_status ggml_backend_sched_compute_splits(ggml_backend_sched_t s
+     std::vector<int32_t> ids;
+     std::vector<ggml_bitset_t> used_ids;
+ 
++    // LG: LG_DECODE_TIMING=1 prints, per split, the time spent copying its inputs and handing it to its backend
++    static const int lg_timing = getenv("LG_DECODE_TIMING") ? atoi(getenv("LG_DECODE_TIMING")) : 0;
+     for (int split_id = 0; split_id < sched->n_splits; split_id++) {
+         struct ggml_backend_sched_split * split = &splits[split_id];
+         int split_backend_id = split->backend_id;
+         ggml_backend_t split_backend = sched->backends[split_backend_id];
++        const int64_t lg_t0 = lg_timing ? ggml_time_us() : 0;
+ 
+         // copy the input tensors to the split backend
+         for (int input_id = 0; input_id < split->n_inputs; input_id++) {
+@@ -1675,10 +1678,16 @@ static enum ggml_status ggml_backend_sched_compute_splits(ggml_backend_sched_t s
+         }
+ 
+         if (!sched->callback_eval) {
++            const int64_t lg_t1 = lg_timing ? ggml_time_us() : 0;
+             enum ggml_status ec = ggml_backend_graph_compute_async(split_backend, &split->graph);
+             if (ec != GGML_STATUS_SUCCESS) {
+                 return ec;
+             }
++            if (lg_timing) {
++                GGML_LOG_INFO("lg-split #%d %s: %d nodes, %d inputs, copy-in %.2f ms, compute call %.2f ms\n", split_id,
++                              ggml_backend_name(split_backend), split->graph.n_nodes, split->n_inputs,
++                              (lg_t1 - lg_t0) / 1000.0, (ggml_time_us() - lg_t1) / 1000.0);
++            }
+         } else {
+             // similar to ggml_backend_compare_graph_backend
+             for (int j0 = 0; j0 < split->graph.n_nodes; j0++) {

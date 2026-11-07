@@ -1,7 +1,7 @@
 From db564dfa255e165899adfb415e7f720cad4aa8fd Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Tue, 20 Oct 2026 08:29:20 -0700
-Subject: [PATCH 46/48] mtmd gemma4a: log(mel + 0.001) like Gemma 4's feature
+Subject: [PATCH 46/50] mtmd gemma4a: log(mel + 0.001) like Gemma 4's feature
  extractor (log(max(mel, 0.001)) put 8% of a hi-hat's values off by more than
  0.05, up to 0.54; now within 0.0007 of transformers), and wider ears: with
  clip.audio.wide_bands the sound comes at 48 kHz, the 128 bands come from its

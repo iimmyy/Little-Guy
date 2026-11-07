@@ -1,7 +1,7 @@
 From 75a9ad837e407f753246e34728dcafb34ada109a Mon Sep 17 00:00:00 2001
 From: iimmyy <i.a.martins001@gmail.com>
 Date: Tue, 20 Oct 2026 17:44:37 -0700
-Subject: [PATCH 48/48] mtmd gemma4a: the high end on its own page. With
+Subject: [PATCH 48/50] mtmd gemma4a: the high end on its own page. With
  clip.audio.wide_pool, the side path no longer adds to his input projection: a
  GELU hidden layer (a.wide.mid), the mean over each group of wide_pool of his
  40 ms tokens (the last group may be short), and a projection with bias
